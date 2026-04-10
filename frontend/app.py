@@ -1,0 +1,720 @@
+from __future__ import annotations
+
+import os
+from datetime import date, datetime, timedelta
+from typing import Any, Callable, TypeVar
+
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+import requests
+import streamlit as st
+import streamlit.components.v1 as components
+
+try:
+    from frontend.components.api_client import APIClient
+    from frontend.components.styles import get_theme_css, get_theme_tokens
+    from frontend.components.translations import LANGUAGES, translate
+    from frontend.components.ui import metric_card, modern_progress, task_card
+    from frontend.services.insights import build_weekly_insight
+    from frontend.services.notifications import build_time_notifications
+except ModuleNotFoundError:
+    from components.api_client import APIClient
+    from components.styles import get_theme_css, get_theme_tokens
+    from components.translations import LANGUAGES, translate
+    from components.ui import metric_card, modern_progress, task_card
+    from services.insights import build_weekly_insight
+    from services.notifications import build_time_notifications
+
+st.set_page_config(page_title=translate("en", "app_title"), page_icon="🎯", layout="wide")
+
+MENU = {
+    "dashboard": "menu_dashboard",
+    "tasks": "menu_tasks",
+    "weekly": "menu_weekly",
+    "notifications": "menu_notifications",
+    "settings": "menu_settings",
+}
+T = TypeVar("T")
+
+
+def init_state() -> None:
+    legacy_lang = st.session_state.get("language")
+    defaults = {
+        "api_url": os.getenv("API_BASE_URL", "http://127.0.0.1:8000"),
+        "user_id": None,
+        "username": "",
+        "name": "",
+        "access_token": "",
+        "dark_mode": False,
+        "lang": "en",
+        "menu": "dashboard",
+        "last_daily_summary": "",
+        "notifications": [],
+        "install_prompt_requested": False,
+    }
+    for key, value in defaults.items():
+        if key not in st.session_state:
+            st.session_state[key] = value
+    if legacy_lang and "lang" not in st.session_state:
+        st.session_state["lang"] = legacy_lang
+    if st.session_state["lang"] not in LANGUAGES:
+        st.session_state["lang"] = "en"
+
+
+def get_client() -> APIClient:
+    client = APIClient(st.session_state.api_url)
+    client.set_token(st.session_state.access_token or None)
+    return client
+
+
+def t(key: str, **kwargs: str) -> str:
+    return translate(st.session_state["lang"], key, **kwargs)
+
+
+def add_notification(level: str, message: str) -> None:
+    entry = {
+        "at": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "level": level,
+        "message": message,
+    }
+    existing = st.session_state.notifications or []
+    st.session_state.notifications = [entry, *existing][:80]
+
+
+def safe_error(message: str) -> str:
+    return f"{message} {t('error_contact_support')}"
+
+
+def call_api(
+    func: Callable[..., T],
+    *args: Any,
+    fallback_message: str | None = None,
+    **kwargs: Any,
+) -> tuple[T | None, str | None]:
+    fallback = fallback_message or t("service_unavailable")
+    try:
+        return func(*args, **kwargs), None
+    except requests.HTTPError as exc:
+        detail = fallback
+        try:
+            detail = exc.response.json().get("detail", fallback)
+        except Exception:
+            detail = fallback
+        return None, safe_error(detail)
+    except requests.RequestException:
+        return None, safe_error(fallback)
+    except Exception:
+        return None, safe_error(fallback)
+
+
+def render_top_header() -> None:
+    st.markdown(f"<div class='main-title'>{t('app_title')}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='main-subtitle'>{t('app_subtitle')}</div>", unsafe_allow_html=True)
+
+
+def inject_pwa_support() -> None:
+    components.html(
+        """
+        <script>
+        (function () {
+          if (!window.parent) return;
+          const doc = window.parent.document;
+          if (!doc) return;
+
+          // Add Meta tags for mobile
+          if (!doc.querySelector('meta[name="apple-mobile-web-app-capable"]')) {
+            const m1 = doc.createElement("meta");
+            m1.name = "apple-mobile-web-app-capable";
+            m1.content = "yes";
+            doc.head.appendChild(m1);
+            
+            const m2 = doc.createElement("meta");
+            m2.name = "apple-mobile-web-app-status-bar-style";
+            m2.content = "black-translucent";
+            doc.head.appendChild(m2);
+            
+            const m3 = doc.createElement("meta");
+            m3.name = "viewport";
+            m3.content = "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover";
+            doc.head.appendChild(m3);
+          }
+
+          if (!doc.querySelector('link[rel="manifest"]')) {
+            const link = doc.createElement("link");
+            link.rel = "manifest";
+            link.href = "/static/manifest.json";
+            doc.head.appendChild(link);
+          }
+
+          if ("serviceWorker" in navigator) {
+            window.addEventListener('load', function() {
+              navigator.serviceWorker.register("/static/sw.js").then(function(reg) {
+                console.log('ServiceWorker registration successful');
+              }).catch(function(err) {
+                console.log('ServiceWorker registration failed: ', err);
+              });
+            });
+          }
+
+          window.parent.deferredPrompt = null;
+          window.parent.addEventListener("beforeinstallprompt", function (e) {
+            e.preventDefault();
+            window.parent.deferredPrompt = e;
+            console.log("Install prompt captured");
+          });
+        })();
+        </script>
+        """,
+        height=0,
+        width=0,
+    )
+
+
+def render_install_button() -> None:
+    st.caption(t("mobile_install_help"))
+    components.html(
+        f"""
+        <div style="padding-top:4px;">
+          <button id="install-app-btn" style="
+            border: none;
+            border-radius: 10px;
+            padding: 8px 14px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            background: linear-gradient(120deg, #2563eb, #0891b2);
+          ">{t("mobile_install")}</button>
+        </div>
+        <script>
+          const btn = document.getElementById("install-app-btn");
+          btn.onclick = async function () {{
+            const p = window.parent && window.parent.deferredPrompt;
+            if (!p) return;
+            p.prompt();
+            await p.userChoice;
+            window.parent.deferredPrompt = null;
+          }};
+        </script>
+        """,
+        height=56,
+    )
+
+
+def render_notifications(tasks: list[dict[str, Any]], score: dict[str, Any]) -> None:
+    notices, summary_key = build_time_notifications(tasks, score, st.session_state.last_daily_summary, t)
+    for level, msg in notices:
+        if level == "warning":
+            st.warning(msg)
+        elif level == "summary":
+            st.toast(msg)
+        else:
+            st.info(msg)
+        add_notification(level, msg)
+    st.session_state.last_daily_summary = summary_key
+
+
+def render_achievements(score: dict[str, Any]) -> None:
+    badges: list[str] = []
+    streak = int(score.get("streak", 0))
+    success_rate = float(score.get("success_rate", 0.0))
+
+    if streak >= 3:
+        badges.append("🔥 " + t("badge_streak_3"))
+    if streak >= 7:
+        badges.append("🚀 " + t("badge_streak_7"))
+    if success_rate >= 0.8:
+        badges.append("✅ " + t("badge_consistent"))
+    if float(score.get("score", 0.0)) >= 40:
+        badges.append("🏆 " + t("badge_high_score"))
+
+    if badges:
+        st.markdown(f"**{t('achievements')}**")
+        for badge in badges:
+            st.markdown(f"- {badge}")
+
+
+def render_sidebar() -> None:
+    with st.sidebar:
+        st.markdown(f"### {t('nav')}")
+        for key, menu_key in MENU.items():
+            if st.button(
+                t(menu_key),
+                key=f"menu_{key}",
+                use_container_width=True,
+                type="primary" if st.session_state.menu == key else "secondary",
+            ):
+                st.session_state.menu = key
+                st.rerun()
+
+        st.markdown("---")
+        selected_dark = st.toggle(t("dark_mode"), value=st.session_state.dark_mode, key="sidebar_dark_mode")
+        if selected_dark != st.session_state.dark_mode:
+            st.session_state.dark_mode = selected_dark
+            st.toast(t("theme_updated"))
+            st.rerun()
+
+        selected_language = st.selectbox(
+            t("language"),
+            list(LANGUAGES.keys()),
+            index=list(LANGUAGES.keys()).index(st.session_state["lang"]),
+            format_func=lambda code: LANGUAGES[code],
+            key="sidebar_language",
+        )
+        if selected_language != st.session_state["lang"]:
+            st.session_state["lang"] = selected_language
+            print(f"[i18n] Language changed to: {selected_language}")
+            st.toast(t("language_updated"))
+            st.rerun()
+
+        st.markdown("---")
+        st.markdown(f"### {t('profile')}")
+        if st.session_state.user_id:
+            st.markdown(f"**{st.session_state.name}**")
+            st.caption(f"@{st.session_state.username}")
+            mode = t("theme_dark") if st.session_state.dark_mode else t("theme_light")
+            st.caption(t("theme_mode", mode=mode))
+            render_install_button()
+        else:
+            st.caption(t("please_login"))
+
+
+def render_auth(client: APIClient) -> None:
+    render_top_header()
+    c1, c2 = st.columns(2)
+
+    with c1:
+        st.markdown(f"<div class='section-title'>{t('welcome_back')}</div>", unsafe_allow_html=True)
+        with st.form("login_form", clear_on_submit=False):
+            identifier = st.text_input(t("username_or_email"))
+            password = st.text_input(t("password"), type="password")
+            submitted = st.form_submit_button(t("sign_in"), type="primary")
+            if submitted:
+                data, err = call_api(
+                    client.login,
+                    username=identifier,
+                    password=password,
+                    fallback_message=t("login_failed"),
+                )
+                if err:
+                    st.error(err)
+                elif data:
+                    st.session_state.user_id = data["user_id"]
+                    st.session_state.username = data["username"]
+                    st.session_state.name = data["name"]
+                    st.session_state.access_token = data.get("access_token", "")
+                    st.toast(t("logged_in_success"))
+                    st.rerun()
+
+    with c2:
+        st.markdown(f"<div class='section-title'>{t('create_account')}</div>", unsafe_allow_html=True)
+        with st.form("signup_form", clear_on_submit=False):
+            name = st.text_input(t("full_name"))
+            username = st.text_input(t("username"), key="signup_username")
+            email = st.text_input(t("email"))
+            password = st.text_input(t("password"), type="password", key="signup_password")
+            submitted = st.form_submit_button(t("create_account"))
+            if submitted:
+                data, err = call_api(
+                    client.signup,
+                    username=username,
+                    email=email,
+                    password=password,
+                    name=name,
+                    fallback_message=t("signup_failed"),
+                )
+                if err:
+                    st.error(err)
+                elif data:
+                    st.session_state.user_id = data["user_id"]
+                    st.session_state.username = data["username"]
+                    st.session_state.name = data["name"]
+                    st.session_state.access_token = data.get("access_token", "")
+                    st.toast(t("account_created"))
+                    st.rerun()
+
+
+def load_day_bundle(
+    client: APIClient,
+    user_id: int,
+    day: date,
+) -> tuple[dict[str, Any] | None, list[dict[str, Any]] | None, str | None]:
+    score, score_err = call_api(
+        client.compute_daily_score,
+        user_id=user_id,
+        day=day,
+        fallback_message=t("could_not_compute_daily_score"),
+    )
+    if score_err:
+        return None, None, score_err
+
+    tasks, task_err = call_api(
+        client.get_tasks,
+        user_id=user_id,
+        day=day,
+        fallback_message=t("could_not_load_tasks"),
+    )
+    if task_err:
+        return None, None, task_err
+
+    return score, tasks, None
+
+
+def plot_score_trend(history_df: pd.DataFrame, dark_mode: bool) -> go.Figure:
+    colors = get_theme_tokens(dark_mode)
+    if history_df.empty:
+        history_df = pd.DataFrame({"date": [date.today()], "score": [0.0]})
+
+    fig = px.line(history_df, x="date", y="score", markers=True)
+    fig.update_traces(line_color=colors["accent"], marker_color=colors["accent_2"], line_width=3)
+    fig.update_layout(
+        paper_bgcolor=colors["surface"],
+        plot_bgcolor=colors["surface"],
+        font_color=colors["text"],
+        margin=dict(l=10, r=10, t=20, b=10),
+        xaxis_title="",
+        yaxis_title=t("score_axis"),
+    )
+    return fig
+
+
+def plot_status_pie(tasks_df: pd.DataFrame, dark_mode: bool) -> go.Figure:
+    colors = get_theme_tokens(dark_mode)
+    pending_label = t("pending")
+    completed_label = t("completed")
+    failed_label = t("failed")
+    color_map = {
+        completed_label: "#22c55e",
+        failed_label: "#ef4444",
+        pending_label: colors["muted"],
+    }
+    if tasks_df.empty:
+        tasks_df = pd.DataFrame({"status": [pending_label], "count": [1]})
+    else:
+        tasks_df["status"] = tasks_df["status"].map(lambda s: t(s) if isinstance(s, str) else pending_label)
+        tasks_df = tasks_df["status"].value_counts().rename_axis("status").reset_index(name="count")
+
+    fig = px.pie(tasks_df, values="count", names="status", hole=0.55, color="status", color_discrete_map=color_map)
+    fig.update_layout(
+        paper_bgcolor=colors["surface"],
+        plot_bgcolor=colors["surface"],
+        font_color=colors["text"],
+        margin=dict(l=10, r=10, t=20, b=10),
+        legend_title_text="",
+    )
+    return fig
+
+
+def plot_category_success(category_stats: pd.DataFrame, dark_mode: bool) -> go.Figure:
+    colors = get_theme_tokens(dark_mode)
+    if category_stats.empty:
+        category_stats = pd.DataFrame({"category": ["general"], "success_rate": [0.0]})
+
+    fig = px.bar(category_stats, x="category", y="success_rate", text="success_rate", range_y=[0, 1])
+    fig.update_traces(marker_color="#22c55e", texttemplate="%{text:.0%}", textposition="outside")
+    fig.update_layout(
+        paper_bgcolor=colors["surface"],
+        plot_bgcolor=colors["surface"],
+        font_color=colors["text"],
+        margin=dict(l=10, r=10, t=20, b=10),
+        yaxis_tickformat=".0%",
+        xaxis_title="",
+        yaxis_title=t("success_rate_axis"),
+    )
+    return fig
+
+
+def dashboard_page(client: APIClient, user_id: int) -> None:
+    st.markdown(f"<div class='section-title'>{t('dashboard')}</div>", unsafe_allow_html=True)
+    selected_day = st.date_input(t("day"), value=date.today(), key="dash_day")
+
+    score, tasks, err = load_day_bundle(client, user_id, selected_day)
+    if err:
+        st.error(err)
+        return
+    assert score is not None and tasks is not None
+
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        metric_card("🎯", t("self_trust_score"), f"{score['score']:.1f}", t("daily_score"))
+    with c2:
+        metric_card("🔥", t("current_streak"), f"{score['streak']}", t("multiplier", value=str(score["multiplier"])))
+    with c3:
+        metric_card("✅", t("success_rate"), f"{score['success_rate'] * 100:.0f}%", t("tasks_count", count=str(score["total_tasks"])))
+
+    completed = sum(1 for task in tasks if task["status"] == "completed")
+    modern_progress(t("today_completion"), (completed / len(tasks)) if tasks else 0.0, tone="auto")
+    render_notifications(tasks, score)
+    render_achievements(score)
+
+    history, history_err = call_api(client.score_history, user_id=user_id, fallback_message=t("could_not_load_score_trend"))
+    if history_err:
+        st.warning(history_err)
+        return
+
+    hist_df = pd.DataFrame(history or [])
+    charts_col1, charts_col2 = st.columns([2, 1])
+    with charts_col1:
+        st.markdown(f"<div class='section-title'>{t('score_over_time')}</div>", unsafe_allow_html=True)
+        st.plotly_chart(plot_score_trend(hist_df, st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
+    with charts_col2:
+        st.markdown(f"<div class='section-title'>{t('status_mix')}</div>", unsafe_allow_html=True)
+        st.plotly_chart(plot_status_pie(pd.DataFrame(tasks), st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
+
+
+def tasks_analytics_page(client: APIClient, user_id: int) -> None:
+    st.markdown(f"<div class='section-title'>{t('tasks_analytics')}</div>", unsafe_allow_html=True)
+    selected_day = st.date_input(t("task_day"), value=date.today(), key="task_day")
+
+    with st.form("add_task"):
+        c1, c2, c3 = st.columns([3, 2, 2])
+        with c1:
+            title = st.text_input(t("task_title"))
+        with c2:
+            category = st.text_input(t("category"), value=t("category_placeholder"))
+        with c3:
+            difficulty = st.selectbox(
+                t("difficulty"),
+                ["easy", "medium", "hard"],
+                format_func=lambda val: t(f"difficulty_{val}"),
+            )
+        submitted = st.form_submit_button(t("add_task"), type="primary")
+        if submitted and title.strip():
+            _, create_err = call_api(
+                client.create_task,
+                user_id=user_id,
+                title=title.strip(),
+                category=category.strip() or "general",
+                difficulty=difficulty,
+                day=selected_day,
+                fallback_message=t("task_create_failed"),
+            )
+            if create_err:
+                st.error(create_err)
+            else:
+                st.toast(t("task_added"))
+                st.rerun()
+
+    tasks, err = call_api(client.get_tasks, user_id=user_id, day=selected_day, fallback_message=t("could_not_load_tasks"))
+    if err:
+        st.error(err)
+        return
+    tasks = tasks or []
+
+    left, right = st.columns([1.3, 1])
+    with left:
+        st.markdown(f"<div class='section-title'>{t('task_cards')}</div>", unsafe_allow_html=True)
+        if not tasks:
+            st.info(t("no_tasks_day"))
+        for task in tasks:
+            task_card(
+                task,
+                labels={
+                    "category": t("category"),
+                    "difficulty": t("difficulty"),
+                    "status": t("status_col"),
+                    "unknown_title": t("unknown_title"),
+                    "uncategorized": t("uncategorized"),
+                    "easy": t("difficulty_easy"),
+                    "medium": t("difficulty_medium"),
+                    "hard": t("difficulty_hard"),
+                    "pending": t("pending"),
+                    "completed": t("completed"),
+                    "failed": t("failed"),
+                },
+            )
+            b1, b2, _ = st.columns([1.15, 1, 2.8])
+            with b1:
+                if st.button(f"✔ {t('complete')}", key=f"complete_{task['id']}", type="secondary"):
+                    _, update_err = call_api(client.update_task_status, task_id=task["id"], status="completed", fallback_message=t("update_task_failed"))
+                    if update_err:
+                        st.error(update_err)
+                    else:
+                        st.toast(t("task_completed"))
+                        st.rerun()
+            with b2:
+                if st.button(f"❌ {t('fail')}", key=f"fail_{task['id']}", type="secondary"):
+                    _, update_err = call_api(client.update_task_status, task_id=task["id"], status="failed", fallback_message=t("update_task_failed"))
+                    if update_err:
+                        st.error(update_err)
+                    else:
+                        st.toast(t("task_failed_marked"))
+                        st.rerun()
+
+    with right:
+        st.markdown(f"<div class='section-title'>{t('analytics')}</div>", unsafe_allow_html=True)
+        if not tasks:
+            st.info(t("add_tasks_unlock"))
+            return
+
+        df = pd.DataFrame(tasks)
+        completed_count = int((df["status"] == "completed").sum())
+        modern_progress(t("completion_rate"), completed_count / len(df), tone="auto")
+
+        category_total = df.groupby("category").size().rename("total")
+        category_completed = df[df["status"] == "completed"].groupby("category").size().rename("completed")
+        category_stats = pd.concat([category_total, category_completed], axis=1).fillna(0)
+        category_stats["success_rate"] = (category_stats["completed"] / category_stats["total"]).fillna(0.0)
+        category_stats = category_stats.reset_index().rename(columns={"index": "category"})
+
+        st.plotly_chart(plot_category_success(category_stats[["category", "success_rate"]], st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
+        st.plotly_chart(plot_status_pie(df, st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
+        df["difficulty"] = df["difficulty"].map(lambda val: t(f"difficulty_{val}"))
+        df["status"] = df["status"].map(lambda val: t(val))
+        st.dataframe(
+            df[["title", "category", "difficulty", "status"]].rename(
+                columns={
+                    "title": t("title_col"),
+                    "category": t("category_col"),
+                    "difficulty": t("difficulty_col"),
+                    "status": t("status_col"),
+                }
+            ),
+            use_container_width=True,
+            hide_index=True,
+        )
+
+
+def weekly_report_page(client: APIClient, user_id: int) -> None:
+    st.markdown(f"<div class='section-title'>{t('weekly_report')}</div>", unsafe_allow_html=True)
+    end_day = st.date_input(t("week_ending"), value=date.today(), key="week_end")
+    start_day = end_day - timedelta(days=6)
+    st.caption(t("range_label", start=start_day.isoformat(), end=end_day.isoformat()))
+
+    history, err = call_api(client.score_history, user_id=user_id, fallback_message=t("weekly_history_failed"))
+    if err:
+        st.error(err)
+        return
+
+    hist_df = pd.DataFrame(history or [])
+    all_days = pd.date_range(start=start_day, end=end_day)
+    if hist_df.empty:
+        weekly_df = pd.DataFrame({"date": all_days, "score": 0.0, "success_rate": 0.0})
+    else:
+        hist_df["date"] = pd.to_datetime(hist_df["date"])
+        weekly_df = hist_df[(hist_df["date"] >= pd.Timestamp(start_day)) & (hist_df["date"] <= pd.Timestamp(end_day))]
+        weekly_df = weekly_df[["date", "score", "success_rate"]]
+        weekly_df = weekly_df.set_index("date").reindex(all_days, fill_value=0.0).reset_index()
+        weekly_df = weekly_df.rename(columns={"index": "date"})
+
+    weekly_success = float(weekly_df["success_rate"].mean() * 100) if not weekly_df.empty else 0.0
+    c1, c2 = st.columns(2)
+    with c1:
+        metric_card("📊", t("weekly_success"), f"{weekly_success:.1f}%", t("avg_completion_consistency"))
+    with c2:
+        metric_card("📈", t("weekly_avg_score"), f"{weekly_df['score'].mean():.1f}", t("mean_daily_score"))
+
+    st.plotly_chart(plot_score_trend(weekly_df, st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
+    success_fig = px.area(weekly_df, x="date", y="success_rate")
+    theme = get_theme_tokens(st.session_state.dark_mode)
+    success_fig.update_traces(line_color="#22c55e", fillcolor="rgba(34, 197, 94, 0.25)")
+    success_fig.update_layout(
+        paper_bgcolor=theme["surface"],
+        plot_bgcolor=theme["surface"],
+        font_color=theme["text"],
+        margin=dict(l=10, r=10, t=20, b=10),
+        xaxis_title="",
+        yaxis_title=t("success_rate_axis"),
+        yaxis_tickformat=".0%",
+    )
+    st.plotly_chart(success_fig, use_container_width=True, config={"displayModeBar": False})
+
+    category_tasks: list[dict[str, Any]] = []
+    current = start_day
+    while current <= end_day:
+        day_tasks, day_err = call_api(client.get_tasks, user_id=user_id, day=current, fallback_message=t("category_breakdown_failed"))
+        if day_err:
+            st.warning(day_err)
+            break
+        category_tasks.extend(day_tasks or [])
+        current += timedelta(days=1)
+
+    st.markdown(f"<div class='section-title'>{t('category_breakdown')}</div>", unsafe_allow_html=True)
+    if category_tasks:
+        category_df = pd.DataFrame(category_tasks)
+        breakdown = category_df.groupby("category").size().reset_index(name="count")
+        fig = px.bar(breakdown, x="category", y="count", text="count")
+        fig.update_traces(marker_color=theme["accent_2"], textposition="outside")
+        fig.update_layout(
+            paper_bgcolor=theme["surface"],
+            plot_bgcolor=theme["surface"],
+            font_color=theme["text"],
+            margin=dict(l=10, r=10, t=20, b=10),
+            xaxis_title="",
+            yaxis_title=t("tasks_axis"),
+        )
+        st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
+    else:
+        st.info(t("no_tasks_week"))
+
+    insight, next_step = build_weekly_insight(weekly_df, weekly_success, t)
+    st.info(f"**{t('insight_title')}**\n\n{insight}\n\n{next_step}")
+
+
+def notifications_page() -> None:
+    st.markdown(f"<div class='section-title'>{t('notifications_center')}</div>", unsafe_allow_html=True)
+    if st.button(t("simulated_push"), key="simulate_push", type="primary"):
+        msg = f"{datetime.now().strftime('%H:%M')} - {t('notif_start_reminder', count='1')}"
+        add_notification("push", msg)
+        st.toast(t("push_sent"))
+
+    entries = st.session_state.notifications or []
+    if not entries:
+        st.info(t("notification_empty"))
+        return
+    for item in entries:
+        level_key = f"notif_level_{item['level']}"
+        level_label = t(level_key)
+        st.markdown(
+            f"<div class='surface-card'><strong>{item['at']}</strong> [{level_label}]<br/>{item['message']}</div>",
+            unsafe_allow_html=True,
+        )
+
+
+def settings_page() -> None:
+    st.markdown(f"<div class='section-title'>{t('settings')}</div>", unsafe_allow_html=True)
+    col1, col2 = st.columns(2)
+    with col1:
+        metric_card("👤", t("name"), st.session_state.name or "-")
+    with col2:
+        metric_card("🆔", t("username"), st.session_state.username or "-")
+
+    st.markdown(f"<div class='section-title'>{t('account')}</div>", unsafe_allow_html=True)
+    if st.button(t("logout"), type="primary"):
+        st.session_state.user_id = None
+        st.session_state.username = ""
+        st.session_state.name = ""
+        st.session_state.access_token = ""
+        st.session_state.menu = "dashboard"
+        st.toast(t("logged_out"))
+        st.rerun()
+
+
+def main() -> None:
+    init_state()
+    st.markdown(get_theme_css(st.session_state.dark_mode), unsafe_allow_html=True)
+    inject_pwa_support()
+
+    client = get_client()
+    render_sidebar()
+
+    if not st.session_state.user_id:
+        render_auth(client)
+        return
+
+    render_top_header()
+    user_id = int(st.session_state.user_id)
+    if st.session_state.menu == "dashboard":
+        dashboard_page(client, user_id)
+    elif st.session_state.menu == "tasks":
+        tasks_analytics_page(client, user_id)
+    elif st.session_state.menu == "weekly":
+        weekly_report_page(client, user_id)
+    elif st.session_state.menu == "notifications":
+        notifications_page()
+    elif st.session_state.menu == "settings":
+        settings_page()
+
+
+if __name__ == "__main__":
+    main()
