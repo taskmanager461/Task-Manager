@@ -1,5 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
+from pathlib import Path
 
 from backend.database import Base, engine
 from backend.routes.auth import router as auth_router
@@ -10,6 +14,10 @@ from config.settings import get_settings
 Base.metadata.create_all(bind=engine)
 settings = get_settings()
 
+# Define static path (relative to project root)
+PROJECT_ROOT = Path(__file__).parent.parent
+STATIC_DIR = PROJECT_ROOT / "frontend" / "static"
+
 def get_origins():
     raw_origins = settings.cors_origins
     if not raw_origins or raw_origins == "*":
@@ -17,6 +25,23 @@ def get_origins():
     return [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
 
 app = FastAPI(title=settings.app_name, version=settings.app_version, docs_url="/docs", redoc_url="/redoc")
+
+# Serve PWA files directly from /
+@app.get("/manifest.json")
+async def get_manifest():
+    return FileResponse(STATIC_DIR / "manifest.json")
+
+@app.get("/sw.js")
+async def get_sw():
+    return FileResponse(STATIC_DIR / "sw.js")
+
+@app.get("/icon-192.png")
+async def get_icon192():
+    return FileResponse(STATIC_DIR / "icon-192.png")
+
+@app.get("/icon-512.png")
+async def get_icon512():
+    return FileResponse(STATIC_DIR / "icon-512.png")
 
 # --- DATABASE CLEANUP LOGIC FOR FREE TIER ---
 import os

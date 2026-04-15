@@ -39,6 +39,11 @@ T = TypeVar("T")
 
 
 def init_state() -> None:
+    # Handle Navigation from Query Params
+    query_menu = st.query_params.get("menu")
+    if query_menu and query_menu in MENU:
+        st.session_state.menu = query_menu
+
     legacy_lang = st.session_state.get("language")
     defaults = {
         "api_url": os.getenv("API_BASE_URL", "http://127.0.0.1:8000"),
@@ -114,16 +119,17 @@ def render_top_header() -> None:
 
 
 def inject_pwa_support() -> None:
+    api_url = st.session_state.api_url.rstrip('/')
     components.html(
-        """
+        f"""
         <script>
-        (function () {
+        (function () {{
           if (!window.parent) return;
           const doc = window.parent.document;
           if (!doc) return;
 
           // Add Meta tags for mobile
-          if (!doc.querySelector('meta[name="apple-mobile-web-app-capable"]')) {
+          if (!doc.querySelector('meta[name="apple-mobile-web-app-capable"]')) {{
             const m1 = doc.createElement("meta");
             m1.name = "apple-mobile-web-app-capable";
             m1.content = "yes";
@@ -138,74 +144,48 @@ def inject_pwa_support() -> None:
             m3.name = "viewport";
             m3.content = "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover";
             doc.head.appendChild(m3);
-          }
+          }}
 
-          if (!doc.querySelector('link[rel="manifest"]')) {
+          if (!doc.querySelector('link[rel="manifest"]')) {{
             const link = doc.createElement("link");
             link.rel = "manifest";
-            link.href = "/static/manifest.json";
+            link.href = "{api_url}/manifest.json";
             doc.head.appendChild(link);
-          }
+          }}
 
-          if ("serviceWorker" in navigator) {
-            window.addEventListener('load', function() {
-              navigator.serviceWorker.register("/static/sw.js").then(function(reg) {
+          if ("serviceWorker" in navigator) {{
+            window.addEventListener('load', function() {{
+              navigator.serviceWorker.register("{api_url}/sw.js").then(function(reg) {{
                 console.log('ServiceWorker registration successful');
-              }).catch(function(err) {
+              }}).catch(function(err) {{
                 console.log('ServiceWorker registration failed: ', err);
-              });
-            });
-          }
+              }});
+            }});
+          }}
 
           // PWA Install Prompt Logic
           window.parent.deferredPrompt = null;
-          window.parent.addEventListener("beforeinstallprompt", function (e) {
+          window.parent.addEventListener("beforeinstallprompt", function (e) {{
             e.preventDefault();
             window.parent.deferredPrompt = e;
             console.log("Install prompt captured");
-            // Notify Streamlit if needed
-          });
+          }});
 
-          // Bottom Nav Communication
-          if (!window.parent._task_manager_listener_set) {
+          // Bottom Nav Communication (Alternative via URL)
+          if (!window.parent._task_manager_listener_set) {{
             window.parent._task_manager_listener_set = true;
-            window.parent.addEventListener("message", (event) => {
-              if (event.data.type === "change_menu") {
-                const menuLabel = event.data.menu;
-                console.log("Request to change menu to:", menuLabel);
-                
-                // Try to find the sidebar button in various containers
-                const selectors = [
-                  '[data-testid="stSidebar"] button',
-                  '[data-testid="stSidebarNav"] button',
-                  'section[data-testid="stSidebar"] button',
-                  '.st-emotion-cache-16idsys button' // fallback for common streamlit cache class
-                ];
-                
-                let targetBtn = null;
-                for (const selector of selectors) {
-                  const buttons = Array.from(window.parent.document.querySelectorAll(selector));
-                  targetBtn = buttons.find(b => {
-                     const text = b.innerText.toLowerCase().trim();
-                     return text === menuLabel.toLowerCase().trim();
-                  });
-                  if (targetBtn) break;
-                }
-                
-                if (targetBtn) {
-                  console.log("Clicking button for:", menuLabel);
-                  targetBtn.click();
-                } else {
-                  console.error("Button not found for:", menuLabel, "Trying global search...");
-                  // Last resort: search ALL buttons in the parent document
-                  const allButtons = Array.from(window.parent.document.querySelectorAll('button'));
-                  targetBtn = allButtons.find(b => b.innerText.toLowerCase().trim() === menuLabel.toLowerCase().trim());
-                  if (targetBtn) targetBtn.click();
-                }
-              }
-            });
-          }
-        })();
+            window.parent.addEventListener("message", (event) => {{
+              if (event.data.type === "change_menu_url") {{
+                const menuKey = event.data.menu;
+                console.log("Navigating to menu:", menuKey);
+                const url = new URL(window.parent.location.href);
+                url.searchParams.set("menu", menuKey);
+                window.parent.history.pushState({{}}, "", url);
+                window.parent.location.reload(); // Force reload to apply new menu from query params
+              }}
+            }});
+          }}
+        }})();
         </script>
         """,
         height=0,
@@ -230,9 +210,8 @@ def render_bottom_nav() -> None:
         is_active = "active" if active_menu == key else ""
         label = t(menu_key)
         icon = icons.get(key, "fa-solid fa-circle")
-        # Important: the menu name sent here MUST match the button text in sidebar
         items_html += f"""
-        <div class="nav-item {is_active}" onclick="window.parent.postMessage({{type: 'change_menu', menu: '{label}'}}, '*')">
+        <div class="nav-item {is_active}" onclick="window.parent.postMessage({{type: 'change_menu_url', menu: '{key}'}}, '*')">
             <i class="{icon}"></i>
             <span>{label}</span>
         </div>
@@ -266,14 +245,14 @@ def render_install_button() -> None:
         f"""
         <div style="margin-top: 1rem; text-align: center;">
             <button id="pwa-install-btn" class="install-btn">
-                <i class="fa-solid fa-download" style="margin-right: 8px;"></i>
+                <i class="fa-solid fa-mobile-screen-button" style="margin-right: 8px;"></i>
                 {t("mobile_install")}
             </button>
             <div id="install-help-ios" style="display:none; font-size: 0.9rem; color: #64748b; margin-top: 12px; padding: 12px; background: rgba(56, 189, 248, 0.1); border-radius: 12px; border: 1px dashed #0ea5e9;">
                 <i class="fa-solid fa-share-from-square"></i> {t("mobile_install_help_ios") if "mobile_install_help_ios" in LANGUAGES[st.session_state.lang] else "Tap Share and 'Add to Home Screen'"}
             </div>
-            <div id="install-help-generic" style="display:none; font-size: 0.8rem; color: #64748b; margin-top: 8px;">
-                {t("mobile_install_help")}
+            <div id="install-help-generic" style="display:none; font-size: 0.8rem; color: #64748b; margin-top: 8px; padding: 10px;">
+                <i class="fa-solid fa-circle-info"></i> {t("mobile_install_help")}
             </div>
         </div>
         <script>
@@ -304,7 +283,6 @@ def render_install_button() -> None:
                         if (!p) {{
                             console.log("Install prompt not available (deferredPrompt is null)");
                             if (helpGeneric) helpGeneric.style.display = "block";
-                            // Try to trigger built-in browser prompt if possible
                             return;
                         }}
                         

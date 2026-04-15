@@ -59,6 +59,8 @@ def get_theme_css(dark_mode: bool) -> str:
             visibility: hidden !important;
             z-index: -1 !important;
             display: block !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
         }}
         .main-title {{
             font-size: 1.6rem !important;
