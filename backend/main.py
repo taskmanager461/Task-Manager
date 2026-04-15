@@ -18,6 +18,19 @@ def get_origins():
 
 app = FastAPI(title=settings.app_name, version=settings.app_version, docs_url="/docs", redoc_url="/redoc")
 
+# --- DATABASE CLEANUP LOGIC FOR FREE TIER ---
+import os
+from sqlalchemy import text
+if os.getenv("CLEANUP_DATABASE") == "true":
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("TRUNCATE TABLE users, tasks, daily_scores RESTART IDENTITY CASCADE;"))
+            conn.commit()
+            print("✅ DATABASE CLEANED SUCCESSFULLY")
+    except Exception as e:
+        print(f"❌ CLEANUP FAILED: {e}")
+# --------------------------------------------
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=get_origins(),
