@@ -157,11 +157,24 @@ def inject_pwa_support() -> None:
             });
           }
 
+          // PWA Install Prompt Logic
           window.parent.deferredPrompt = null;
           window.parent.addEventListener("beforeinstallprompt", function (e) {
             e.preventDefault();
             window.parent.deferredPrompt = e;
             console.log("Install prompt captured");
+            // Notify Streamlit if needed
+          });
+
+          // Bottom Nav Communication
+          window.addEventListener("message", (event) => {
+            if (event.data.type === "change_menu") {
+              const menuName = event.data.menu;
+              // Find the sidebar button and click it
+              const buttons = Array.from(window.parent.document.querySelectorAll('button[kind="secondary"], button[kind="primary"]'));
+              const targetBtn = buttons.find(b => b.innerText.toLowerCase().includes(menuName.toLowerCase()) || b.id.includes(menuName));
+              if (targetBtn) targetBtn.click();
+            }
           });
         })();
         </script>
@@ -171,33 +184,77 @@ def inject_pwa_support() -> None:
     )
 
 
-def render_install_button() -> None:
-    st.caption(t("mobile_install_help"))
+def render_bottom_nav() -> None:
+    active_menu = st.session_state.menu
+    
+    # Define icons for each menu item
+    icons = {
+        "dashboard": "fa-solid fa-house",
+        "tasks": "fa-solid fa-list-check",
+        "weekly": "fa-solid fa-chart-line",
+        "notifications": "fa-solid fa-bell",
+        "settings": "fa-solid fa-user-gear"
+    }
+    
+    items_html = ""
+    for key, menu_key in MENU.items():
+        is_active = "active" if active_menu == key else ""
+        label = t(menu_key)
+        icon = icons.get(key, "fa-solid fa-circle")
+        items_html += f"""
+        <div class="nav-item {is_active}" onclick="window.parent.postMessage({{type: 'change_menu', menu: '{label}'}}, '*')">
+            <i class="{icon}"></i>
+            <span>{label}</span>
+        </div>
+        """
+
     components.html(
         f"""
-        <div style="padding-top:4px;">
-          <button id="install-app-btn" style="
-            border: none;
-            border-radius: 10px;
-            padding: 8px 14px;
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            background: linear-gradient(120deg, #2563eb, #0891b2);
-          ">{t("mobile_install")}</button>
-        </div>
         <script>
-          const btn = document.getElementById("install-app-btn");
-          btn.onclick = async function () {{
-            const p = window.parent && window.parent.deferredPrompt;
-            if (!p) return;
-            p.prompt();
-            await p.userChoice;
-            window.parent.deferredPrompt = null;
-          }};
+        (function() {{
+            const doc = window.parent.document;
+            let nav = doc.querySelector('.bottom-nav');
+            if (!nav) {{
+                nav = doc.createElement('div');
+                nav.className = 'bottom-nav';
+                doc.body.appendChild(nav);
+            }}
+            nav.innerHTML = `{items_html}`;
+        }})();
         </script>
         """,
-        height=56,
+        height=0,
+        width=0,
+    )
+
+
+def render_install_button() -> None:
+    st.markdown(
+        f"""
+        <div style="margin-top: 1rem;">
+            <button id="pwa-install-btn" class="install-btn">
+                <i class="fa-solid fa-download" style="margin-right: 8px;"></i>
+                {t("mobile_install")}
+            </button>
+        </div>
+        <script>
+            const btn = window.parent.document.getElementById("pwa-install-btn") || document.getElementById("pwa-install-btn");
+            if (btn) {{
+                btn.onclick = async function () {{
+                    const p = window.parent && window.parent.deferredPrompt;
+                    if (!p) {{
+                        alert("{t('mobile_install_help')}");
+                        return;
+                    }}
+                    p.prompt();
+                    const {{ outcome }} = await p.userChoice;
+                    console.log("User response to install prompt:", outcome);
+                    window.parent.deferredPrompt = null;
+                }};
+            }}
+        </script>
+        """,
+        unsafe_allow_html=True,
     )
 
 
@@ -679,6 +736,30 @@ def settings_page() -> None:
     with col2:
         metric_card("🆔", t("username"), st.session_state.username or "-")
 
+    st.markdown(f"<div class='section-title'>{t('preferences')}</div>", unsafe_allow_html=True)
+    c1, c2 = st.columns(2)
+    with c1:
+        selected_dark = st.toggle(t("dark_mode"), value=st.session_state.dark_mode, key="settings_dark_mode")
+        if selected_dark != st.session_state.dark_mode:
+            st.session_state.dark_mode = selected_dark
+            st.toast(t("theme_updated"))
+            st.rerun()
+    with c2:
+        selected_language = st.selectbox(
+            t("language"),
+            list(LANGUAGES.keys()),
+            index=list(LANGUAGES.keys()).index(st.session_state["lang"]),
+            format_func=lambda code: LANGUAGES[code],
+            key="settings_language",
+        )
+        if selected_language != st.session_state["lang"]:
+            st.session_state["lang"] = selected_language
+            st.toast(t("language_updated"))
+            st.rerun()
+
+    st.markdown(f"<div class='section-title'>{t('app_management')}</div>", unsafe_allow_html=True)
+    render_install_button()
+
     st.markdown(f"<div class='section-title'>{t('account')}</div>", unsafe_allow_html=True)
     if st.button(t("logout"), type="primary"):
         st.session_state.user_id = None
@@ -702,6 +783,7 @@ def main() -> None:
         render_auth(client)
         return
 
+    render_bottom_nav()
     render_top_header()
     user_id = int(st.session_state.user_id)
     if st.session_state.menu == "dashboard":

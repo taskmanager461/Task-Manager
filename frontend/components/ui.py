@@ -58,16 +58,41 @@ def task_card(task: dict, labels: dict[str, str]) -> None:
     status_value = labels.get(status, status)
     unknown_title = labels["unknown_title"]
     uncategorized = labels["uncategorized"]
-    status_class = f"status-{status}"
-    badge_status_class = f"badge-status-{status}"
+    
+    # Status-specific icons and colors
+    status_icon = {
+        "completed": "fa-solid fa-circle-check",
+        "failed": "fa-solid fa-circle-xmark",
+        "pending": "fa-solid fa-clock"
+    }.get(status, "fa-solid fa-circle-question")
+    
+    status_color = {
+        "completed": "#22c55e",
+        "failed": "#ef4444",
+        "pending": "#94a3b8"
+    }.get(status, "#94a3b8")
+
     st.markdown(
         f"""
-        <div class='surface-card'>
-            <div class='task-title'>{task.get("title", unknown_title)}</div>
-            <span class='badge'>📁 {category_label}: {task.get("category", uncategorized)}</span>
-            <span class='badge badge-difficulty-{difficulty}'>⚡ {difficulty_label}: {difficulty_value}</span>
-            <span class='badge {badge_status_class}'>● {status_value}</span>
-            <div class='task-status {status_class}'>{status_label}: {status_value}</div>
+        <div class='surface-card' style='margin-bottom: 1.5rem;'>
+            <div style='display: flex; justify-content: space-between; align-items: flex-start;'>
+                <div class='task-info'>
+                    <div class='task-title'>{task.get("title", unknown_title)}</div>
+                    <div class='task-meta'>
+                        <span class='badge' style='background: rgba(56, 189, 248, 0.1); color: #0ea5e9;'>
+                            <i class="fa-solid fa-folder-open" style="margin-right: 5px;"></i> {task.get("category", uncategorized)}
+                        </span>
+                        <span class='badge badge-difficulty-{difficulty}'>
+                            <i class="fa-solid fa-bolt" style="margin-right: 5px;"></i> {difficulty_value}
+                        </span>
+                    </div>
+                </div>
+                <div style='text-align: right;'>
+                    <div style='color: {status_color}; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;'>
+                        <i class="{status_icon}"></i> {status_value.upper()}
+                    </div>
+                </div>
+            </div>
         </div>
         """,
         unsafe_allow_html=True,

@@ -43,26 +43,92 @@ def get_theme_css(dark_mode: bool) -> str:
         color: {c["text"]};
         font-family: "Inter", "Segoe UI", sans-serif;
     }}
-    /* Mobile Optimization & Full Screen */
+    /* Mobile Optimization & Bottom Nav */
     @media (max-width: 768px) {{
         .block-container {{
             padding-left: 0.8rem !important;
             padding-right: 0.8rem !important;
             padding-top: 1rem !important;
+            padding-bottom: 5rem !important; /* Space for bottom nav */
+        }}
+        [data-testid="stSidebar"] {{
+            display: none !important;
         }}
         .main-title {{
             font-size: 1.6rem !important;
         }}
         .metric-value {{
-            font-size: 1.5rem !important;
+            font-size: 1.8rem !important;
         }}
         .surface-card {{
-            padding: 0.8rem !important;
+            padding: 1rem !important;
+        }}
+        /* Hide sidebar completely on mobile */
+        section[data-testid="stSidebar"] {{
+            width: 0 !important;
+            visibility: hidden !important;
+            display: none !important;
+        }}
+        [data-testid="stSidebarCollapsedControl"] {{
+            display: none !important;
         }}
     }}
+    /* Bottom Navigation Bar */
+    .bottom-nav {{
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 70px;
+        background: {c["surface"]}ee; /* Semi-transparent */
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-top: 1px solid {c["border"]};
+        display: none;
+        grid-template-columns: repeat(5, 1fr);
+        z-index: 999999;
+        box-shadow: 0 -10px 30px rgba(0,0,0,0.15);
+        padding-bottom: env(safe-area-inset-bottom);
+    }}
+    @media (max-width: 768px) {{
+        .bottom-nav {{
+            display: grid;
+        }}
+    }}
+    .nav-item {{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        color: {c["muted"]};
+        text-decoration: none !important;
+        font-size: 0.75rem;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        padding: 8px 0;
+    }}
+    .nav-item:active {{
+        transform: scale(0.9);
+        background: rgba(56, 189, 248, 0.1);
+    }}
+    .nav-item.active {{
+        color: {c["accent"]};
+    }}
+    .nav-item i {{
+        font-size: 1.4rem;
+    }}
+    .nav-item span {{
+        font-family: "Inter", sans-serif;
+    }}
+
+    /* Professional UI Refinement */
     .block-container {{
-        padding-top: 1.2rem;
-        padding-bottom: 1.4rem;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
         max-width: 1200px;
     }}
     [data-testid="stSidebar"] {{
@@ -76,263 +142,185 @@ def get_theme_css(dark_mode: bool) -> str:
         background: transparent;
     }}
     .main-title {{
-        font-size: 2.05rem;
-        font-weight: 800;
-        margin-bottom: 0.2rem;
-        letter-spacing: -0.01em;
+        font-size: 2.8rem;
+        font-weight: 900;
+        margin-bottom: 0.4rem;
+        letter-spacing: -0.04em;
+        background: linear-gradient(135deg, {c["text"]}, {c["accent"]});
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }}
     .main-subtitle {{
         color: {c["muted"]};
-        margin-bottom: 1rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        font-size: 1.1rem;
     }}
     .section-title {{
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin-top: 0.4rem;
-        margin-bottom: 0.8rem;
+        font-size: 1.6rem;
+        font-weight: 800;
+        margin-top: 1.2rem;
+        margin-bottom: 1.2rem;
+        letter-spacing: -0.02em;
+        color: {c["text"]};
     }}
     .surface-card {{
         background: {c["surface"]};
         border: 1px solid {c["border"]};
-        border-radius: 16px;
-        padding: 1rem 1rem;
+        border-radius: 24px;
+        padding: 1.5rem;
         box-shadow: {c["shadow"]};
-        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-        animation: fadeIn 220ms ease-in-out;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        animation: fadeIn 400ms ease-out;
+        position: relative;
+        overflow: hidden;
+    }}
+    .surface-card::after {{
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
+        pointer-events: none;
     }}
     .surface-card:hover {{
-        transform: translateY(-2px);
+        transform: translateY(-6px);
         border-color: {c["accent"]};
+        box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+    }}
+    /* Pro Metric Styles */
+    .metric-card {{
+        background: linear-gradient(145deg, {c["surface"]}, {c["surface_soft"]});
+        border-radius: 24px;
+        padding: 1.8rem;
+        border: 1px solid {c["border"]};
     }}
     .metric-icon {{
-        font-size: 1.2rem;
-        opacity: 0.95;
+        font-size: 1.8rem;
+        margin-bottom: 0.8rem;
+        padding: 12px;
+        background: rgba(56, 189, 248, 0.15);
+        border-radius: 16px;
+        display: inline-block;
     }}
     .metric-label {{
-        font-size: 0.85rem;
-        font-weight: 600;
+        font-size: 0.95rem;
+        font-weight: 700;
         color: {c["muted"]};
-        margin-top: 0.45rem;
-        margin-bottom: 0.35rem;
+        margin-bottom: 0.6rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
     }}
     .metric-value {{
-        font-size: 2rem;
-        font-weight: 800;
-        line-height: 1.05;
+        font-size: 2.6rem;
+        font-weight: 900;
+        line-height: 1.1;
         color: {c["text"]};
-        letter-spacing: -0.02em;
+        letter-spacing: -0.04em;
     }}
     .metric-sub {{
-        font-size: 0.86rem;
-        color: {c["muted"]};
-        margin-top: 0.25rem;
+        font-size: 0.9rem;
+        color: {c["success"]};
+        font-weight: 700;
+        margin-top: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }}
+    /* Install Button Pro */
+    .install-btn {{
+        background: linear-gradient(135deg, {c["accent"]}, {c["accent_2"]});
+        color: white !important;
+        padding: 14px 28px;
+        border-radius: 16px;
+        font-weight: 800;
+        text-align: center;
+        cursor: pointer;
+        box-shadow: 0 12px 24px rgba(37, 99, 235, 0.25);
+        transition: all 0.3s;
+        margin: 1rem 0;
+        border: none;
+        width: 100%;
+        display: block;
+        text-decoration: none !important;
+        font-size: 1rem;
+    }}
+    .install-btn:hover {{
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(37, 99, 235, 0.35);
+    }}
+    .install-btn:active {{
+        transform: scale(0.98);
     }}
     .badge {{
-        display: inline-block;
-        border-radius: 999px;
-        padding: 0.22rem 0.68rem;
-        margin-right: 0.42rem;
-        margin-top: 0.3rem;
-        font-size: 0.72rem;
-        font-weight: 700;
-        border: 1px solid {c["border"]};
-        color: {c["text"]};
-        background: {c["surface_soft"]};
+        display: inline-flex;
+        align-items: center;
+        border-radius: 10px;
+        padding: 5px 12px;
+        font-size: 0.8rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-right: 8px;
+        margin-bottom: 8px;
     }}
     .badge-difficulty-easy {{
-        border-color: rgba(34,197,94,0.45);
-        color: {c["success"]};
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.3);
     }}
     .badge-difficulty-medium {{
-        border-color: rgba(56,189,248,0.45);
-        color: {c["accent"]};
+        background: rgba(56, 189, 248, 0.15);
+        color: #0ea5e9;
+        border: 1px solid rgba(56, 189, 248, 0.3);
     }}
     .badge-difficulty-hard {{
-        border-color: rgba(239,68,68,0.45);
-        color: {c["danger"]};
-    }}
-    .task-title {{
-        font-size: 1.05rem;
-        font-weight: 700;
-        margin-bottom: 0.45rem;
-        color: {c["text"]};
-    }}
-    .task-status {{
-        color: {c["muted"]};
-        font-size: 0.85rem;
-        margin-top: 0.5rem;
-        font-weight: 700;
-    }}
-    .task-status.status-completed {{
-        color: #22c55e;
-    }}
-    .task-status.status-failed {{
+        background: rgba(239, 68, 68, 0.15);
         color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.3);
     }}
-    .task-status.status-pending {{
-        color: {c["muted"]};
-    }}
-    .badge-status-completed {{
-        border-color: rgba(34, 197, 94, 0.5);
-        color: #22c55e;
-        background: rgba(34, 197, 94, 0.12);
-    }}
-    .badge-status-failed {{
-        border-color: rgba(239, 68, 68, 0.55);
-        color: #ef4444;
-        background: rgba(239, 68, 68, 0.12);
-    }}
-    .badge-status-pending {{
-        border-color: rgba(148, 163, 184, 0.5);
-        color: {c["muted"]};
-        background: rgba(148, 163, 184, 0.12);
-    }}
+    /* Progress Bars */
     .modern-progress-wrapper {{
-        margin-top: 0.25rem;
-        margin-bottom: 0.85rem;
+        margin: 1.5rem 0;
     }}
     .modern-progress-label {{
-        font-size: 0.86rem;
-        color: {c["muted"]};
-        margin-bottom: 0.3rem;
-        font-weight: 600;
+        font-weight: 700;
+        margin-bottom: 0.6rem;
+        font-size: 0.95rem;
     }}
     .modern-progress {{
-        width: 100%;
         height: 12px;
-        border-radius: 999px;
-        background: rgba(148, 163, 184, 0.2);
-        border: 1px solid {c["border"]};
+        background: {c["border"]};
+        border-radius: 6px;
         overflow: hidden;
     }}
     .modern-progress-fill {{
         height: 100%;
-        border-radius: 999px;
-        background: linear-gradient(90deg, {c["accent"]}, {c["accent_2"]});
-        transition: width 0.5s ease;
+        border-radius: 6px;
+        transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }}
-    .stTextInput > div > div > input,
-    .stSelectbox > div > div,
-    .stDateInput input,
-    .stTextInput textarea {{
-        background: {c["surface"]} !important;
-        color: {c["text"]} !important;
-        border: 1px solid {c["border"]} !important;
-        border-radius: 10px !important;
+    /* Modern Scrollbar */
+    ::-webkit-scrollbar {{
+        width: 10px;
     }}
-    .stToggle > label,
-    .stSelectbox label,
-    .stTextInput label,
-    .stDateInput label {{
-        color: {c["text"]} !important;
+    ::-webkit-scrollbar-track {{
+        background: {c["bg"]};
     }}
-    div[data-testid="stPlotlyChart"] {{
-        border: 1px solid {c["border"]};
-        border-radius: 14px;
-        padding: 0.2rem;
-        background: {c["surface"]};
-        box-shadow: {c["shadow"]};
-    }}
-    .table-shell {{
-        border-radius: 14px;
-        border: 1px solid {c["border"]};
-        overflow: hidden;
-    }}
-    [data-testid="stDataFrame"] {{
-        border: 1px solid {c["border"]};
-        border-radius: 14px;
-        background: {c["surface"]};
-    }}
-    .stAlert {{
-        border-radius: 12px;
-    }}
-    .stButton > button {{
+    ::-webkit-scrollbar-thumb {{
+        background: {c["border"]};
         border-radius: 10px;
-        border: 1px solid {c["border"]};
-        background: linear-gradient(135deg, {c["surface"]}, {c["surface_soft"]});
-        color: {c["text"]};
-        font-weight: 600;
-        transition: all 0.2s ease;
+        border: 2px solid {c["bg"]};
     }}
-    .stButton > button:hover {{
-        border-color: {c["accent"]};
-        transform: translateY(-1px);
-    }}
-    .stButton > button[aria-label*="✔"],
-    .stButton > button[aria-label*="Complete"],
-    .stButton > button[aria-label*="Ολοκληρωση"],
-    .stButton > button[aria-label*="Completar"],
-    .stButton > button[aria-label*="Terminer"],
-    .stButton > button[aria-label*="Erledigen"],
-    .stButton > button[aria-label*="Completare"],
-    .stButton > button[aria-label*="Concluir"] {{
-        background: linear-gradient(120deg, #22c55e, #16a34a) !important;
-        color: #ffffff !important;
-        border: none !important;
-        box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
-    }}
-    .stButton > button[aria-label*="✔"]:hover,
-    .stButton > button[aria-label*="Complete"]:hover,
-    .stButton > button[aria-label*="Ολοκληρωση"]:hover,
-    .stButton > button[aria-label*="Completar"]:hover,
-    .stButton > button[aria-label*="Terminer"]:hover,
-    .stButton > button[aria-label*="Erledigen"]:hover,
-    .stButton > button[aria-label*="Completare"]:hover,
-    .stButton > button[aria-label*="Concluir"]:hover {{
-        background: linear-gradient(120deg, #16a34a, #15803d) !important;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(34, 197, 94, 0.4);
-    }}
-    .stButton > button[aria-label*="❌"],
-    .stButton > button[aria-label*="Fail"],
-    .stButton > button[aria-label*="Αποτυχια"],
-    .stButton > button[aria-label*="Fallo"],
-    .stButton > button[aria-label*="Echec"],
-    .stButton > button[aria-label*="Fehler"],
-    .stButton > button[aria-label*="Errore"],
-    .stButton > button[aria-label*="Falha"] {{
-        background: linear-gradient(120deg, #ef4444, #dc2626) !important;
-        color: #ffffff !important;
-        border: none !important;
-        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-    }}
-    .stButton > button[aria-label*="❌"]:hover,
-    .stButton > button[aria-label*="Fail"]:hover,
-    .stButton > button[aria-label*="Αποτυχια"]:hover,
-    .stButton > button[aria-label*="Fallo"]:hover,
-    .stButton > button[aria-label*="Echec"]:hover,
-    .stButton > button[aria-label*="Fehler"]:hover,
-    .stButton > button[aria-label*="Errore"]:hover,
-    .stButton > button[aria-label*="Falha"]:hover {{
-        background: linear-gradient(120deg, #dc2626, #b91c1c) !important;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(239, 68, 68, 0.4);
-    }}
-    .stButton > button:focus {{
-        box-shadow: 0 0 0 0.2rem rgba(56, 189, 248, 0.28);
-    }}
-    .stButton > button[kind="primary"] {{
-        background: linear-gradient(120deg, {c["accent"]}, {c["accent_2"]});
-        color: #ffffff;
-        border: none;
-    }}
-    .nav-item {{
-        border: 1px solid {c["border"]};
-        border-radius: 10px;
-        padding: 0.45rem 0.65rem;
-        margin-bottom: 0.45rem;
-        background: {c["surface_soft"]};
-        font-size: 0.9rem;
-        color: {c["muted"]};
-    }}
-    .nav-active {{
-        background: linear-gradient(120deg, {c["accent"]}, {c["accent_2"]});
-        color: #ffffff;
-        border-color: transparent;
+    ::-webkit-scrollbar-thumb:hover {{
+        background: {c["muted"]};
     }}
     @keyframes fadeIn {{
-        from {{ opacity: 0; transform: translateY(4px); }}
+        from {{ opacity: 0; transform: translateY(15px); }}
         to {{ opacity: 1; transform: translateY(0px); }}
     }}
     </style>
+    <!-- Add FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     """
