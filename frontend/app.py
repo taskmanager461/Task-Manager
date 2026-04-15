@@ -167,15 +167,44 @@ def inject_pwa_support() -> None:
           });
 
           // Bottom Nav Communication
-          window.addEventListener("message", (event) => {
-            if (event.data.type === "change_menu") {
-              const menuName = event.data.menu;
-              // Find the sidebar button and click it
-              const buttons = Array.from(window.parent.document.querySelectorAll('button[kind="secondary"], button[kind="primary"]'));
-              const targetBtn = buttons.find(b => b.innerText.toLowerCase().includes(menuName.toLowerCase()) || b.id.includes(menuName));
-              if (targetBtn) targetBtn.click();
-            }
-          });
+          if (!window.parent._task_manager_listener_set) {
+            window.parent._task_manager_listener_set = true;
+            window.parent.addEventListener("message", (event) => {
+              if (event.data.type === "change_menu") {
+                const menuLabel = event.data.menu;
+                console.log("Request to change menu to:", menuLabel);
+                
+                // Try to find the sidebar button in various containers
+                const selectors = [
+                  '[data-testid="stSidebar"] button',
+                  '[data-testid="stSidebarNav"] button',
+                  'section[data-testid="stSidebar"] button',
+                  '.st-emotion-cache-16idsys button' // fallback for common streamlit cache class
+                ];
+                
+                let targetBtn = null;
+                for (const selector of selectors) {
+                  const buttons = Array.from(window.parent.document.querySelectorAll(selector));
+                  targetBtn = buttons.find(b => {
+                     const text = b.innerText.toLowerCase().trim();
+                     return text === menuLabel.toLowerCase().trim();
+                  });
+                  if (targetBtn) break;
+                }
+                
+                if (targetBtn) {
+                  console.log("Clicking button for:", menuLabel);
+                  targetBtn.click();
+                } else {
+                  console.error("Button not found for:", menuLabel, "Trying global search...");
+                  // Last resort: search ALL buttons in the parent document
+                  const allButtons = Array.from(window.parent.document.querySelectorAll('button'));
+                  targetBtn = allButtons.find(b => b.innerText.toLowerCase().trim() === menuLabel.toLowerCase().trim());
+                  if (targetBtn) targetBtn.click();
+                }
+              }
+            });
+          }
         })();
         </script>
         """,
@@ -201,6 +230,7 @@ def render_bottom_nav() -> None:
         is_active = "active" if active_menu == key else ""
         label = t(menu_key)
         icon = icons.get(key, "fa-solid fa-circle")
+        # Important: the menu name sent here MUST match the button text in sidebar
         items_html += f"""
         <div class="nav-item {is_active}" onclick="window.parent.postMessage({{type: 'change_menu', menu: '{label}'}}, '*')">
             <i class="{icon}"></i>
@@ -220,6 +250,9 @@ def render_bottom_nav() -> None:
                 doc.body.appendChild(nav);
             }}
             nav.innerHTML = `{items_html}`;
+            
+            // Re-apply active class based on items_html
+            // The active state is already handled by Streamlit rerun
         }})();
         </script>
         """,
@@ -231,27 +264,61 @@ def render_bottom_nav() -> None:
 def render_install_button() -> None:
     st.markdown(
         f"""
-        <div style="margin-top: 1rem;">
+        <div style="margin-top: 1rem; text-align: center;">
             <button id="pwa-install-btn" class="install-btn">
                 <i class="fa-solid fa-download" style="margin-right: 8px;"></i>
                 {t("mobile_install")}
             </button>
+            <div id="install-help-ios" style="display:none; font-size: 0.9rem; color: #64748b; margin-top: 12px; padding: 12px; background: rgba(56, 189, 248, 0.1); border-radius: 12px; border: 1px dashed #0ea5e9;">
+                <i class="fa-solid fa-share-from-square"></i> {t("mobile_install_help_ios") if "mobile_install_help_ios" in LANGUAGES[st.session_state.lang] else "Tap Share and 'Add to Home Screen'"}
+            </div>
+            <div id="install-help-generic" style="display:none; font-size: 0.8rem; color: #64748b; margin-top: 8px;">
+                {t("mobile_install_help")}
+            </div>
         </div>
         <script>
-            const btn = window.parent.document.getElementById("pwa-install-btn") || document.getElementById("pwa-install-btn");
-            if (btn) {{
-                btn.onclick = async function () {{
-                    const p = window.parent && window.parent.deferredPrompt;
-                    if (!p) {{
-                        alert("{t('mobile_install_help')}");
-                        return;
-                    }}
-                    p.prompt();
-                    const {{ outcome }} = await p.userChoice;
-                    console.log("User response to install prompt:", outcome);
-                    window.parent.deferredPrompt = null;
-                }};
-            }}
+            (function() {{
+                const doc = window.parent.document;
+                const btn = doc.getElementById("pwa-install-btn") || document.getElementById("pwa-install-btn");
+                const helpIos = doc.getElementById("install-help-ios") || document.getElementById("install-help-ios");
+                const helpGeneric = doc.getElementById("install-help-generic") || document.getElementById("install-help-generic");
+                
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+                if (isStandalone) {{
+                    if (btn) btn.style.display = "none";
+                    return;
+                }}
+
+                if (btn) {{
+                    btn.onclick = async function () {{
+                        console.log("Install button clicked");
+                        const p = window.parent && window.parent.deferredPrompt;
+                        
+                        if (isIOS) {{
+                            if (helpIos) helpIos.style.display = "block";
+                            return;
+                        }}
+
+                        if (!p) {{
+                            console.log("Install prompt not available (deferredPrompt is null)");
+                            if (helpGeneric) helpGeneric.style.display = "block";
+                            // Try to trigger built-in browser prompt if possible
+                            return;
+                        }}
+                        
+                        try {{
+                            p.prompt();
+                            const {{ outcome }} = await p.userChoice;
+                            console.log("User response to install prompt:", outcome);
+                            window.parent.deferredPrompt = null;
+                        }} catch (err) {{
+                            console.error("Error during installation:", err);
+                        }}
+                    }};
+                }}
+            }})();
         </script>
         """,
         unsafe_allow_html=True,

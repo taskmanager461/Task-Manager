@@ -51,8 +51,14 @@ def get_theme_css(dark_mode: bool) -> str:
             padding-top: 1rem !important;
             padding-bottom: 5rem !important; /* Space for bottom nav */
         }}
-        [data-testid="stSidebar"] {{
-            display: none !important;
+        /* Hide sidebar from view on mobile, but keep it in DOM for JS interactions */
+        section[data-testid="stSidebar"] {{
+            position: fixed !important;
+            left: -100% !important;
+            width: 0 !important;
+            visibility: hidden !important;
+            z-index: -1 !important;
+            display: block !important;
         }}
         .main-title {{
             font-size: 1.6rem !important;
@@ -62,12 +68,6 @@ def get_theme_css(dark_mode: bool) -> str:
         }}
         .surface-card {{
             padding: 1rem !important;
-        }}
-        /* Hide sidebar completely on mobile */
-        section[data-testid="stSidebar"] {{
-            width: 0 !important;
-            visibility: hidden !important;
-            display: none !important;
         }}
         [data-testid="stSidebarCollapsedControl"] {{
             display: none !important;
