@@ -197,10 +197,21 @@ def inject_pwa_support() -> None:
               if (event.data.type === "change_menu_url") {{
                 const menuKey = event.data.menu;
                 console.log("Navigating to menu:", menuKey);
+                
+                // Visual feedback: show loading or active state immediately if possible
+                const doc = window.parent.document;
+                const items = doc.querySelectorAll('.nav-item');
+                items.forEach(item => {{
+                  item.classList.remove('active');
+                  if (item.getAttribute('onclick') && item.getAttribute('onclick').includes(menuKey)) {{
+                    item.classList.add('active');
+                  }}
+                }});
+
                 const url = new URL(window.parent.location.href);
                 url.searchParams.set("menu", menuKey);
                 window.parent.history.pushState({{}}, "", url);
-                window.parent.location.reload(); // Force reload to apply new menu from query params
+                window.parent.location.reload(); 
               }}
             }});
           }}

@@ -4,18 +4,18 @@ from __future__ import annotations
 def get_theme_tokens(dark_mode: bool) -> dict[str, str]:
     if dark_mode:
         return {
-            "bg": "#0f172a",
-            "surface": "#1e293b",
-            "surface_soft": "#273449",
-            "sidebar": "#111827",
-            "text": "#e2e8f0",
+            "bg": "#020617", # Deepest Blue
+            "surface": "#0f172a", # Navy Blue
+            "surface_soft": "#1e293b",
+            "sidebar": "#020617",
+            "text": "#f8fafc",
             "muted": "#94a3b8",
-            "accent": "#38bdf8",
-            "accent_2": "#22d3ee",
-            "border": "#334155",
+            "accent": "#2563eb", # Royal Blue
+            "accent_2": "#3b82f6", # Brighter Blue
+            "border": "#1e293b",
             "success": "#22c55e",
             "danger": "#ef4444",
-            "shadow": "0 18px 45px rgba(2, 6, 23, 0.42)",
+            "shadow": "0 18px 45px rgba(2, 6, 23, 0.6)",
         }
 
     return {
@@ -25,8 +25,8 @@ def get_theme_tokens(dark_mode: bool) -> dict[str, str]:
         "sidebar": "#eef2ff",
         "text": "#0f172a",
         "muted": "#64748b",
-        "accent": "#2563eb",
-        "accent_2": "#0891b2",
+        "accent": "#1e3a8a", # Navy Blue
+        "accent_2": "#2563eb", # Royal Blue
         "border": "#dbeafe",
         "success": "#16a34a",
         "danger": "#dc2626",
@@ -46,10 +46,36 @@ def get_theme_css(dark_mode: bool) -> str:
     [data-testid="stHeader"] {{background: transparent; height: 0;}}
     .stAppDeployButton {{display: none !important;}}
     
-    .stApp {{
+    .stApp {
         background: {c["bg"]};
         color: {c["text"]};
         font-family: "Inter", "Segoe UI", sans-serif;
+        overflow-x: hidden;
+    }
+    
+    /* Moving Blue Lines Background */
+    .stApp::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 100px,
+            rgba(30, 58, 138, 0.03) 100px,
+            rgba(30, 58, 138, 0.03) 101px
+        );
+        pointer-events: none;
+        z-index: 0;
+        animation: slideBackground 60s linear infinite;
+    }
+
+    @keyframes slideBackground {
+        from { background-position: 0 0; }
+        to { background-position: 1000px 1000px; }
     }}
     /* Mobile Optimization & Bottom Nav */
     @media (max-width: 768px) {{
@@ -115,15 +141,16 @@ def get_theme_css(dark_mode: bool) -> str:
         text-decoration: none !important;
         font-size: 0.75rem;
         font-weight: 600;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.2s ease-in-out;
         cursor: pointer;
         border: none;
         background: transparent;
         padding: 8px 0;
+        user-select: none;
     }}
     .nav-item:active {{
-        transform: scale(0.9);
-        background: rgba(56, 189, 248, 0.1);
+        transform: scale(0.95);
+        background: rgba(30, 58, 138, 0.15);
     }}
     .nav-item.active {{
         color: {c["accent"]};
