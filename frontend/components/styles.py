@@ -54,7 +54,7 @@ def get_theme_css(dark_mode: bool) -> str:
     }
     
     /* Moving Blue Lines Background */
-    .stApp::before {
+    .stApp::before {{
         content: "";
         position: fixed;
         top: 0;
@@ -71,11 +71,11 @@ def get_theme_css(dark_mode: bool) -> str:
         pointer-events: none;
         z-index: 0;
         animation: slideBackground 60s linear infinite;
-    }
+    }}
 
-    @keyframes slideBackground {
-        from { background-position: 0 0; }
-        to { background-position: 1000px 1000px; }
+    @keyframes slideBackground {{
+        from {{ background-position: 0 0; }}
+        to {{ background-position: 1000px 1000px; }}
     }}
     /* Mobile Optimization & Bottom Nav */
     @media (max-width: 768px) {{
