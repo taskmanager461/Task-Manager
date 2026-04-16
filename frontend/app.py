@@ -298,13 +298,13 @@ def render_install_button() -> None:
         f"""
         <div style="margin-top: 1rem; text-align: center;">
             <button id="pwa-install-btn" class="install-btn">
-                <i class="fa-solid fa-mobile-screen-button" style="margin-right: 8px;"></i>
+                <i class="fa-solid fa-cloud-arrow-down" style="margin-right: 12px;"></i>
                 {t("mobile_install")}
             </button>
-            <div id="install-help-ios" style="display:none; font-size: 0.9rem; color: #64748b; margin-top: 12px; padding: 12px; background: rgba(56, 189, 248, 0.1); border-radius: 12px; border: 1px dashed #0ea5e9;">
+            <div id="install-help-ios" style="display:none; font-size: 1rem; color: #ffffff; margin-top: 15px; padding: 20px; background: rgba(255, 255, 255, 0.1); border-radius: 20px; border: 1px dashed #ffffff;">
                 <i class="fa-solid fa-share-from-square"></i> {t("mobile_install_help_ios") if "mobile_install_help_ios" in LANGUAGES[st.session_state.lang] else "Tap Share and 'Add to Home Screen'"}
             </div>
-            <div id="install-help-generic" style="display:none; font-size: 0.8rem; color: #64748b; margin-top: 8px; padding: 10px;">
+            <div id="install-help-generic" style="display:none; font-size: 0.9rem; color: #94a3b8; margin-top: 10px; padding: 15px;">
                 <i class="fa-solid fa-circle-info"></i> {t("mobile_install_help")}
             </div>
         </div>
@@ -325,28 +325,29 @@ def render_install_button() -> None:
 
                 if (btn) {{
                     btn.onclick = async function () {{
-                        console.log("Install button clicked");
-                        const p = window.parent && window.parent.deferredPrompt;
+                        console.log("Install click");
                         
                         if (isIOS) {{
                             if (helpIos) helpIos.style.display = "block";
                             return;
                         }}
 
-                        if (!p) {{
-                            console.log("Install prompt not available (deferredPrompt is null)");
-                            if (helpGeneric) helpGeneric.style.display = "block";
-                            return;
+                        // Try standard PWA prompt
+                        const p = window.parent && window.parent.deferredPrompt;
+                        if (p) {{
+                            try {{
+                                p.prompt();
+                                const {{ outcome }} = await p.userChoice;
+                                console.log("User choice:", outcome);
+                                window.parent.deferredPrompt = null;
+                                return;
+                            }} catch (err) {{
+                                console.error("Prompt error:", err);
+                            }}
                         }}
-                        
-                        try {{
-                            p.prompt();
-                            const {{ outcome }} = await p.userChoice;
-                            console.log("User response to install prompt:", outcome);
-                            window.parent.deferredPrompt = null;
-                        }} catch (err) {{
-                            console.error("Error during installation:", err);
-                        }}
+
+                        // FALLBACK: If prompt is not available, show generic help
+                        if (helpGeneric) helpGeneric.style.display = "block";
                     }};
                 }}
             }})();
