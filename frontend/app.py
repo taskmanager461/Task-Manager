@@ -128,6 +128,25 @@ def inject_pwa_support() -> None:
           const doc = window.parent.document;
           if (!doc) return;
 
+          // SEO and Professional Branding
+          if (doc.title !== "Task Manager") {{
+            doc.title = "Task Manager - Your Consistency Engine";
+          }}
+          
+          if (!doc.querySelector('meta[name="description"]')) {{
+            const meta = doc.createElement("meta");
+            meta.name = "description";
+            meta.content = "Task Manager - Μια εφαρμογή συνέπειας για τις υποσχέσεις που δίνετε στον εαυτό σας. Παρακολουθήστε το trust score σας καθημερινά.";
+            doc.head.appendChild(meta);
+          }}
+
+          if (!doc.querySelector('meta[name="keywords"]')) {{
+            const meta = doc.createElement("meta");
+            meta.name = "keywords";
+            meta.content = "task manager, self trust score, habits, productivity, consistency, εφαρμογή παραγωγικότητας";
+            doc.head.appendChild(meta);
+          }}
+          
           // Add Meta tags for mobile
           if (!doc.querySelector('meta[name="apple-mobile-web-app-capable"]')) {{
             const m1 = doc.createElement("meta");

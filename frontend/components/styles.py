@@ -38,7 +38,15 @@ def get_theme_css(dark_mode: bool) -> str:
     c = get_theme_tokens(dark_mode)
     return f"""
     <style>
-    .stApp {{
+    /* Hide Streamlit elements to make it look like a normal site */
+    #MainMenu {visibility: hidden;}
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+    div[data-testid="stStatusWidget"] {visibility: hidden;}
+    [data-testid="stHeader"] {background: transparent; height: 0;}
+    .stAppDeployButton {display: none !important;}
+    
+    .stApp {
         background: {c["bg"]};
         color: {c["text"]};
         font-family: "Inter", "Segoe UI", sans-serif;
