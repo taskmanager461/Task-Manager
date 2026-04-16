@@ -255,9 +255,13 @@ def inject_pwa_support() -> None:
           // PWA Install Capture
           window.parent.deferredPrompt = null;
           window.parent.addEventListener("beforeinstallprompt", function (e) {{
+            console.log("SUCCESS: beforeinstallprompt event fired!");
             e.preventDefault();
             window.parent.deferredPrompt = e;
-            console.log("Install prompt captured");
+            
+            // Dispatch a custom event to notify Streamlit component if it's already rendered
+            const event = new CustomEvent('pwa-prompt-ready');
+            window.parent.dispatchEvent(event);
           }});
 
           // SPEED OPTIMIZATION: Instant Navigation
@@ -324,6 +328,12 @@ def render_install_button() -> None:
                 }}
 
                 if (btn) {{
+                    // Update UI if prompt arrives late
+                    window.parent.addEventListener('pwa-prompt-ready', () => {{
+                        console.log("UI: PWA prompt is now ready!");
+                        if (helpGeneric) helpGeneric.style.display = "none";
+                    }});
+
                     btn.onclick = async function () {{
                         console.log("Install click");
                         

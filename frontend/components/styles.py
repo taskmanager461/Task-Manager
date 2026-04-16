@@ -2,20 +2,20 @@ from __future__ import annotations
 
 
 def get_theme_tokens(dark_mode: bool) -> dict[str, str]:
-    # Fixed Deep Blue & White palette
+    # 65% White, 35% Dark Blue balance
     return {
-        "bg": "#020617", # Deepest Navy
-        "surface": "#0f172a", # Navy Blue
-        "surface_soft": "#1e293b",
-        "sidebar": "#020617",
-        "text": "#ffffff", # Pure White
-        "muted": "#94a3b8",
-        "accent": "#ffffff", # White for accent in menu
-        "accent_2": "#3b82f6", # Blue for progress/links
-        "border": "#1e293b",
+        "bg": "#ffffff", # Main background is now White
+        "surface": "#f1f5f9", # Light gray/white surface
+        "surface_soft": "#e2e8f0",
+        "sidebar": "#ffffff",
+        "text": "#020617", # Text is now Deepest Navy
+        "muted": "#64748b",
+        "accent": "#020617", # Accent is now Deep Navy
+        "accent_2": "#2563eb", # Royal Blue for progress
+        "border": "#e2e8f0",
         "success": "#22c55e",
         "danger": "#ef4444",
-        "shadow": "0 20px 50px rgba(0, 0, 0, 0.8)",
+        "shadow": "0 10px 30px rgba(2, 6, 23, 0.1)",
     }
 
 
@@ -42,7 +42,7 @@ def get_theme_css(dark_mode: bool) -> str:
         overflow-x: hidden;
     }}
     
-    /* FREE MOVING THICK LINES BACKGROUND */
+    /* FREE MOVING THICK LINES BACKGROUND - Dark Blue Lines on White */
     .stApp::before {{
         content: "";
         position: fixed;
@@ -51,9 +51,9 @@ def get_theme_css(dark_mode: bool) -> str:
         width: 100%;
         height: 100%;
         background: 
-            linear-gradient(110deg, transparent 40%, rgba(59, 130, 246, 0.08) 40%, rgba(59, 130, 246, 0.08) 42%, transparent 42%),
-            linear-gradient(200deg, transparent 20%, rgba(59, 130, 246, 0.05) 20%, rgba(59, 130, 246, 0.05) 23%, transparent 23%),
-            linear-gradient(320deg, transparent 70%, rgba(59, 130, 246, 0.07) 70%, rgba(59, 130, 246, 0.07) 74%, transparent 74%);
+            linear-gradient(110deg, transparent 40%, rgba(2, 6, 23, 0.04) 40%, rgba(2, 6, 23, 0.04) 42%, transparent 42%),
+            linear-gradient(200deg, transparent 20%, rgba(2, 6, 23, 0.03) 20%, rgba(2, 6, 23, 0.03) 23%, transparent 23%),
+            linear-gradient(320deg, transparent 70%, rgba(2, 6, 23, 0.04) 70%, rgba(2, 6, 23, 0.04) 74%, transparent 74%);
         background-size: 200% 200%;
         pointer-events: none;
         z-index: 0;
@@ -83,22 +83,22 @@ def get_theme_css(dark_mode: bool) -> str:
             opacity: 0 !important;
             pointer-events: none !important;
         }}
-        .main-title {{ font-size: 2rem !important; }}
+        .main-title {{ font-size: 2.2rem !important; }}
     }}
 
-    /* DEEP BLUE & WHITE BOTTOM NAV */
+    /* WHITE & DEEP BLUE BOTTOM NAV */
     .bottom-nav {{
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
         height: 80px;
-        background: #020617; /* Absolute Deep Blue */
-        border-top: 2px solid rgba(255, 255, 255, 0.1);
+        background: #ffffff; /* White Background (65%) */
+        border-top: 2px solid #e2e8f0;
         display: none;
         grid-template-columns: repeat(5, 1fr);
         z-index: 999999;
-        box-shadow: 0 -15px 40px rgba(0,0,0,0.6);
+        box-shadow: 0 -10px 30px rgba(0,0,0,0.05);
         padding-bottom: env(safe-area-inset-bottom);
     }}
     @media (max-width: 768px) {{ .bottom-nav {{ display: grid; }} }}
@@ -109,7 +109,7 @@ def get_theme_css(dark_mode: bool) -> str:
         align-items: center;
         justify-content: center;
         gap: 6px;
-        color: rgba(255, 255, 255, 0.4); /* Faded White */
+        color: rgba(2, 6, 23, 0.4); /* Faded Deep Blue */
         text-decoration: none !important;
         font-size: 0.7rem;
         font-weight: 800;
@@ -121,10 +121,9 @@ def get_theme_css(dark_mode: bool) -> str:
         user-select: none;
         -webkit-tap-highlight-color: transparent;
     }}
-    .nav-item:active {{ transform: scale(0.85); }}
+    .nav-item:active {{ transform: scale(0.9); }}
     .nav-item.active {{
-        color: #ffffff !important; /* Pure White */
-        text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        color: #020617 !important; /* Deep Blue (35%) */
     }}
     .nav-item i {{ font-size: 1.6rem; }}
     .nav-item span {{ text-transform: uppercase; letter-spacing: 0.05em; }}
@@ -132,8 +131,8 @@ def get_theme_css(dark_mode: bool) -> str:
     /* Professional UI Refinement */
     .block-container {{ padding-top: 2rem; padding-bottom: 2rem; max-width: 1200px; }}
     .surface-card {{
-        background: {c["surface"]};
-        border: 1px solid {c["border"]};
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
         border-radius: 30px;
         padding: 2rem;
         box-shadow: {c["shadow"]};
@@ -141,7 +140,7 @@ def get_theme_css(dark_mode: bool) -> str:
         animation: fadeIn 0.6s ease-out;
     }}
     .surface-card:hover {{
-        border-color: rgba(255,255,255,0.2);
+        border-color: #020617;
         transform: translateY(-5px);
     }}
     
@@ -149,19 +148,19 @@ def get_theme_css(dark_mode: bool) -> str:
         font-size: 3.5rem;
         font-weight: 900;
         letter-spacing: -0.05em;
-        color: #ffffff;
+        color: #020617;
     }}
 
-    /* INSTALL BUTTON PRO - FIX */
+    /* INSTALL BUTTON PRO - DEEP BLUE */
     .install-btn {{
-        background: #ffffff; /* White background */
-        color: #020617 !important; /* Deep Blue text */
+        background: #020617; /* Deep Blue background */
+        color: #ffffff !important; /* White text */
         padding: 20px 32px;
         border-radius: 22px;
         font-weight: 900;
         text-align: center;
         cursor: pointer;
-        box-shadow: 0 15px 35px rgba(255, 255, 255, 0.15);
+        box-shadow: 0 15px 35px rgba(2, 6, 23, 0.2);
         transition: all 0.3s;
         margin: 2rem 0;
         border: none;
@@ -172,8 +171,8 @@ def get_theme_css(dark_mode: bool) -> str:
         text-transform: uppercase;
     }}
     .install-btn:hover {{
-        transform: translateY(-4px) scale(1.02);
-        box-shadow: 0 20px 45px rgba(255, 255, 255, 0.25);
+        transform: translateY(-4px);
+        box-shadow: 0 20px 45px rgba(2, 6, 23, 0.3);
     }}
 
     @keyframes fadeIn {{
