@@ -118,115 +118,45 @@ def render_top_header() -> None:
     st.markdown(f"<div class='main-subtitle'>{t('app_subtitle')}</div>", unsafe_allow_html=True)
 
 
-def inject_pwa_support() -> None:
-    api_url = st.session_state.api_url.rstrip('/')
-    components.html(
-        f"""
-        <script>
-        (function () {{
-          if (!window.parent) return;
-          const doc = window.parent.document;
-          if (!doc) return;
-
-          // SEO and Professional Branding
-          if (doc.title !== "Task Manager") {{
-            doc.title = "Task Manager - Your Consistency Engine";
-          }}
-          
-          if (!doc.querySelector('meta[name="description"]')) {{
-            const meta = doc.createElement("meta");
-            meta.name = "description";
-            meta.content = "Task Manager - Μια εφαρμογή συνέπειας για τις υποσχέσεις που δίνετε στον εαυτό σας. Παρακολουθήστε το trust score σας καθημερινά.";
-            doc.head.appendChild(meta);
-          }}
-
-          if (!doc.querySelector('meta[name="keywords"]')) {{
-            const meta = doc.createElement("meta");
-            meta.name = "keywords";
-            meta.content = "task manager, self trust score, habits, productivity, consistency, εφαρμογή παραγωγικότητας";
-            doc.head.appendChild(meta);
-          }}
-          
-          // Add Meta tags for mobile
-          if (!doc.querySelector('meta[name="apple-mobile-web-app-capable"]')) {{
-            const m1 = doc.createElement("meta");
-            m1.name = "apple-mobile-web-app-capable";
-            m1.content = "yes";
-            doc.head.appendChild(m1);
-            
-            const m2 = doc.createElement("meta");
-            m2.name = "apple-mobile-web-app-status-bar-style";
-            m2.content = "black-translucent";
-            doc.head.appendChild(m2);
-            
-            const m3 = doc.createElement("meta");
-            m3.name = "viewport";
-            m3.content = "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover";
-            doc.head.appendChild(m3);
-          }}
-
-          if (!doc.querySelector('link[rel="manifest"]')) {{
-            const link = doc.createElement("link");
-            link.rel = "manifest";
-            link.href = "{api_url}/manifest.json";
-            doc.head.appendChild(link);
-          }}
-
-          if ("serviceWorker" in navigator) {{
-            window.addEventListener('load', function() {{
-              navigator.serviceWorker.register("{api_url}/sw.js").then(function(reg) {{
-                console.log('ServiceWorker registration successful');
-              }}).catch(function(err) {{
-                console.log('ServiceWorker registration failed: ', err);
-              }});
-            }});
-          }}
-
-          // PWA Install Prompt Logic
-          window.parent.deferredPrompt = null;
-          window.parent.addEventListener("beforeinstallprompt", function (e) {{
-            e.preventDefault();
-            window.parent.deferredPrompt = e;
-            console.log("Install prompt captured");
-          }});
-
-          // Bottom Nav Communication (Alternative via URL)
-          if (!window.parent._task_manager_listener_set) {{
-            window.parent._task_manager_listener_set = true;
-            window.parent.addEventListener("message", (event) => {{
-              if (event.data.type === "change_menu_url") {{
-                const menuKey = event.data.menu;
-                console.log("Navigating to menu:", menuKey);
-                
-                // Visual feedback: show loading or active state immediately if possible
-                const doc = window.parent.document;
-                const items = doc.querySelectorAll('.nav-item');
-                items.forEach(item => {{
-                  item.classList.remove('active');
-                  if (item.getAttribute('onclick') && item.getAttribute('onclick').includes(menuKey)) {{
-                    item.classList.add('active');
-                  }}
-                }});
-
-                const url = new URL(window.parent.location.href);
-                url.searchParams.set("menu", menuKey);
-                window.parent.history.pushState({{}}, "", url);
-                window.parent.location.reload(); 
-              }}
-            }});
-          }}
-        }})();
-        </script>
-        """,
-        height=0,
-        width=0,
-    )
-
+def render_sidebar() -> None:
+    with st.sidebar:
+        st.markdown(
+            f"""
+            <div style="text-align: center; padding: 1rem 0;">
+                <h2 style="margin:0; font-size: 1.5rem;">{t("app_title")}</h2>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        
+        # Hidden Navigation Radio for Bottom Nav Speed
+        # The key is "menu" so it directly updates st.session_state.menu
+        st.markdown('<div class="hidden-nav-container">', unsafe_allow_html=True)
+        st.radio(
+            "Navigation",
+            options=list(MENU.keys()),
+            format_func=lambda x: t(MENU[x]),
+            key="menu",
+            label_visibility="collapsed"
+        )
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        st.divider()
+        
+        if st.session_state.username:
+            st.write(f"👤 {st.session_state.name or st.session_state.username}")
+            if st.button(t("nav_logout"), use_container_width=True, type="secondary"):
+                st.session_state.user_id = None
+                st.session_state.username = ""
+                st.session_state.access_token = ""
+                st.rerun()
+        
+        st.divider()
+        render_install_button()
 
 def render_bottom_nav() -> None:
     active_menu = st.session_state.menu
     
-    # Define icons for each menu item
     icons = {
         "dashboard": "fa-solid fa-house",
         "tasks": "fa-solid fa-list-check",
@@ -236,17 +166,21 @@ def render_bottom_nav() -> None:
     }
     
     items_html = ""
-    for key, menu_key in MENU.items():
+    options = list(MENU.keys())
+    for i, key in enumerate(options):
         is_active = "active" if active_menu == key else ""
-        label = t(menu_key)
+        label = t(MENU[key])
         icon = icons.get(key, "fa-solid fa-circle")
+        
+        # JS Logic: Click the radio button label at index i in the sidebar
         items_html += f"""
-        <div class="nav-item {is_active}" onclick="window.parent.postMessage({{type: 'change_menu_url', menu: '{key}'}}, '*')">
+        <div class="nav-item {is_active}" onclick="window.parent.postMessage({{type: 'trigger_nav', index: {i}}}, '*')">
             <i class="{icon}"></i>
             <span>{label}</span>
         </div>
         """
 
+    # Direct injection into parent document for instant appearance
     components.html(
         f"""
         <script>
@@ -259,9 +193,98 @@ def render_bottom_nav() -> None:
                 doc.body.appendChild(nav);
             }}
             nav.innerHTML = `{items_html}`;
+        }})();
+        </script>
+        """,
+        height=0,
+        width=0,
+    )
+
+def inject_pwa_support() -> None:
+    api_url = st.session_state.api_url.rstrip('/')
+    components.html(
+        f"""
+        <script>
+        (function () {{
+          if (!window.parent) return;
+          const doc = window.parent.document;
+          if (!doc) return;
+
+          // Branding and Professional Meta
+          if (doc.title !== "Task Manager") {{
+            doc.title = "Task Manager - Your Consistency Engine";
+          }}
+          
+          if (!doc.querySelector('meta[name="description"]')) {{
+            const meta = doc.createElement("meta");
+            meta.name = "description";
+            meta.content = "Task Manager - Μια εφαρμογή συνέπειας για τις υποσχέσεις που δίνετε στον εαυτό σας.";
+            doc.head.appendChild(meta);
+          }}
+
+          // Meta tags for mobile/PWA
+          if (!doc.querySelector('meta[name="apple-mobile-web-app-capable"]')) {{
+            const m1 = doc.createElement("meta");
+            m1.name = "apple-mobile-web-app-capable";
+            m1.content = "yes";
+            doc.head.appendChild(m1);
             
-            // Re-apply active class based on items_html
-            // The active state is already handled by Streamlit rerun
+            const m2 = doc.createElement("meta");
+            m2.name = "apple-mobile-web-app-status-bar-style";
+            m2.content = "black-translucent";
+            doc.head.appendChild(m2);
+          }}
+
+          if (!doc.querySelector('link[rel="manifest"]')) {{
+            const link = doc.createElement("link");
+            link.rel = "manifest";
+            link.href = "{api_url}/manifest.json";
+            doc.head.appendChild(link);
+          }}
+
+          if ("serviceWorker" in navigator) {{
+            window.addEventListener('load', function() {{
+              navigator.serviceWorker.register("{api_url}/sw.js").then(function(reg) {{
+                console.log('SW registered');
+              }}).catch(function(err) {{
+                console.log('SW failed', err);
+              }});
+            }});
+          }}
+
+          // PWA Install Capture
+          window.parent.deferredPrompt = null;
+          window.parent.addEventListener("beforeinstallprompt", function (e) {{
+            e.preventDefault();
+            window.parent.deferredPrompt = e;
+            console.log("Install prompt captured");
+          }});
+
+          // SPEED OPTIMIZATION: Instant Navigation
+          if (!window.parent._task_manager_nav_set) {{
+            window.parent._task_manager_nav_set = true;
+            window.parent.addEventListener("message", (event) => {{
+              if (event.data.type === "trigger_nav") {{
+                const idx = event.data.index;
+                const doc = window.parent.document;
+                
+                // Find and click the hidden radio option in sidebar
+                // This is much faster than window.location.reload()
+                const sidebar = doc.querySelector('[data-testid="stSidebar"]');
+                if (sidebar) {{
+                    const radioLabels = sidebar.querySelectorAll('label[data-testid="stWidgetLabel"] + div div[role="radiogroup"] label');
+                    if (radioLabels && radioLabels[idx]) {{
+                        radioLabels[idx].click();
+                        
+                        // Instant visual update for the bottom nav icons
+                        const items = doc.querySelectorAll('.nav-item');
+                        items.forEach(item => item.classList.remove('active'));
+                        if (items[idx]) items[idx].classList.add('active');
+                    }}
+                }}
+              }}
+            }});
+          }}
         }})();
         </script>
         """,
@@ -846,8 +869,36 @@ def settings_page() -> None:
         st.rerun()
 
 
+def ensure_branding() -> None:
+    """Ensure TM icons exist, if not create them."""
+    icon_path = os.path.join("frontend", "static", "icon-512.png")
+    if not os.path.exists(icon_path):
+        try:
+            from PIL import Image, ImageDraw, ImageFont
+            # Deep Blue background (#020617)
+            bg_color = (2, 6, 23)
+            border_color = (248, 250, 252)
+            text_color = (15, 23, 42)
+            
+            for size in [192, 512]:
+                img = Image.new('RGB', (size, size), bg_color)
+                draw = ImageDraw.Draw(img)
+                padding = size // 6
+                box_rect = [padding, padding, size - padding, size - padding]
+                draw.rounded_rectangle(box_rect, radius=size // 10, fill=border_color)
+                
+                # Simple text if font fails
+                draw.text((size//2.5, size//3), "T\nM", fill=text_color)
+                
+                output_path = os.path.join("frontend", "static", f"icon-{size}.png")
+                os.makedirs(os.path.dirname(output_path), exist_ok=True)
+                img.save(output_path)
+        except Exception:
+            pass
+
 def main() -> None:
     init_state()
+    ensure_branding()
     st.markdown(get_theme_css(st.session_state.dark_mode), unsafe_allow_html=True)
     inject_pwa_support()
 
