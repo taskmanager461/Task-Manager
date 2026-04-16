@@ -46,12 +46,12 @@ def get_theme_css(dark_mode: bool) -> str:
     [data-testid="stHeader"] {{background: transparent; height: 0;}}
     .stAppDeployButton {{display: none !important;}}
     
-    .stApp {
+    .stApp {{
         background: {c["bg"]};
         color: {c["text"]};
         font-family: "Inter", "Segoe UI", sans-serif;
         overflow-x: hidden;
-    }
+    }}
     
     /* Moving Blue Lines Background */
     .stApp::before {{
@@ -258,13 +258,13 @@ def get_theme_css(dark_mode: bool) -> str:
         letter-spacing: -0.04em;
     }}
     .metric-sub {{
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         color: {c["success"]};
         font-weight: 700;
         margin-top: 0.8rem;
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
     }}
     /* Install Button Pro */
     .install-btn {{
