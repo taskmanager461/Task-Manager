@@ -14,7 +14,7 @@ def get_theme_tokens(dark_mode: bool) -> dict[str, str]:
         "accent_2": "#2563eb", # Royal Blue for progress
         "border": "#e2e8f0",
         "success": "#22c55e",
-        "danger": "#ef4444",
+        "danger": "#020617", # Changed from Red to Deep Navy
         "shadow": "0 10px 30px rgba(2, 6, 23, 0.1)",
     }
 
@@ -42,7 +42,7 @@ def get_theme_css(dark_mode: bool) -> str:
         overflow-x: hidden;
     }}
     
-    /* FREE MOVING THICK LINES BACKGROUND - Dark Blue Lines on White */
+    /* FREE MOVING THICK LINES BACKGROUND - Intense Dark Blue Lines */
     .stApp::before {{
         content: "";
         position: fixed;
@@ -51,9 +51,9 @@ def get_theme_css(dark_mode: bool) -> str:
         width: 100%;
         height: 100%;
         background: 
-            linear-gradient(110deg, transparent 40%, rgba(2, 6, 23, 0.04) 40%, rgba(2, 6, 23, 0.04) 42%, transparent 42%),
-            linear-gradient(200deg, transparent 20%, rgba(2, 6, 23, 0.03) 20%, rgba(2, 6, 23, 0.03) 23%, transparent 23%),
-            linear-gradient(320deg, transparent 70%, rgba(2, 6, 23, 0.04) 70%, rgba(2, 6, 23, 0.04) 74%, transparent 74%);
+            linear-gradient(110deg, transparent 40%, rgba(2, 6, 23, 0.12) 40%, rgba(2, 6, 23, 0.12) 43%, transparent 43%),
+            linear-gradient(200deg, transparent 20%, rgba(2, 6, 23, 0.1) 20%, rgba(2, 6, 23, 0.1) 24%, transparent 24%),
+            linear-gradient(320deg, transparent 70%, rgba(2, 6, 23, 0.12) 70%, rgba(2, 6, 23, 0.12) 75%, transparent 75%);
         background-size: 200% 200%;
         pointer-events: none;
         z-index: 0;
