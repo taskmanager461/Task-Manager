@@ -2,20 +2,21 @@ from __future__ import annotations
 
 
 def get_theme_tokens(dark_mode: bool) -> dict[str, str]:
-    # 65% White, 35% Dark Blue balance
+    # Strictly 65% White, 35% Deep Blue
+    # White background (65%), Deep Blue sidebar/accents (35%)
     return {
-        "bg": "#ffffff", # Main background is now White
-        "surface": "#f1f5f9", # Light gray/white surface
-        "surface_soft": "#e2e8f0",
-        "sidebar": "#ffffff",
-        "text": "#020617", # Text is now Deepest Navy
+        "bg": "#ffffff", # Pure White Main Background
+        "surface": "#ffffff", 
+        "surface_soft": "#f8fafc",
+        "sidebar": "#020617", # Deep Blue Sidebar (Part of the 35%)
+        "text": "#020617", # Deepest Navy Text
         "muted": "#64748b",
-        "accent": "#020617", # Accent is now Deep Navy
-        "accent_2": "#2563eb", # Royal Blue for progress
+        "accent": "#020617", # Deep Navy Accent
+        "accent_2": "#020617", 
         "border": "#e2e8f0",
-        "success": "#22c55e",
-        "danger": "#020617", # Changed from Red to Deep Navy
-        "shadow": "0 10px 30px rgba(2, 6, 23, 0.1)",
+        "success": "#020617", 
+        "danger": "#020617", 
+        "shadow": "0 10px 30px rgba(2, 6, 23, 0.05)",
     }
 
 
@@ -23,7 +24,7 @@ def get_theme_css(dark_mode: bool) -> str:
     c = get_theme_tokens(dark_mode)
     return f"""
     <style>
-    /* Hide Streamlit elements to make it look like a normal site */
+    /* Hide Streamlit elements */
     #MainMenu {{visibility: hidden;}}
     header {{visibility: hidden;}}
     footer {{visibility: hidden;}}
@@ -42,7 +43,7 @@ def get_theme_css(dark_mode: bool) -> str:
         overflow-x: hidden;
     }}
     
-    /* FREE MOVING THICK LINES BACKGROUND - Intense Dark Blue Lines */
+    /* ULTRA THIN FREE MOVING DEEP BLUE LINES */
     .stApp::before {{
         content: "";
         position: fixed;
@@ -51,18 +52,33 @@ def get_theme_css(dark_mode: bool) -> str:
         width: 100%;
         height: 100%;
         background: 
-            linear-gradient(110deg, transparent 40%, rgba(2, 6, 23, 0.12) 40%, rgba(2, 6, 23, 0.12) 43%, transparent 43%),
-            linear-gradient(200deg, transparent 20%, rgba(2, 6, 23, 0.1) 20%, rgba(2, 6, 23, 0.1) 24%, transparent 24%),
-            linear-gradient(320deg, transparent 70%, rgba(2, 6, 23, 0.12) 70%, rgba(2, 6, 23, 0.12) 75%, transparent 75%);
+            linear-gradient(110deg, transparent 40%, rgba(2, 6, 23, 0.04) 40%, rgba(2, 6, 23, 0.04) 40.2%, transparent 40.2%),
+            linear-gradient(200deg, transparent 20%, rgba(2, 6, 23, 0.03) 20%, rgba(2, 6, 23, 0.03) 20.3%, transparent 20.3%),
+            linear-gradient(320deg, transparent 70%, rgba(2, 6, 23, 0.04) 70%, rgba(2, 6, 23, 0.04) 70.3%, transparent 70.3%);
         background-size: 200% 200%;
         pointer-events: none;
         z-index: 0;
-        animation: floatLines 40s ease-in-out infinite alternate;
+        animation: floatLines 60s linear infinite;
     }}
 
     @keyframes floatLines {{
         0% {{ background-position: 0% 0%; }}
         100% {{ background-position: 100% 100%; }}
+    }}
+
+    /* Sidebar Styling for 35% Deep Blue */
+    section[data-testid="stSidebar"] {{
+        background-color: {c["sidebar"]} !important;
+        color: #ffffff !important;
+    }}
+    section[data-testid="stSidebar"] * {{
+        color: #ffffff !important;
+    }}
+    section[data-testid="stSidebar"] .stMarkdown h2 {{
+        color: #ffffff !important;
+    }}
+    section[data-testid="stSidebar"] .stDivider {{
+        border-color: rgba(255, 255, 255, 0.1) !important;
     }}
 
     /* Mobile Optimization & Bottom Nav */
@@ -83,22 +99,21 @@ def get_theme_css(dark_mode: bool) -> str:
             opacity: 0 !important;
             pointer-events: none !important;
         }}
-        .main-title {{ font-size: 2.2rem !important; }}
     }}
 
-    /* WHITE & DEEP BLUE BOTTOM NAV */
+    /* STRICT WHITE & DEEP BLUE BOTTOM NAV */
     .bottom-nav {{
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
         height: 80px;
-        background: #ffffff; /* White Background (65%) */
-        border-top: 2px solid #e2e8f0;
+        background: #ffffff; 
+        border-top: 1px solid #e2e8f0;
         display: none;
         grid-template-columns: repeat(5, 1fr);
         z-index: 999999;
-        box-shadow: 0 -10px 30px rgba(0,0,0,0.05);
+        box-shadow: 0 -10px 30px rgba(0,0,0,0.03);
         padding-bottom: env(safe-area-inset-bottom);
     }}
     @media (max-width: 768px) {{ .bottom-nav {{ display: grid; }} }}
@@ -109,11 +124,11 @@ def get_theme_css(dark_mode: bool) -> str:
         align-items: center;
         justify-content: center;
         gap: 6px;
-        color: rgba(2, 6, 23, 0.4); /* Faded Deep Blue */
+        color: rgba(2, 6, 23, 0.3); /* Faded Deep Blue */
         text-decoration: none !important;
         font-size: 0.7rem;
         font-weight: 800;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.2s ease;
         cursor: pointer;
         border: none;
         background: transparent;
@@ -121,63 +136,61 @@ def get_theme_css(dark_mode: bool) -> str:
         user-select: none;
         -webkit-tap-highlight-color: transparent;
     }}
-    .nav-item:active {{ transform: scale(0.9); }}
     .nav-item.active {{
-        color: #020617 !important; /* Deep Blue (35%) */
+        color: #020617 !important; /* Strictly Deep Blue */
     }}
     .nav-item i {{ font-size: 1.6rem; }}
     .nav-item span {{ text-transform: uppercase; letter-spacing: 0.05em; }}
 
     /* Professional UI Refinement */
-    .block-container {{ padding-top: 2rem; padding-bottom: 2rem; max-width: 1200px; }}
     .surface-card {{
         background: #ffffff;
         border: 1px solid #e2e8f0;
-        border-radius: 30px;
+        border-radius: 24px;
         padding: 2rem;
         box-shadow: {c["shadow"]};
-        transition: all 0.4s ease;
-        animation: fadeIn 0.6s ease-out;
-    }}
-    .surface-card:hover {{
-        border-color: #020617;
-        transform: translateY(-5px);
     }}
     
     .main-title {{
-        font-size: 3.5rem;
+        font-size: 3rem;
         font-weight: 900;
         letter-spacing: -0.05em;
         color: #020617;
     }}
 
-    /* INSTALL BUTTON PRO - DEEP BLUE */
+    /* STRICT DEEP BLUE INSTALL BUTTON */
     .install-btn {{
-        background: #020617; /* Deep Blue background */
-        color: #ffffff !important; /* White text */
-        padding: 20px 32px;
-        border-radius: 22px;
+        background: #020617; 
+        color: #ffffff !important; 
+        padding: 18px 32px;
+        border-radius: 16px;
         font-weight: 900;
         text-align: center;
         cursor: pointer;
-        box-shadow: 0 15px 35px rgba(2, 6, 23, 0.2);
-        transition: all 0.3s;
         margin: 2rem 0;
         border: none;
         width: 100%;
         display: block;
         text-decoration: none !important;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         text-transform: uppercase;
     }}
-    .install-btn:hover {{
-        transform: translateY(-4px);
-        box-shadow: 0 20px 45px rgba(2, 6, 23, 0.3);
-    }}
 
-    @keyframes fadeIn {{
-        from {{ opacity: 0; transform: translateY(20px); }}
-        to {{ opacity: 1; transform: translateY(0px); }}
+    /* Remove any remaining red from Streamlit components */
+    .stButton>button {{
+        background-color: #020617 !important;
+        color: white !important;
+        border: none !important;
+    }}
+    .stMarkdown a {{
+        color: #020617 !important;
+    }}
+    /* Specifically target radio button selection color to avoid any red/blue default */
+    div[data-testid="stWidgetLabel"] + div div[role="radiogroup"] label[data-baseweb="radio"] div:first-child {{
+        border-color: #020617 !important;
+    }}
+    div[data-testid="stWidgetLabel"] + div div[role="radiogroup"] label[data-baseweb="radio"] div:first-child div {{
+        background-color: #020617 !important;
     }}
     </style>
     <!-- Add FontAwesome -->

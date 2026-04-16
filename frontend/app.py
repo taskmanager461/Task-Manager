@@ -145,14 +145,37 @@ def render_sidebar() -> None:
         
         if st.session_state.username:
             st.write(f"👤 {st.session_state.name or st.session_state.username}")
+        
+        st.divider()
+        
+        # Move Theme & Language settings here
+        selected_dark = st.toggle(t("dark_mode"), value=st.session_state.dark_mode, key="sidebar_dark_mode")
+        if selected_dark != st.session_state.dark_mode:
+            st.session_state.dark_mode = selected_dark
+            st.toast(t("theme_updated"))
+            st.rerun()
+
+        selected_language = st.selectbox(
+            t("language"),
+            list(LANGUAGES.keys()),
+            index=list(LANGUAGES.keys()).index(st.session_state["lang"]),
+            format_func=lambda code: LANGUAGES[code],
+            key="sidebar_language",
+        )
+        if selected_language != st.session_state["lang"]:
+            st.session_state["lang"] = selected_language
+            st.toast(t("language_updated"))
+            st.rerun()
+
+        st.divider()
+        render_install_button()
+        
+        if st.session_state.username:
             if st.button(t("nav_logout"), use_container_width=True, type="secondary"):
                 st.session_state.user_id = None
                 st.session_state.username = ""
                 st.session_state.access_token = ""
                 st.rerun()
-        
-        st.divider()
-        render_install_button()
 
 def render_bottom_nav() -> None:
     active_menu = st.session_state.menu
@@ -262,6 +285,10 @@ def inject_pwa_support() -> None:
             // Dispatch a custom event to notify Streamlit component if it's already rendered
             const event = new CustomEvent('pwa-prompt-ready');
             window.parent.dispatchEvent(event);
+            
+            // Auto-update any visible buttons
+            const btn = doc.getElementById("pwa-install-btn");
+            if (btn) btn.style.display = "block";
           }});
 
           // SPEED OPTIMIZATION: Instant Navigation
@@ -301,7 +328,7 @@ def render_install_button() -> None:
     st.markdown(
         f"""
         <div style="margin-top: 1rem; text-align: center;">
-            <button id="pwa-install-btn" class="install-btn">
+            <button id="pwa-install-btn" class="install-btn" style="display:none;">
                 <i class="fa-solid fa-cloud-arrow-down" style="margin-right: 12px;"></i>
                 {t("mobile_install")}
             </button>
@@ -327,15 +354,21 @@ def render_install_button() -> None:
                     return;
                 }}
 
+                // Show button if prompt is already available
+                if (window.parent.deferredPrompt || isIOS) {{
+                    if (btn) btn.style.display = "block";
+                }}
+
                 if (btn) {{
                     // Update UI if prompt arrives late
                     window.parent.addEventListener('pwa-prompt-ready', () => {{
                         console.log("UI: PWA prompt is now ready!");
+                        btn.style.display = "block";
                         if (helpGeneric) helpGeneric.style.display = "none";
                     }});
 
                     btn.onclick = async function () {{
-                        console.log("Install click");
+                        console.log("Install click triggered");
                         
                         if (isIOS) {{
                             if (helpIos) helpIos.style.display = "block";
@@ -349,7 +382,10 @@ def render_install_button() -> None:
                                 p.prompt();
                                 const {{ outcome }} = await p.userChoice;
                                 console.log("User choice:", outcome);
-                                window.parent.deferredPrompt = null;
+                                if (outcome === 'accepted') {{
+                                     window.parent.deferredPrompt = null;
+                                     btn.style.display = "none";
+                                 }}
                                 return;
                             }} catch (err) {{
                                 console.error("Prompt error:", err);
@@ -400,49 +436,6 @@ def render_achievements(score: dict[str, Any]) -> None:
             st.markdown(f"- {badge}")
 
 
-def render_sidebar() -> None:
-    with st.sidebar:
-        st.markdown(f"### {t('nav')}")
-        for key, menu_key in MENU.items():
-            if st.button(
-                t(menu_key),
-                key=f"menu_{key}",
-                use_container_width=True,
-                type="primary" if st.session_state.menu == key else "secondary",
-            ):
-                st.session_state.menu = key
-                st.rerun()
-
-        st.markdown("---")
-        selected_dark = st.toggle(t("dark_mode"), value=st.session_state.dark_mode, key="sidebar_dark_mode")
-        if selected_dark != st.session_state.dark_mode:
-            st.session_state.dark_mode = selected_dark
-            st.toast(t("theme_updated"))
-            st.rerun()
-
-        selected_language = st.selectbox(
-            t("language"),
-            list(LANGUAGES.keys()),
-            index=list(LANGUAGES.keys()).index(st.session_state["lang"]),
-            format_func=lambda code: LANGUAGES[code],
-            key="sidebar_language",
-        )
-        if selected_language != st.session_state["lang"]:
-            st.session_state["lang"] = selected_language
-            print(f"[i18n] Language changed to: {selected_language}")
-            st.toast(t("language_updated"))
-            st.rerun()
-
-        st.markdown("---")
-        st.markdown(f"### {t('profile')}")
-        if st.session_state.user_id:
-            st.markdown(f"**{st.session_state.name}**")
-            st.caption(f"@{st.session_state.username}")
-            mode = t("theme_dark") if st.session_state.dark_mode else t("theme_light")
-            st.caption(t("theme_mode", mode=mode))
-            render_install_button()
-        else:
-            st.caption(t("please_login"))
 
 
 def render_auth(client: APIClient) -> None:
@@ -886,20 +879,28 @@ def ensure_branding() -> None:
     if not os.path.exists(icon_path):
         try:
             from PIL import Image, ImageDraw, ImageFont
-            # Deep Blue background (#020617)
+            # Strictly Deep Blue (#020617) for background, White (#ffffff) for box
             bg_color = (2, 6, 23)
-            border_color = (248, 250, 252)
-            text_color = (15, 23, 42)
+            box_color = (255, 255, 255)
+            text_color = (2, 6, 23)
             
             for size in [192, 512]:
                 img = Image.new('RGB', (size, size), bg_color)
                 draw = ImageDraw.Draw(img)
                 padding = size // 6
                 box_rect = [padding, padding, size - padding, size - padding]
-                draw.rounded_rectangle(box_rect, radius=size // 10, fill=border_color)
+                draw.rounded_rectangle(box_rect, radius=size // 10, fill=box_color)
                 
-                # Simple text if font fails
-                draw.text((size//2.5, size//3), "T\nM", fill=text_color)
+                # Simple text: T over M
+                try:
+                    # Try to load a bold font if possible, else default
+                    font_size = int(size * 0.35)
+                    # We don't have a guaranteed font path on Render, so we use default
+                    # For a professional look, we just use a large character
+                    draw.text((size//2.5, size//4.5), "T", fill=text_color)
+                    draw.text((size//2.5, size//2.1), "M", fill=text_color)
+                except Exception:
+                    draw.text((size//2.5, size//3), "TM", fill=text_color)
                 
                 output_path = os.path.join("frontend", "static", f"icon-{size}.png")
                 os.makedirs(os.path.dirname(output_path), exist_ok=True)

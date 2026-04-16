@@ -4,8 +4,8 @@
   "description": "Ένας κινητήρας συνέπειας για τις υποσχέσεις που δίνετε στον εαυτό σας.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#2563eb",
+  "background_color": "#ffffff",
+  "theme_color": "#020617",
   "orientation": "portrait-primary",
   "scope": "/",
   "icons": [
