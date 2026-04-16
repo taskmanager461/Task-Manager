@@ -39,14 +39,14 @@ def get_theme_css(dark_mode: bool) -> str:
     return f"""
     <style>
     /* Hide Streamlit elements to make it look like a normal site */
-    #MainMenu {visibility: hidden;}
-    header {visibility: hidden;}
-    footer {visibility: hidden;}
-    div[data-testid="stStatusWidget"] {visibility: hidden;}
-    [data-testid="stHeader"] {background: transparent; height: 0;}
-    .stAppDeployButton {display: none !important;}
+    #MainMenu {{visibility: hidden;}}
+    header {{visibility: hidden;}}
+    footer {{visibility: hidden;}}
+    div[data-testid="stStatusWidget"] {{visibility: hidden;}}
+    [data-testid="stHeader"] {{background: transparent; height: 0;}}
+    .stAppDeployButton {{display: none !important;}}
     
-    .stApp {
+    .stApp {{
         background: {c["bg"]};
         color: {c["text"]};
         font-family: "Inter", "Segoe UI", sans-serif;
