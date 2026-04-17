@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="theme-color" content="#020617">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+</head>
+<body class="light-mode">
+    <!-- Auth Page -->
+    <div id="auth-page" class="page active">
+        <div class="auth-container">
+            <h1 class="main-title">Task Manager</h1>
+            <div class="tabs">
+                <button id="tab-login" class="tab active" onclick="switchAuthTab('login')">Login</button>
+                <button id="tab-signup" class="tab" onclick="switchAuthTab('signup')">Sign Up</button>
+            </div>
+            
+            <form id="login-form" class="auth-form active">
+                <input type="text" id="login-username" placeholder="Username or Email" required autocomplete="username">
+                <input type="password" id="login-password" placeholder="Password" required autocomplete="current-password">
+                <button type="submit" class="btn primary">Login</button>
+            </form>
+
+            <form id="signup-form" class="auth-form">
+                <input type="text" id="signup-name" placeholder="Full Name" required autocomplete="name">
+                <input type="text" id="signup-username" placeholder="Username" required autocomplete="username">
+                <input type="email" id="signup-email" placeholder="Email" required autocomplete="email">
+                <input type="password" id="signup-password" placeholder="Password" required autocomplete="new-password">
+                <button type="submit" class="btn primary">Create Account</button>
+            </form>
+            <div id="auth-error" class="error-msg"></div>
+        </div>
+    </div>
+
+    <!-- Main App Layout -->
+    <div id="main-app" class="page">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <h2>TM</h2>
+                <span id="user-display-name">User</span>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" onclick="showView('dashboard')">🏠 Dashboard</button>
+                <button class="nav-item" onclick="showView('tasks')">✅ Tasks</button>
+                <button class="nav-item" onclick="showView('settings')">⚙️ Settings</button>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="install-btn" class="btn secondary" style="display:none">Install App</button>
+                <button onclick="logout()" class="btn danger">Logout</button>
+            </div>
+        </aside>
+
+        <main id="content">
+            <!-- Dashboard View -->
+            <section id="view-dashboard" class="view active">
+                <h1 class="view-title">Dashboard</h1>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <span class="icon">🎯</span>
+                        <span class="label">Trust Score</span>
+                        <span id="score-value" class="value">0.0</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="icon">🔥</span>
+                        <span class="label">Streak</span>
+                        <span id="streak-value" class="value">0</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="icon">✅</span>
+                        <span class="label">Success</span>
+                        <span id="success-value" class="value">0%</span>
+                    </div>
+                </div>
+                <div class="progress-section">
+                    <label>Daily Progress</label>
+                    <div class="progress-bar"><div id="daily-progress-fill" style="width: 0%"></div></div>
+                </div>
+            </section>
+
+            <!-- Tasks View -->
+            <section id="view-tasks" class="view">
+                <h1 class="view-title">Daily Tasks</h1>
+                <button onclick="toggleTaskForm()" class="btn primary full-width">+ Add New Task</button>
+                
+                <div id="task-form-container" class="task-form-modal">
+                    <form id="add-task-form">
+                        <h3>New Task</h3>
+                        <input type="text" id="task-title" placeholder="What needs to be done?" required>
+                        <input type="text" id="task-category" placeholder="Category (e.g. Work, Health)" value="General">
+                        <select id="task-difficulty">
+                            <option value="easy">Easy</option>
+                            <option value="medium">Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                        <div class="form-actions">
+                            <button type="button" onclick="toggleTaskForm()" class="btn secondary">Cancel</button>
+                            <button type="submit" class="btn primary">Add Task</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="task-list" class="task-list">
+                    <!-- Tasks injected here -->
+                </div>
+            </section>
+
+            <!-- Settings View -->
+            <section id="view-settings" class="view">
+                <h1 class="view-title">Settings</h1>
+                <div class="settings-group">
+                    <label>Theme</label>
+                    <button onclick="toggleDarkMode()" class="btn secondary full-width">Toggle Dark Mode</button>
+                </div>
+                <div class="settings-group">
+                    <label>App Info</label>
+                    <p>Version: 2.0.0</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

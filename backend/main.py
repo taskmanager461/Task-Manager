@@ -16,7 +16,7 @@ settings = get_settings()
 
 # Define static path (relative to project root)
 PROJECT_ROOT = Path(__file__).parent.parent
-STATIC_DIR = PROJECT_ROOT / "frontend" / "static"
+FRONTEND_DIR = PROJECT_ROOT / "frontend"
 
 def get_origins():
     raw_origins = settings.cors_origins
@@ -29,36 +29,38 @@ app = FastAPI(title=settings.app_name, version=settings.app_version, docs_url="/
 # Serve PWA files directly from /
 @app.get("/manifest.json")
 async def get_manifest():
-    return FileResponse(STATIC_DIR / "manifest.json")
+    return FileResponse(FRONTEND_DIR / "manifest.json")
 
 @app.get("/sw.js")
 async def get_sw():
-    return FileResponse(STATIC_DIR / "sw.js")
+    return FileResponse(FRONTEND_DIR / "sw.js")
 
 @app.get("/favicon.png")
 async def get_favicon():
-    return FileResponse(STATIC_DIR / "favicon.png")
+    return FileResponse(FRONTEND_DIR / "static" / "favicon.png")
 
 @app.get("/icon-192.png")
 async def get_icon192():
-    return FileResponse(STATIC_DIR / "icon-192.png")
+    return FileResponse(FRONTEND_DIR / "static" / "icon-192.png")
 
 @app.get("/icon-512.png")
 async def get_icon512():
-    return FileResponse(STATIC_DIR / "icon-512.png")
+    return FileResponse(FRONTEND_DIR / "static" / "icon-512.png")
 
-# --- DATABASE CLEANUP LOGIC FOR FREE TIER ---
-import os
-from sqlalchemy import text
-if os.getenv("CLEANUP_DATABASE") == "true":
-    try:
-        with engine.connect() as conn:
-            conn.execute(text("TRUNCATE TABLE users, tasks, daily_scores RESTART IDENTITY CASCADE;"))
-            conn.commit()
-            print("✅ DATABASE CLEANED SUCCESSFULLY")
-    except Exception as e:
-        print(f"❌ CLEANUP FAILED: {e}")
-# --------------------------------------------
+@app.get("/styles.css")
+async def get_css():
+    return FileResponse(FRONTEND_DIR / "styles.css")
+
+@app.get("/app.js")
+async def get_js():
+    return FileResponse(FRONTEND_DIR / "app.js")
+
+# Mount frontend directory for everything else
+app.mount("/static", StaticFiles(directory=FRONTEND_DIR / "static"), name="static")
+
+@app.get("/")
+async def serve_index():
+    return FileResponse(FRONTEND_DIR / "index.html")
 
 app.add_middleware(
     CORSMiddleware,
@@ -67,16 +69,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.get("/")
-def healthcheck():
-    return {
-        "status": "ok",
-        "service": settings.app_name,
-        "version": settings.app_version,
-        "environment": settings.environment,
-    }
 
 
 app.include_router(auth_router)
