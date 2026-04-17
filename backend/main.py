@@ -18,12 +18,6 @@ settings = get_settings()
 PROJECT_ROOT = Path(__file__).parent.parent
 FRONTEND_DIR = PROJECT_ROOT / "frontend"
 
-def get_origins():
-    raw_origins = settings.cors_origins
-    if not raw_origins or raw_origins == "*":
-        return ["*"]
-    return [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
-
 app = FastAPI(title=settings.app_name, version=settings.app_version, docs_url="/docs", redoc_url="/redoc")
 
 # Serve PWA files directly from /
@@ -64,8 +58,8 @@ async def serve_index():
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=get_origins(),
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
