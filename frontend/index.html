@@ -9,6 +9,8 @@
     <link rel="icon" type="image/png" href="/favicon.png">
     <meta name="theme-color" content="#020617">
     <link rel="apple-touch-icon" href="/icon-192.png">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="light-mode">
     <!-- Auth Page -->
@@ -41,8 +43,11 @@
     <div id="main-app" class="page">
         <aside id="sidebar">
             <div class="sidebar-header">
-                <h2>TM</h2>
-                <span id="user-display-name">User</span>
+                <img src="/icon-192.png" alt="Logo" class="sidebar-logo">
+                <div class="sidebar-info">
+                    <h2>Task Manager</h2>
+                    <span id="user-display-name">User</span>
+                </div>
             </div>
             <nav class="sidebar-nav">
                 <button class="nav-item active" onclick="showView('dashboard')">🏠 Dashboard</button>
@@ -79,6 +84,14 @@
                 <div class="progress-section">
                     <label>Daily Progress</label>
                     <div class="progress-bar"><div id="daily-progress-fill" style="width: 0%"></div></div>
+                </div>
+
+                <div class="charts-section">
+                    <h2 class="view-subtitle">Statistics</h2>
+                    <div class="chart-container">
+                        <h3>Task Distribution</h3>
+                        <canvas id="task-pie-chart"></canvas>
+                    </div>
                 </div>
             </section>
 

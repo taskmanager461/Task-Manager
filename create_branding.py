@@ -24,19 +24,24 @@ def create_icon(size: int, filename: str) -> None:
         fill=paper,
     )
 
-    line_w = max(2, size // 34)
-    left = card_pad + int(size * 0.09)
-    top = card_pad + int(size * 0.12)
-    row_gap = int(size * 0.16)
-    box_size = int(size * 0.1)
-    for row in range(3):
+    # Drawing "T" over "M" in a list style
+    line_w = max(2, size // 32)
+    left = card_pad + int(size * 0.12)
+    top = card_pad + int(size * 0.15)
+    row_gap = int(size * 0.25)
+    box_size = int(size * 0.18)
+    
+    # Draw two rows for "T" and "M"
+    for row, char in enumerate(["T", "M"]):
         y = top + row * row_gap
+        # Checkbox
         draw.rounded_rectangle(
             [left, y, left + box_size, y + box_size],
             radius=max(2, box_size // 4),
             outline=stroke,
             width=line_w,
         )
+        # Checkmark
         draw.line(
             [
                 (left + box_size * 0.2, y + box_size * 0.55),
@@ -47,25 +52,19 @@ def create_icon(size: int, filename: str) -> None:
             width=line_w,
             joint="curve",
         )
-        draw.rounded_rectangle(
-            [
-                left + box_size + int(size * 0.035),
-                y + int(box_size * 0.32),
-                left + box_size + int(size * 0.23),
-                y + int(box_size * 0.55),
-            ],
-            radius=max(2, box_size // 5),
-            fill=(180, 208, 240, 255),
+        
+        # Text "T" or "M" next to the box
+        try:
+            char_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", int(size * 0.22))
+        except Exception:
+            char_font = ImageFont.load_default()
+            
+        draw.text(
+            (left + box_size + int(size * 0.08), y - int(size * 0.02)),
+            char,
+            fill=ink,
+            font=char_font
         )
-
-    try:
-        font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", int(size * 0.24))
-    except Exception:
-        font = ImageFont.load_default()
-
-    tm_x = card_pad + int(size * 0.36)
-    draw.text((tm_x, card_pad + int(size * 0.17)), "T", fill=ink, font=font)
-    draw.text((tm_x, card_pad + int(size * 0.46)), "M", fill=ink, font=font)
 
     # Save to frontend/static
     output_dir = os.path.join("frontend", "static")

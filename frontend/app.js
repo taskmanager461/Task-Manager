@@ -5,6 +5,7 @@ const API_BASE_URL = window.location.origin;
 let currentUser = null;
 let currentToken = localStorage.getItem('tm_access_token');
 let isDarkMode = localStorage.getItem('tm_dark_mode') === '1';
+let taskChart = null;
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -154,9 +155,67 @@ async function loadDashboard() {
         document.getElementById('streak-value').textContent = score.streak;
         document.getElementById('success-value').textContent = `${(score.success_rate * 100).toFixed(0)}%`;
         document.getElementById('daily-progress-fill').style.width = `${score.success_rate * 100}%`;
+
+        // Fetch tasks to update chart
+        const tasks = await apiFetch(`/tasks?user_id=${currentUser.user_id}&day=${today}`);
+        updateTaskChart(tasks);
     } catch (err) {
         console.error('Dashboard load failed', err);
     }
+}
+
+function updateTaskChart(tasks) {
+    const counts = {
+        completed: tasks.filter(t => t.status === 'completed').length,
+        failed: tasks.filter(t => t.status === 'failed').length,
+        pending: tasks.filter(t => t.status === 'pending').length
+    };
+
+    const ctx = document.getElementById('task-pie-chart').getContext('2d');
+    
+    if (taskChart) {
+        taskChart.destroy();
+    }
+
+    const colors = isDarkMode ? {
+        completed: '#10b981',
+        failed: '#3b82f6', // primary in dark mode, used as "failed" replacement
+        pending: '#475569',
+        text: '#ffffff'
+    } : {
+        completed: '#10b981',
+        failed: '#020617', // primary in light mode
+        pending: '#cbd5e1',
+        text: '#020617'
+    };
+
+    taskChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Completed', 'Failed', 'Pending'],
+            datasets: [{
+                data: [counts.completed, counts.failed, counts.pending],
+                backgroundColor: [colors.completed, colors.failed, colors.pending],
+                borderWidth: 0,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: colors.text,
+                        padding: 20,
+                        font: { size: 12, weight: '600' }
+                    }
+                }
+            },
+            cutout: '70%'
+        }
+    });
 }
 
 // --- Tasks Logic ---
@@ -276,6 +335,7 @@ function toggleDarkMode() {
     isDarkMode = !isDarkMode;
     localStorage.setItem('tm_dark_mode', isDarkMode ? '1' : '0');
     initTheme();
+    if (currentUser) loadDashboard(); // Re-render charts with new theme colors
 }
 
 function toggleTaskForm() {
