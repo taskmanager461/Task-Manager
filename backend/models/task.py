@@ -15,7 +15,7 @@ class Task(Base):
     description: Mapped[str] = mapped_column(String(500), nullable=True)
     category: Mapped[str] = mapped_column(String(50), default="general", nullable=False)
     difficulty: Mapped[str] = mapped_column(String(20), default="medium", nullable=False)
-    status: Mapped[str] = mapped_column(String(20), default="neutral", nullable=False)
+    status: Mapped[str] = mapped_column(String(20), default="pending", nullable=False)
     priority: Mapped[str] = mapped_column(String(20), default="medium", nullable=False)
     recurring: Mapped[str] = mapped_column(String(20), default="none", nullable=False)
     due_date: Mapped[date] = mapped_column(Date, nullable=True)

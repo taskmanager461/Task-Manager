@@ -6,8 +6,9 @@ let currentUser = null;
 let currentToken = localStorage.getItem('tm_access_token');
 let isDarkMode = localStorage.getItem('tm_dark_mode') === '1';
 let currentLang = localStorage.getItem('tm_lang') || 'en';
-let completionChart = null;
-let tasksPerDayChart = null;
+let taskChart = null;
+let trendChart = null;
+let insightsChart = null;
 let isFocusMode = localStorage.getItem('tm_focus_mode') === '1';
 
 const translations = {
@@ -57,8 +58,6 @@ const translations = {
         productive_day: "Most Productive Day",
         productive_hour: "Most Productive Hour",
         trends: "Completion Trends",
-        weekly_completion: "Weekly Completion Rate",
-        tasks_per_day: "Tasks Per Day",
         failure_patterns: "Failure Patterns",
         achievements: "Achievements",
         well_done: "Well done!",
@@ -79,13 +78,12 @@ const translations = {
         version: "Version",
         completed: "Completed",
         failed: "Failed",
-        neutral: "New Task",
+        pending: "Pending",
         no_tasks: "No tasks for today. Add one above!",
         session_expired: "Session expired",
         task_added: "Task added successfully!",
         task_updated: "Task updated!",
-        error_occurred: "An error occurred",
-        not_enough_data: "Not enough data yet"
+        error_occurred: "An error occurred"
     },
     el: {
         app_title: "Task Manager",
@@ -133,8 +131,6 @@ const translations = {
         productive_day: "Πιο Παραγωγική Μέρα",
         productive_hour: "Πιο Παραγωγική Ώρα",
         trends: "Τάσεις Ολοκλήρωσης",
-        weekly_completion: "Ποσοστό Ολοκλήρωσης",
-        tasks_per_day: "Εργασίες ανά Ημέρα",
         failure_patterns: "Μοτίβα Αποτυχίας",
         achievements: "Επιτεύγματα",
         well_done: "Μπράβο!",
@@ -155,13 +151,12 @@ const translations = {
         version: "Έκδοση",
         completed: "Ολοκληρώθηκε",
         failed: "Απέτυχε",
-        neutral: "Νέα Εργασία",
+        pending: "Εκκρεμεί",
         no_tasks: "Καμία εργασία για σήμερα!",
         session_expired: "Η συνεδρία έληξε",
         task_added: "Η εργασία προστέθηκε!",
         task_updated: "Η εργασία ενημερώθηκε!",
-        error_occurred: "Παρουσιάστηκε σφάλμα",
-        not_enough_data: "Δεν υπάρχουν αρκετά δεδομένα ακόμα"
+        error_occurred: "Παρουσιάστηκε σφάλμα"
     },
     es: {
         app_title: "Task Manager",
@@ -242,13 +237,12 @@ const translations = {
         version: "Version",
         completed: "Terminé",
         failed: "Échoué",
-        neutral: "Nouvelle tâche",
+        pending: "En attente",
         no_tasks: "Pas de tâches aujourd'hui !",
         session_expired: "Session expirée",
         task_added: "Tâche ajoutée !",
         task_updated: "Tâche mise à jour !",
-        error_occurred: "Une erreur est survenue",
-        not_enough_data: "Pas encore assez de données"
+        error_occurred: "Une erreur est survenue"
     },
     de: {
         app_title: "Task Manager",
@@ -286,13 +280,12 @@ const translations = {
         version: "Version",
         completed: "Abgeschlossen",
         failed: "Fehlgeschlagen",
-        neutral: "Neue Aufgabe",
+        pending: "Ausstehend",
         no_tasks: "Keine Aufgaben für heute!",
         session_expired: "Sitzung abgelaufen",
         task_added: "Aufgabe hinzugefügt!",
         task_updated: "Aufgabe aktualisiert!",
-        error_occurred: "Fehler aufgetreten",
-        not_enough_data: "Noch nicht genügend Daten"
+        error_occurred: "Fehler aufgetreten"
     },
     it: {
         app_title: "Task Manager",
@@ -531,43 +524,31 @@ async function loadInsights() {
 }
 
 function renderInsights(history) {
-    if (!history || history.length < 3) {
-        document.getElementById('insight-best-day').textContent = t('not_enough_data');
-        document.getElementById('insight-best-hour').textContent = t('not_enough_data');
-        document.getElementById('insight-failure-pattern').textContent = t('not_enough_data');
-        
-        // Achievements locked by default
-        renderAchievements(0);
-        return;
-    }
-
     // 1. Pattern Detection Logic
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const dayStats = dayNames.map(name => ({ name, count: 0, completed: 0 }));
-    
-    let totalScore = 0;
+    const categoryStats = {};
+
     history.forEach(entry => {
         const date = new Date(entry.date);
         const dayIdx = date.getDay();
         dayStats[dayIdx].count++;
         if (entry.success_rate > 0.5) dayStats[dayIdx].completed++;
-        totalScore += entry.score;
+        
+        // We'd need task-level history for better hour/category insights
+        // For now, let's use the provided daily history entry
     });
 
     const bestDayIdx = dayStats.reduce((best, curr, idx) => curr.completed > dayStats[best].completed ? idx : best, 0);
     
     document.getElementById('insight-best-day').textContent = dayNames[bestDayIdx];
-    document.getElementById('insight-best-hour').textContent = '09:00 - 11:00'; // Still placeholder until we have hourly data
-    document.getElementById('insight-failure-pattern').textContent = t('failure_pattern') + ' "Health"'; // Still placeholder
+    document.getElementById('insight-best-hour').textContent = '09:00 - 11:00'; // Intelligent placeholder
+    document.getElementById('insight-failure-pattern').textContent = t('failure_pattern') + ' "Health"'; // Example
 
     // 2. Achievements
     const streak = parseInt(document.getElementById('streak-value').textContent) || 0;
-    renderAchievements(streak);
-}
-
-function renderAchievements(streak) {
     const achievements = [
-        { id: 'early_bird', name: 'Early Bird', icon: '🌅', unlocked: false }, // Keep locked until condition met
+        { id: 'early_bird', name: 'Early Bird', icon: '🌅', unlocked: true },
         { id: 'streak_3', name: '3 Day Streak', icon: '🔥', unlocked: streak >= 3 },
         { id: 'master', name: 'Task Master', icon: '🏆', unlocked: streak >= 7 }
     ];
@@ -683,79 +664,166 @@ async function loadDashboard() {
             multBadge.style.display = 'none';
         }
 
-        // Fetch history for charts
-        const history = await apiFetch(`/score/history?user_id=${currentUser.user_id}&days=7`);
-        renderCleanCharts(history);
+        // Fetch tasks to update pie chart
+        const tasks = await apiFetch(`/tasks?user_id=${currentUser.user_id}&day=${today}`);
+        updateTaskChart(tasks);
+        
+        // Load Weekly Trend
+        loadWeeklyTrend();
     } catch (err) {
         console.error('Dashboard load failed', err);
     }
 }
 
-function renderCleanCharts(history) {
+async function loadWeeklyTrend() {
+    try {
+        const scores = await apiFetch(`/score/history?user_id=${currentUser.user_id}&days=7`);
+        updateTrendChart(scores);
+    } catch (err) {
+        console.error('Trend load failed', err);
+    }
+}
+
+function updateTrendChart(history) {
+    const ctx = document.getElementById('weekly-trend-chart').getContext('2d');
+    if (trendChart) trendChart.destroy();
+
     const labels = history.map(s => s.date.split('-').slice(1).reverse().join('/'));
-    const completionData = history.map(s => s.success_rate * 100);
-    const tasksPerDayData = history.map(s => s.total_tasks || 0);
+    const data = history.map(s => s.score);
 
     const colors = isDarkMode ? {
-        primary: '#3b82f6',
+        line: '#3b82f6',
         text: '#ffffff',
         grid: '#1e293b'
     } : {
-        primary: '#020617',
+        line: '#020617',
         text: '#020617',
         grid: '#e2e8f0'
     };
 
-    // 1. Weekly Completion Chart (Bar)
-    const ctx1 = document.getElementById('weekly-completion-chart').getContext('2d');
-    if (completionChart) completionChart.destroy();
-    completionChart = new Chart(ctx1, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: t('weekly_completion'),
-                data: completionData,
-                backgroundColor: colors.primary,
-                borderRadius: 6
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, max: 100, grid: { color: colors.grid }, ticks: { color: colors.text } },
-                x: { grid: { display: false }, ticks: { color: colors.text } }
-            }
-        }
-    });
-
-    // 2. Tasks Per Day Chart (Line)
-    const ctx2 = document.getElementById('tasks-per-day-chart').getContext('2d');
-    if (tasksPerDayChart) tasksPerDayChart.destroy();
-    tasksPerDayChart = new Chart(ctx2, {
+    trendChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
             datasets: [{
-                label: t('tasks_per_day'),
-                data: tasksPerDayData,
-                borderColor: colors.primary,
-                backgroundColor: colors.primary + '20',
+                label: t('trust_score'),
+                data: data,
+                borderColor: colors.line,
+                backgroundColor: colors.line + '20',
                 fill: true,
-                tension: 0.3,
-                pointRadius: 4
+                tension: 0.4,
+                pointRadius: 4,
+                pointHoverRadius: 6
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    padding: 10,
+                    backgroundColor: isDarkMode ? '#0f172a' : '#ffffff',
+                    titleColor: colors.text,
+                    bodyColor: colors.text,
+                    borderColor: colors.line,
+                    borderWidth: 1
+                }
+            },
             scales: {
-                y: { beginAtZero: true, stepSize: 1, grid: { color: colors.grid }, ticks: { color: colors.text } },
-                x: { grid: { display: false }, ticks: { color: colors.text } }
+                y: {
+                    beginAtZero: true,
+                    max: 150,
+                    grid: { color: colors.grid },
+                    ticks: { color: colors.text }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: colors.text }
+                }
             }
+        }
+    });
+}
+
+function updateTaskChart(tasks) {
+    const counts = {
+        completed: tasks.filter(t => t.status === 'completed').length,
+        failed: tasks.filter(t => t.status === 'failed').length,
+        pending: tasks.filter(t => t.status === 'pending').length
+    };
+
+    const ctx = document.getElementById('task-pie-chart').getContext('2d');
+    
+    if (taskChart) {
+        taskChart.destroy();
+    }
+
+    const colors = isDarkMode ? {
+        completed: '#10b981',
+        failed: '#3b82f6', // primary in dark mode, used as "failed" replacement
+        pending: '#475569',
+        text: '#ffffff'
+    } : {
+        completed: '#10b981',
+        failed: '#020617', // primary in light mode
+        pending: '#cbd5e1',
+        text: '#020617'
+    };
+
+    taskChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: [t('completed'), t('failed'), t('pending')],
+            datasets: [{
+                data: [counts.completed, counts.failed, counts.pending],
+                backgroundColor: [colors.completed, colors.failed, colors.pending],
+                borderWidth: 0,
+                hoverOffset: 15
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: {
+                animateScale: true,
+                animateRotate: true,
+                duration: 1000,
+                easing: 'easeOutQuart'
+            },
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: colors.text,
+                        padding: 20,
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        font: { size: 13, weight: '600', family: 'Inter' }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: colors.surface,
+                    titleColor: colors.text,
+                    bodyColor: colors.text,
+                    borderColor: colors.border,
+                    borderWidth: 1,
+                    padding: 12,
+                    boxPadding: 6,
+                    usePointStyle: true,
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const val = context.raw;
+                            const perc = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
+                            return ` ${context.label}: ${val} (${perc}%)`;
+                        }
+                    }
+                }
+            },
+            cutout: '75%'
         }
     });
 }
@@ -841,7 +909,7 @@ function renderTasks(tasks) {
         
         // Risk Detection (Mock logic based on behavior)
         let riskHtml = '';
-        if (task.status === 'neutral') {
+        if (task.status === 'pending') {
             const isComplex = task.title.length > 40;
             const isHard = task.difficulty === 'hard';
             if (isComplex || isHard) {
@@ -851,7 +919,7 @@ function renderTasks(tasks) {
 
         // Check overdue
         let overdueHtml = '';
-        if (task.status === 'neutral' && task.due_date) {
+        if (task.status === 'pending' && task.due_date) {
             const dueDate = new Date(task.due_date);
             if (dueDate < today) {
                 overdueHtml = `<span class="overdue-badge">⚠️ ${t('overdue')}</span>`;
@@ -875,7 +943,7 @@ function renderTasks(tasks) {
                 ${riskHtml}
             </div>
             <div class="task-actions">
-                ${task.status === 'neutral' ? `
+                ${task.status === 'pending' ? `
                     <button class="btn secondary" onclick="handleTaskUpdate(${task.id}, 'completed', this)" title="${t('completed')}">✅</button>
                     <button class="btn secondary" onclick="handleTaskUpdate(${task.id}, 'failed', this)" title="${t('failed')}">❌</button>
                 ` : `<span class="status-icon">${task.status === 'completed' ? '✅' : '❌'}</span>`}
@@ -920,19 +988,23 @@ async function addTask(title, category, difficulty) {
 }
 
 async function handleTaskUpdate(taskId, status, btnEl) {
-    // Instant visual feedback (Optimistic Update)
+    // Instant visual feedback
     const card = btnEl.closest('.task-card');
     const originalActions = card.querySelector('.task-actions').innerHTML;
     
-    // Immediately update UI
-    card.className = `task-card ${status}`;
-    card.querySelector('.task-actions').innerHTML = `<span>${status === 'completed' ? '✅' : '❌'}</span>`;
+    // Disable and show mini-loader
+    btnEl.disabled = true;
+    card.querySelector('.task-actions').innerHTML = '<span>⏳</span>';
     
     try {
         await apiFetch(`/tasks/${taskId}`, {
             method: 'PATCH',
             body: JSON.stringify({ status })
         });
+        
+        // Success state
+        card.className = `task-card ${status}`;
+        card.querySelector('.task-actions').innerHTML = `<span>${status === 'completed' ? '✅' : '❌'}</span>`;
         
         loadDashboard(); // Update score in background
         
@@ -942,7 +1014,6 @@ async function handleTaskUpdate(taskId, status, btnEl) {
         showToast(randomMsg, 'success');
     } catch (err) {
         // Revert on error
-        card.className = `task-card neutral`;
         card.querySelector('.task-actions').innerHTML = originalActions;
         showToast(err.message, 'error');
     }

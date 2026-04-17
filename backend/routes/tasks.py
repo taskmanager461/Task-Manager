@@ -54,7 +54,7 @@ def create_task(payload: TaskCreate, current_user: User = Depends(get_current_us
         priority=payload.priority or "medium",
         recurring=payload.recurring or "none",
         due_date=payload.due_date,
-        status="neutral",
+        status="pending",
         date=payload.date,
     )
     db.add(task)
@@ -78,7 +78,7 @@ def update_task_status(
         raise HTTPException(status_code=403, detail="Forbidden")
 
     if payload.status:
-        if payload.status not in {"completed", "failed", "neutral"}:
+        if payload.status not in {"completed", "failed", "pending"}:
             raise HTTPException(status_code=400, detail="Invalid task status")
         task.status = payload.status
     
