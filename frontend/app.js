@@ -781,6 +781,33 @@ function toggleTaskForm() {
     document.getElementById('task-title').value = '';
 }
 
+async function forceUpdateApp() {
+    if (confirm("This will clear all cache and reload the app. Continue?")) {
+        showLoading(true);
+        try {
+            // 1. Unregister all service workers
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (let registration of registrations) {
+                    await registration.unregister();
+                }
+            }
+            // 2. Clear all caches
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                for (let name of cacheNames) {
+                    await caches.delete(name);
+                }
+            }
+            // 3. Hard reload
+            window.location.reload(true);
+        } catch (err) {
+            console.error("Force update failed", err);
+            window.location.reload(true);
+        }
+    }
+}
+
 function showLoading(show) {
     // We only show full loading overlay for major operations like initial load or auth
     // For smaller tasks, we use skeleton or inline loaders

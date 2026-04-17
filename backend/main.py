@@ -131,6 +131,6 @@ async def serve_frontend(full_path: str):
         
     index_file = FRONTEND_DIR / "index.html"
     if index_file.exists():
-        return FileResponse(index_file)
+        return FileResponse(index_file, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
     
     return {"message": "Frontend not found. Please ensure index.html exists in the frontend directory."}
