@@ -533,7 +533,51 @@ input:focus, select:focus {
 
 .recurring-icon { opacity: 0.6; font-size: 0.9rem; }
 
-.achievements-grid {
+/* Insights Simplified */
+.insights-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+}
+
+.insight-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+}
+
+.insight-card .icon { font-size: 1.5rem; }
+.insight-card h4 { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.25rem; }
+.insight-card p { font-size: 1.1rem; font-weight: 600; color: var(--text); }
+.insight-card.error-border { border-left: 4px solid var(--error); }
+
+/* Suggestion UI */
+.suggestion-box {
+    background: rgba(59, 130, 246, 0.05);
+    border: 1px dashed var(--accent);
+    padding: var(--space-md);
+    border-radius: var(--radius);
+    margin-bottom: var(--space-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    animation: fadeIn 0.4s ease-out;
+}
+
+.suggestion-box .icon { font-size: 1.2rem; }
+.suggestion-box p { font-size: 0.9rem; font-weight: 600; color: var(--accent); }
+
+.task-risk-warning {
+    font-size: 0.75rem;
+    color: var(--error);
+    font-weight: 700;
+    margin-top: 0.5rem;
+    display: block;
+}
+
+/* Achievements grid fix */
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: var(--space-md);

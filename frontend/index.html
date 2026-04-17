@@ -132,22 +132,28 @@
             <section id="view-insights" class="view">
                 <h1 class="view-title" data-i18n="insights">Insights</h1>
                 
-                <div class="metrics-grid">
-                    <div class="metric-card card">
-                        <span class="icon">📅</span>
-                        <span class="label" data-i18n="productive_day">Productive Day</span>
-                        <span id="best-day" class="value" style="font-size: 1.5rem;">-</span>
+                <div class="insights-container">
+                    <div class="insight-card card">
+                        <span class="icon">💡</span>
+                        <div class="insight-content">
+                            <h4 data-i18n="productive_day">Most Productive Day</h4>
+                            <p id="insight-best-day">Analyzing your patterns...</p>
+                        </div>
                     </div>
-                    <div class="metric-card card">
-                        <span class="icon">⏰</span>
-                        <span class="label" data-i18n="productive_hour">Productive Hour</span>
-                        <span id="best-hour" class="value" style="font-size: 1.5rem;">-</span>
+                    <div class="insight-card card">
+                        <span class="icon">⚡</span>
+                        <div class="insight-content">
+                            <h4 data-i18n="productive_hour">Most Productive Hour</h4>
+                            <p id="insight-best-hour">Analyzing your patterns...</p>
+                        </div>
                     </div>
-                </div>
-
-                <div class="chart-container card" style="margin-top: 2rem; height: 400px;">
-                    <h3 data-i18n="trends">Completion Trends</h3>
-                    <canvas id="insights-trend-chart"></canvas>
+                    <div class="insight-card card error-border">
+                        <span class="icon">⚠️</span>
+                        <div class="insight-content">
+                            <h4 data-i18n="failure_patterns">Failure Patterns</h4>
+                            <p id="insight-failure-pattern">Analyzing your patterns...</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="settings-card card" style="margin-top: 2rem;">
@@ -162,6 +168,8 @@
             <section id="view-tasks" class="view">
                 <h1 class="view-title" data-i18n="tasks">Tasks</h1>
                 
+                <div id="smart-suggestion-container"></div>
+
                 <div class="tasks-header-actions">
                     <button onclick="toggleTaskForm()" class="btn primary" data-i18n="add_new_task">+ Add New Task</button>
                     <div class="filters-bar">
