@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -19,6 +19,10 @@ PROJECT_ROOT = Path(__file__).parent.parent
 FRONTEND_DIR = PROJECT_ROOT / "frontend"
 
 app = FastAPI(title=settings.app_name, version=settings.app_version, docs_url="/docs", redoc_url="/redoc")
+
+app.include_router(auth_router, prefix="/api")
+app.include_router(tasks_router, prefix="/api")
+app.include_router(score_router, prefix="/api")
 
 # Serve PWA files directly from /
 @app.get("/manifest.json")
@@ -49,12 +53,8 @@ async def get_css():
 async def get_js():
     return FileResponse(FRONTEND_DIR / "app.js")
 
-# Mount frontend directory for everything else
+# Mount frontend static directory
 app.mount("/static", StaticFiles(directory=FRONTEND_DIR / "static"), name="static")
-
-@app.get("/")
-async def serve_index():
-    return FileResponse(FRONTEND_DIR / "index.html")
 
 app.add_middleware(
     CORSMiddleware,
@@ -64,7 +64,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-app.include_router(auth_router)
-app.include_router(tasks_router)
-app.include_router(score_router)
+# Catch-all route for SPA behavior
+@app.get("/{full_path:path}")
+async def serve_frontend(full_path: str):
+    # If it's not an API call, serve index.html
+    if full_path.startswith("api"):
+        raise HTTPException(status_code=404, detail="API route not found")
+    
+    # Check if the file exists in frontend folder (for styles.css, app.js if not caught by direct routes)
+    file_path = FRONTEND_DIR / full_path
+    if file_path.is_file():
+        return FileResponse(file_path)
+        
+    return FileResponse(FRONTEND_DIR / "index.html")

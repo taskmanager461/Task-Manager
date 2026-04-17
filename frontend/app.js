@@ -27,7 +27,7 @@ async function checkAuth() {
     if (currentToken) {
         showLoading(true);
         try {
-            const response = await fetch(`${API_BASE_URL}/me`, {
+            const response = await fetch(`${API_BASE_URL}/api/me`, {
                 headers: { 'Authorization': `Bearer ${currentToken}` }
             });
             if (response.ok) {
@@ -74,13 +74,16 @@ function showView(viewId) {
 
 // --- API Calls ---
 async function apiFetch(endpoint, options = {}) {
+    // Ensure endpoint starts with /api/ if it doesn't already
+    const apiEndpoint = endpoint.startsWith('/api') ? endpoint : `/api${endpoint}`;
+    
     options.headers = {
         ...options.headers,
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${currentToken}`
     };
     
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+    const response = await fetch(`${API_BASE_URL}${apiEndpoint}`, options);
     if (response.status === 401) {
         logout();
         throw new Error('Session expired');
