@@ -39,12 +39,58 @@ T = TypeVar("T")
 
 
 def init_state() -> None:
-    # Handle Navigation from Query Params
+    # 1. Handle Navigation and Auth from Query Params (sent by JS persistence layer)
+    params = st.query_params
+    if "token" in params and not st.session_state.get("access_token"):
+        st.session_state.access_token = params["token"]
+        st.session_state.user_id = params.get("user_id")
+        st.session_state.username = params.get("username", "")
+        st.session_state.name = params.get("name", "")
+        # Clear params to keep URL clean
+        st.query_params.clear()
+
+    # 2. Inject JS for localStorage persistence and Auto-Login
+    components.html(
+        """
+        <script>
+        const doc = window.parent.document;
+        const urlParams = new URLSearchParams(window.parent.location.search);
+        
+        // Listen for token storage requests
+        window.parent.addEventListener("message", (event) => {
+            if (event.data.type === "set_token") {
+                localStorage.setItem("tm_access_token", event.data.token);
+                localStorage.setItem("tm_user_data", JSON.stringify(event.data.user));
+            }
+            if (event.data.type === "clear_token") {
+                localStorage.removeItem("tm_access_token");
+                localStorage.removeItem("tm_user_data");
+            }
+        });
+
+        // AUTO-LOGIN LOGIC: If no token in URL but exists in localStorage
+        if (!urlParams.has("token")) {
+            const token = localStorage.getItem("tm_access_token");
+            const userStr = localStorage.getItem("tm_user_data");
+            if (token && userStr) {
+                const user = JSON.parse(userStr);
+                const newUrl = new URL(window.parent.location.href);
+                newUrl.searchParams.set("token", token);
+                newUrl.searchParams.set("user_id", user.user_id);
+                newUrl.searchParams.set("username", user.username);
+                newUrl.searchParams.set("name", user.name);
+                window.parent.location.href = newUrl.href;
+            }
+        }
+        </script>
+        """,
+        height=0,
+    )
+
     query_menu = st.query_params.get("menu")
     if query_menu and query_menu in MENU:
         st.session_state.menu = query_menu
 
-    legacy_lang = st.session_state.get("language")
     defaults = {
         "api_url": os.getenv("API_BASE_URL", "http://127.0.0.1:8000"),
         "user_id": None,
@@ -61,10 +107,6 @@ def init_state() -> None:
     for key, value in defaults.items():
         if key not in st.session_state:
             st.session_state[key] = value
-    if legacy_lang and "lang" not in st.session_state:
-        st.session_state["lang"] = legacy_lang
-    if st.session_state["lang"] not in LANGUAGES:
-        st.session_state["lang"] = "en"
 
 
 def get_client() -> APIClient:
@@ -114,20 +156,18 @@ def call_api(
 
 
 def render_top_header() -> None:
-    st.markdown(f"<div class='main-title'>{t('app_title')}</div>", unsafe_allow_html=True)
-    st.markdown(f"<div class='main-subtitle'>{t('app_subtitle')}</div>", unsafe_allow_html=True)
+    c1, c2 = st.columns([1, 8])
+    with c1:
+        st.image("frontend/static/icon-512.png", width=80)
+    with c2:
+        st.markdown(f"<div class='main-title'>{t('app_title')}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='main-subtitle'>{t('app_subtitle')}</div>", unsafe_allow_html=True)
 
 
 def render_sidebar() -> None:
     with st.sidebar:
-        st.markdown(
-            f"""
-            <div style="text-align: center; padding: 1rem 0;">
-                <h2 style="margin:0; font-size: 1.5rem;">{t("app_title")}</h2>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        st.image("frontend/static/icon-512.png", width=80)
+        st.markdown(f"<h2 style='margin-bottom:1.5rem; color: white;'>{t('app_title')}</h2>", unsafe_allow_html=True)
         
         # Hidden Navigation Radio for Bottom Nav Speed
         # The key is "menu" so it directly updates st.session_state.menu
@@ -175,6 +215,15 @@ def render_sidebar() -> None:
                 st.session_state.user_id = None
                 st.session_state.username = ""
                 st.session_state.access_token = ""
+                # CLEAR LOCALSTORAGE
+                components.html(
+                    """
+                    <script>
+                    window.parent.postMessage({ type: "clear_token" }, "*");
+                    </script>
+                    """,
+                    height=0,
+                )
                 st.rerun()
 
 def render_bottom_nav() -> None:
@@ -256,6 +305,11 @@ def inject_pwa_support() -> None:
             m2.name = "apple-mobile-web-app-status-bar-style";
             m2.content = "black-translucent";
             doc.head.appendChild(m2);
+
+            const m3 = doc.createElement("meta");
+            m3.name = "theme-color";
+            m3.content = "#0A1F44";
+            doc.head.appendChild(m3);
           }}
 
           if (!doc.querySelector('link[rel="manifest"]')) {{
@@ -462,6 +516,24 @@ def render_auth(client: APIClient) -> None:
                     st.session_state.username = data["username"]
                     st.session_state.name = data["name"]
                     st.session_state.access_token = data.get("access_token", "")
+                    
+                    # PERSIST TO LOCALSTORAGE
+                    components.html(
+                        f"""
+                        <script>
+                        window.parent.postMessage({{
+                            type: "set_token",
+                            token: "{data['access_token']}",
+                            user: {{
+                                user_id: {data['user_id']},
+                                username: "{data['username']}",
+                                name: "{data['name']}"
+                            }}
+                        }}, "*");
+                        </script>
+                        """,
+                        height=0,
+                    )
                     st.toast(t("logged_in_success"))
                     st.rerun()
 
@@ -489,6 +561,24 @@ def render_auth(client: APIClient) -> None:
                     st.session_state.username = data["username"]
                     st.session_state.name = data["name"]
                     st.session_state.access_token = data.get("access_token", "")
+                    
+                    # PERSIST TO LOCALSTORAGE
+                    components.html(
+                        f"""
+                        <script>
+                        window.parent.postMessage({{
+                            type: "set_token",
+                            token: "{data['access_token']}",
+                            user: {{
+                                user_id: {data['user_id']},
+                                username: "{data['username']}",
+                                name: "{data['name']}"
+                            }}
+                        }}, "*");
+                        </script>
+                        """,
+                        height=0,
+                    )
                     st.toast(t("account_created"))
                     st.rerun()
 
@@ -869,44 +959,58 @@ def settings_page() -> None:
         st.session_state.name = ""
         st.session_state.access_token = ""
         st.session_state.menu = "dashboard"
+        
+        # CLEAR LOCALSTORAGE
+        components.html(
+            """
+            <script>
+            window.parent.postMessage({ type: "clear_token" }, "*");
+            </script>
+            """,
+            height=0,
+        )
         st.toast(t("logged_out"))
         st.rerun()
 
 
 def ensure_branding() -> None:
-    """Ensure TM icons exist, if not create them."""
-    icon_path = os.path.join("frontend", "static", "icon-512.png")
-    if not os.path.exists(icon_path):
-        try:
-            from PIL import Image, ImageDraw, ImageFont
-            # Strictly Deep Blue (#020617) for background, White (#ffffff) for box
-            bg_color = (2, 6, 23)
-            box_color = (255, 255, 255)
-            text_color = (2, 6, 23)
+    """Ensure TM icons exist with professional redesign."""
+    try:
+        from PIL import Image, ImageDraw
+        # Dark Blue background (#0A1F44)
+        bg_color = (10, 31, 68)
+        box_color = (255, 255, 255)
+        text_color = (10, 31, 68)
+        
+        for size in [32, 192, 512]:
+            img = Image.new('RGB', (size, size), bg_color)
+            draw = ImageDraw.Draw(img)
             
-            for size in [192, 512]:
-                img = Image.new('RGB', (size, size), bg_color)
-                draw = ImageDraw.Draw(img)
-                padding = size // 6
-                box_rect = [padding, padding, size - padding, size - padding]
-                draw.rounded_rectangle(box_rect, radius=size // 10, fill=box_color)
-                
-                # Simple text: T over M
-                try:
-                    # Try to load a bold font if possible, else default
-                    font_size = int(size * 0.35)
-                    # We don't have a guaranteed font path on Render, so we use default
-                    # For a professional look, we just use a large character
-                    draw.text((size//2.5, size//4.5), "T", fill=text_color)
-                    draw.text((size//2.5, size//2.1), "M", fill=text_color)
-                except Exception:
-                    draw.text((size//2.5, size//3), "TM", fill=text_color)
-                
-                output_path = os.path.join("frontend", "static", f"icon-{size}.png")
-                os.makedirs(os.path.dirname(output_path), exist_ok=True)
-                img.save(output_path)
-        except Exception:
-            pass
+            # 1. Draw rounded square background
+            padding = size // 10
+            draw.rounded_rectangle([padding, padding, size - padding, size - padding], radius=size // 8, fill=box_color)
+            
+            # 2. Draw checklist checkmark (very subtle)
+            check_color = (10, 31, 68, 40) # Slightly transparent dark blue
+            # Let's just stick to the text for TM as requested
+            
+            # 3. Vertical TM Stack
+            # Scale letters based on image size
+            f_size = size // 3
+            # Simple font positioning (centering)
+            # T
+            draw.text((size // 2.5, size // 4.5), "T", fill=text_color)
+            # M
+            draw.text((size // 2.5, size // 2.2), "M", fill=text_color)
+            
+            output_path = os.path.join("frontend", "static", f"icon-{size}.png")
+            if size == 32:
+                output_path = os.path.join("frontend", "static", "favicon.png")
+            
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+            img.save(output_path)
+    except Exception as e:
+        print(f"Branding generation error: {e}")
 
 def main() -> None:
     init_state()

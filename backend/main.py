@@ -35,6 +35,10 @@ async def get_manifest():
 async def get_sw():
     return FileResponse(STATIC_DIR / "sw.js")
 
+@app.get("/favicon.png")
+async def get_favicon():
+    return FileResponse(STATIC_DIR / "favicon.png")
+
 @app.get("/icon-192.png")
 async def get_icon192():
     return FileResponse(STATIC_DIR / "icon-192.png")

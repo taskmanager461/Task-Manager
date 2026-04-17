@@ -27,11 +27,11 @@ def modern_progress(label: str, ratio: float, suffix: str = "", tone: str = "aut
             tone = "neutral"
 
     if tone == "success":
-        gradient = "linear-gradient(90deg, #22c55e, #16a34a)"
+        gradient = "linear-gradient(90deg, #123A7A, #0A1F44)"
     elif tone == "warning":
-        gradient = "linear-gradient(90deg, #f59e0b, #d97706)"
+        gradient = "linear-gradient(90deg, #3b82f6, #1d4ed8)"
     elif tone == "danger":
-        gradient = "linear-gradient(90deg, #ef4444, #dc2626)"
+        gradient = "linear-gradient(90deg, #1e40af, #1e3a8a)" # NO RED - Using dark blues
     else:
         gradient = "linear-gradient(90deg, #94a3b8, #64748b)"
 
@@ -67,8 +67,8 @@ def task_card(task: dict, labels: dict[str, str]) -> None:
     }.get(status, "fa-solid fa-circle-question")
     
     status_color = {
-        "completed": "#22c55e",
-        "failed": "#ef4444",
+        "completed": "#0A1F44", # Success is dark blue
+        "failed": "#123A7A", # Failed is secondary blue (no red)
         "pending": "#94a3b8"
     }.get(status, "#94a3b8")
 

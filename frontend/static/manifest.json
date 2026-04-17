@@ -1,14 +1,19 @@
 {
   "name": "Task Manager",
-  "short_name": "Task Manager",
-  "description": "Ένας κινητήρας συνέπειας για τις υποσχέσεις που δίνετε στον εαυτό σας.",
+  "short_name": "TaskManager",
+  "description": "Professional Task Manager - Consistency Engine",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#020617",
-  "orientation": "portrait-primary",
+  "background_color": "#0A1F44",
+  "theme_color": "#0A1F44",
+  "orientation": "portrait",
   "scope": "/",
   "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
     {
       "src": "/icon-192.png",
       "sizes": "192x192",
