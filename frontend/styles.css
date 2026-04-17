@@ -354,12 +354,15 @@ input:focus, select:focus {
     transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Charts */
-.charts-section {
-    margin-top: var(--space-xl);
+/* Charts Grid */
+.chart-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: var(--space-lg);
+}
+
+@media (max-width: 1100px) {
+    .chart-grid { grid-template-columns: 1fr; }
 }
 
 .chart-container {
@@ -370,6 +373,22 @@ input:focus, select:focus {
     margin-bottom: var(--space-lg);
     font-size: 1.1rem;
     font-weight: 700;
+}
+
+canvas#weekly-trend-chart {
+    max-height: 300px !important;
+    width: 100% !important;
+}
+
+/* Multiplier Badge */
+#multiplier-badge {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; transform: scale(1.05); }
+    100% { opacity: 0.7; }
 }
 
 /* Tasks */
@@ -455,8 +474,66 @@ input:focus, select:focus {
 .empty-state-title { font-size: 1.25rem; font-weight: 700; color: var(--text); margin-bottom: var(--space-xs); }
 .empty-state-text { font-size: 1rem; margin-bottom: var(--space-lg); }
 
-/* Responsive */
-@media (max-width: 900px) {
+/* Tasks Header & Filters */
+.tasks-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+}
+
+.filters-bar {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.filters-bar select {
+    padding: 0.5rem var(--space-md);
+    min-height: 40px;
+    font-size: 0.9rem;
+    width: auto;
+}
+
+/* Priority Badges */
+.priority-badge {
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-left: 0.5rem;
+}
+
+.priority-high { background: rgba(239, 68, 68, 0.1); color: var(--error); }
+.priority-medium { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+.priority-low { background: rgba(59, 130, 246, 0.1); color: var(--accent); }
+
+/* Overdue Badge */
+.overdue-badge {
+    color: var(--error);
+    font-weight: 700;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Task Info Extended */
+.task-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-top: 0.25rem;
+}
+
+.recurring-icon { opacity: 0.6; font-size: 0.9rem; }
+
+/* Responsive Tasks */
+@media (max-width: 600px) {
+    .tasks-header-actions { flex-direction: column; align-items: stretch; }
+    .filters-bar { overflow-x: auto; padding-bottom: 0.5rem; }
+}
     .page.active { flex-direction: column; }
     #sidebar {
         width: 100%;

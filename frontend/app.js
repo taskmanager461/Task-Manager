@@ -7,6 +7,7 @@ let currentToken = localStorage.getItem('tm_access_token');
 let isDarkMode = localStorage.getItem('tm_dark_mode') === '1';
 let currentLang = localStorage.getItem('tm_lang') || 'en';
 let taskChart = null;
+let trendChart = null;
 
 const translations = {
     en: {
@@ -38,6 +39,18 @@ const translations = {
         hard: "Hard",
         cancel: "Cancel",
         add_task: "Add Task",
+        priority: "Priority",
+        low: "Low",
+        medium: "Medium",
+        high: "High",
+        recurring: "Recurring",
+        none: "None",
+        daily: "Daily",
+        weekly: "Weekly",
+        due_date: "Due Date",
+        overdue: "Overdue",
+        all: "All",
+        filter_by: "Filter by",
         theme: "Theme",
         toggle_dark: "Toggle Dark Mode",
         language: "Language",
@@ -81,6 +94,18 @@ const translations = {
         hard: "Δύσκολο",
         cancel: "Ακύρωση",
         add_task: "Προσθήκη",
+        priority: "Προτεραιότητα",
+        low: "Χαμηλή",
+        medium: "Μεσαία",
+        high: "Υψηλή",
+        recurring: "Επανάληψη",
+        none: "Καμία",
+        daily: "Καθημερινά",
+        weekly: "Εβδομαδιαία",
+        due_date: "Προθεσμία",
+        overdue: "Εκπρόθεσμο",
+        all: "Όλα",
+        filter_by: "Φίλτρο",
         theme: "Θέμα",
         toggle_dark: "Εναλλαγή Dark Mode",
         language: "Γλώσσα",
@@ -522,12 +547,97 @@ async function loadDashboard() {
         document.getElementById('success-value').textContent = `${(score.success_rate * 100).toFixed(0)}%`;
         document.getElementById('daily-progress-fill').style.width = `${score.success_rate * 100}%`;
 
-        // Fetch tasks to update chart
+        // Update Multiplier Badge
+        const multBadge = document.getElementById('multiplier-badge');
+        if (score.multiplier > 1.0) {
+            multBadge.textContent = `${score.multiplier.toFixed(1)}x Boost`;
+            multBadge.style.display = 'inline-block';
+        } else {
+            multBadge.style.display = 'none';
+        }
+
+        // Fetch tasks to update pie chart
         const tasks = await apiFetch(`/tasks?user_id=${currentUser.user_id}&day=${today}`);
         updateTaskChart(tasks);
+        
+        // Load Weekly Trend
+        loadWeeklyTrend();
     } catch (err) {
         console.error('Dashboard load failed', err);
     }
+}
+
+async function loadWeeklyTrend() {
+    try {
+        const scores = await apiFetch(`/score/history?user_id=${currentUser.user_id}&days=7`);
+        updateTrendChart(scores);
+    } catch (err) {
+        console.error('Trend load failed', err);
+    }
+}
+
+function updateTrendChart(history) {
+    const ctx = document.getElementById('weekly-trend-chart').getContext('2d');
+    if (trendChart) trendChart.destroy();
+
+    const labels = history.map(s => s.date.split('-').slice(1).reverse().join('/'));
+    const data = history.map(s => s.score);
+
+    const colors = isDarkMode ? {
+        line: '#3b82f6',
+        text: '#ffffff',
+        grid: '#1e293b'
+    } : {
+        line: '#020617',
+        text: '#020617',
+        grid: '#e2e8f0'
+    };
+
+    trendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: t('trust_score'),
+                data: data,
+                borderColor: colors.line,
+                backgroundColor: colors.line + '20',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 4,
+                pointHoverRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    padding: 10,
+                    backgroundColor: isDarkMode ? '#0f172a' : '#ffffff',
+                    titleColor: colors.text,
+                    bodyColor: colors.text,
+                    borderColor: colors.line,
+                    borderWidth: 1
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 150,
+                    grid: { color: colors.grid },
+                    ticks: { color: colors.text }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: colors.text }
+                }
+            }
+        }
+    });
 }
 
 function updateTaskChart(tasks) {
@@ -614,7 +724,11 @@ function updateTaskChart(tasks) {
 async function loadTasks() {
     const list = document.getElementById('task-list');
     
-    // Show skeletons if it's the first load or if the list is empty
+    // Get filter values
+    const priority = document.getElementById('filter-priority').value;
+    const status = document.getElementById('filter-status').value;
+
+    // Show skeletons
     if (list.innerHTML === '' || list.querySelector('.empty-state')) {
         list.innerHTML = `
             <div class="task-card skeleton" style="height: 80px; opacity: 0.6;"></div>
@@ -625,7 +739,11 @@ async function loadTasks() {
 
     try {
         const today = new Date().toISOString().split('T')[0];
-        const tasks = await apiFetch(`/tasks?user_id=${currentUser.user_id}&day=${today}`);
+        let url = `/tasks?user_id=${currentUser.user_id}&day=${today}`;
+        if (priority) url += `&priority=${priority}`;
+        if (status) url += `&status=${status}`;
+
+        const tasks = await apiFetch(url);
         renderTasks(tasks);
     } catch (err) {
         console.error('Tasks load failed', err);
@@ -649,13 +767,37 @@ function renderTasks(tasks) {
     }
     
     list.innerHTML = '';
+    const today = new Date();
+    today.setHours(0,0,0,0);
+
     tasks.forEach(task => {
         const card = document.createElement('div');
         card.className = `task-card ${task.status}`;
+        
+        // Check overdue
+        let overdueHtml = '';
+        if (task.status === 'pending' && task.due_date) {
+            const dueDate = new Date(task.due_date);
+            if (dueDate < today) {
+                overdueHtml = `<span class="overdue-badge">⚠️ ${t('overdue')}</span>`;
+            }
+        }
+
+        // Recurring icon
+        const recurringIcon = task.recurring !== 'none' ? `<span class="recurring-icon" title="${t(task.recurring)}">🔄</span>` : '';
+
         card.innerHTML = `
             <div class="task-info">
-                <h3>${task.title}</h3>
-                <p>${task.category} | ${t(task.difficulty)}</p>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <h3>${task.title}</h3>
+                    <span class="priority-badge priority-${task.priority}">${t(task.priority)}</span>
+                </div>
+                <div class="task-meta">
+                    <p>${task.category} | ${t(task.difficulty)}</p>
+                    ${recurringIcon}
+                    ${task.due_date ? `<p>📅 ${task.due_date}</p>` : ''}
+                    ${overdueHtml}
+                </div>
             </div>
             <div class="task-actions">
                 ${task.status === 'pending' ? `
@@ -669,10 +811,13 @@ function renderTasks(tasks) {
 }
 
 async function addTask(title, category, difficulty) {
+    const priority = document.getElementById('task-priority').value;
+    const recurring = document.getElementById('task-recurring').value;
+    const dueDate = document.getElementById('task-due-date').value;
+
     const submitBtn = document.querySelector('#add-task-form button[type="submit"]');
     const originalText = submitBtn.innerHTML;
     
-    // Disable and show loading
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span>⏳</span> Processing...';
     
@@ -683,6 +828,8 @@ async function addTask(title, category, difficulty) {
             body: JSON.stringify({ 
                 user_id: currentUser.user_id,
                 title, category, difficulty,
+                priority, recurring,
+                due_date: dueDate || null,
                 date: today 
             })
         });

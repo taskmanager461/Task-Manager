@@ -16,6 +16,9 @@ router = APIRouter(tags=["tasks"])
 def get_tasks(
     user_id: int | None = Query(default=None),
     day: date = Query(...),
+    category: str | None = Query(default=None),
+    priority: str | None = Query(default=None),
+    status: str | None = Query(default=None),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -23,12 +26,16 @@ def get_tasks(
     if target_user_id != current_user.id:
         raise HTTPException(status_code=403, detail="Forbidden")
 
-    tasks = (
-        db.query(Task)
-        .filter(Task.user_id == target_user_id, Task.date == day)
-        .order_by(Task.created_at.asc())
-        .all()
-    )
+    query = db.query(Task).filter(Task.user_id == target_user_id, Task.date == day)
+    
+    if category:
+        query = query.filter(Task.category == category.lower())
+    if priority:
+        query = query.filter(Task.priority == priority)
+    if status:
+        query = query.filter(Task.status == status)
+
+    tasks = query.order_by(Task.created_at.asc()).all()
     return tasks
 
 
@@ -43,6 +50,9 @@ def create_task(payload: TaskCreate, current_user: User = Depends(get_current_us
         title=payload.title,
         category=payload.category.lower(),
         difficulty=payload.difficulty,
+        priority=payload.priority,
+        recurring=payload.recurring,
+        due_date=payload.due_date,
         status="pending",
         date=payload.date,
     )
@@ -66,10 +76,16 @@ def update_task_status(
     if task.user_id != current_user.id:
         raise HTTPException(status_code=403, detail="Forbidden")
 
-    if payload.status not in {"completed", "failed", "pending"}:
-        raise HTTPException(status_code=400, detail="Invalid task status")
+    if payload.status:
+        if payload.status not in {"completed", "failed", "pending"}:
+            raise HTTPException(status_code=400, detail="Invalid task status")
+        task.status = payload.status
+    
+    if payload.priority:
+        if payload.priority not in {"low", "medium", "high"}:
+            raise HTTPException(status_code=400, detail="Invalid priority")
+        task.priority = payload.priority
 
-    task.status = payload.status
     db.commit()
     db.refresh(task)
 

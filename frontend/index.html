@@ -96,15 +96,24 @@
                     </div>
                 </div>
                 <div class="progress-section">
-                    <label data-i18n="daily_progress">Daily Progress</label>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <label data-i18n="daily_progress" style="margin: 0;">Daily Progress</label>
+                        <span id="multiplier-badge" class="priority-badge priority-low" style="display:none">1.0x Boost</span>
+                    </div>
                     <div class="progress-bar"><div id="daily-progress-fill" style="width: 0%"></div></div>
                 </div>
 
                 <div class="charts-section">
                     <h2 class="view-subtitle" data-i18n="statistics">Statistics</h2>
-                    <div class="chart-container">
-                        <h3 data-i18n="task_distribution">Task Distribution</h3>
-                        <canvas id="task-pie-chart"></canvas>
+                    <div class="chart-grid">
+                        <div class="chart-container">
+                            <h3 data-i18n="task_distribution">Task Distribution</h3>
+                            <canvas id="task-pie-chart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3 data-i18n="weekly_trend">Weekly Trend</h3>
+                            <canvas id="weekly-trend-chart"></canvas>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -112,12 +121,30 @@
             <!-- Tasks View -->
             <section id="view-tasks" class="view">
                 <h1 class="view-title" data-i18n="tasks">Tasks</h1>
-                <button onclick="toggleTaskForm()" class="btn primary full-width" data-i18n="add_new_task">+ Add New Task</button>
+                
+                <div class="tasks-header-actions">
+                    <button onclick="toggleTaskForm()" class="btn primary" data-i18n="add_new_task">+ Add New Task</button>
+                    <div class="filters-bar">
+                        <select id="filter-priority" onchange="loadTasks()">
+                            <option value="" data-i18n="all">All Priorities</option>
+                            <option value="high" data-i18n="high">High</option>
+                            <option value="medium" data-i18n="medium">Medium</option>
+                            <option value="low" data-i18n="low">Low</option>
+                        </select>
+                        <select id="filter-status" onchange="loadTasks()">
+                            <option value="" data-i18n="all">All Status</option>
+                            <option value="pending" data-i18n="pending">Pending</option>
+                            <option value="completed" data-i18n="completed">Completed</option>
+                            <option value="failed" data-i18n="failed">Failed</option>
+                        </select>
+                    </div>
+                </div>
                 
                 <div id="task-form-container" class="task-form-modal">
                     <form id="add-task-form">
                         <h3 data-i18n="new_task">New Task</h3>
                         <input type="text" id="task-title" data-i18n="task_placeholder" placeholder="What needs to be done?" required>
+                        
                         <div class="form-row">
                             <div class="form-group">
                                 <label data-i18n="category">Category</label>
@@ -127,11 +154,36 @@
                                 <label data-i18n="difficulty">Difficulty</label>
                                 <select id="task-difficulty">
                                     <option value="easy" data-i18n="easy">Easy</option>
-                                    <option value="medium" data-i18n="medium">Medium</option>
+                                    <option value="medium" data-i18n="medium" selected>Medium</option>
                                     <option value="hard" data-i18n="hard">Hard</option>
                                 </select>
                             </div>
                         </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label data-i18n="priority">Priority</label>
+                                <select id="task-priority">
+                                    <option value="low" data-i18n="low">Low</option>
+                                    <option value="medium" data-i18n="medium" selected>Medium</option>
+                                    <option value="high" data-i18n="high">High</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label data-i18n="recurring">Recurring</label>
+                                <select id="task-recurring">
+                                    <option value="none" data-i18n="none" selected>None</option>
+                                    <option value="daily" data-i18n="daily">Daily</option>
+                                    <option value="weekly" data-i18n="weekly">Weekly</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label data-i18n="due_date">Due Date</label>
+                            <input type="date" id="task-due-date">
+                        </div>
+
                         <div class="form-actions">
                             <button type="button" onclick="toggleTaskForm()" class="btn secondary" data-i18n="cancel">Cancel</button>
                             <button type="submit" class="btn primary" data-i18n="add_task">Add Task</button>

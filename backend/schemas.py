@@ -38,16 +38,23 @@ class UserResponse(BaseModel):
     created_at: datetime
 
 
+Priority = Literal["low", "medium", "high"]
+Recurring = Literal["none", "daily", "weekly"]
+
 class TaskCreate(BaseModel):
     user_id: Optional[int] = None
     title: str = Field(min_length=2, max_length=255)
     category: str = Field(min_length=2, max_length=50)
     difficulty: Difficulty
+    priority: Priority = "medium"
+    recurring: Recurring = "none"
+    due_date: Optional[date] = None
     date: date
 
 
 class TaskUpdate(BaseModel):
-    status: TaskStatus
+    status: Optional[TaskStatus] = None
+    priority: Optional[Priority] = None
 
 
 class TaskResponse(BaseModel):
@@ -58,6 +65,9 @@ class TaskResponse(BaseModel):
     title: str
     category: str
     difficulty: Difficulty
+    priority: Priority
+    recurring: Recurring
+    due_date: Optional[date]
     status: TaskStatus
     date: date
     created_at: datetime
