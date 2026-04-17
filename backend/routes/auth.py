@@ -13,23 +13,31 @@ router = APIRouter(tags=["auth"])
 
 @router.post("/signup", response_model=AuthResponse)
 def signup(payload: SignupRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
-    existing_user = db.query(User).filter(User.username == payload.username).first()
+    # Normalize input
+    username = payload.username.strip().lower()
+    email = payload.email.strip().lower()
+
+    existing_user = db.query(User).filter(User.username == username).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Username already exists")
 
-    existing_email = db.query(User).filter(User.email == payload.email).first()
+    existing_email = db.query(User).filter(User.email == email).first()
     if existing_email:
         raise HTTPException(status_code=400, detail="Email already exists")
 
-    user = User(
-        username=payload.username,
-        email=payload.email,
-        password=hash_password(payload.password),
-        name=payload.name,
-    )
-    db.add(user)
-    db.commit()
-    db.refresh(user)
+    try:
+        user = User(
+            username=username,
+            email=email,
+            password=hash_password(payload.password),
+            name=payload.name.strip(),
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail="Could not create user. Please try again.")
 
     access_token = create_access_token(user_id=user.id, username=user.username)
     background_tasks.add_task(send_signup_confirmation, user.email, user.name)

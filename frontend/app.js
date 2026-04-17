@@ -463,6 +463,7 @@ async function apiFetch(endpoint, options = {}) {
 // --- Auth Actions ---
 async function login(username, password) {
     showLoading(true);
+    showAuthError(''); // Clear previous errors
     try {
         const data = await apiFetch('/login', {
             method: 'POST',
@@ -479,6 +480,7 @@ async function login(username, password) {
 
 async function signup(name, username, email, password) {
     showLoading(true);
+    showAuthError(''); // Clear previous errors
     try {
         const data = await apiFetch('/signup', {
             method: 'POST',
