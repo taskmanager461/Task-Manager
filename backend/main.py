@@ -3,7 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import os
+import logging
 from pathlib import Path
+from contextlib import asynccontextmanager
 
 from backend.database import Base, engine
 from backend.routes.auth import router as auth_router
@@ -11,14 +13,38 @@ from backend.routes.score import router as score_router
 from backend.routes.tasks import router as tasks_router
 from config.settings import get_settings
 
-Base.metadata.create_all(bind=engine)
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: Initialize database
+    logger.info("Starting up and initializing database...")
+    try:
+        Base.metadata.create_all(bind=engine)
+        logger.info("Database initialized successfully.")
+    except Exception as e:
+        logger.error(f"Database initialization failed: {e}")
+        # In some cases we might want to continue even if DB fails
+        # but for this app, DB is critical. 
+    yield
+    # Shutdown: Clean up if needed
+    logger.info("Shutting down...")
+
 settings = get_settings()
 
 # Define static path (relative to project root)
 PROJECT_ROOT = Path(__file__).parent.parent
 FRONTEND_DIR = PROJECT_ROOT / "frontend"
 
-app = FastAPI(title=settings.app_name, version=settings.app_version, docs_url="/docs", redoc_url="/redoc")
+app = FastAPI(
+    title=settings.app_name, 
+    version=settings.app_version, 
+    docs_url="/docs", 
+    redoc_url="/redoc",
+    lifespan=lifespan
+)
 
 app.include_router(auth_router, prefix="/api")
 app.include_router(tasks_router, prefix="/api")

@@ -4,7 +4,7 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 from config.settings import get_settings
 
 settings = get_settings()
-DATABASE_URL = settings.pg_url
+DATABASE_URL = settings.pg_url or "sqlite:///./self_trust.db"
 
 connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
 
