@@ -64,6 +64,10 @@ app.include_router(auth_router, prefix="/api")
 app.include_router(tasks_router, prefix="/api")
 app.include_router(score_router, prefix="/api")
 
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
+
 # Serve PWA files directly from /
 @app.get("/manifest.json")
 async def get_manifest():

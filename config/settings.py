@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     @property
     def pg_url(self) -> str:
         # Handle Render/Heroku 'postgres://' vs SQLAlchemy 'postgresql://'
-        if not self.database_url:
+        if not self.database_url or self.database_url.startswith("http"):
             return "sqlite:///./self_trust.db"
         
         if self.database_url.startswith("postgres://"):
