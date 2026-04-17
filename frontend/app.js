@@ -610,19 +610,43 @@ function updateTaskChart(tasks) {
 
 // --- Tasks Logic ---
 async function loadTasks() {
+    const list = document.getElementById('task-list');
+    
+    // Show skeletons if it's the first load or if the list is empty
+    if (list.innerHTML === '' || list.querySelector('.empty-state')) {
+        list.innerHTML = `
+            <div class="task-card skeleton" style="height: 80px; opacity: 0.6;"></div>
+            <div class="task-card skeleton" style="height: 80px; opacity: 0.4;"></div>
+            <div class="task-card skeleton" style="height: 80px; opacity: 0.2;"></div>
+        `;
+    }
+
     try {
         const today = new Date().toISOString().split('T')[0];
         const tasks = await apiFetch(`/tasks?user_id=${currentUser.user_id}&day=${today}`);
         renderTasks(tasks);
     } catch (err) {
         console.error('Tasks load failed', err);
+        list.innerHTML = `<div class="empty-state"><p class="error-msg">${t('error_occurred')}</p></div>`;
     }
 }
 
 function renderTasks(tasks) {
     const list = document.getElementById('task-list');
-    list.innerHTML = tasks.length ? '' : `<p class="muted">${t('no_tasks')}</p>`;
     
+    if (!tasks || tasks.length === 0) {
+        list.innerHTML = `
+            <div class="empty-state">
+                <span class="empty-state-icon">📝</span>
+                <h3 class="empty-state-title">${t('no_tasks')}</h3>
+                <p class="empty-state-text">Start by adding your first task for today.</p>
+                <button onclick="toggleTaskForm()" class="btn primary">${t('add_new_task')}</button>
+            </div>
+        `;
+        return;
+    }
+    
+    list.innerHTML = '';
     tasks.forEach(task => {
         const card = document.createElement('div');
         card.className = `task-card ${task.status}`;
@@ -633,9 +657,9 @@ function renderTasks(tasks) {
             </div>
             <div class="task-actions">
                 ${task.status === 'pending' ? `
-                    <button class="btn secondary" onclick="updateTask(${task.id}, 'completed')" title="${t('completed')}">✅</button>
-                    <button class="btn secondary" onclick="updateTask(${task.id}, 'failed')" title="${t('failed')}">❌</button>
-                ` : `<span>${task.status === 'completed' ? '✅' : '❌'}</span>`}
+                    <button class="btn secondary" onclick="handleTaskUpdate(${task.id}, 'completed', this)" title="${t('completed')}">✅</button>
+                    <button class="btn secondary" onclick="handleTaskUpdate(${task.id}, 'failed', this)" title="${t('failed')}">❌</button>
+                ` : `<span class="status-icon">${task.status === 'completed' ? '✅' : '❌'}</span>`}
             </div>
         `;
         list.appendChild(card);
@@ -643,7 +667,13 @@ function renderTasks(tasks) {
 }
 
 async function addTask(title, category, difficulty) {
-    showLoading(true);
+    const submitBtn = document.querySelector('#add-task-form button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    
+    // Disable and show loading
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span>⏳</span> Processing...';
+    
     try {
         const today = new Date().toISOString().split('T')[0];
         await apiFetch('/tasks', {
@@ -658,23 +688,38 @@ async function addTask(title, category, difficulty) {
         loadTasks();
         showToast(t('task_added'), 'success');
     } catch (err) {
-        // Error already handled by apiFetch toast
+        // Error toast handled by apiFetch
     } finally {
-        showLoading(false);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
     }
 }
 
-async function updateTask(taskId, status) {
+async function handleTaskUpdate(taskId, status, btnEl) {
+    // Instant visual feedback
+    const card = btnEl.closest('.task-card');
+    const originalActions = card.querySelector('.task-actions').innerHTML;
+    
+    // Disable and show mini-loader
+    btnEl.disabled = true;
+    card.querySelector('.task-actions').innerHTML = '<span>⏳</span>';
+    
     try {
         await apiFetch(`/tasks/${taskId}`, {
             method: 'PATCH',
             body: JSON.stringify({ status })
         });
-        loadTasks();
-        loadDashboard(); // Update score too
+        
+        // Success state
+        card.className = `task-card ${status}`;
+        card.querySelector('.task-actions').innerHTML = `<span>${status === 'completed' ? '✅' : '❌'}</span>`;
+        
+        loadDashboard(); // Update score in background
         showToast(t('task_updated'), 'success');
     } catch (err) {
-        // Error already handled by apiFetch toast
+        // Revert on error
+        card.querySelector('.task-actions').innerHTML = originalActions;
+        showToast(err.message, 'error');
     }
 }
 
@@ -737,7 +782,10 @@ function toggleTaskForm() {
 }
 
 function showLoading(show) {
-    document.getElementById('loading-overlay').classList.toggle('active', show);
+    // We only show full loading overlay for major operations like initial load or auth
+    // For smaller tasks, we use skeleton or inline loaders
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay) overlay.classList.toggle('active', show);
 }
 
 // --- PWA Service Worker Registration ---
