@@ -2,12 +2,14 @@
   "name": "Task Manager",
   "short_name": "TaskManager",
   "description": "Professional Task Manager - Consistency Engine",
+  "id": "/",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0A1F44",
   "theme_color": "#0A1F44",
   "orientation": "portrait",
   "scope": "/",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/favicon.png",

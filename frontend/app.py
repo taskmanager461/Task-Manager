@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from datetime import date, datetime, timedelta
+from pathlib import Path
 from typing import Any, Callable, TypeVar
 
 import pandas as pd
@@ -26,7 +27,11 @@ except ModuleNotFoundError:
     from services.insights import build_weekly_insight
     from services.notifications import build_time_notifications
 
-st.set_page_config(page_title=translate("en", "app_title"), page_icon="🎯", layout="wide")
+st.set_page_config(
+    page_title=translate("en", "app_title"),
+    page_icon="frontend/static/favicon.png",
+    layout="wide",
+)
 
 MENU = {
     "dashboard": "menu_dashboard",
@@ -39,58 +44,6 @@ T = TypeVar("T")
 
 
 def init_state() -> None:
-    # 1. Handle Navigation and Auth from Query Params (sent by JS persistence layer)
-    params = st.query_params
-    if "token" in params and not st.session_state.get("access_token"):
-        st.session_state.access_token = params["token"]
-        st.session_state.user_id = params.get("user_id")
-        st.session_state.username = params.get("username", "")
-        st.session_state.name = params.get("name", "")
-        # Clear params to keep URL clean
-        st.query_params.clear()
-
-    # 2. Inject JS for localStorage persistence and Auto-Login
-    components.html(
-        """
-        <script>
-        const doc = window.parent.document;
-        const urlParams = new URLSearchParams(window.parent.location.search);
-        
-        // Listen for token storage requests
-        window.parent.addEventListener("message", (event) => {
-            if (event.data.type === "set_token") {
-                localStorage.setItem("tm_access_token", event.data.token);
-                localStorage.setItem("tm_user_data", JSON.stringify(event.data.user));
-            }
-            if (event.data.type === "clear_token") {
-                localStorage.removeItem("tm_access_token");
-                localStorage.removeItem("tm_user_data");
-            }
-        });
-
-        // AUTO-LOGIN LOGIC: If no token in URL but exists in localStorage
-        if (!urlParams.has("token")) {
-            const token = localStorage.getItem("tm_access_token");
-            const userStr = localStorage.getItem("tm_user_data");
-            if (token && userStr) {
-                const user = JSON.parse(userStr);
-                const newUrl = new URL(window.parent.location.href);
-                newUrl.searchParams.set("token", token);
-                newUrl.searchParams.set("user_id", user.user_id);
-                newUrl.searchParams.set("username", user.username);
-                newUrl.searchParams.set("name", user.name);
-                window.parent.location.href = newUrl.href;
-            }
-        }
-        </script>
-        """,
-        height=0,
-    )
-
-    query_menu = st.query_params.get("menu")
-    if query_menu and query_menu in MENU:
-        st.session_state.menu = query_menu
-
     defaults = {
         "api_url": os.getenv("API_BASE_URL", "http://127.0.0.1:8000"),
         "user_id": None,
@@ -103,11 +56,79 @@ def init_state() -> None:
         "last_daily_summary": "",
         "notifications": [],
         "install_prompt_requested": False,
+        "_session_verified_token": "",
     }
     for key, value in defaults.items():
         if key not in st.session_state:
             st.session_state[key] = value
 
+    params = st.query_params
+    theme_param = params.get("theme")
+    if isinstance(theme_param, str):
+        st.session_state.dark_mode = theme_param.lower() == "dark"
+
+    if "token" in params and not st.session_state.get("access_token"):
+        st.session_state.access_token = str(params.get("token") or "")
+        st.session_state.user_id = params.get("user_id")
+        st.session_state.username = str(params.get("username") or "")
+        st.session_state.name = str(params.get("name") or "")
+        st.query_params.clear()
+
+    # 2. Inject JS for localStorage persistence and Auto-Login
+    components.html(
+        """
+        <script>
+        const doc = window.parent.document;
+        const urlParams = new URLSearchParams(window.parent.location.search);
+        
+        // Listen for storage requests
+        window.parent.addEventListener("message", (event) => {
+            if (event.data.type === "set_token") {
+                localStorage.setItem("tm_access_token", event.data.token);
+                localStorage.setItem("tm_user_data", JSON.stringify(event.data.user));
+            }
+            if (event.data.type === "clear_token") {
+                localStorage.removeItem("tm_access_token");
+                localStorage.removeItem("tm_user_data");
+            }
+            if (event.data.type === "set_dark_mode") {
+                localStorage.setItem("tm_dark_mode", event.data.value ? "1" : "0");
+            }
+        });
+
+        // AUTO-LOGIN LOGIC: If no token in URL but exists in localStorage
+        if (!urlParams.has("token") || !urlParams.has("theme")) {
+            let changed = false;
+            const newUrl = new URL(window.parent.location.href);
+            const token = localStorage.getItem("tm_access_token");
+            const userStr = localStorage.getItem("tm_user_data");
+            if (!urlParams.has("token") && token && userStr) {
+                const user = JSON.parse(userStr);
+                newUrl.searchParams.set("token", token);
+                newUrl.searchParams.set("user_id", user.user_id);
+                newUrl.searchParams.set("username", user.username);
+                newUrl.searchParams.set("name", user.name);
+                changed = true;
+            }
+            if (!urlParams.has("theme")) {
+                const dm = localStorage.getItem("tm_dark_mode");
+                if (dm === "1" || dm === "0") {
+                    newUrl.searchParams.set("theme", dm === "1" ? "dark" : "light");
+                    changed = true;
+                }
+            }
+            if (changed) {
+                window.parent.location.href = newUrl.href;
+            }
+        }
+        </script>
+        """,
+        height=0,
+    )
+
+    query_menu = st.query_params.get("menu")
+    if query_menu and query_menu in MENU:
+        st.session_state.menu = query_menu
 
 def get_client() -> APIClient:
     client = APIClient(st.session_state.api_url)
@@ -189,32 +210,34 @@ def render_sidebar() -> None:
         st.divider()
         
         # Move Theme & Language settings here
-        selected_dark = st.toggle(t("dark_mode"), value=st.session_state.dark_mode, key="sidebar_dark_mode")
-        if selected_dark != st.session_state.dark_mode:
-            st.session_state.dark_mode = selected_dark
-            st.toast(t("theme_updated"))
-            st.rerun()
+        st.toggle(t("dark_mode"), key="dark_mode")
+        components.html(
+            f"""
+            <script>
+            window.parent.postMessage({{ type: "set_dark_mode", value: {str(bool(st.session_state.dark_mode)).lower()} }}, "*");
+            </script>
+            """,
+            height=0,
+        )
 
-        selected_language = st.selectbox(
+        st.selectbox(
             t("language"),
             list(LANGUAGES.keys()),
             index=list(LANGUAGES.keys()).index(st.session_state["lang"]),
             format_func=lambda code: LANGUAGES[code],
-            key="sidebar_language",
+            key="lang",
         )
-        if selected_language != st.session_state["lang"]:
-            st.session_state["lang"] = selected_language
-            st.toast(t("language_updated"))
-            st.rerun()
 
         st.divider()
         render_install_button()
         
         if st.session_state.username:
-            if st.button(t("nav_logout"), use_container_width=True, type="secondary"):
+            if st.button(t("nav_logout"), use_container_width=True, type="secondary", key="sidebar_logout"):
                 st.session_state.user_id = None
                 st.session_state.username = ""
+                st.session_state.name = ""
                 st.session_state.access_token = ""
+                st.session_state._session_verified_token = ""
                 # CLEAR LOCALSTORAGE
                 components.html(
                     """
@@ -224,7 +247,7 @@ def render_sidebar() -> None:
                     """,
                     height=0,
                 )
-                st.rerun()
+                st.cache_data.clear()
 
 def render_bottom_nav() -> None:
     active_menu = st.session_state.menu
@@ -311,6 +334,12 @@ def inject_pwa_support() -> None:
             m3.content = "#0A1F44";
             doc.head.appendChild(m3);
           }}
+          if (!doc.querySelector('link[rel="apple-touch-icon"]')) {{
+            const iconLink = doc.createElement("link");
+            iconLink.rel = "apple-touch-icon";
+            iconLink.href = "{api_url}/icon-192.png";
+            doc.head.appendChild(iconLink);
+          }}
 
           if (!doc.querySelector('link[rel="manifest"]')) {{
             const link = doc.createElement("link");
@@ -319,31 +348,30 @@ def inject_pwa_support() -> None:
             doc.head.appendChild(link);
           }}
 
-          if ("serviceWorker" in navigator) {{
-            window.addEventListener('load', function() {{
-              navigator.serviceWorker.register("{api_url}/sw.js").then(function(reg) {{
-                console.log('SW registered');
-              }}).catch(function(err) {{
-                console.log('SW failed', err);
+          if (!window.parent._tm_pwa_bootstrap) {{
+            window.parent._tm_pwa_bootstrap = true;
+
+            if ("serviceWorker" in navigator) {{
+              window.addEventListener('load', function() {{
+                navigator.serviceWorker.register("{api_url}/sw.js").then(function() {{
+                  console.log('SW registered');
+                }}).catch(function(err) {{
+                  console.log('SW failed', err);
+                }});
               }});
+            }}
+
+            // PWA Install Capture
+            window.parent.deferredPrompt = null;
+            window.parent.addEventListener("beforeinstallprompt", function (e) {{
+              e.preventDefault();
+              window.parent.deferredPrompt = e;
+              const event = new CustomEvent('pwa-prompt-ready');
+              window.parent.dispatchEvent(event);
+              const btn = doc.getElementById("pwa-install-btn");
+              if (btn) btn.style.display = "block";
             }});
           }}
-
-          // PWA Install Capture
-          window.parent.deferredPrompt = null;
-          window.parent.addEventListener("beforeinstallprompt", function (e) {{
-            console.log("SUCCESS: beforeinstallprompt event fired!");
-            e.preventDefault();
-            window.parent.deferredPrompt = e;
-            
-            // Dispatch a custom event to notify Streamlit component if it's already rendered
-            const event = new CustomEvent('pwa-prompt-ready');
-            window.parent.dispatchEvent(event);
-            
-            // Auto-update any visible buttons
-            const btn = doc.getElementById("pwa-install-btn");
-            if (btn) btn.style.display = "block";
-          }});
 
           // SPEED OPTIMIZATION: Instant Navigation
           if (!window.parent._task_manager_nav_set) {{
@@ -387,7 +415,7 @@ def render_install_button() -> None:
                 {t("mobile_install")}
             </button>
             <div id="install-help-ios" style="display:none; font-size: 1rem; color: #ffffff; margin-top: 15px; padding: 20px; background: rgba(255, 255, 255, 0.1); border-radius: 20px; border: 1px dashed #ffffff;">
-                <i class="fa-solid fa-share-from-square"></i> {t("mobile_install_help_ios") if "mobile_install_help_ios" in LANGUAGES[st.session_state.lang] else "Tap Share and 'Add to Home Screen'"}
+                <i class="fa-solid fa-share-from-square"></i> {t("mobile_install_help_ios")}
             </div>
             <div id="install-help-generic" style="display:none; font-size: 0.9rem; color: #94a3b8; margin-top: 10px; padding: 15px;">
                 <i class="fa-solid fa-circle-info"></i> {t("mobile_install_help")}
@@ -512,10 +540,12 @@ def render_auth(client: APIClient) -> None:
                 if err:
                     st.error(err)
                 elif data:
+                    st.cache_data.clear()
                     st.session_state.user_id = data["user_id"]
                     st.session_state.username = data["username"]
                     st.session_state.name = data["name"]
                     st.session_state.access_token = data.get("access_token", "")
+                    st.session_state._session_verified_token = st.session_state.access_token
                     
                     # PERSIST TO LOCALSTORAGE
                     components.html(
@@ -557,10 +587,12 @@ def render_auth(client: APIClient) -> None:
                 if err:
                     st.error(err)
                 elif data:
+                    st.cache_data.clear()
                     st.session_state.user_id = data["user_id"]
                     st.session_state.username = data["username"]
                     st.session_state.name = data["name"]
                     st.session_state.access_token = data.get("access_token", "")
+                    st.session_state._session_verified_token = st.session_state.access_token
                     
                     # PERSIST TO LOCALSTORAGE
                     components.html(
@@ -589,18 +621,22 @@ def load_day_bundle(
     day: date,
 ) -> tuple[dict[str, Any] | None, list[dict[str, Any]] | None, str | None]:
     score, score_err = call_api(
-        client.compute_daily_score,
-        user_id=user_id,
-        day=day,
+        get_daily_score_cached,
+        st.session_state.api_url,
+        st.session_state.access_token,
+        user_id,
+        day.isoformat(),
         fallback_message=t("could_not_compute_daily_score"),
     )
     if score_err:
         return None, None, score_err
 
     tasks, task_err = call_api(
-        client.get_tasks,
-        user_id=user_id,
-        day=day,
+        get_tasks_cached,
+        st.session_state.api_url,
+        st.session_state.access_token,
+        user_id,
+        day.isoformat(),
         fallback_message=t("could_not_load_tasks"),
     )
     if task_err:
@@ -633,8 +669,8 @@ def plot_status_pie(tasks_df: pd.DataFrame, dark_mode: bool) -> go.Figure:
     completed_label = t("completed")
     failed_label = t("failed")
     color_map = {
-        completed_label: "#22c55e",
-        failed_label: "#ef4444",
+        completed_label: colors["accent_2"],
+        failed_label: colors["secondary"],
         pending_label: colors["muted"],
     }
     if tasks_df.empty:
@@ -660,7 +696,7 @@ def plot_category_success(category_stats: pd.DataFrame, dark_mode: bool) -> go.F
         category_stats = pd.DataFrame({"category": ["general"], "success_rate": [0.0]})
 
     fig = px.bar(category_stats, x="category", y="success_rate", text="success_rate", range_y=[0, 1])
-    fig.update_traces(marker_color="#22c55e", texttemplate="%{text:.0%}", textposition="outside")
+    fig.update_traces(marker_color=colors["accent"], texttemplate="%{text:.0%}", textposition="outside")
     fig.update_layout(
         paper_bgcolor=colors["surface"],
         plot_bgcolor=colors["surface"],
@@ -696,7 +732,13 @@ def dashboard_page(client: APIClient, user_id: int) -> None:
     render_notifications(tasks, score)
     render_achievements(score)
 
-    history, history_err = call_api(client.score_history, user_id=user_id, fallback_message=t("could_not_load_score_trend"))
+    history, history_err = call_api(
+        get_score_history_cached,
+        st.session_state.api_url,
+        st.session_state.access_token,
+        user_id,
+        fallback_message=t("could_not_load_score_trend"),
+    )
     if history_err:
         st.warning(history_err)
         return
@@ -742,9 +784,17 @@ def tasks_analytics_page(client: APIClient, user_id: int) -> None:
                 st.error(create_err)
             else:
                 st.toast(t("task_added"))
+                st.cache_data.clear()
                 st.rerun()
 
-    tasks, err = call_api(client.get_tasks, user_id=user_id, day=selected_day, fallback_message=t("could_not_load_tasks"))
+    tasks, err = call_api(
+        get_tasks_cached,
+        st.session_state.api_url,
+        st.session_state.access_token,
+        user_id,
+        selected_day.isoformat(),
+        fallback_message=t("could_not_load_tasks"),
+    )
     if err:
         st.error(err)
         return
@@ -780,6 +830,7 @@ def tasks_analytics_page(client: APIClient, user_id: int) -> None:
                         st.error(update_err)
                     else:
                         st.toast(t("task_completed"))
+                        st.cache_data.clear()
                         st.rerun()
             with b2:
                 if st.button(f"❌ {t('fail')}", key=f"fail_{task['id']}", type="secondary"):
@@ -788,6 +839,7 @@ def tasks_analytics_page(client: APIClient, user_id: int) -> None:
                         st.error(update_err)
                     else:
                         st.toast(t("task_failed_marked"))
+                        st.cache_data.clear()
                         st.rerun()
 
     with right:
@@ -830,7 +882,13 @@ def weekly_report_page(client: APIClient, user_id: int) -> None:
     start_day = end_day - timedelta(days=6)
     st.caption(t("range_label", start=start_day.isoformat(), end=end_day.isoformat()))
 
-    history, err = call_api(client.score_history, user_id=user_id, fallback_message=t("weekly_history_failed"))
+    history, err = call_api(
+        get_score_history_cached,
+        st.session_state.api_url,
+        st.session_state.access_token,
+        user_id,
+        fallback_message=t("weekly_history_failed"),
+    )
     if err:
         st.error(err)
         return
@@ -856,7 +914,10 @@ def weekly_report_page(client: APIClient, user_id: int) -> None:
     st.plotly_chart(plot_score_trend(weekly_df, st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
     success_fig = px.area(weekly_df, x="date", y="success_rate")
     theme = get_theme_tokens(st.session_state.dark_mode)
-    success_fig.update_traces(line_color="#22c55e", fillcolor="rgba(34, 197, 94, 0.25)")
+    success_fig.update_traces(
+        line_color=theme["accent"],
+        fillcolor="rgba(77, 163, 255, 0.25)" if st.session_state.dark_mode else "rgba(30, 144, 255, 0.20)",
+    )
     success_fig.update_layout(
         paper_bgcolor=theme["surface"],
         plot_bgcolor=theme["surface"],
@@ -871,7 +932,14 @@ def weekly_report_page(client: APIClient, user_id: int) -> None:
     category_tasks: list[dict[str, Any]] = []
     current = start_day
     while current <= end_day:
-        day_tasks, day_err = call_api(client.get_tasks, user_id=user_id, day=current, fallback_message=t("category_breakdown_failed"))
+        day_tasks, day_err = call_api(
+            get_tasks_cached,
+            st.session_state.api_url,
+            st.session_state.access_token,
+            user_id,
+            current.isoformat(),
+            fallback_message=t("category_breakdown_failed"),
+        )
         if day_err:
             st.warning(day_err)
             break
@@ -929,35 +997,18 @@ def settings_page() -> None:
         metric_card("🆔", t("username"), st.session_state.username or "-")
 
     st.markdown(f"<div class='section-title'>{t('preferences')}</div>", unsafe_allow_html=True)
-    c1, c2 = st.columns(2)
-    with c1:
-        selected_dark = st.toggle(t("dark_mode"), value=st.session_state.dark_mode, key="settings_dark_mode")
-        if selected_dark != st.session_state.dark_mode:
-            st.session_state.dark_mode = selected_dark
-            st.toast(t("theme_updated"))
-            st.rerun()
-    with c2:
-        selected_language = st.selectbox(
-            t("language"),
-            list(LANGUAGES.keys()),
-            index=list(LANGUAGES.keys()).index(st.session_state["lang"]),
-            format_func=lambda code: LANGUAGES[code],
-            key="settings_language",
-        )
-        if selected_language != st.session_state["lang"]:
-            st.session_state["lang"] = selected_language
-            st.toast(t("language_updated"))
-            st.rerun()
+    st.info("Theme and language are available in the sidebar for instant updates.")
 
     st.markdown(f"<div class='section-title'>{t('app_management')}</div>", unsafe_allow_html=True)
     render_install_button()
 
     st.markdown(f"<div class='section-title'>{t('account')}</div>", unsafe_allow_html=True)
-    if st.button(t("logout"), type="primary"):
+    if st.button(t("logout"), type="primary", key="settings_logout"):
         st.session_state.user_id = None
         st.session_state.username = ""
         st.session_state.name = ""
         st.session_state.access_token = ""
+        st.session_state._session_verified_token = ""
         st.session_state.menu = "dashboard"
         
         # CLEAR LOCALSTORAGE
@@ -970,55 +1021,169 @@ def settings_page() -> None:
             height=0,
         )
         st.toast(t("logged_out"))
-        st.rerun()
+        st.cache_data.clear()
 
 
 def ensure_branding() -> None:
-    """Ensure TM icons exist with professional redesign."""
+    """Ensure TM icons exist with a production-grade TM checklist brand."""
     try:
-        from PIL import Image, ImageDraw
-        # Dark Blue background (#0A1F44)
-        bg_color = (10, 31, 68)
-        box_color = (255, 255, 255)
-        text_color = (10, 31, 68)
-        
-        for size in [32, 192, 512]:
-            img = Image.new('RGB', (size, size), bg_color)
+        from PIL import Image, ImageDraw, ImageFont
+
+        static_dir = Path("frontend/static")
+        static_dir.mkdir(parents=True, exist_ok=True)
+        version_file = static_dir / ".branding_version"
+        branding_version = "tm-checklist-v2"
+
+        required_files = [
+            static_dir / "favicon.png",
+            static_dir / "icon-192.png",
+            static_dir / "icon-512.png",
+        ]
+        if version_file.exists() and version_file.read_text(encoding="utf-8").strip() == branding_version:
+            if all(path.exists() for path in required_files):
+                return
+
+        def _draw_icon(size: int) -> Image.Image:
+            bg = (10, 31, 68, 255)
+            paper = (245, 250, 255, 255)
+            stroke = (130, 196, 255, 255)
+            ink = (10, 31, 68, 255)
+
+            img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
             draw = ImageDraw.Draw(img)
-            
-            # 1. Draw rounded square background
-            padding = size // 10
-            draw.rounded_rectangle([padding, padding, size - padding, size - padding], radius=size // 8, fill=box_color)
-            
-            # 2. Draw checklist checkmark (very subtle)
-            check_color = (10, 31, 68, 40) # Slightly transparent dark blue
-            # Let's just stick to the text for TM as requested
-            
-            # 3. Vertical TM Stack
-            # Scale letters based on image size
-            f_size = size // 3
-            # Simple font positioning (centering)
-            # T
-            draw.text((size // 2.5, size // 4.5), "T", fill=text_color)
-            # M
-            draw.text((size // 2.5, size // 2.2), "M", fill=text_color)
-            
-            output_path = os.path.join("frontend", "static", f"icon-{size}.png")
-            if size == 32:
-                output_path = os.path.join("frontend", "static", "favicon.png")
-            
-            os.makedirs(os.path.dirname(output_path), exist_ok=True)
-            img.save(output_path)
-    except Exception as e:
-        print(f"Branding generation error: {e}")
+
+            outer_pad = int(size * 0.06)
+            draw.rounded_rectangle(
+                [outer_pad, outer_pad, size - outer_pad, size - outer_pad],
+                radius=int(size * 0.22),
+                fill=bg,
+            )
+
+            card_pad = int(size * 0.18)
+            draw.rounded_rectangle(
+                [card_pad, card_pad, size - card_pad, size - card_pad],
+                radius=int(size * 0.12),
+                fill=paper,
+            )
+
+            line_w = max(2, size // 34)
+            left = card_pad + int(size * 0.09)
+            top = card_pad + int(size * 0.12)
+            row_gap = int(size * 0.16)
+            box_size = int(size * 0.1)
+            for row in range(3):
+                y = top + row * row_gap
+                draw.rounded_rectangle(
+                    [left, y, left + box_size, y + box_size],
+                    radius=max(2, box_size // 4),
+                    outline=stroke,
+                    width=line_w,
+                )
+                draw.line(
+                    [
+                        (left + box_size * 0.2, y + box_size * 0.55),
+                        (left + box_size * 0.45, y + box_size * 0.8),
+                        (left + box_size * 0.85, y + box_size * 0.25),
+                    ],
+                    fill=stroke,
+                    width=line_w,
+                    joint="curve",
+                )
+                draw.rounded_rectangle(
+                    [
+                        left + box_size + int(size * 0.035),
+                        y + int(box_size * 0.32),
+                        left + box_size + int(size * 0.23),
+                        y + int(box_size * 0.55),
+                    ],
+                    radius=max(2, box_size // 5),
+                    fill=(180, 208, 240, 255),
+                )
+
+            try:
+                font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", int(size * 0.24))
+            except Exception:
+                font = ImageFont.load_default()
+
+            tm_x = card_pad + int(size * 0.36)
+            t_y = card_pad + int(size * 0.17)
+            m_y = card_pad + int(size * 0.46)
+            draw.text((tm_x, t_y), "T", fill=ink, font=font)
+            draw.text((tm_x, m_y), "M", fill=ink, font=font)
+            return img
+
+        file_map = {
+            32: static_dir / "favicon.png",
+            192: static_dir / "icon-192.png",
+            512: static_dir / "icon-512.png",
+        }
+        for icon_size, icon_path in file_map.items():
+            icon = _draw_icon(icon_size).convert("RGBA")
+            icon.save(icon_path)
+
+        version_file.write_text(branding_version, encoding="utf-8")
+    except Exception as exc:
+        print(f"Branding generation error: {exc}")
+
+
+@st.cache_data(ttl=20, show_spinner=False)
+def get_tasks_cached(api_url: str, token: str, user_id: int, day_iso: str) -> list[dict[str, Any]]:
+    client = APIClient(api_url)
+    client.set_token(token or None)
+    return client.get_tasks(user_id=user_id, day=date.fromisoformat(day_iso))
+
+
+@st.cache_data(ttl=20, show_spinner=False)
+def get_daily_score_cached(api_url: str, token: str, user_id: int, day_iso: str) -> dict[str, Any]:
+    client = APIClient(api_url)
+    client.set_token(token or None)
+    return client.compute_daily_score(user_id=user_id, day=date.fromisoformat(day_iso))
+
+
+@st.cache_data(ttl=20, show_spinner=False)
+def get_score_history_cached(api_url: str, token: str, user_id: int) -> list[dict[str, Any]]:
+    client = APIClient(api_url)
+    client.set_token(token or None)
+    return client.score_history(user_id=user_id)
+
+
+def restore_authenticated_session(client: APIClient) -> None:
+    token = st.session_state.access_token
+    if not token:
+        return
+    if st.session_state.user_id and st.session_state._session_verified_token == token:
+        return
+
+    profile, err = call_api(client.me, fallback_message=t("service_unavailable"))
+    if err or not profile:
+        st.session_state.user_id = None
+        st.session_state.username = ""
+        st.session_state.name = ""
+        st.session_state.access_token = ""
+        st.session_state._session_verified_token = ""
+        components.html(
+            """
+            <script>
+            window.parent.postMessage({ type: "clear_token" }, "*");
+            </script>
+            """,
+            height=0,
+        )
+        return
+
+    st.session_state.user_id = profile["user_id"]
+    st.session_state.username = profile["username"]
+    st.session_state.name = profile["name"]
+    st.session_state._session_verified_token = token
 
 def main() -> None:
     init_state()
     ensure_branding()
-    st.markdown(get_theme_css(st.session_state.dark_mode), unsafe_allow_html=True)
-    inject_pwa_support()
 
     client = get_client()
+    restore_authenticated_session(client)
+    st.markdown(get_theme_css(st.session_state.dark_mode), unsafe_allow_html=True)
+    inject_pwa_support()
     render_sidebar()
 
     if not st.session_state.user_id:

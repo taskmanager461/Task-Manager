@@ -1,60 +1,80 @@
 import os
 from PIL import Image, ImageDraw, ImageFont
 
-def create_icon(size: int, filename: str):
-    # Deep Blue background (#020617)
-    bg_color = (2, 6, 23)
-    # Checkbox border color (White-ish)
-    border_color = (248, 250, 252)
-    # Text color (Darker Navy #0f172a)
-    text_color = (15, 23, 42)
-    
-    img = Image.new('RGB', (size, size), bg_color)
+def create_icon(size: int, filename: str) -> None:
+    bg = (10, 31, 68, 255)
+    paper = (245, 250, 255, 255)
+    stroke = (130, 196, 255, 255)
+    ink = (10, 31, 68, 255)
+
+    img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
-    
-    # Draw Checklist box (White background)
-    padding = size // 6
-    box_size = size - (2 * padding)
-    box_rect = [padding, padding, size - padding, size - padding]
-    draw.rounded_rectangle(box_rect, radius=size // 10, fill=border_color)
-    
-    # Try to load a font, or use default
+
+    outer_pad = int(size * 0.06)
+    draw.rounded_rectangle(
+        [outer_pad, outer_pad, size - outer_pad, size - outer_pad],
+        radius=int(size * 0.22),
+        fill=bg,
+    )
+
+    card_pad = int(size * 0.18)
+    draw.rounded_rectangle(
+        [card_pad, card_pad, size - card_pad, size - card_pad],
+        radius=int(size * 0.12),
+        fill=paper,
+    )
+
+    line_w = max(2, size // 34)
+    left = card_pad + int(size * 0.09)
+    top = card_pad + int(size * 0.12)
+    row_gap = int(size * 0.16)
+    box_size = int(size * 0.1)
+    for row in range(3):
+        y = top + row * row_gap
+        draw.rounded_rectangle(
+            [left, y, left + box_size, y + box_size],
+            radius=max(2, box_size // 4),
+            outline=stroke,
+            width=line_w,
+        )
+        draw.line(
+            [
+                (left + box_size * 0.2, y + box_size * 0.55),
+                (left + box_size * 0.45, y + box_size * 0.8),
+                (left + box_size * 0.85, y + box_size * 0.25),
+            ],
+            fill=stroke,
+            width=line_w,
+            joint="curve",
+        )
+        draw.rounded_rectangle(
+            [
+                left + box_size + int(size * 0.035),
+                y + int(box_size * 0.32),
+                left + box_size + int(size * 0.23),
+                y + int(box_size * 0.55),
+            ],
+            radius=max(2, box_size // 5),
+            fill=(180, 208, 240, 255),
+        )
+
     try:
-        # Using a default system font for Windows (Segoe UI) or similar
-        font_path = "C:/Windows/Fonts/seguihis.ttf" # A bold-ish font
-        if not os.path.exists(font_path):
-            font_path = "C:/Windows/Fonts/arial.ttf"
-        
-        # T over M effect
-        font_size = int(size * 0.45)
-        font = ImageFont.truetype(font_path, font_size)
-        
-        # Draw T (Upper)
-        t_text = "T"
-        t_bbox = draw.textbbox((0, 0), t_text, font=font)
-        t_w = t_bbox[2] - t_bbox[0]
-        t_h = t_bbox[3] - t_bbox[1]
-        draw.text(((size - t_w) // 2, padding + (box_size * 0.1)), t_text, fill=text_color, font=font)
-        
-        # Draw M (Lower)
-        m_text = "M"
-        m_bbox = draw.textbbox((0, 0), m_text, font=font)
-        m_w = m_bbox[2] - m_bbox[0]
-        m_h = m_bbox[3] - m_bbox[1]
-        draw.text(((size - m_w) // 2, padding + (box_size * 0.45)), m_text, fill=text_color, font=font)
-        
-    except Exception as e:
-        print(f"Font error: {e}, using default")
-        draw.text((size//3, size//3), "TM", fill=text_color)
+        font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", int(size * 0.24))
+    except Exception:
+        font = ImageFont.load_default()
+
+    tm_x = card_pad + int(size * 0.36)
+    draw.text((tm_x, card_pad + int(size * 0.17)), "T", fill=ink, font=font)
+    draw.text((tm_x, card_pad + int(size * 0.46)), "M", fill=ink, font=font)
 
     # Save to frontend/static
     output_dir = os.path.join("frontend", "static")
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-        
-    img.save(os.path.join(output_dir, filename), "PNG")
+    os.makedirs(output_dir, exist_ok=True)
+    img.convert("RGBA").save(os.path.join(output_dir, filename), "PNG")
     print(f"Saved {filename} to {output_dir}")
 
+
 if __name__ == "__main__":
+    create_icon(32, "favicon.png")
     create_icon(192, "icon-192.png")
     create_icon(512, "icon-512.png")

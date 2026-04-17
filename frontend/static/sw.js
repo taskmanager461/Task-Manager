@@ -1,7 +1,8 @@
-const CACHE_NAME = "task-manager-v2";
+const CACHE_NAME = "task-manager-v3";
 const ASSETS_TO_CACHE = [
   "/",
   "/manifest.json",
+  "/favicon.png",
   "/icon-192.png",
   "/icon-512.png",
   "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"

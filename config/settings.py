@@ -15,7 +15,7 @@ class Settings(BaseSettings):
 
     jwt_secret_key: str = "change-me-in-production"
     jwt_algorithm: str = "HS256"
-    jwt_expire_minutes: int = 60 * 24 * 7
+    jwt_expire_minutes: int = 60 * 24 * 30
 
     email_provider: str = "smtp"
     smtp_host: str = "smtp.gmail.com"
