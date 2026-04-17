@@ -533,6 +533,44 @@ input:focus, select:focus {
 
 .recurring-icon { opacity: 0.6; font-size: 0.9rem; }
 
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+}
+
+.achievement-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-md);
+    border-radius: var(--radius);
+    background: var(--background);
+    text-align: center;
+    opacity: 0.4;
+    filter: grayscale(1);
+    transition: all var(--transition);
+}
+
+.achievement-badge.unlocked {
+    opacity: 1;
+    filter: grayscale(0);
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid var(--success);
+}
+
+.achievement-badge .icon { font-size: 2rem; margin-bottom: var(--space-xs); }
+.achievement-badge .name { font-size: 0.75rem; font-weight: 700; color: var(--text); }
+
+/* Focus Mode */
+body.focus-mode #sidebar { width: 0; padding: 0; overflow: hidden; opacity: 0; }
+body.focus-mode .metrics-grid,
+body.focus-mode .charts-section,
+body.focus-mode .sidebar-logo,
+body.focus-mode .sidebar-info { display: none !important; }
+body.focus-mode #content { max-width: 700px; padding: 4rem 2rem; }
+
 /* Responsive Design */
 @media (max-width: 1100px) {
     .chart-grid { grid-template-columns: 1fr; }

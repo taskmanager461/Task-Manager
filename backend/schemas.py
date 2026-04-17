@@ -44,10 +44,11 @@ Recurring = Literal["none", "daily", "weekly"]
 class TaskCreate(BaseModel):
     user_id: Optional[int] = None
     title: str = Field(min_length=2, max_length=255)
-    category: str = Field(min_length=2, max_length=50)
-    difficulty: Difficulty
-    priority: Priority = "medium"
-    recurring: Recurring = "none"
+    description: Optional[str] = Field(default=None, max_length=500)
+    category: Optional[str] = Field(default="general", min_length=2, max_length=50)
+    difficulty: Optional[Difficulty] = "medium"
+    priority: Optional[Priority] = "medium"
+    recurring: Optional[Recurring] = "none"
     due_date: Optional[date] = None
     date: date
 

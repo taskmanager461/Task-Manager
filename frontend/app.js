@@ -8,6 +8,8 @@ let isDarkMode = localStorage.getItem('tm_dark_mode') === '1';
 let currentLang = localStorage.getItem('tm_lang') || 'en';
 let taskChart = null;
 let trendChart = null;
+let insightsChart = null;
+let isFocusMode = localStorage.getItem('tm_focus_mode') === '1';
 
 const translations = {
     en: {
@@ -51,6 +53,16 @@ const translations = {
         overdue: "Overdue",
         all: "All",
         filter_by: "Filter by",
+        insights: "Insights",
+        focus_mode: "Focus Mode",
+        productive_day: "Most Productive Day",
+        productive_hour: "Most Productive Hour",
+        trends: "Completion Trends",
+        failure_patterns: "Failure Patterns",
+        achievements: "Achievements",
+        well_done: "Well done!",
+        keep_going: "Keep it up!",
+        streak_saved: "Streak maintained!",
         theme: "Theme",
         toggle_dark: "Toggle Dark Mode",
         language: "Language",
@@ -106,6 +118,16 @@ const translations = {
         overdue: "Εκπρόθεσμο",
         all: "Όλα",
         filter_by: "Φίλτρο",
+        insights: "Αναλύσεις",
+        focus_mode: "Λειτουργία Εστίασης",
+        productive_day: "Πιο Παραγωγική Μέρα",
+        productive_hour: "Πιο Παραγωγική Ώρα",
+        trends: "Τάσεις Ολοκλήρωσης",
+        failure_patterns: "Μοτίβα Αποτυχίας",
+        achievements: "Επιτεύγματα",
+        well_done: "Μπράβο!",
+        keep_going: "Συνέχισε έτσι!",
+        streak_saved: "Το σερί διατηρήθηκε!",
         theme: "Θέμα",
         toggle_dark: "Εναλλαγή Dark Mode",
         language: "Γλώσσα",
@@ -438,6 +460,7 @@ function renderApp() {
     document.getElementById('main-app').classList.add('active');
     document.getElementById('user-display-name').textContent = currentUser.name || currentUser.username;
     updateUILanguage();
+    applyFocusMode();
     showView('dashboard');
 }
 
@@ -452,6 +475,74 @@ function showView(viewId) {
 
     if (viewId === 'dashboard') loadDashboard();
     if (viewId === 'tasks') loadTasks();
+    if (viewId === 'insights') loadInsights();
+}
+
+function toggleFocusMode() {
+    isFocusMode = !isFocusMode;
+    localStorage.setItem('tm_focus_mode', isFocusMode ? '1' : '0');
+    applyFocusMode();
+}
+
+function applyFocusMode() {
+    const btn = document.getElementById('focus-mode-btn');
+    if (isFocusMode) {
+        document.body.classList.add('focus-mode');
+        btn.classList.add('primary');
+        btn.classList.remove('secondary');
+        showView('tasks'); // Auto-switch to tasks
+    } else {
+        document.body.classList.remove('focus-mode');
+        btn.classList.remove('primary');
+        btn.classList.add('secondary');
+    }
+}
+
+async function loadInsights() {
+    try {
+        const history = await apiFetch(`/score/history?user_id=${currentUser.user_id}&days=30`);
+        renderInsights(history);
+    } catch (err) {
+        console.error('Insights load failed', err);
+    }
+}
+
+function renderInsights(history) {
+    // 1. Productivity Stats
+    document.getElementById('best-day').textContent = 'Monday'; // Placeholder for logic
+    document.getElementById('best-hour').textContent = '09:00'; // Placeholder for logic
+    
+    // 2. Chart
+    const ctx = document.getElementById('insights-trend-chart').getContext('2d');
+    if (insightsChart) insightsChart.destroy();
+    
+    insightsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: history.map(s => s.date),
+            datasets: [{
+                label: t('success'),
+                data: history.map(s => s.success_rate * 100),
+                backgroundColor: '#3b82f6'
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+    });
+
+    // 3. Achievements
+    const achievements = [
+        { id: 'early_bird', name: 'Early Bird', icon: '🌅', unlocked: true },
+        { id: 'consistent', name: '7 Day Streak', icon: '🔥', unlocked: false },
+        { id: 'night_owl', name: 'Night Owl', icon: '🦉', unlocked: true }
+    ];
+    
+    const list = document.getElementById('achievements-list');
+    list.innerHTML = achievements.map(a => `
+        <div class="achievement-badge ${a.unlocked ? 'unlocked' : ''}">
+            <span class="icon">${a.icon}</span>
+            <span class="name">${a.name}</span>
+        </div>
+    `).join('');
 }
 
 // --- API Calls ---
@@ -864,7 +955,11 @@ async function handleTaskUpdate(taskId, status, btnEl) {
         card.querySelector('.task-actions').innerHTML = `<span>${status === 'completed' ? '✅' : '❌'}</span>`;
         
         loadDashboard(); // Update score in background
-        showToast(t('task_updated'), 'success');
+        
+        // Motivation feedback
+        const messages = status === 'completed' ? [t('well_done'), t('keep_going')] : [t('keep_going')];
+        const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+        showToast(randomMsg, 'success');
     } catch (err) {
         // Revert on error
         card.querySelector('.task-actions').innerHTML = originalActions;

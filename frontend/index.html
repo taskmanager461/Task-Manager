@@ -60,6 +60,10 @@
                     <span class="nav-icon">✅</span>
                     <span data-i18n="tasks">Tasks</span>
                 </button>
+                <button class="nav-item" onclick="showView('insights')">
+                    <span class="nav-icon">📊</span>
+                    <span data-i18n="insights">Insights</span>
+                </button>
                 <button class="nav-item" onclick="showView('settings')">
                     <span class="nav-icon">⚙️</span>
                     <span data-i18n="settings">Settings</span>
@@ -77,7 +81,13 @@
         <main id="content">
             <!-- Dashboard View -->
             <section id="view-dashboard" class="view active">
-                <h1 class="view-title" data-i18n="dashboard">Dashboard</h1>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h1 class="view-title" data-i18n="dashboard" style="margin: 0;">Dashboard</h1>
+                    <button onclick="toggleFocusMode()" class="btn secondary" id="focus-mode-btn">
+                        <span class="nav-icon">🧘</span>
+                        <span data-i18n="focus_mode">Focus Mode</span>
+                    </button>
+                </div>
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <span class="icon">🎯</span>
@@ -118,6 +128,36 @@
                 </div>
             </section>
 
+            <!-- Insights View -->
+            <section id="view-insights" class="view">
+                <h1 class="view-title" data-i18n="insights">Insights</h1>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card card">
+                        <span class="icon">📅</span>
+                        <span class="label" data-i18n="productive_day">Productive Day</span>
+                        <span id="best-day" class="value" style="font-size: 1.5rem;">-</span>
+                    </div>
+                    <div class="metric-card card">
+                        <span class="icon">⏰</span>
+                        <span class="label" data-i18n="productive_hour">Productive Hour</span>
+                        <span id="best-hour" class="value" style="font-size: 1.5rem;">-</span>
+                    </div>
+                </div>
+
+                <div class="chart-container card" style="margin-top: 2rem; height: 400px;">
+                    <h3 data-i18n="trends">Completion Trends</h3>
+                    <canvas id="insights-trend-chart"></canvas>
+                </div>
+
+                <div class="settings-card card" style="margin-top: 2rem;">
+                    <h3 data-i18n="achievements">Achievements</h3>
+                    <div id="achievements-list" class="achievements-grid">
+                        <!-- Achievements injected here -->
+                    </div>
+                </div>
+            </section>
+
             <!-- Tasks View -->
             <section id="view-tasks" class="view">
                 <h1 class="view-title" data-i18n="tasks">Tasks</h1>
@@ -148,19 +188,8 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label data-i18n="category">Category</label>
-                                <input type="text" id="task-category" placeholder="Work, Health..." value="General">
+                                <input type="text" id="task-category" placeholder="General" value="General">
                             </div>
-                            <div class="form-group">
-                                <label data-i18n="difficulty">Difficulty</label>
-                                <select id="task-difficulty">
-                                    <option value="easy" data-i18n="easy">Easy</option>
-                                    <option value="medium" data-i18n="medium" selected>Medium</option>
-                                    <option value="hard" data-i18n="hard">Hard</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
                             <div class="form-group">
                                 <label data-i18n="priority">Priority</label>
                                 <select id="task-priority">
@@ -169,18 +198,11 @@
                                     <option value="high" data-i18n="high">High</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label data-i18n="recurring">Recurring</label>
-                                <select id="task-recurring">
-                                    <option value="none" data-i18n="none" selected>None</option>
-                                    <option value="daily" data-i18n="daily">Daily</option>
-                                    <option value="weekly" data-i18n="weekly">Weekly</option>
-                                </select>
-                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label data-i18n="due_date">Due Date</label>
+                        <div style="display:none">
+                            <select id="task-difficulty"><option value="medium" selected></option></select>
+                            <select id="task-recurring"><option value="none" selected></option></select>
                             <input type="date" id="task-due-date">
                         </div>
 
