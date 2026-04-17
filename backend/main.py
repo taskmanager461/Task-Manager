@@ -1,21 +1,22 @@
+import logging
+import os
+from pathlib import Path
+from contextlib import asynccontextmanager
+
+# Configure logging immediately
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-import os
-import logging
-from pathlib import Path
-from contextlib import asynccontextmanager
 
 from backend.database import Base, engine
 from backend.routes.auth import router as auth_router
 from backend.routes.score import router as score_router
 from backend.routes.tasks import router as tasks_router
 from config.settings import get_settings
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -38,6 +39,19 @@ settings = get_settings()
 PROJECT_ROOT = Path(__file__).parent.parent
 FRONTEND_DIR = PROJECT_ROOT / "frontend"
 
+logger.info(f"PROJECT_ROOT: {PROJECT_ROOT.absolute()}")
+logger.info(f"FRONTEND_DIR: {FRONTEND_DIR.absolute()}")
+
+if not FRONTEND_DIR.exists():
+    logger.error(f"FRONTEND_DIR does not exist at {FRONTEND_DIR.absolute()}")
+    # Create it if it doesn't exist to prevent crash
+    FRONTEND_DIR.mkdir(parents=True, exist_ok=True)
+
+STATIC_DIR = FRONTEND_DIR / "static"
+if not STATIC_DIR.exists():
+    logger.error(f"STATIC_DIR does not exist at {STATIC_DIR.absolute()}")
+    STATIC_DIR.mkdir(parents=True, exist_ok=True)
+
 app = FastAPI(
     title=settings.app_name, 
     version=settings.app_version, 
@@ -53,34 +67,41 @@ app.include_router(score_router, prefix="/api")
 # Serve PWA files directly from /
 @app.get("/manifest.json")
 async def get_manifest():
-    return FileResponse(FRONTEND_DIR / "manifest.json")
+    path = FRONTEND_DIR / "manifest.json"
+    return FileResponse(path) if path.exists() else {"error": "manifest.json not found"}
 
 @app.get("/sw.js")
 async def get_sw():
-    return FileResponse(FRONTEND_DIR / "sw.js")
+    path = FRONTEND_DIR / "sw.js"
+    return FileResponse(path) if path.exists() else {"error": "sw.js not found"}
 
 @app.get("/favicon.png")
 async def get_favicon():
-    return FileResponse(FRONTEND_DIR / "static" / "favicon.png")
+    path = STATIC_DIR / "favicon.png"
+    return FileResponse(path) if path.exists() else {"error": "favicon.png not found"}
 
 @app.get("/icon-192.png")
 async def get_icon192():
-    return FileResponse(FRONTEND_DIR / "static" / "icon-192.png")
+    path = STATIC_DIR / "icon-192.png"
+    return FileResponse(path) if path.exists() else {"error": "icon-192.png not found"}
 
 @app.get("/icon-512.png")
 async def get_icon512():
-    return FileResponse(FRONTEND_DIR / "static" / "icon-512.png")
+    path = STATIC_DIR / "icon-512.png"
+    return FileResponse(path) if path.exists() else {"error": "icon-512.png not found"}
 
 @app.get("/styles.css")
 async def get_css():
-    return FileResponse(FRONTEND_DIR / "styles.css")
+    path = FRONTEND_DIR / "styles.css"
+    return FileResponse(path) if path.exists() else {"error": "styles.css not found"}
 
 @app.get("/app.js")
 async def get_js():
-    return FileResponse(FRONTEND_DIR / "app.js")
+    path = FRONTEND_DIR / "app.js"
+    return FileResponse(path) if path.exists() else {"error": "app.js not found"}
 
 # Mount frontend static directory
-app.mount("/static", StaticFiles(directory=FRONTEND_DIR / "static"), name="static")
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 app.add_middleware(
     CORSMiddleware,
@@ -97,9 +118,13 @@ async def serve_frontend(full_path: str):
     if full_path.startswith("api"):
         raise HTTPException(status_code=404, detail="API route not found")
     
-    # Check if the file exists in frontend folder (for styles.css, app.js if not caught by direct routes)
+    # Check if the file exists in frontend folder
     file_path = FRONTEND_DIR / full_path
     if file_path.is_file():
         return FileResponse(file_path)
         
-    return FileResponse(FRONTEND_DIR / "index.html")
+    index_file = FRONTEND_DIR / "index.html"
+    if index_file.exists():
+        return FileResponse(index_file)
+    
+    return {"message": "Frontend not found. Please ensure index.html exists in the frontend directory."}
