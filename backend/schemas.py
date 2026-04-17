@@ -4,7 +4,7 @@ from typing import Literal, Optional
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 Difficulty = Literal["easy", "medium", "hard"]
-TaskStatus = Literal["pending", "completed", "failed"]
+TaskStatus = Literal["neutral", "completed", "failed"]
 
 
 class SignupRequest(BaseModel):

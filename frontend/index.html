@@ -117,12 +117,12 @@
                     <h2 class="view-subtitle" data-i18n="statistics">Statistics</h2>
                     <div class="chart-grid">
                         <div class="chart-container">
-                            <h3 data-i18n="task_distribution">Task Distribution</h3>
-                            <canvas id="task-pie-chart"></canvas>
+                            <h3 data-i18n="weekly_completion">Weekly Completion Rate</h3>
+                            <canvas id="weekly-completion-chart"></canvas>
                         </div>
                         <div class="chart-container">
-                            <h3 data-i18n="weekly_trend">Weekly Trend</h3>
-                            <canvas id="weekly-trend-chart"></canvas>
+                            <h3 data-i18n="tasks_per_day">Tasks per Day</h3>
+                            <canvas id="tasks-per-day-chart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -181,7 +181,7 @@
                         </select>
                         <select id="filter-status" onchange="loadTasks()">
                             <option value="" data-i18n="all">All Status</option>
-                            <option value="pending" data-i18n="pending">Pending</option>
+                            <option value="neutral" data-i18n="neutral">New Task</option>
                             <option value="completed" data-i18n="completed">Completed</option>
                             <option value="failed" data-i18n="failed">Failed</option>
                         </select>
