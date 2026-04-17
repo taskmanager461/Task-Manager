@@ -77,7 +77,9 @@ async def get_manifest():
 @app.get("/sw.js")
 async def get_sw():
     path = FRONTEND_DIR / "sw.js"
-    return FileResponse(path) if path.exists() else {"error": "sw.js not found"}
+    if path.exists():
+        return FileResponse(path, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
+    return {"error": "sw.js not found"}
 
 @app.get("/favicon.png")
 async def get_favicon():

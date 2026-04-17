@@ -744,7 +744,25 @@ function showLoading(show) {
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('SW registered'))
+            .then(reg => {
+                console.log('SW registered');
+                
+                // Check for updates
+                reg.onupdatefound = () => {
+                    const installingWorker = reg.installing;
+                    installingWorker.onstatechange = () => {
+                        if (installingWorker.state === 'installed') {
+                            if (navigator.serviceWorker.controller) {
+                                // New content is available, show toast
+                                showToast("New version available! Refreshing...", "info");
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 2000);
+                            }
+                        }
+                    };
+                };
+            })
             .catch(err => console.log('SW failed', err));
     });
 }
