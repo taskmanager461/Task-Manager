@@ -17,1193 +17,388 @@ try:
     from frontend.components.styles import get_theme_css, get_theme_tokens
     from frontend.components.translations import LANGUAGES, translate
     from frontend.components.ui import metric_card, modern_progress, task_card
-    from frontend.services.insights import build_weekly_insight
-    from frontend.services.notifications import build_time_notifications
 except ModuleNotFoundError:
     from components.api_client import APIClient
     from components.styles import get_theme_css, get_theme_tokens
     from components.translations import LANGUAGES, translate
     from components.ui import metric_card, modern_progress, task_card
-    from services.insights import build_weekly_insight
-    from services.notifications import build_time_notifications
 
+# Page Config
 st.set_page_config(
-    page_title=translate("en", "app_title"),
-    page_icon="frontend/static/favicon.png",
+    page_title="Task Manager",
+    page_icon="🎯",
     layout="wide",
 )
 
-MENU = {
-    "dashboard": "menu_dashboard",
-    "tasks": "menu_tasks",
-    "weekly": "menu_weekly",
-    "notifications": "menu_notifications",
-    "settings": "menu_settings",
-}
 T = TypeVar("T")
 
-
 def init_state() -> None:
-    defaults = {
-        "api_url": os.getenv("API_BASE_URL", "http://127.0.0.1:8000"),
-        "user_id": None,
-        "username": "",
-        "name": "",
-        "access_token": "",
-        "dark_mode": False,
-        "lang": "en",
-        "menu": "dashboard",
-        "last_daily_summary": "",
-        "notifications": [],
-        "install_prompt_requested": False,
-        "_session_verified_token": "",
-    }
-    for key, value in defaults.items():
-        if key not in st.session_state:
-            st.session_state[key] = value
+    if "api_url" not in st.session_state:
+        st.session_state.api_url = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
+    if "user_id" not in st.session_state:
+        st.session_state.user_id = None
+    if "username" not in st.session_state:
+        st.session_state.username = ""
+    if "name" not in st.session_state:
+        st.session_state.name = ""
+    if "access_token" not in st.session_state:
+        st.session_state.access_token = ""
+    if "dark_mode" not in st.session_state:
+        st.session_state.dark_mode = False
+    if "lang" not in st.session_state:
+        st.session_state.lang = "en"
+    if "menu" not in st.session_state:
+        st.session_state.menu = "dashboard"
+    if "notifications" not in st.session_state:
+        st.session_state.notifications = []
+    if "loading" not in st.session_state:
+        st.session_state.loading = False
+    if "action_trigger" not in st.session_state:
+        st.session_state.action_trigger = None
+    if "action_data" not in st.session_state:
+        st.session_state.action_data = {}
 
-    params = st.query_params
-    theme_param = params.get("theme")
-    if isinstance(theme_param, str):
-        st.session_state.dark_mode = theme_param.lower() == "dark"
-
-    if "token" in params and not st.session_state.get("access_token"):
-        st.session_state.access_token = str(params.get("token") or "")
-        st.session_state.user_id = params.get("user_id")
-        st.session_state.username = str(params.get("username") or "")
-        st.session_state.name = str(params.get("name") or "")
-        st.query_params.clear()
-
-    # 2. Inject JS for localStorage persistence and Auto-Login
+    # Auto-login from localStorage on first load
     components.html(
         """
         <script>
-        const doc = window.parent.document;
-        const urlParams = new URLSearchParams(window.parent.location.search);
+        const token = localStorage.getItem("tm_access_token");
+        const userStr = localStorage.getItem("tm_user_data");
+        const darkMode = localStorage.getItem("tm_dark_mode") === "1";
         
-        // Listen for storage requests
-        window.parent.addEventListener("message", (event) => {
-            if (event.data.type === "set_token") {
-                localStorage.setItem("tm_access_token", event.data.token);
-                localStorage.setItem("tm_user_data", JSON.stringify(event.data.user));
-            }
-            if (event.data.type === "clear_token") {
-                localStorage.removeItem("tm_access_token");
-                localStorage.removeItem("tm_user_data");
-            }
-            if (event.data.type === "set_dark_mode") {
-                localStorage.setItem("tm_dark_mode", event.data.value ? "1" : "0");
-            }
-        });
-
-        // AUTO-LOGIN LOGIC: If no token in URL but exists in localStorage
-        if (!urlParams.has("token") || !urlParams.has("theme")) {
-            let changed = false;
+        if (token && userStr && !window.parent.location.search.includes("token")) {
+            const user = JSON.parse(userStr);
             const newUrl = new URL(window.parent.location.href);
-            const token = localStorage.getItem("tm_access_token");
-            const userStr = localStorage.getItem("tm_user_data");
-            if (!urlParams.has("token") && token && userStr) {
-                const user = JSON.parse(userStr);
-                newUrl.searchParams.set("token", token);
-                newUrl.searchParams.set("user_id", user.user_id);
-                newUrl.searchParams.set("username", user.username);
-                newUrl.searchParams.set("name", user.name);
-                changed = true;
-            }
-            if (!urlParams.has("theme")) {
-                const dm = localStorage.getItem("tm_dark_mode");
-                if (dm === "1" || dm === "0") {
-                    newUrl.searchParams.set("theme", dm === "1" ? "dark" : "light");
-                    changed = true;
-                }
-            }
-            if (changed) {
-                window.parent.location.href = newUrl.href;
-            }
+            newUrl.searchParams.set("token", token);
+            newUrl.searchParams.set("user_id", user.user_id);
+            newUrl.searchParams.set("username", user.username);
+            newUrl.searchParams.set("name", user.name);
+            newUrl.searchParams.set("dark_mode", darkMode ? "1" : "0");
+            window.parent.location.href = newUrl.href;
         }
         </script>
         """,
         height=0,
     )
 
-    query_menu = st.query_params.get("menu")
-    if query_menu and query_menu in MENU:
-        st.session_state.menu = query_menu
+    # Sync from query params
+    params = st.query_params
+    if "token" in params:
+        st.session_state.access_token = params["token"]
+        st.session_state.user_id = params.get("user_id")
+        st.session_state.username = params.get("username", "")
+        st.session_state.name = params.get("name", "")
+        if "dark_mode" in params:
+            st.session_state.dark_mode = params["dark_mode"] == "1"
+        st.query_params.clear()
 
 def get_client() -> APIClient:
     client = APIClient(st.session_state.api_url)
     client.set_token(st.session_state.access_token or None)
     return client
 
-
 def t(key: str, **kwargs: str) -> str:
     return translate(st.session_state["lang"], key, **kwargs)
 
-
-def add_notification(level: str, message: str) -> None:
-    entry = {
-        "at": datetime.now().strftime("%Y-%m-%d %H:%M"),
-        "level": level,
-        "message": message,
-    }
-    existing = st.session_state.notifications or []
-    st.session_state.notifications = [entry, *existing][:80]
-
-
 def safe_error(message: str) -> str:
-    return f"{message} {t('error_contact_support')}"
+    return f"{message}"
 
 
 def call_api(
     func: Callable[..., T],
     *args: Any,
-    fallback_message: str | None = None,
     **kwargs: Any,
 ) -> tuple[T | None, str | None]:
-    fallback = fallback_message or t("service_unavailable")
     try:
         return func(*args, **kwargs), None
     except requests.HTTPError as exc:
-        detail = fallback
         try:
-            detail = exc.response.json().get("detail", fallback)
-        except Exception:
-            detail = fallback
-        return None, safe_error(detail)
-    except requests.RequestException:
-        return None, safe_error(fallback)
-    except Exception:
-        return None, safe_error(fallback)
-
-
-def render_top_header() -> None:
-    c1, c2 = st.columns([1, 8])
-    with c1:
-        st.image("frontend/static/icon-512.png", width=80)
-    with c2:
-        st.markdown(f"<div class='main-title'>{t('app_title')}</div>", unsafe_allow_html=True)
-        st.markdown(f"<div class='main-subtitle'>{t('app_subtitle')}</div>", unsafe_allow_html=True)
+            return None, exc.response.json().get("detail", str(exc))
+        except:
+            return None, str(exc)
+    except Exception as e:
+        return None, str(e)
 
 
 def render_sidebar() -> None:
     with st.sidebar:
-        st.image("frontend/static/icon-512.png", width=80)
-        st.markdown(f"<h2 style='margin-bottom:1.5rem; color: white;'>{t('app_title')}</h2>", unsafe_allow_html=True)
+        st.title("Menu")
         
-        # Hidden Navigation Radio for Bottom Nav Speed
-        # The key is "menu" so it directly updates st.session_state.menu
-        st.markdown('<div class="hidden-nav-container">', unsafe_allow_html=True)
-        st.radio(
-            "Navigation",
-            options=list(MENU.keys()),
-            format_func=lambda x: t(MENU[x]),
-            key="menu",
-            label_visibility="collapsed"
-        )
-        st.markdown('</div>', unsafe_allow_html=True)
-        
-        st.divider()
-        
-        if st.session_state.username:
+        if st.session_state.user_id:
             st.write(f"👤 {st.session_state.name or st.session_state.username}")
-        
-        st.divider()
-        
-        # Move Theme & Language settings here
-        st.toggle(t("dark_mode"), key="dark_mode")
-        components.html(
-            f"""
-            <script>
-            window.parent.postMessage({{ type: "set_dark_mode", value: {str(bool(st.session_state.dark_mode)).lower()} }}, "*");
-            </script>
-            """,
-            height=0,
-        )
+            st.divider()
+            
+            # Simple Navigation
+            menu_options = {
+                "dashboard": "🏠 Dashboard",
+                "tasks": "✅ Tasks",
+                "settings": "⚙️ Settings"
+            }
+            st.session_state.menu = st.radio(
+                "Go to",
+                options=list(menu_options.keys()),
+                format_func=lambda x: menu_options[x],
+                index=list(menu_options.keys()).index(st.session_state.menu)
+            )
+            
+            st.divider()
+            
+            # Theme Toggle
+            new_dark = st.toggle("Dark Mode", value=st.session_state.dark_mode)
+            if new_dark != st.session_state.dark_mode:
+                st.session_state.dark_mode = new_dark
+                components.html(
+                    f"<script>localStorage.setItem('tm_dark_mode', '{1 if new_dark else 0}');</script>",
+                    height=0
+                )
+                st.rerun()
 
-        st.selectbox(
-            t("language"),
-            list(LANGUAGES.keys()),
-            index=list(LANGUAGES.keys()).index(st.session_state["lang"]),
-            format_func=lambda code: LANGUAGES[code],
-            key="lang",
-        )
+            st.divider()
+            if st.button("Logout", use_container_width=True, disabled=st.session_state.loading):
+                st.session_state.action_trigger = "logout"
+                st.rerun()
+        else:
+            st.info("Please login to continue")
 
-        st.divider()
-        render_install_button()
-        
-        if st.session_state.username:
-            if st.button(t("nav_logout"), use_container_width=True, type="secondary", key="sidebar_logout"):
+
+def handle_actions(client: APIClient) -> None:
+    if not st.session_state.action_trigger:
+        return
+    
+    action = st.session_state.action_trigger
+    data = st.session_state.action_data
+    
+    with st.spinner("Processing..."):
+        st.session_state.loading = True
+        try:
+            if action == "logout":
                 st.session_state.user_id = None
-                st.session_state.username = ""
-                st.session_state.name = ""
                 st.session_state.access_token = ""
-                st.session_state._session_verified_token = ""
-                # CLEAR LOCALSTORAGE
                 components.html(
                     """
                     <script>
-                    window.parent.postMessage({ type: "clear_token" }, "*");
+                    localStorage.removeItem("tm_access_token");
+                    localStorage.removeItem("tm_user_data");
+                    window.parent.location.reload();
                     </script>
                     """,
-                    height=0,
+                    height=0
                 )
-                st.cache_data.clear()
-
-def render_bottom_nav() -> None:
-    active_menu = st.session_state.menu
-    
-    icons = {
-        "dashboard": "fa-solid fa-house",
-        "tasks": "fa-solid fa-list-check",
-        "weekly": "fa-solid fa-chart-line",
-        "notifications": "fa-solid fa-bell",
-        "settings": "fa-solid fa-user-gear"
-    }
-    
-    items_html = ""
-    options = list(MENU.keys())
-    for i, key in enumerate(options):
-        is_active = "active" if active_menu == key else ""
-        label = t(MENU[key])
-        icon = icons.get(key, "fa-solid fa-circle")
-        
-        # JS Logic: Click the radio button label at index i in the sidebar
-        items_html += f"""
-        <div class="nav-item {is_active}" onclick="window.parent.postMessage({{type: 'trigger_nav', index: {i}}}, '*')">
-            <i class="{icon}"></i>
-            <span>{label}</span>
-        </div>
-        """
-
-    # Direct injection into parent document for instant appearance
-    components.html(
-        f"""
-        <script>
-        (function() {{
-            const doc = window.parent.document;
-            let nav = doc.querySelector('.bottom-nav');
-            if (!nav) {{
-                nav = doc.createElement('div');
-                nav.className = 'bottom-nav';
-                doc.body.appendChild(nav);
-            }}
-            nav.innerHTML = `{items_html}`;
-        }})();
-        </script>
-        """,
-        height=0,
-        width=0,
-    )
-
-def inject_pwa_support() -> None:
-    api_url = st.session_state.api_url.rstrip('/')
-    components.html(
-        f"""
-        <script>
-        (function () {{
-          if (!window.parent) return;
-          const doc = window.parent.document;
-          if (!doc) return;
-
-          // Branding and Professional Meta
-          if (doc.title !== "Task Manager") {{
-            doc.title = "Task Manager - Your Consistency Engine";
-          }}
-          
-          if (!doc.querySelector('meta[name="description"]')) {{
-            const meta = doc.createElement("meta");
-            meta.name = "description";
-            meta.content = "Task Manager - Μια εφαρμογή συνέπειας για τις υποσχέσεις που δίνετε στον εαυτό σας.";
-            doc.head.appendChild(meta);
-          }}
-
-          // Meta tags for mobile/PWA
-          if (!doc.querySelector('meta[name="apple-mobile-web-app-capable"]')) {{
-            const m1 = doc.createElement("meta");
-            m1.name = "apple-mobile-web-app-capable";
-            m1.content = "yes";
-            doc.head.appendChild(m1);
             
-            const m2 = doc.createElement("meta");
-            m2.name = "apple-mobile-web-app-status-bar-style";
-            m2.content = "black-translucent";
-            doc.head.appendChild(m2);
+            elif action == "login":
+                res, err = call_api(client.login, data["username"], data["password"])
+                if err:
+                    st.error(err)
+                elif res:
+                    st.session_state.user_id = res["user_id"]
+                    st.session_state.username = res["username"]
+                    st.session_state.name = res["name"]
+                    st.session_state.access_token = res["access_token"]
+                    components.html(
+                        f"""
+                        <script>
+                        localStorage.setItem("tm_access_token", "{res['access_token']}");
+                        localStorage.setItem("tm_user_data", JSON.stringify({{"user_id": "{res['user_id']}", "username": "{res['username']}", "name": "{res['name']}"}}));
+                        </script>
+                        """,
+                        height=0
+                    )
+            
+            elif action == "signup":
+                res, err = call_api(client.signup, data["username"], data["email"], data["password"], data["name"])
+                if err:
+                    st.error(err)
+                elif res:
+                    st.session_state.user_id = res["user_id"]
+                    st.session_state.username = res["username"]
+                    st.session_state.name = res["name"]
+                    st.session_state.access_token = res["access_token"]
+                    components.html(
+                        f"""
+                        <script>
+                        localStorage.setItem("tm_access_token", "{res['access_token']}");
+                        localStorage.setItem("tm_user_data", JSON.stringify({{"user_id": "{res['user_id']}", "username": "{res['username']}", "name": "{res['name']}"}}));
+                        </script>
+                        """,
+                        height=0
+                    )
 
-            const m3 = doc.createElement("meta");
-            m3.name = "theme-color";
-            m3.content = "#0A1F44";
-            doc.head.appendChild(m3);
-          }}
-          if (!doc.querySelector('link[rel="apple-touch-icon"]')) {{
-            const iconLink = doc.createElement("link");
-            iconLink.rel = "apple-touch-icon";
-            iconLink.href = "{api_url}/icon-192.png";
-            doc.head.appendChild(iconLink);
-          }}
+            elif action == "add_task":
+                _, err = call_api(client.create_task, st.session_state.user_id, data["title"], data["category"], data["difficulty"], date.today())
+                if err:
+                    st.error(err)
+                else:
+                    st.success("Task added!")
 
-          if (!doc.querySelector('link[rel="manifest"]')) {{
-            const link = doc.createElement("link");
-            link.rel = "manifest";
-            link.href = "{api_url}/manifest.json";
-            doc.head.appendChild(link);
-          }}
+            elif action == "update_task":
+                _, err = call_api(client.update_task_status, data["task_id"], data["status"])
+                if err:
+                    st.error(err)
 
-          if (!window.parent._tm_pwa_bootstrap) {{
-            window.parent._tm_pwa_bootstrap = true;
-
-            if ("serviceWorker" in navigator) {{
-              window.addEventListener('load', function() {{
-                navigator.serviceWorker.register("{api_url}/sw.js").then(function() {{
-                  console.log('SW registered');
-                }}).catch(function(err) {{
-                  console.log('SW failed', err);
-                }});
-              }});
-            }}
-
-            // PWA Install Capture
-            window.parent.deferredPrompt = null;
-            window.parent.addEventListener("beforeinstallprompt", function (e) {{
-              e.preventDefault();
-              window.parent.deferredPrompt = e;
-              const event = new CustomEvent('pwa-prompt-ready');
-              window.parent.dispatchEvent(event);
-              const btn = doc.getElementById("pwa-install-btn");
-              if (btn) btn.style.display = "block";
-            }});
-          }}
-
-          // SPEED OPTIMIZATION: Instant Navigation
-          if (!window.parent._task_manager_nav_set) {{
-            window.parent._task_manager_nav_set = true;
-            window.parent.addEventListener("message", (event) => {{
-              if (event.data.type === "trigger_nav") {{
-                const idx = event.data.index;
-                const doc = window.parent.document;
-                
-                // Find and click the hidden radio option in sidebar
-                // This is much faster than window.location.reload()
-                const sidebar = doc.querySelector('[data-testid="stSidebar"]');
-                if (sidebar) {{
-                    const radioLabels = sidebar.querySelectorAll('label[data-testid="stWidgetLabel"] + div div[role="radiogroup"] label');
-                    if (radioLabels && radioLabels[idx]) {{
-                        radioLabels[idx].click();
-                        
-                        // Instant visual update for the bottom nav icons
-                        const items = doc.querySelectorAll('.nav-item');
-                        items.forEach(item => item.classList.remove('active'));
-                        if (items[idx]) items[idx].classList.add('active');
-                    }}
-                }}
-              }}
-            }});
-          }}
-        }})();
-        </script>
-        """,
-        height=0,
-        width=0,
-    )
-
-
-def render_install_button() -> None:
-    st.markdown(
-        f"""
-        <div style="margin-top: 1rem; text-align: center;">
-            <button id="pwa-install-btn" class="install-btn" style="display:none;">
-                <i class="fa-solid fa-cloud-arrow-down" style="margin-right: 12px;"></i>
-                {t("mobile_install")}
-            </button>
-            <div id="install-help-ios" style="display:none; font-size: 1rem; color: #ffffff; margin-top: 15px; padding: 20px; background: rgba(255, 255, 255, 0.1); border-radius: 20px; border: 1px dashed #ffffff;">
-                <i class="fa-solid fa-share-from-square"></i> {t("mobile_install_help_ios")}
-            </div>
-            <div id="install-help-generic" style="display:none; font-size: 0.9rem; color: #94a3b8; margin-top: 10px; padding: 15px;">
-                <i class="fa-solid fa-circle-info"></i> {t("mobile_install_help")}
-            </div>
-        </div>
-        <script>
-            (function() {{
-                const doc = window.parent.document;
-                const btn = doc.getElementById("pwa-install-btn") || document.getElementById("pwa-install-btn");
-                const helpIos = doc.getElementById("install-help-ios") || document.getElementById("install-help-ios");
-                const helpGeneric = doc.getElementById("install-help-generic") || document.getElementById("install-help-generic");
-                
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-
-                if (isStandalone) {{
-                    if (btn) btn.style.display = "none";
-                    return;
-                }}
-
-                // Show button if prompt is already available
-                if (window.parent.deferredPrompt || isIOS) {{
-                    if (btn) btn.style.display = "block";
-                }}
-
-                if (btn) {{
-                    // Update UI if prompt arrives late
-                    window.parent.addEventListener('pwa-prompt-ready', () => {{
-                        console.log("UI: PWA prompt is now ready!");
-                        btn.style.display = "block";
-                        if (helpGeneric) helpGeneric.style.display = "none";
-                    }});
-
-                    btn.onclick = async function () {{
-                        console.log("Install click triggered");
-                        
-                        if (isIOS) {{
-                            if (helpIos) helpIos.style.display = "block";
-                            return;
-                        }}
-
-                        // Try standard PWA prompt
-                        const p = window.parent && window.parent.deferredPrompt;
-                        if (p) {{
-                            try {{
-                                p.prompt();
-                                const {{ outcome }} = await p.userChoice;
-                                console.log("User choice:", outcome);
-                                if (outcome === 'accepted') {{
-                                     window.parent.deferredPrompt = null;
-                                     btn.style.display = "none";
-                                 }}
-                                return;
-                            }} catch (err) {{
-                                console.error("Prompt error:", err);
-                            }}
-                        }}
-
-                        // FALLBACK: If prompt is not available, show generic help
-                        if (helpGeneric) helpGeneric.style.display = "block";
-                    }};
-                }}
-            }})();
-        </script>
-        """,
-        unsafe_allow_html=True,
-    )
-
-
-def render_notifications(tasks: list[dict[str, Any]], score: dict[str, Any]) -> None:
-    notices, summary_key = build_time_notifications(tasks, score, st.session_state.last_daily_summary, t)
-    for level, msg in notices:
-        if level == "warning":
-            st.warning(msg)
-        elif level == "summary":
-            st.toast(msg)
-        else:
-            st.info(msg)
-        add_notification(level, msg)
-    st.session_state.last_daily_summary = summary_key
-
-
-def render_achievements(score: dict[str, Any]) -> None:
-    badges: list[str] = []
-    streak = int(score.get("streak", 0))
-    success_rate = float(score.get("success_rate", 0.0))
-
-    if streak >= 3:
-        badges.append("🔥 " + t("badge_streak_3"))
-    if streak >= 7:
-        badges.append("🚀 " + t("badge_streak_7"))
-    if success_rate >= 0.8:
-        badges.append("✅ " + t("badge_consistent"))
-    if float(score.get("score", 0.0)) >= 40:
-        badges.append("🏆 " + t("badge_high_score"))
-
-    if badges:
-        st.markdown(f"**{t('achievements')}**")
-        for badge in badges:
-            st.markdown(f"- {badge}")
-
-
+        finally:
+            st.session_state.action_trigger = None
+            st.session_state.action_data = {}
+            st.session_state.loading = False
+            st.rerun()
 
 
 def render_auth(client: APIClient) -> None:
-    render_top_header()
-    c1, c2 = st.columns(2)
-
-    with c1:
-        st.markdown(f"<div class='section-title'>{t('welcome_back')}</div>", unsafe_allow_html=True)
-        with st.form("login_form", clear_on_submit=False):
-            identifier = st.text_input(t("username_or_email"))
-            password = st.text_input(t("password"), type="password")
-            submitted = st.form_submit_button(t("sign_in"), type="primary")
-            if submitted:
-                data, err = call_api(
-                    client.login,
-                    username=identifier,
-                    password=password,
-                    fallback_message=t("login_failed"),
-                )
-                if err:
-                    st.error(err)
-                elif data:
-                    st.cache_data.clear()
-                    st.session_state.user_id = data["user_id"]
-                    st.session_state.username = data["username"]
-                    st.session_state.name = data["name"]
-                    st.session_state.access_token = data.get("access_token", "")
-                    st.session_state._session_verified_token = st.session_state.access_token
-                    
-                    # PERSIST TO LOCALSTORAGE
-                    components.html(
-                        f"""
-                        <script>
-                        window.parent.postMessage({{
-                            type: "set_token",
-                            token: "{data['access_token']}",
-                            user: {{
-                                user_id: {data['user_id']},
-                                username: "{data['username']}",
-                                name: "{data['name']}"
-                            }}
-                        }}, "*");
-                        </script>
-                        """,
-                        height=0,
-                    )
-                    st.toast(t("logged_in_success"))
-                    st.rerun()
-
-    with c2:
-        st.markdown(f"<div class='section-title'>{t('create_account')}</div>", unsafe_allow_html=True)
-        with st.form("signup_form", clear_on_submit=False):
-            name = st.text_input(t("full_name"))
-            username = st.text_input(t("username"), key="signup_username")
-            email = st.text_input(t("email"))
-            password = st.text_input(t("password"), type="password", key="signup_password")
-            submitted = st.form_submit_button(t("create_account"))
-            if submitted:
-                data, err = call_api(
-                    client.signup,
-                    username=username,
-                    email=email,
-                    password=password,
-                    name=name,
-                    fallback_message=t("signup_failed"),
-                )
-                if err:
-                    st.error(err)
-                elif data:
-                    st.cache_data.clear()
-                    st.session_state.user_id = data["user_id"]
-                    st.session_state.username = data["username"]
-                    st.session_state.name = data["name"]
-                    st.session_state.access_token = data.get("access_token", "")
-                    st.session_state._session_verified_token = st.session_state.access_token
-                    
-                    # PERSIST TO LOCALSTORAGE
-                    components.html(
-                        f"""
-                        <script>
-                        window.parent.postMessage({{
-                            type: "set_token",
-                            token: "{data['access_token']}",
-                            user: {{
-                                user_id: {data['user_id']},
-                                username: "{data['username']}",
-                                name: "{data['name']}"
-                            }}
-                        }}, "*");
-                        </script>
-                        """,
-                        height=0,
-                    )
-                    st.toast(t("account_created"))
-                    st.rerun()
-
-
-def load_day_bundle(
-    client: APIClient,
-    user_id: int,
-    day: date,
-) -> tuple[dict[str, Any] | None, list[dict[str, Any]] | None, str | None]:
-    score, score_err = call_api(
-        get_daily_score_cached,
-        st.session_state.api_url,
-        st.session_state.access_token,
-        user_id,
-        day.isoformat(),
-        fallback_message=t("could_not_compute_daily_score"),
-    )
-    if score_err:
-        return None, None, score_err
-
-    tasks, task_err = call_api(
-        get_tasks_cached,
-        st.session_state.api_url,
-        st.session_state.access_token,
-        user_id,
-        day.isoformat(),
-        fallback_message=t("could_not_load_tasks"),
-    )
-    if task_err:
-        return None, None, task_err
-
-    return score, tasks, None
-
-
-def plot_score_trend(history_df: pd.DataFrame, dark_mode: bool) -> go.Figure:
-    colors = get_theme_tokens(dark_mode)
-    if history_df.empty:
-        history_df = pd.DataFrame({"date": [date.today()], "score": [0.0]})
-
-    fig = px.line(history_df, x="date", y="score", markers=True)
-    fig.update_traces(line_color=colors["accent"], marker_color=colors["accent_2"], line_width=3)
-    fig.update_layout(
-        paper_bgcolor=colors["surface"],
-        plot_bgcolor=colors["surface"],
-        font_color=colors["text"],
-        margin=dict(l=10, r=10, t=20, b=10),
-        xaxis_title="",
-        yaxis_title=t("score_axis"),
-    )
-    return fig
-
-
-def plot_status_pie(tasks_df: pd.DataFrame, dark_mode: bool) -> go.Figure:
-    colors = get_theme_tokens(dark_mode)
-    pending_label = t("pending")
-    completed_label = t("completed")
-    failed_label = t("failed")
-    color_map = {
-        completed_label: colors["accent_2"],
-        failed_label: colors["secondary"],
-        pending_label: colors["muted"],
-    }
-    if tasks_df.empty:
-        tasks_df = pd.DataFrame({"status": [pending_label], "count": [1]})
-    else:
-        tasks_df["status"] = tasks_df["status"].map(lambda s: t(s) if isinstance(s, str) else pending_label)
-        tasks_df = tasks_df["status"].value_counts().rename_axis("status").reset_index(name="count")
-
-    fig = px.pie(tasks_df, values="count", names="status", hole=0.55, color="status", color_discrete_map=color_map)
-    fig.update_layout(
-        paper_bgcolor=colors["surface"],
-        plot_bgcolor=colors["surface"],
-        font_color=colors["text"],
-        margin=dict(l=10, r=10, t=20, b=10),
-        legend_title_text="",
-    )
-    return fig
-
-
-def plot_category_success(category_stats: pd.DataFrame, dark_mode: bool) -> go.Figure:
-    colors = get_theme_tokens(dark_mode)
-    if category_stats.empty:
-        category_stats = pd.DataFrame({"category": ["general"], "success_rate": [0.0]})
-
-    fig = px.bar(category_stats, x="category", y="success_rate", text="success_rate", range_y=[0, 1])
-    fig.update_traces(marker_color=colors["accent"], texttemplate="%{text:.0%}", textposition="outside")
-    fig.update_layout(
-        paper_bgcolor=colors["surface"],
-        plot_bgcolor=colors["surface"],
-        font_color=colors["text"],
-        margin=dict(l=10, r=10, t=20, b=10),
-        yaxis_tickformat=".0%",
-        xaxis_title="",
-        yaxis_title=t("success_rate_axis"),
-    )
-    return fig
-
-
-def dashboard_page(client: APIClient, user_id: int) -> None:
-    st.markdown(f"<div class='section-title'>{t('dashboard')}</div>", unsafe_allow_html=True)
-    selected_day = st.date_input(t("day"), value=date.today(), key="dash_day")
-
-    score, tasks, err = load_day_bundle(client, user_id, selected_day)
-    if err:
-        st.error(err)
-        return
-    assert score is not None and tasks is not None
-
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        metric_card("🎯", t("self_trust_score"), f"{score['score']:.1f}", t("daily_score"))
-    with c2:
-        metric_card("🔥", t("current_streak"), f"{score['streak']}", t("multiplier", value=str(score["multiplier"])))
-    with c3:
-        metric_card("✅", t("success_rate"), f"{score['success_rate'] * 100:.0f}%", t("tasks_count", count=str(score["total_tasks"])))
-
-    completed = sum(1 for task in tasks if task["status"] == "completed")
-    modern_progress(t("today_completion"), (completed / len(tasks)) if tasks else 0.0, tone="auto")
-    render_notifications(tasks, score)
-    render_achievements(score)
-
-    history, history_err = call_api(
-        get_score_history_cached,
-        st.session_state.api_url,
-        st.session_state.access_token,
-        user_id,
-        fallback_message=t("could_not_load_score_trend"),
-    )
-    if history_err:
-        st.warning(history_err)
-        return
-
-    hist_df = pd.DataFrame(history or [])
-    charts_col1, charts_col2 = st.columns([2, 1])
-    with charts_col1:
-        st.markdown(f"<div class='section-title'>{t('score_over_time')}</div>", unsafe_allow_html=True)
-        st.plotly_chart(plot_score_trend(hist_df, st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
-    with charts_col2:
-        st.markdown(f"<div class='section-title'>{t('status_mix')}</div>", unsafe_allow_html=True)
-        st.plotly_chart(plot_status_pie(pd.DataFrame(tasks), st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
-
-
-def tasks_analytics_page(client: APIClient, user_id: int) -> None:
-    st.markdown(f"<div class='section-title'>{t('tasks_analytics')}</div>", unsafe_allow_html=True)
-    selected_day = st.date_input(t("task_day"), value=date.today(), key="task_day")
-
-    with st.form("add_task"):
-        c1, c2, c3 = st.columns([3, 2, 2])
-        with c1:
-            title = st.text_input(t("task_title"))
-        with c2:
-            category = st.text_input(t("category"), value=t("category_placeholder"))
-        with c3:
-            difficulty = st.selectbox(
-                t("difficulty"),
-                ["easy", "medium", "hard"],
-                format_func=lambda val: t(f"difficulty_{val}"),
-            )
-        submitted = st.form_submit_button(t("add_task"), type="primary")
-        if submitted and title.strip():
-            _, create_err = call_api(
-                client.create_task,
-                user_id=user_id,
-                title=title.strip(),
-                category=category.strip() or "general",
-                difficulty=difficulty,
-                day=selected_day,
-                fallback_message=t("task_create_failed"),
-            )
-            if create_err:
-                st.error(create_err)
-            else:
-                st.toast(t("task_added"))
-                st.cache_data.clear()
+    tab1, tab2 = st.tabs(["Login", "Sign Up"])
+    
+    with tab1:
+        with st.form("login_form"):
+            username = st.text_input("Username")
+            password = st.text_input("Password", type="password")
+            if st.form_submit_button("Login", type="primary", disabled=st.session_state.loading):
+                st.session_state.action_trigger = "login"
+                st.session_state.action_data = {"username": username, "password": password}
                 st.rerun()
 
-    tasks, err = call_api(
-        get_tasks_cached,
-        st.session_state.api_url,
-        st.session_state.access_token,
-        user_id,
-        selected_day.isoformat(),
-        fallback_message=t("could_not_load_tasks"),
-    )
+    with tab2:
+        with st.form("signup_form"):
+            name = st.text_input("Full Name")
+            username = st.text_input("Username")
+            email = st.text_input("Email")
+            password = st.text_input("Password", type="password")
+            if st.form_submit_button("Sign Up", disabled=st.session_state.loading):
+                st.session_state.action_trigger = "signup"
+                st.session_state.action_data = {"name": name, "username": username, "email": email, "password": password}
+                st.rerun()
+
+def dashboard_page(client: APIClient, user_id: int) -> None:
+    st.markdown("<h1 class='main-title'>Dashboard</h1>", unsafe_allow_html=True)
+    
+    # Load score and tasks
+    score, err = call_api(client.compute_daily_score, user_id, date.today())
     if err:
-        st.error(err)
+        st.error(f"Error loading score: {err}")
         return
-    tasks = tasks or []
-
-    left, right = st.columns([1.3, 1])
-    with left:
-        st.markdown(f"<div class='section-title'>{t('task_cards')}</div>", unsafe_allow_html=True)
-        if not tasks:
-            st.info(t("no_tasks_day"))
-        for task in tasks:
-            task_card(
-                task,
-                labels={
-                    "category": t("category"),
-                    "difficulty": t("difficulty"),
-                    "status": t("status_col"),
-                    "unknown_title": t("unknown_title"),
-                    "uncategorized": t("uncategorized"),
-                    "easy": t("difficulty_easy"),
-                    "medium": t("difficulty_medium"),
-                    "hard": t("difficulty_hard"),
-                    "pending": t("pending"),
-                    "completed": t("completed"),
-                    "failed": t("failed"),
-                },
-            )
-            b1, b2, _ = st.columns([1.15, 1, 2.8])
-            with b1:
-                if st.button(f"✔ {t('complete')}", key=f"complete_{task['id']}", type="secondary"):
-                    _, update_err = call_api(client.update_task_status, task_id=task["id"], status="completed", fallback_message=t("update_task_failed"))
-                    if update_err:
-                        st.error(update_err)
-                    else:
-                        st.toast(t("task_completed"))
-                        st.cache_data.clear()
-                        st.rerun()
-            with b2:
-                if st.button(f"❌ {t('fail')}", key=f"fail_{task['id']}", type="secondary"):
-                    _, update_err = call_api(client.update_task_status, task_id=task["id"], status="failed", fallback_message=t("update_task_failed"))
-                    if update_err:
-                        st.error(update_err)
-                    else:
-                        st.toast(t("task_failed_marked"))
-                        st.cache_data.clear()
-                        st.rerun()
-
-    with right:
-        st.markdown(f"<div class='section-title'>{t('analytics')}</div>", unsafe_allow_html=True)
-        if not tasks:
-            st.info(t("add_tasks_unlock"))
-            return
-
-        df = pd.DataFrame(tasks)
-        completed_count = int((df["status"] == "completed").sum())
-        modern_progress(t("completion_rate"), completed_count / len(df), tone="auto")
-
-        category_total = df.groupby("category").size().rename("total")
-        category_completed = df[df["status"] == "completed"].groupby("category").size().rename("completed")
-        category_stats = pd.concat([category_total, category_completed], axis=1).fillna(0)
-        category_stats["success_rate"] = (category_stats["completed"] / category_stats["total"]).fillna(0.0)
-        category_stats = category_stats.reset_index().rename(columns={"index": "category"})
-
-        st.plotly_chart(plot_category_success(category_stats[["category", "success_rate"]], st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
-        st.plotly_chart(plot_status_pie(df, st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
-        df["difficulty"] = df["difficulty"].map(lambda val: t(f"difficulty_{val}"))
-        df["status"] = df["status"].map(lambda val: t(val))
-        st.dataframe(
-            df[["title", "category", "difficulty", "status"]].rename(
-                columns={
-                    "title": t("title_col"),
-                    "category": t("category_col"),
-                    "difficulty": t("difficulty_col"),
-                    "status": t("status_col"),
-                }
-            ),
-            use_container_width=True,
-            hide_index=True,
-        )
-
-
-def weekly_report_page(client: APIClient, user_id: int) -> None:
-    st.markdown(f"<div class='section-title'>{t('weekly_report')}</div>", unsafe_allow_html=True)
-    end_day = st.date_input(t("week_ending"), value=date.today(), key="week_end")
-    start_day = end_day - timedelta(days=6)
-    st.caption(t("range_label", start=start_day.isoformat(), end=end_day.isoformat()))
-
-    history, err = call_api(
-        get_score_history_cached,
-        st.session_state.api_url,
-        st.session_state.access_token,
-        user_id,
-        fallback_message=t("weekly_history_failed"),
-    )
+        
+    tasks, err = call_api(client.get_tasks, user_id, date.today())
     if err:
-        st.error(err)
+        st.error(f"Error loading tasks: {err}")
         return
 
-    hist_df = pd.DataFrame(history or [])
-    all_days = pd.date_range(start=start_day, end=end_day)
-    if hist_df.empty:
-        weekly_df = pd.DataFrame({"date": all_days, "score": 0.0, "success_rate": 0.0})
-    else:
-        hist_df["date"] = pd.to_datetime(hist_df["date"])
-        weekly_df = hist_df[(hist_df["date"] >= pd.Timestamp(start_day)) & (hist_df["date"] <= pd.Timestamp(end_day))]
-        weekly_df = weekly_df[["date", "score", "success_rate"]]
-        weekly_df = weekly_df.set_index("date").reindex(all_days, fill_value=0.0).reset_index()
-        weekly_df = weekly_df.rename(columns={"index": "date"})
-
-    weekly_success = float(weekly_df["success_rate"].mean() * 100) if not weekly_df.empty else 0.0
-    c1, c2 = st.columns(2)
+    # Metrics
+    c1, c2, c3 = st.columns(3)
     with c1:
-        metric_card("📊", t("weekly_success"), f"{weekly_success:.1f}%", t("avg_completion_consistency"))
+        metric_card("🎯", "Trust Score", f"{score['score']:.1f}")
     with c2:
-        metric_card("📈", t("weekly_avg_score"), f"{weekly_df['score'].mean():.1f}", t("mean_daily_score"))
+        metric_card("🔥", "Streak", f"{score['streak']} days")
+    with c3:
+        metric_card("✅", "Success Rate", f"{score['success_rate']*100:.0f}%")
 
-    st.plotly_chart(plot_score_trend(weekly_df, st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
-    success_fig = px.area(weekly_df, x="date", y="success_rate")
-    theme = get_theme_tokens(st.session_state.dark_mode)
-    success_fig.update_traces(
-        line_color=theme["accent"],
-        fillcolor="rgba(77, 163, 255, 0.25)" if st.session_state.dark_mode else "rgba(30, 144, 255, 0.20)",
-    )
-    success_fig.update_layout(
-        paper_bgcolor=theme["surface"],
-        plot_bgcolor=theme["surface"],
-        font_color=theme["text"],
-        margin=dict(l=10, r=10, t=20, b=10),
-        xaxis_title="",
-        yaxis_title=t("success_rate_axis"),
-        yaxis_tickformat=".0%",
-    )
-    st.plotly_chart(success_fig, use_container_width=True, config={"displayModeBar": False})
+    # Progress
+    completed = sum(1 for t in tasks if t["status"] == "completed")
+    total = len(tasks)
+    modern_progress("Daily Progress", completed/total if total > 0 else 0)
 
-    category_tasks: list[dict[str, Any]] = []
-    current = start_day
-    while current <= end_day:
-        day_tasks, day_err = call_api(
-            get_tasks_cached,
-            st.session_state.api_url,
-            st.session_state.access_token,
-            user_id,
-            current.isoformat(),
-            fallback_message=t("category_breakdown_failed"),
-        )
-        if day_err:
-            st.warning(day_err)
-            break
-        category_tasks.extend(day_tasks or [])
-        current += timedelta(days=1)
+    # Charts
+    st.markdown("<h2 class='section-title'>Analytics</h2>", unsafe_allow_html=True)
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        # Score trend
+        history, _ = call_api(client.score_history, user_id)
+        if history:
+            df = pd.DataFrame(history)
+            fig = px.line(df, x="date", y="score", title="Score Trend")
+            fig.update_layout(
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)',
+                font_color="#ffffff" if st.session_state.dark_mode else "#000000"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+    with col2:
+        # Status mix
+        if tasks:
+            df = pd.DataFrame(tasks)
+            fig = px.pie(df, names="status", title="Task Status Mix")
+            fig.update_layout(
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)',
+                font_color="#ffffff" if st.session_state.dark_mode else "#000000"
+            )
+            st.plotly_chart(fig, use_container_width=True)
 
-    st.markdown(f"<div class='section-title'>{t('category_breakdown')}</div>", unsafe_allow_html=True)
-    if category_tasks:
-        category_df = pd.DataFrame(category_tasks)
-        breakdown = category_df.groupby("category").size().reset_index(name="count")
-        fig = px.bar(breakdown, x="category", y="count", text="count")
-        fig.update_traces(marker_color=theme["accent_2"], textposition="outside")
-        fig.update_layout(
-            paper_bgcolor=theme["surface"],
-            plot_bgcolor=theme["surface"],
-            font_color=theme["text"],
-            margin=dict(l=10, r=10, t=20, b=10),
-            xaxis_title="",
-            yaxis_title=t("tasks_axis"),
-        )
-        st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
-    else:
-        st.info(t("no_tasks_week"))
+def tasks_page(client: APIClient, user_id: int) -> None:
+    st.markdown("<h1 class='main-title'>Tasks</h1>", unsafe_allow_html=True)
+    
+    # Add Task Form
+    with st.expander("➕ Add New Task"):
+        with st.form("add_task_form"):
+            title = st.text_input("Task Title")
+            category = st.text_input("Category", value="General")
+            difficulty = st.selectbox("Difficulty", ["easy", "medium", "hard"])
+            if st.form_submit_button("Add Task", use_container_width=True, disabled=st.session_state.loading):
+                if title:
+                    st.session_state.action_trigger = "add_task"
+                    st.session_state.action_data = {"title": title, "category": category, "difficulty": difficulty}
+                    st.rerun()
+                else:
+                    st.warning("Please enter a title")
 
-    insight, next_step = build_weekly_insight(weekly_df, weekly_success, t)
-    st.info(f"**{t('insight_title')}**\n\n{insight}\n\n{next_step}")
-
-
-def notifications_page() -> None:
-    st.markdown(f"<div class='section-title'>{t('notifications_center')}</div>", unsafe_allow_html=True)
-    if st.button(t("simulated_push"), key="simulate_push", type="primary"):
-        msg = f"{datetime.now().strftime('%H:%M')} - {t('notif_start_reminder', count='1')}"
-        add_notification("push", msg)
-        st.toast(t("push_sent"))
-
-    entries = st.session_state.notifications or []
-    if not entries:
-        st.info(t("notification_empty"))
+    # Task List
+    tasks, err = call_api(client.get_tasks, user_id, date.today())
+    if err:
+        st.error(err)
         return
-    for item in entries:
-        level_key = f"notif_level_{item['level']}"
-        level_label = t(level_key)
-        st.markdown(
-            f"<div class='surface-card'><strong>{item['at']}</strong> [{level_label}]<br/>{item['message']}</div>",
-            unsafe_allow_html=True,
-        )
 
+    if not tasks:
+        st.info("No tasks for today. Add one above!")
+        return
+
+    for task in tasks:
+        with st.container():
+            c1, c2, c3 = st.columns([3, 1, 1])
+            with c1:
+                task_card(task, {"easy": "Easy", "medium": "Medium", "hard": "Hard"})
+            with c2:
+                if task["status"] == "pending":
+                    if st.button("✅ Complete", key=f"comp_{task['id']}", use_container_width=True, disabled=st.session_state.loading):
+                        st.session_state.action_trigger = "update_task"
+                        st.session_state.action_data = {"task_id": task["id"], "status": "completed"}
+                        st.rerun()
+            with c3:
+                if task["status"] == "pending":
+                    if st.button("❌ Fail", key=f"fail_{task['id']}", use_container_width=True, disabled=st.session_state.loading):
+                        st.session_state.action_trigger = "update_task"
+                        st.session_state.action_data = {"task_id": task["id"], "status": "failed"}
+                        st.rerun()
 
 def settings_page() -> None:
-    st.markdown(f"<div class='section-title'>{t('settings')}</div>", unsafe_allow_html=True)
-    col1, col2 = st.columns(2)
-    with col1:
-        metric_card("👤", t("name"), st.session_state.name or "-")
-    with col2:
-        metric_card("🆔", t("username"), st.session_state.username or "-")
-
-    st.markdown(f"<div class='section-title'>{t('preferences')}</div>", unsafe_allow_html=True)
-    st.info("Theme and language are available in the sidebar for instant updates.")
-
-    st.markdown(f"<div class='section-title'>{t('app_management')}</div>", unsafe_allow_html=True)
-    render_install_button()
-
-    st.markdown(f"<div class='section-title'>{t('account')}</div>", unsafe_allow_html=True)
-    if st.button(t("logout"), type="primary", key="settings_logout"):
-        st.session_state.user_id = None
-        st.session_state.username = ""
-        st.session_state.name = ""
-        st.session_state.access_token = ""
-        st.session_state._session_verified_token = ""
-        st.session_state.menu = "dashboard"
-        
-        # CLEAR LOCALSTORAGE
-        components.html(
-            """
-            <script>
-            window.parent.postMessage({ type: "clear_token" }, "*");
-            </script>
-            """,
-            height=0,
-        )
-        st.toast(t("logged_out"))
-        st.cache_data.clear()
-
-
-def ensure_branding() -> None:
-    """Ensure TM icons exist with a production-grade TM checklist brand."""
-    try:
-        from PIL import Image, ImageDraw, ImageFont
-
-        static_dir = Path("frontend/static")
-        static_dir.mkdir(parents=True, exist_ok=True)
-        version_file = static_dir / ".branding_version"
-        branding_version = "tm-checklist-v2"
-
-        required_files = [
-            static_dir / "favicon.png",
-            static_dir / "icon-192.png",
-            static_dir / "icon-512.png",
-        ]
-        if version_file.exists() and version_file.read_text(encoding="utf-8").strip() == branding_version:
-            if all(path.exists() for path in required_files):
-                return
-
-        def _draw_icon(size: int) -> Image.Image:
-            bg = (10, 31, 68, 255)
-            paper = (245, 250, 255, 255)
-            stroke = (130, 196, 255, 255)
-            ink = (10, 31, 68, 255)
-
-            img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-            draw = ImageDraw.Draw(img)
-
-            outer_pad = int(size * 0.06)
-            draw.rounded_rectangle(
-                [outer_pad, outer_pad, size - outer_pad, size - outer_pad],
-                radius=int(size * 0.22),
-                fill=bg,
-            )
-
-            card_pad = int(size * 0.18)
-            draw.rounded_rectangle(
-                [card_pad, card_pad, size - card_pad, size - card_pad],
-                radius=int(size * 0.12),
-                fill=paper,
-            )
-
-            line_w = max(2, size // 34)
-            left = card_pad + int(size * 0.09)
-            top = card_pad + int(size * 0.12)
-            row_gap = int(size * 0.16)
-            box_size = int(size * 0.1)
-            for row in range(3):
-                y = top + row * row_gap
-                draw.rounded_rectangle(
-                    [left, y, left + box_size, y + box_size],
-                    radius=max(2, box_size // 4),
-                    outline=stroke,
-                    width=line_w,
-                )
-                draw.line(
-                    [
-                        (left + box_size * 0.2, y + box_size * 0.55),
-                        (left + box_size * 0.45, y + box_size * 0.8),
-                        (left + box_size * 0.85, y + box_size * 0.25),
-                    ],
-                    fill=stroke,
-                    width=line_w,
-                    joint="curve",
-                )
-                draw.rounded_rectangle(
-                    [
-                        left + box_size + int(size * 0.035),
-                        y + int(box_size * 0.32),
-                        left + box_size + int(size * 0.23),
-                        y + int(box_size * 0.55),
-                    ],
-                    radius=max(2, box_size // 5),
-                    fill=(180, 208, 240, 255),
-                )
-
-            try:
-                font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", int(size * 0.24))
-            except Exception:
-                font = ImageFont.load_default()
-
-            tm_x = card_pad + int(size * 0.36)
-            t_y = card_pad + int(size * 0.17)
-            m_y = card_pad + int(size * 0.46)
-            draw.text((tm_x, t_y), "T", fill=ink, font=font)
-            draw.text((tm_x, m_y), "M", fill=ink, font=font)
-            return img
-
-        file_map = {
-            32: static_dir / "favicon.png",
-            192: static_dir / "icon-192.png",
-            512: static_dir / "icon-512.png",
-        }
-        for icon_size, icon_path in file_map.items():
-            icon = _draw_icon(icon_size).convert("RGBA")
-            icon.save(icon_path)
-
-        version_file.write_text(branding_version, encoding="utf-8")
-    except Exception as exc:
-        print(f"Branding generation error: {exc}")
-
-
-@st.cache_data(ttl=20, show_spinner=False)
-def get_tasks_cached(api_url: str, token: str, user_id: int, day_iso: str) -> list[dict[str, Any]]:
-    client = APIClient(api_url)
-    client.set_token(token or None)
-    return client.get_tasks(user_id=user_id, day=date.fromisoformat(day_iso))
-
-
-@st.cache_data(ttl=20, show_spinner=False)
-def get_daily_score_cached(api_url: str, token: str, user_id: int, day_iso: str) -> dict[str, Any]:
-    client = APIClient(api_url)
-    client.set_token(token or None)
-    return client.compute_daily_score(user_id=user_id, day=date.fromisoformat(day_iso))
-
-
-@st.cache_data(ttl=20, show_spinner=False)
-def get_score_history_cached(api_url: str, token: str, user_id: int) -> list[dict[str, Any]]:
-    client = APIClient(api_url)
-    client.set_token(token or None)
-    return client.score_history(user_id=user_id)
-
-
-def restore_authenticated_session(client: APIClient) -> None:
-    token = st.session_state.access_token
-    if not token:
-        return
-    if st.session_state.user_id and st.session_state._session_verified_token == token:
-        return
-
-    profile, err = call_api(client.me, fallback_message=t("service_unavailable"))
-    if err or not profile:
-        st.session_state.user_id = None
-        st.session_state.username = ""
-        st.session_state.name = ""
-        st.session_state.access_token = ""
-        st.session_state._session_verified_token = ""
-        components.html(
-            """
-            <script>
-            window.parent.postMessage({ type: "clear_token" }, "*");
-            </script>
-            """,
-            height=0,
-        )
-        return
-
-    st.session_state.user_id = profile["user_id"]
-    st.session_state.username = profile["username"]
-    st.session_state.name = profile["name"]
-    st.session_state._session_verified_token = token
+    st.markdown("<h1 class='main-title'>Settings</h1>", unsafe_allow_html=True)
+    
+    st.write("Language")
+    new_lang = st.selectbox("Select Language", options=list(LANGUAGES.keys()), 
+                          format_func=lambda x: LANGUAGES[x],
+                          index=list(LANGUAGES.keys()).index(st.session_state.lang))
+    if new_lang != st.session_state.lang:
+        st.session_state.lang = new_lang
+        st.rerun()
 
 def main() -> None:
     init_state()
-    ensure_branding()
-
-    client = get_client()
-    restore_authenticated_session(client)
+    
+    # Apply CSS
     st.markdown(get_theme_css(st.session_state.dark_mode), unsafe_allow_html=True)
-    inject_pwa_support()
+    
     render_sidebar()
-
+    
+    client = get_client()
+    handle_actions(client)
+    
     if not st.session_state.user_id:
+        st.markdown("<h1 class='main-title'>Welcome to Task Manager</h1>", unsafe_allow_html=True)
         render_auth(client)
-        return
-
-    render_bottom_nav()
-    render_top_header()
-    user_id = int(st.session_state.user_id)
-    if st.session_state.menu == "dashboard":
-        dashboard_page(client, user_id)
-    elif st.session_state.menu == "tasks":
-        tasks_analytics_page(client, user_id)
-    elif st.session_state.menu == "weekly":
-        weekly_report_page(client, user_id)
-    elif st.session_state.menu == "notifications":
-        notifications_page()
-    elif st.session_state.menu == "settings":
-        settings_page()
-
+    else:
+        if st.session_state.menu == "dashboard":
+            dashboard_page(client, int(st.session_state.user_id))
+        elif st.session_state.menu == "tasks":
+            tasks_page(client, int(st.session_state.user_id))
+        elif st.session_state.menu == "settings":
+            settings_page()
 
 if __name__ == "__main__":
     main()
