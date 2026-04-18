@@ -929,6 +929,7 @@ function renderTasks(tasks) {
     tasks.forEach(task => {
         const card = document.createElement('div');
         card.className = `task-card ${task.status}`;
+        card.setAttribute('data-id', task.id);
         
         // Risk Detection (Mock logic based on behavior)
         let riskHtml = '';
@@ -1141,10 +1142,16 @@ async function forceUpdateApp() {
 }
 
 function showLoading(show) {
-    // We only show full loading overlay for major operations like initial load or auth
-    // For smaller tasks, we use skeleton or inline loaders
     const overlay = document.getElementById('loading-overlay');
-    if (overlay) overlay.classList.toggle('active', show);
+    if (overlay) {
+        overlay.classList.toggle('active', show);
+        if (show) {
+            overlay.innerHTML = `
+                <div class="spinner"></div>
+                <div style="margin-top: 1.5rem; font-size: 0.6rem; letter-spacing: 4px; color: var(--accent-cyan); text-transform: uppercase; text-shadow: var(--neon-cyan-glow);">Initialising SciFi-OS...</div>
+            `;
+        }
+    }
 }
 
 // --- PWA Service Worker Registration ---
