@@ -13,18 +13,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="dark-mode"> <!-- Default to dark mode for pro feel -->
-    <!-- Futuristic Background System -->
-    <div class="scifi-background">
-        <div class="diagonal-lines">
-            <div class="line line-1"></div>
-            <div class="line line-2"></div>
-            <div class="line line-3"></div>
-            <div class="line line-4"></div>
-            <div class="line line-5"></div>
-            <div class="line line-6"></div>
-        </div>
-    </div>
-
     <div id="toast-container" class="toast-container"></div>
 
     <header class="mobile-header">
@@ -105,6 +93,10 @@
             <section id="view-dashboard" class="view active">
                 <div class="view-header">
                     <h1 data-i18n="dashboard">Dashboard</h1>
+                    <button onclick="toggleFocusMode()" class="btn secondary" id="focus-mode-btn">
+                        <span class="nav-icon">🧘</span>
+                        <span data-i18n="focus_mode">Focus Mode</span>
+                    </button>
                 </div>
                 
                 <div class="metrics-grid">

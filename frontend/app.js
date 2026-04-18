@@ -9,6 +9,7 @@ let currentLang = localStorage.getItem('tm_lang') || 'en';
 let taskChart = null;
 let trendChart = null;
 let insightsChart = null;
+let isFocusMode = localStorage.getItem('tm_focus_mode') === '1';
 let currentView = 'dashboard';
 let cachedTasks = []; // Performance: Cache tasks locally
 
@@ -55,6 +56,7 @@ const translations = {
         all: "All",
         filter_by: "Filter by",
         insights: "Insights",
+        focus_mode: "Focus Mode",
         productive_day: "Most Productive Day",
         productive_hour: "Most Productive Hour",
         trends: "Completion Trends",
@@ -127,6 +129,7 @@ const translations = {
         all: "Όλα",
         filter_by: "Φίλτρο",
         insights: "Αναλύσεις",
+        focus_mode: "Λειτουργία Εστίασης",
         productive_day: "Πιο Παραγωγική Μέρα",
         productive_hour: "Πιο Παραγωγική Ώρα",
         trends: "Τάσεις Ολοκλήρωσης",
@@ -529,6 +532,27 @@ function showView(viewId) {
     if (viewId === 'settings') applyTheme(); // Sync theme switch state
 }
 
+
+function toggleFocusMode() {
+    isFocusMode = !isFocusMode;
+    localStorage.setItem('tm_focus_mode', isFocusMode ? '1' : '0');
+    applyFocusMode();
+}
+
+function applyFocusMode() {
+    const btn = document.getElementById('focus-mode-btn');
+    if (isFocusMode) {
+        document.body.classList.add('focus-mode');
+        btn.classList.add('primary');
+        btn.classList.remove('secondary');
+        showView('tasks'); // Auto-switch to tasks
+    } else {
+        document.body.classList.remove('focus-mode');
+        btn.classList.remove('primary');
+        btn.classList.add('secondary');
+    }
+}
+
 async function loadInsights() {
     try {
         const history = await apiFetch(`/score/history?user_id=${currentUser.user_id}&days=30`);
@@ -905,7 +929,6 @@ function renderTasks(tasks) {
     tasks.forEach(task => {
         const card = document.createElement('div');
         card.className = `task-card ${task.status}`;
-        card.setAttribute('data-id', task.id);
         
         // Risk Detection (Mock logic based on behavior)
         let riskHtml = '';
@@ -944,13 +967,9 @@ function renderTasks(tasks) {
             </div>
             <div class="task-actions">
                 ${task.status === 'pending' ? `
-                    <button class="btn btn-task-complete" onclick="handleTaskUpdate(${task.id}, 'completed', this)" title="${t('completed')}">
-                        <span>${t('completed')}</span> <span class="btn-icon">✔</span>
-                    </button>
-                    <button class="btn btn-task-fail" onclick="handleTaskUpdate(${task.id}, 'failed', this)" title="${t('failed')}">
-                        <span>${t('failed')}</span> <span class="btn-icon">✖</span>
-                    </button>
-                ` : `<span class="status-icon">${task.status === 'completed' ? t('completed') + ' ✔' : t('failed') + ' ✖'}</span>`}
+                    <button class="btn secondary" onclick="handleTaskUpdate(${task.id}, 'completed', this)" title="${t('completed')}">✅</button>
+                    <button class="btn secondary" onclick="handleTaskUpdate(${task.id}, 'failed', this)" title="${t('failed')}">❌</button>
+                ` : `<span class="status-icon">${task.status === 'completed' ? '✅' : '❌'}</span>`}
             </div>
         `;
         list.appendChild(card);
@@ -1011,8 +1030,8 @@ async function handleTaskUpdate(taskId, status, btnEl) {
             body: JSON.stringify({ status })
         });
         
-        // Success: Replace loader with status text + icon
-        card.querySelector('.task-actions').innerHTML = `<span class="status-icon">${status === 'completed' ? t('completed') + ' ✔' : t('failed') + ' ✖'}</span>`;
+        // Success: Replace loader with status icon
+        card.querySelector('.task-actions').innerHTML = `<span class="status-icon">${status === 'completed' ? '✅' : '❌'}</span>`;
         showToast(t('task_updated'), 'success');
         
         // Motivation feedback
@@ -1122,16 +1141,10 @@ async function forceUpdateApp() {
 }
 
 function showLoading(show) {
+    // We only show full loading overlay for major operations like initial load or auth
+    // For smaller tasks, we use skeleton or inline loaders
     const overlay = document.getElementById('loading-overlay');
-    if (overlay) {
-        overlay.classList.toggle('active', show);
-        if (show) {
-            overlay.innerHTML = `
-                <div class="spinner"></div>
-                <div style="margin-top: 1.5rem; font-size: 0.6rem; letter-spacing: 4px; color: var(--accent-cyan); text-transform: uppercase; text-shadow: var(--neon-cyan-glow);">Initialising SciFi-OS...</div>
-            `;
-        }
-    }
+    if (overlay) overlay.classList.toggle('active', show);
 }
 
 // --- PWA Service Worker Registration ---
