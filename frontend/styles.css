@@ -27,6 +27,7 @@
 }
 
 body.light-mode {
+    --primary: #111184; /* Navy Blue */
     --background: #E2E8F0; /* Much darker and more intense light mode background */
     --background-rgb: 226, 232, 240;
     --surface: rgba(255, 255, 255, 0.1);
@@ -34,14 +35,14 @@ body.light-mode {
     --text-primary: #020617;
     --text-secondary: #1E293B;
     --border: rgba(0, 0, 0, 0.2);
-    --line-color: rgba(0, 0, 0, 0.7); 
-    --primary-glow: rgba(37, 99, 235, 0.3);
+    --line-color: rgba(17, 17, 132, 0.4); /* Navy Blue lines */
+    --primary-glow: rgba(17, 17, 132, 0.3);
     --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
 }
 
 body.light-mode .sidebar-header h2 {
-    color: #1E3A8A; /* Dark Glossy Blue for sidebar title */
-    text-shadow: 0 0 10px rgba(30, 58, 138, 0.2);
+    color: #111184; /* Navy Blue for sidebar title */
+    text-shadow: 0 0 10px rgba(17, 17, 132, 0.2);
     font-weight: 900;
 }
 
@@ -50,8 +51,8 @@ body.light-mode .bg-lines-container {
 }
 
 body.light-mode .bg-line {
-    background: rgba(0, 0, 0, 0.6);
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    background: rgba(17, 17, 132, 0.5); /* Navy Blue Lines */
+    box-shadow: 0 0 15px rgba(17, 17, 132, 0.2);
 }
 
 body.light-mode::before {
