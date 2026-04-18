@@ -422,11 +422,15 @@ body.sidebar-open #content {
     align-items: center;
     margin-bottom: 2rem;
     position: sticky;
-    top: 0;
-    background: rgba(var(--background-rgb, 11, 15, 26), 0.8);
+    top: 1rem; /* Float slightly from the top */
+    background: rgba(var(--background-rgb), 0.4);
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
-    border-bottom: 1px solid var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius); /* Apply curves */
+    padding: 1rem 2rem;
+    z-index: 100;
+    box-shadow: var(--glass-shadow);
 }
 
 
