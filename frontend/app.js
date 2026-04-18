@@ -493,14 +493,8 @@ function renderApp() {
     document.getElementById('main-app').classList.add('active');
     document.getElementById('user-display-name').textContent = currentUser.name || currentUser.username;
     
-    // Check if mobile
-    const mobileHeader = document.querySelector('.mobile-header');
-    if (mobileHeader && window.innerWidth <= 900) {
-        mobileHeader.style.display = 'flex';
-    }
-
+    // Initial view
     updateUILanguage();
-    applyFocusMode();
     showView('dashboard');
 }
 
@@ -534,6 +528,7 @@ function showView(viewId) {
     if (viewId === 'tasks') loadTasks();
     if (viewId === 'insights') loadInsights();
 }
+
 
 function toggleFocusMode() {
     isFocusMode = !isFocusMode;
@@ -732,14 +727,11 @@ function updateTrendChart(history) {
     const labels = history.map(s => s.date.split('-').slice(1).reverse().join('/'));
     const data = history.map(s => s.score);
 
-    const colors = isDarkMode ? {
-        line: '#3b82f6',
-        text: '#ffffff',
-        grid: '#1e293b'
-    } : {
-        line: '#020617',
-        text: '#020617',
-        grid: '#e2e8f0'
+    const colors = {
+        line: '#2563EB',
+        text: '#E5E7EB',
+        grid: 'rgba(255, 255, 255, 0.05)',
+        background: '#111827'
     };
 
     trendChart = new Chart(ctx, {
@@ -750,7 +742,7 @@ function updateTrendChart(history) {
                 label: t('trust_score'),
                 data: data,
                 borderColor: colors.line,
-                backgroundColor: colors.line + '20',
+                backgroundColor: 'rgba(37, 99, 235, 0.1)',
                 fill: true,
                 tension: 0.4,
                 pointRadius: 4,
@@ -766,10 +758,10 @@ function updateTrendChart(history) {
                     mode: 'index',
                     intersect: false,
                     padding: 10,
-                    backgroundColor: isDarkMode ? '#0f172a' : '#ffffff',
+                    backgroundColor: colors.background,
                     titleColor: colors.text,
                     bodyColor: colors.text,
-                    borderColor: colors.line,
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
                     borderWidth: 1
                 }
             },
@@ -778,11 +770,11 @@ function updateTrendChart(history) {
                     beginAtZero: true,
                     max: 150,
                     grid: { color: colors.grid },
-                    ticks: { color: colors.text }
+                    ticks: { color: colors.text, font: { size: 10 } }
                 },
                 x: {
                     grid: { display: false },
-                    ticks: { color: colors.text }
+                    ticks: { color: colors.text, font: { size: 10 } }
                 }
             }
         }
@@ -802,16 +794,12 @@ function updateTaskChart(tasks) {
         taskChart.destroy();
     }
 
-    const colors = isDarkMode ? {
-        completed: '#10b981',
-        failed: '#3b82f6', // primary in dark mode, used as "failed" replacement
-        pending: '#475569',
-        text: '#ffffff'
-    } : {
-        completed: '#10b981',
-        failed: '#020617', // primary in light mode
-        pending: '#cbd5e1',
-        text: '#020617'
+    const colors = {
+        completed: '#10B981',
+        failed: '#EF4444',
+        pending: 'rgba(255, 255, 255, 0.1)',
+        text: '#E5E7EB',
+        background: '#111827'
     };
 
     taskChart = new Chart(ctx, {
@@ -828,12 +816,6 @@ function updateTaskChart(tasks) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            animation: {
-                animateScale: true,
-                animateRotate: true,
-                duration: 1000,
-                easing: 'easeOutQuart'
-            },
             plugins: {
                 legend: {
                     position: 'bottom',
@@ -842,32 +824,25 @@ function updateTaskChart(tasks) {
                         padding: 20,
                         usePointStyle: true,
                         pointStyle: 'circle',
-                        font: { size: 13, weight: '600', family: 'Inter' }
+                        font: { size: 12, weight: '600' }
                     }
                 },
                 tooltip: {
-                    backgroundColor: colors.surface,
+                    backgroundColor: colors.background,
                     titleColor: colors.text,
                     bodyColor: colors.text,
-                    borderColor: colors.border,
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
                     borderWidth: 1,
                     padding: 12,
                     boxPadding: 6,
-                    usePointStyle: true,
-                    callbacks: {
-                        label: function(context) {
-                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                            const val = context.raw;
-                            const perc = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
-                            return ` ${context.label}: ${val} (${perc}%)`;
-                        }
-                    }
+                    usePointStyle: true
                 }
             },
             cutout: '75%'
         }
     });
 }
+
 
 // --- Tasks Logic ---
 async function loadTasks() {
