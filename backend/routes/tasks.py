@@ -39,6 +39,21 @@ def get_tasks(
     return tasks
 
 
+@router.get("/tasks/range", response_model=list[TaskResponse])
+def get_tasks_range(
+    start_date: date = Query(...),
+    end_date: date = Query(...),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    tasks = db.query(Task).filter(
+        Task.user_id == current_user.id,
+        Task.date >= start_date,
+        Task.date <= end_date
+    ).all()
+    return tasks
+
+
 @router.post("/tasks", response_model=TaskResponse)
 def create_task(payload: TaskCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     target_user_id = payload.user_id or current_user.id
@@ -54,6 +69,7 @@ def create_task(payload: TaskCreate, current_user: User = Depends(get_current_us
         priority=payload.priority or "medium",
         recurring=payload.recurring or "none",
         due_date=payload.due_date,
+        time=payload.time,
         status="pending",
         date=payload.date,
     )

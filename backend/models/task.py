@@ -19,6 +19,7 @@ class Task(Base):
     priority: Mapped[str] = mapped_column(String(20), default="medium", nullable=False)
     recurring: Mapped[str] = mapped_column(String(20), default="none", nullable=False)
     due_date: Mapped[date] = mapped_column(Date, nullable=True)
+    time: Mapped[str] = mapped_column(String(10), nullable=True) # HH:MM format
     date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
 

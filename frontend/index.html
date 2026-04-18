@@ -79,6 +79,10 @@
                     <span class="nav-icon">🏠</span>
                     <span data-i18n="dashboard">Dashboard</span>
                 </button>
+                <button class="nav-item" onclick="showView('calendar')">
+                    <span class="nav-icon">📅</span>
+                    <span data-i18n="calendar">Calendar</span>
+                </button>
                 <button class="nav-item" onclick="showView('tasks')">
                     <span class="nav-icon">✅</span>
                     <span data-i18n="tasks">Tasks</span>
@@ -155,6 +159,29 @@
                 </div>
             </section>
 
+
+
+            <!-- Calendar View -->
+            <section id="view-calendar" class="view">
+                <div class="view-header">
+                    <h1 data-i18n="calendar">Calendar</h1>
+                </div>
+                
+                <div class="card calendar-container">
+                    <div class="calendar-header">
+                        <button class="btn secondary" onclick="changeMonth(-1)">❮</button>
+                        <h2 id="calendar-month-year">Month Year</h2>
+                        <button class="btn secondary" onclick="changeMonth(1)">❯</button>
+                    </div>
+                    <div class="calendar-grid" id="calendar-grid">
+                        <!-- Calendar injected here -->
+                    </div>
+                </div>
+
+                <div id="day-tasks-container" class="day-tasks-list" style="margin-top: 2rem;">
+                    <!-- Tasks for selected day injected here -->
+                </div>
+            </section>
 
 
             <!-- Insights View -->
@@ -272,6 +299,17 @@
             <h3 data-i18n="new_task">New Task</h3>
             <input type="text" id="task-title" data-i18n="task_placeholder" placeholder="What needs to be done?" required>
             
+            <div class="form-row">
+                <div class="form-group">
+                    <label data-i18n="date">Date</label>
+                    <input type="date" id="task-date" required>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="time">Time</label>
+                    <input type="time" id="task-time" required>
+                </div>
+            </div>
+
             <div class="form-row">
                 <div class="form-group">
                     <label data-i18n="category">Category</label>

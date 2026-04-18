@@ -11,6 +11,9 @@ let trendChart = null;
 let insightsChart = null;
 let currentView = 'dashboard';
 let cachedTasks = []; // Performance: Cache tasks locally
+let calendarDate = new Date();
+let calendarTasks = [];
+let notifiedTasks = new Set();
 
 const translations = {
     en: {
@@ -83,7 +86,15 @@ const translations = {
         session_expired: "Session expired",
         task_added: "Task added successfully!",
         task_updated: "Task updated!",
-        error_occurred: "An error occurred"
+        error_occurred: "An error occurred",
+        calendar: "Calendar",
+        date: "Date",
+        time: "Time",
+        reminder: "Reminder",
+        task_starting: "Task is starting soon!",
+        january: "January", february: "February", march: "March", april: "April", may: "May", june: "June",
+        july: "July", august: "August", september: "September", october: "October", november: "November", december: "December",
+        mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun"
     },
     el: {
         app_title: "Task Manager",
@@ -155,7 +166,15 @@ const translations = {
         session_expired: "Η συνεδρία έληξε",
         task_added: "Η εργασία προστέθηκε!",
         task_updated: "Η εργασία ενημερώθηκε!",
-        error_occurred: "Παρουσιάστηκε σφάλμα"
+        error_occurred: "Παρουσιάστηκε σφάλμα",
+        calendar: "Ημερολόγιο",
+        date: "Ημερομηνία",
+        time: "Ώρα",
+        reminder: "Υπενθύμιση",
+        task_starting: "Η εργασία ξεκινά σύντομα!",
+        january: "Ιανουάριος", february: "Φεβρουάριος", march: "Μάρτιος", april: "Απρίλιος", may: "Μάιος", june: "Ιούνιος",
+        july: "Ιούλιος", august: "Αύγουστος", september: "Σεπτέμβριος", october: "Οκτώβριος", november: "Νοέμβριος", december: "Δεκέμβριος",
+        mon: "Δευ", tue: "Τρι", wed: "Τετ", thu: "Πεμ", fri: "Παρ", sat: "Σαβ", sun: "Κυρ"
     },
     es: {
         app_title: "Task Manager",
@@ -586,6 +605,194 @@ function renderInsights(history) {
     `).join('');
 }
 
+// --- Calendar Logic ---
+async function renderCalendar() {
+    const grid = document.getElementById('calendar-grid');
+    const title = document.getElementById('calendar-month-year');
+    if (!grid || !title) return;
+
+    grid.innerHTML = '';
+    const month = calendarDate.getMonth();
+    const year = calendarDate.getFullYear();
+
+    const monthNames = [t('january'), t('february'), t('march'), t('april'), t('may'), t('june'), t('july'), t('august'), t('september'), t('october'), t('november'), t('december')];
+    title.textContent = `${monthNames[month]} ${year}`;
+
+    // Days Labels
+    const days = [t('mon'), t('tue'), t('wed'), t('thu'), t('fri'), t('sat'), t('sun')];
+    days.forEach(d => grid.innerHTML += `<div class="calendar-day-label">${d}</div>`);
+
+    // Get tasks for the month
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    
+    // ISO format for API
+    const startStr = firstDay.toISOString().split('T')[0];
+    const endStr = lastDay.toISOString().split('T')[0];
+    
+    try {
+        calendarTasks = await apiFetch(`/tasks/range?start_date=${startStr}&end_date=${endStr}`);
+    } catch (err) {
+        console.error('Failed to load calendar tasks', err);
+    }
+
+    const firstDayIdx = (firstDay.getDay() + 6) % 7; // Monday start
+    const daysInMonth = lastDay.getDate();
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    // Padding for previous month
+    for (let i = 0; i < firstDayIdx; i++) {
+        grid.innerHTML += `<div class="calendar-day other-month"></div>`;
+    }
+
+    // Days in current month
+    for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const hasTasks = calendarTasks.some(t => t.date === dateStr);
+        const isToday = dateStr === todayStr;
+        
+        const dayEl = document.createElement('div');
+        dayEl.className = `calendar-day ${isToday ? 'today' : ''} ${hasTasks ? 'has-tasks' : ''}`;
+        dayEl.textContent = d;
+        dayEl.onclick = () => renderDayTasks(dateStr);
+        grid.appendChild(dayEl);
+    }
+}
+
+function changeMonth(delta) {
+    calendarDate.setMonth(calendarDate.getMonth() + delta);
+    renderCalendar();
+}
+
+function renderDayTasks(dateStr) {
+    const container = document.getElementById('day-tasks-container');
+    if (!container) return;
+
+    // Highlight active day
+    document.querySelectorAll('.calendar-day').forEach(el => {
+        if (el.textContent == parseInt(dateStr.split('-')[2])) {
+            el.classList.add('active');
+        } else {
+            el.classList.remove('active');
+        }
+    });
+
+    const tasks = calendarTasks.filter(t => t.date === dateStr);
+    
+    if (tasks.length === 0) {
+        container.innerHTML = `<div class="card"><p style="text-align:center;">${t('no_tasks')}</p></div>`;
+        return;
+    }
+
+    container.innerHTML = `<h3>Tasks for ${dateStr}</h3>`;
+    tasks.forEach(task => {
+        const card = document.createElement('div');
+        card.className = `task-card ${task.status}`;
+        card.innerHTML = `
+            <div class="task-info">
+                <h3>${task.title}</h3>
+                <p>${task.time || ''} | ${task.category}</p>
+            </div>
+            <div class="status-badge ${task.status}">${t(task.status)}</div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+// --- Notification Logic ---
+function checkReminders() {
+    if (!cachedTasks || cachedTasks.length === 0) return;
+    
+    const now = new Date();
+    const nowStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    
+    cachedTasks.forEach(task => {
+        if (task.status !== 'pending' || !task.time) return;
+        
+        // Notify 5 minutes before or exactly at the time
+        const [h, m] = task.time.split(':').map(Number);
+        const taskTime = new Date();
+        taskTime.setHours(h, m, 0, 0);
+        
+        const diffMinutes = (taskTime - now) / 60000;
+        
+        if (diffMinutes >= 0 && diffMinutes <= 5 && !notifiedTasks.has(task.id)) {
+            showNotification(task);
+            notifiedTasks.add(task.id);
+        }
+    });
+}
+
+function showNotification(task) {
+    showToast(`${t('reminder')}: ${task.title} @ ${task.time}`, 'info');
+    // Sound could be added here
+}
+
+// --- Real Insights Upgrade ---
+async function loadInsights() {
+    showLoading(true);
+    try {
+        // Fetch all user tasks for comprehensive insights
+        const tasks = await apiFetch(`/tasks/range?start_date=2000-01-01&end_date=2100-12-31`);
+        renderRealInsights(tasks);
+    } catch (err) {
+        console.error('Insights load failed', err);
+    } finally {
+        showLoading(false);
+    }
+}
+
+function renderRealInsights(tasks) {
+    if (!tasks || tasks.length === 0) return;
+
+    const completed = tasks.filter(t => t.status === 'completed');
+    const failed = tasks.filter(t => t.status === 'failed');
+    const rate = tasks.length > 0 ? (completed.length / (completed.length + failed.length || 1)) * 100 : 0;
+
+    // Most productive day
+    const dayCounts = {};
+    completed.forEach(t => {
+        const d = new Date(t.date).getDay();
+        dayCounts[d] = (dayCounts[d] || 0) + 1;
+    });
+    const dayNames = [t('sun'), t('mon'), t('tue'), t('wed'), t('thu'), t('fri'), t('sat')];
+    let bestDayIdx = 0;
+    for (let d in dayCounts) if (dayCounts[d] > (dayCounts[bestDayIdx] || 0)) bestDayIdx = d;
+
+    // Most active hours
+    const hourCounts = {};
+    tasks.forEach(t => {
+        if (t.time) {
+            const h = t.time.split(':')[0];
+            hourCounts[h] = (hourCounts[h] || 0) + 1;
+        }
+    });
+    let bestHour = '00';
+    for (let h in hourCounts) if (hourCounts[h] > (hourCounts[bestHour] || 0)) bestHour = h;
+
+    // Update UI
+    document.getElementById('insight-best-day').textContent = dayNames[bestDayIdx];
+    document.getElementById('insight-best-hour').textContent = `${bestHour}:00`;
+    
+    // Update stats grid (if exists)
+    const successVal = document.getElementById('success-value');
+    if (successVal) successVal.textContent = `${rate.toFixed(0)}%`;
+
+    // Failure patterns
+    const failCategories = {};
+    failed.forEach(t => failCategories[t.category] = (failCategories[t.category] || 0) + 1);
+    let worstCat = 'None';
+    for (let c in failCategories) if (failCategories[c] > (failCategories[worstCat] || 0)) worstCat = c;
+    document.getElementById('insight-failure-pattern').textContent = worstCat;
+}
+
+// Override showView to handle Calendar load
+const originalShowView = showView;
+showView = function(viewId) {
+    originalShowView(viewId);
+    if (viewId === 'calendar') renderCalendar();
+};
+
 // --- API Calls ---
 async function apiFetch(endpoint, options = {}) {
     // Ensure endpoint starts with /api/ if it doesn't already
@@ -982,7 +1189,7 @@ function renderTasks(tasks) {
     });
 }
 
-async function addTask(title, category, difficulty) {
+async function addTask(title, category, difficulty, date, time) {
     const priority = document.getElementById('task-priority').value;
     const recurring = document.getElementById('task-recurring').value;
     const dueDate = document.getElementById('task-due-date').value;
@@ -994,7 +1201,7 @@ async function addTask(title, category, difficulty) {
     submitBtn.innerHTML = '<span>⏳</span> Processing...';
     
     try {
-        const today = new Date().toISOString().split('T')[0];
+        const taskDate = date || new Date().toISOString().split('T')[0];
         await apiFetch('/tasks', {
             method: 'POST',
             body: JSON.stringify({ 
@@ -1002,7 +1209,8 @@ async function addTask(title, category, difficulty) {
                 title, category, difficulty,
                 priority, recurring,
                 due_date: dueDate || null,
-                date: today 
+                date: taskDate,
+                time: time || null
             })
         });
         toggleTaskForm();
@@ -1065,33 +1273,60 @@ async function handleTaskUpdate(taskId, status, btnEl) {
 // --- Helpers & Listeners ---
 function setupEventListeners() {
     // Auth Tab Switch
-    document.getElementById('tab-login').onclick = () => switchAuthTab('login');
-    document.getElementById('tab-signup').onclick = () => switchAuthTab('signup');
+    const tabLogin = document.getElementById('tab-login');
+    const tabSignup = document.getElementById('tab-signup');
+    if (tabLogin) tabLogin.onclick = () => switchAuthTab('login');
+    if (tabSignup) tabSignup.onclick = () => switchAuthTab('signup');
 
-    // Forms
-    document.getElementById('login-form').onsubmit = (e) => {
-        e.preventDefault();
-        login(document.getElementById('login-username').value, document.getElementById('login-password').value);
-    };
+    // Auth
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            login(document.getElementById('login-username').value, document.getElementById('login-password').value);
+        });
+    }
 
-    document.getElementById('signup-form').onsubmit = (e) => {
-        e.preventDefault();
-        signup(
-            document.getElementById('signup-name').value,
-            document.getElementById('signup-username').value,
-            document.getElementById('signup-email').value,
-            document.getElementById('signup-password').value
-        );
-    };
+    const signupForm = document.getElementById('signup-form');
+    if (signupForm) {
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            signup(
+                document.getElementById('signup-name').value,
+                document.getElementById('signup-username').value,
+                document.getElementById('signup-email').value,
+                document.getElementById('signup-password').value
+            );
+        });
+    }
 
-    document.getElementById('add-task-form').onsubmit = (e) => {
-        e.preventDefault();
-        addTask(
-            document.getElementById('task-title').value,
-            document.getElementById('task-category').value,
-            document.getElementById('task-difficulty').value
-        );
-    };
+    // Task Form
+    const addTaskForm = document.getElementById('add-task-form');
+    if (addTaskForm) {
+        addTaskForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('task-title').value;
+            const category = document.getElementById('task-category').value;
+            const difficulty = document.getElementById('task-difficulty').value;
+            const date = document.getElementById('task-date') ? document.getElementById('task-date').value : null;
+            const time = document.getElementById('task-time') ? document.getElementById('task-time').value : null;
+            addTask(title, category, difficulty, date, time);
+        });
+    }
+
+    // Set default date/time in form
+    const taskDateInput = document.getElementById('task-date');
+    const taskTimeInput = document.getElementById('task-time');
+    if (taskDateInput) taskDateInput.value = new Date().toISOString().split('T')[0];
+    if (taskTimeInput) {
+        const now = new Date();
+        taskTimeInput.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    }
+
+    // Reminders check every minute
+    setInterval(() => {
+        if (typeof checkReminders === 'function') checkReminders();
+    }, 60000);
 }
 
 function switchAuthTab(tab) {

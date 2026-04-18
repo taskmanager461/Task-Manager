@@ -1,24 +1,24 @@
 /* Global Design System - Futuristic SaaS Style */
 :root {
     --primary: #2563EB;
-    --primary-glow: rgba(37, 99, 235, 0.6);
+    --primary-glow: rgba(37, 99, 235, 0.7);
     --background: #000000;
     --background-rgb: 0, 0, 0;
-    --surface: rgba(255, 255, 255, 0.04);
-    --surface-hover: rgba(255, 255, 255, 0.07);
+    --surface: rgba(255, 255, 255, 0.05);
+    --surface-hover: rgba(255, 255, 255, 0.08);
     --text-primary: #FFFFFF;
-    --text-secondary: #94A3B8;
-    --border: rgba(255, 255, 255, 0.12);
+    --text-secondary: #CBD5E1;
+    --border: rgba(255, 255, 255, 0.15);
     --success: #10B981;
-    --success-glow: rgba(16, 185, 129, 0.5);
+    --success-glow: rgba(16, 185, 129, 0.6);
     --error: #EF4444;
-    --error-glow: rgba(239, 68, 68, 0.5);
+    --error-glow: rgba(239, 68, 68, 0.6);
     --warning: #F59E0B;
-    --line-color: rgba(37, 99, 235, 0.4);
+    --line-color: rgba(37, 99, 235, 0.5);
     
     /* Stronger Glassmorphism */
     --glass-blur: blur(40px);
-    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.9);
+    --glass-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.9);
     
     /* Spacing */
     --radius: 30px; 
@@ -27,15 +27,16 @@
 }
 
 body.light-mode {
-    --background: #F8FAFC;
-    --background-rgb: 248, 250, 252;
-    --surface: rgba(255, 255, 255, 0.6);
-    --surface-hover: rgba(255, 255, 255, 0.8);
+    --background: #FFFFFF;
+    --background-rgb: 255, 255, 255;
+    --surface: rgba(0, 0, 0, 0.03);
+    --surface-hover: rgba(0, 0, 0, 0.05);
     --text-primary: #0F172A;
-    --text-secondary: #475569;
-    --border: rgba(0, 0, 0, 0.1);
-    --line-color: transparent; /* Hide lines in light mode */
-    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+    --text-secondary: #334155;
+    --border: rgba(0, 0, 0, 0.15);
+    --line-color: rgba(0, 0, 0, 0.6); /* Black glowing lines */
+    --primary-glow: rgba(0, 0, 0, 0.2);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
 }
 
 body.light-mode .bg-lines-container {
@@ -755,7 +756,92 @@ body.light-mode input, body.light-mode select {
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Responsive */
+/* Calendar Styling */
+.calendar-container { padding: 2rem; }
+.calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+.calendar-header h2 { text-transform: capitalize; margin: 0; }
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+.calendar-day-label {
+    text-align: center;
+    font-weight: 700;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    padding-bottom: 1rem;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all var(--transition);
+    border: 1px solid transparent;
+    font-weight: 600;
+    position: relative;
+}
+
+.calendar-day:hover {
+    background: var(--surface-hover);
+    border-color: var(--border);
+}
+
+.calendar-day.today {
+    background: var(--primary-glow);
+    border-color: var(--primary);
+    color: white;
+}
+
+.calendar-day.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 0 15px var(--primary-glow);
+}
+
+.calendar-day.has-tasks::after {
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    width: 4px;
+    height: 4px;
+    background: var(--primary);
+    border-radius: 50%;
+    box-shadow: 0 0 5px var(--primary-glow);
+}
+
+.calendar-day.other-month { opacity: 0.2; pointer-events: none; }
+
+/* Notification Styling */
+.notification-bell {
+    position: relative;
+    cursor: pointer;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--error);
+    color: white;
+    font-size: 0.65rem;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    border: 2px solid var(--background);
+}
 @media (max-width: 1024px) {
     :root {
         --sidebar-width: 0px;
