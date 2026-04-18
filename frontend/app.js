@@ -9,7 +9,6 @@ let currentLang = localStorage.getItem('tm_lang') || 'en';
 let taskChart = null;
 let trendChart = null;
 let insightsChart = null;
-let isFocusMode = localStorage.getItem('tm_focus_mode') === '1';
 let currentView = 'dashboard';
 let cachedTasks = []; // Performance: Cache tasks locally
 
@@ -56,7 +55,6 @@ const translations = {
         all: "All",
         filter_by: "Filter by",
         insights: "Insights",
-        focus_mode: "Focus Mode",
         productive_day: "Most Productive Day",
         productive_hour: "Most Productive Hour",
         trends: "Completion Trends",
@@ -129,7 +127,6 @@ const translations = {
         all: "Όλα",
         filter_by: "Φίλτρο",
         insights: "Αναλύσεις",
-        focus_mode: "Λειτουργία Εστίασης",
         productive_day: "Πιο Παραγωγική Μέρα",
         productive_hour: "Πιο Παραγωγική Ώρα",
         trends: "Τάσεις Ολοκλήρωσης",
@@ -532,26 +529,6 @@ function showView(viewId) {
     if (viewId === 'settings') applyTheme(); // Sync theme switch state
 }
 
-
-function toggleFocusMode() {
-    isFocusMode = !isFocusMode;
-    localStorage.setItem('tm_focus_mode', isFocusMode ? '1' : '0');
-    applyFocusMode();
-}
-
-function applyFocusMode() {
-    const btn = document.getElementById('focus-mode-btn');
-    if (isFocusMode) {
-        document.body.classList.add('focus-mode');
-        btn.classList.add('primary');
-        btn.classList.remove('secondary');
-        showView('tasks'); // Auto-switch to tasks
-    } else {
-        document.body.classList.remove('focus-mode');
-        btn.classList.remove('primary');
-        btn.classList.add('secondary');
-    }
-}
 
 async function loadInsights() {
     try {
@@ -978,9 +955,19 @@ function renderTasks(tasks) {
             </div>
             <div class="task-actions">
                 ${task.status === 'pending' ? `
-                    <button class="btn secondary" onclick="handleTaskUpdate(${task.id}, 'completed', this)" title="${t('completed')}">✅</button>
-                    <button class="btn secondary" onclick="handleTaskUpdate(${task.id}, 'failed', this)" title="${t('failed')}">❌</button>
-                ` : `<span class="status-icon">${task.status === 'completed' ? '✅' : '❌'}</span>`}
+                    <button class="btn task-btn completed" onclick="handleTaskUpdate(${task.id}, 'completed', this)">
+                        <span data-i18n="completed">${t('completed')}</span>
+                        <span class="btn-icon">✔</span>
+                    </button>
+                    <button class="btn task-btn failed" onclick="handleTaskUpdate(${task.id}, 'failed', this)">
+                        <span data-i18n="failed">${t('failed')}</span>
+                        <span class="btn-icon">✖</span>
+                    </button>
+                ` : `
+                    <div class="status-badge ${task.status}">
+                        ${task.status === 'completed' ? `<span>${t('completed')} ✔</span>` : `<span>${t('failed')} ✖</span>`}
+                    </div>
+                `}
             </div>
         `;
         list.appendChild(card);
@@ -1042,7 +1029,11 @@ async function handleTaskUpdate(taskId, status, btnEl) {
         });
         
         // Success: Replace loader with status icon
-        card.querySelector('.task-actions').innerHTML = `<span class="status-icon">${status === 'completed' ? '✅' : '❌'}</span>`;
+        card.querySelector('.task-actions').innerHTML = `
+            <div class="status-badge ${status}">
+                <span>${status === 'completed' ? t('completed') + ' ✔' : t('failed') + ' ✖'}</span>
+            </div>
+        `;
         showToast(t('task_updated'), 'success');
         
         // Motivation feedback
