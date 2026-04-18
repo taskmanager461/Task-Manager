@@ -399,7 +399,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const hamburgers = document.querySelectorAll('.hamburger');
+    
     sidebar.classList.toggle('open');
+    if (overlay) overlay.classList.toggle('active');
+    hamburgers.forEach(h => h.classList.toggle('active'));
+    document.body.classList.toggle('sidebar-open');
 }
 
 function initTheme() {

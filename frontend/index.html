@@ -13,7 +13,15 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="dark-mode"> <!-- Default to dark mode for pro feel -->
+    <div class="bg-lines-container">
+        <div class="bg-line bg-line-1"></div>
+        <div class="bg-line bg-line-2"></div>
+        <div class="bg-line bg-line-3"></div>
+        <div class="bg-line bg-line-4"></div>
+        <div class="bg-line bg-line-5"></div>
+    </div>
     <div id="toast-container" class="toast-container"></div>
+    <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
     <header class="mobile-header">
         <button class="hamburger" onclick="toggleSidebar()">
@@ -53,6 +61,11 @@
 
     <!-- Main App Layout -->
     <div id="main-app" class="page">
+        <button class="hamburger desktop-only" onclick="toggleSidebar()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
         <aside id="sidebar">
             <div class="sidebar-header">
                 <img src="/icon-192.png" alt="Logo" class="sidebar-logo">
