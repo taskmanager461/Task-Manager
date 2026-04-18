@@ -27,16 +27,22 @@
 }
 
 body.light-mode {
-    --background: #F8FAFC; /* Slightly off-white */
-    --background-rgb: 248, 250, 252;
-    --surface: rgba(0, 0, 0, 0.005);
-    --surface-hover: rgba(0, 0, 0, 0.02);
-    --text-primary: #0F172A;
-    --text-secondary: #334155;
-    --border: rgba(0, 0, 0, 0.06);
-    --line-color: rgba(0, 0, 0, 0.4); 
-    --primary-glow: rgba(0, 0, 0, 0.05);
-    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.03);
+    --background: #E2E8F0; /* Much darker and more intense light mode background */
+    --background-rgb: 226, 232, 240;
+    --surface: rgba(255, 255, 255, 0.1);
+    --surface-hover: rgba(255, 255, 255, 0.2);
+    --text-primary: #020617;
+    --text-secondary: #1E293B;
+    --border: rgba(0, 0, 0, 0.2);
+    --line-color: rgba(0, 0, 0, 0.7); 
+    --primary-glow: rgba(37, 99, 235, 0.3);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .sidebar-header h2 {
+    color: #1E3A8A; /* Dark Glossy Blue for sidebar title */
+    text-shadow: 0 0 10px rgba(30, 58, 138, 0.2);
+    font-weight: 900;
 }
 
 body.light-mode .bg-lines-container {
@@ -421,16 +427,13 @@ body.sidebar-open #content {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
-    position: sticky;
-    top: 1rem; /* Float slightly from the top */
-    background: rgba(var(--background-rgb), 0.4);
+    background: var(--surface);
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
     border: 1px solid var(--border);
     border-radius: var(--radius); /* Apply curves */
     padding: 1rem 2rem;
-    z-index: 100;
-    box-shadow: var(--glass-shadow);
+    z-index: 10;
 }
 
 
