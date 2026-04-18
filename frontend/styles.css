@@ -4,11 +4,11 @@
     --primary-glow: rgba(37, 99, 235, 0.7);
     --background: #000000;
     --background-rgb: 0, 0, 0;
-    --surface: rgba(255, 255, 255, 0.05);
-    --surface-hover: rgba(255, 255, 255, 0.08);
+    --surface: rgba(255, 255, 255, 0.02);
+    --surface-hover: rgba(255, 255, 255, 0.05);
     --text-primary: #FFFFFF;
     --text-secondary: #CBD5E1;
-    --border: rgba(255, 255, 255, 0.15);
+    --border: rgba(255, 255, 255, 0.12);
     --success: #10B981;
     --success-glow: rgba(16, 185, 129, 0.6);
     --error: #EF4444;
@@ -17,7 +17,7 @@
     --line-color: rgba(37, 99, 235, 0.5);
     
     /* Stronger Glassmorphism */
-    --glass-blur: blur(40px);
+    --glass-blur: blur(50px);
     --glass-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.9);
     
     /* Spacing */
@@ -29,14 +29,14 @@
 body.light-mode {
     --background: #FFFFFF;
     --background-rgb: 255, 255, 255;
-    --surface: rgba(0, 0, 0, 0.03);
-    --surface-hover: rgba(0, 0, 0, 0.05);
+    --surface: rgba(0, 0, 0, 0.01);
+    --surface-hover: rgba(0, 0, 0, 0.03);
     --text-primary: #0F172A;
     --text-secondary: #334155;
-    --border: rgba(0, 0, 0, 0.15);
+    --border: rgba(0, 0, 0, 0.08);
     --line-color: rgba(0, 0, 0, 0.5); /* Black glowing lines */
-    --primary-glow: rgba(0, 0, 0, 0.2);
-    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+    --primary-glow: rgba(0, 0, 0, 0.1);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
 }
 
 body.light-mode .bg-lines-container {
