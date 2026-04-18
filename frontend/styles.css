@@ -34,13 +34,18 @@ body.light-mode {
     --text-primary: #0F172A;
     --text-secondary: #334155;
     --border: rgba(0, 0, 0, 0.15);
-    --line-color: rgba(0, 0, 0, 0.6); /* Black glowing lines */
+    --line-color: rgba(0, 0, 0, 0.5); /* Black glowing lines */
     --primary-glow: rgba(0, 0, 0, 0.2);
     --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
 }
 
 body.light-mode .bg-lines-container {
-    display: none;
+    display: block;
+}
+
+body.light-mode .bg-line {
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
 
 body.light-mode::before {
