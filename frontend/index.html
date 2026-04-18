@@ -15,7 +15,7 @@
 <body class="dark-mode"> <!-- Default to dark mode for pro feel -->
     <!-- Futuristic Background System -->
     <div class="scifi-background">
-        <div class="glow-lines">
+        <div class="diagonal-lines">
             <div class="line line-1"></div>
             <div class="line line-2"></div>
             <div class="line line-3"></div>
@@ -75,21 +75,26 @@
             </div>
             <nav class="sidebar-nav">
                 <button class="nav-item active" onclick="showView('dashboard')">
+                    <span class="nav-icon">🏠</span>
                     <span data-i18n="dashboard">Dashboard</span>
                 </button>
                 <button class="nav-item" onclick="showView('tasks')">
+                    <span class="nav-icon">✅</span>
                     <span data-i18n="tasks">Tasks</span>
                 </button>
                 <button class="nav-item" onclick="showView('insights')">
+                    <span class="nav-icon">📊</span>
                     <span data-i18n="insights">Insights</span>
                 </button>
                 <button class="nav-item" onclick="showView('settings')">
+                    <span class="nav-icon">⚙️</span>
                     <span data-i18n="settings">Settings</span>
                 </button>
             </nav>
             <div class="sidebar-footer">
                 <button id="install-btn" class="btn secondary full-width" style="display:none; margin-bottom: 1rem;">Install App</button>
                 <button onclick="logout()" class="btn logout-btn full-width">
+                    <span class="nav-icon">🚪</span>
                     <span data-i18n="logout">Logout</span>
                 </button>
             </div>
@@ -104,18 +109,21 @@
                 
                 <div class="metrics-grid">
                     <div class="metric-card">
+                        <div class="icon">🎯</div>
                         <div class="metric-info">
                             <span class="label" data-i18n="trust_score">Trust Score</span>
                             <span id="score-value" class="value">0.0</span>
                         </div>
                     </div>
                     <div class="metric-card">
+                        <div class="icon">🔥</div>
                         <div class="metric-info">
                             <span class="label" data-i18n="streak">Streak</span>
                             <span id="streak-value" class="value">0</span>
                         </div>
                     </div>
                     <div class="metric-card">
+                        <div class="icon">📈</div>
                         <div class="metric-info">
                             <span class="label" data-i18n="success">Success</span>
                             <span id="success-value" class="value">0%</span>
@@ -156,18 +164,21 @@
                 
                 <div class="insights-container">
                     <div class="insight-card">
+                        <span class="icon">💡</span>
                         <div class="insight-content">
                             <h4 data-i18n="productive_day">Most Productive Day</h4>
                             <p id="insight-best-day">Analyzing patterns...</p>
                         </div>
                     </div>
                     <div class="insight-card">
+                        <span class="icon">⚡</span>
                         <div class="insight-content">
                             <h4 data-i18n="productive_hour">Most Productive Hour</h4>
                             <p id="insight-best-hour">Analyzing patterns...</p>
                         </div>
                     </div>
                     <div class="insight-card" style="border-left: 4px solid var(--error);">
+                        <span class="icon">⚠️</span>
                         <div class="insight-content">
                             <h4 data-i18n="failure_patterns">Failure Patterns</h4>
                             <p id="insight-failure-pattern">Analyzing patterns...</p>

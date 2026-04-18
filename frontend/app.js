@@ -549,6 +549,9 @@ function renderInsights(history) {
         const dayIdx = date.getDay();
         dayStats[dayIdx].count++;
         if (entry.success_rate > 0.5) dayStats[dayIdx].completed++;
+        
+        // We'd need task-level history for better hour/category insights
+        // For now, let's use the provided daily history entry
     });
 
     const bestDayIdx = dayStats.reduce((best, curr, idx) => curr.completed > dayStats[best].completed ? idx : best, 0);
@@ -560,14 +563,15 @@ function renderInsights(history) {
     // 2. Achievements
     const streak = parseInt(document.getElementById('streak-value').textContent) || 0;
     const achievements = [
-        { id: 'early_bird', name: 'Early Bird', icon: '', unlocked: true },
-        { id: 'streak_3', name: '3 Day Streak', icon: '', unlocked: streak >= 3 },
-        { id: 'master', name: 'Task Master', icon: '', unlocked: streak >= 7 }
+        { id: 'early_bird', name: 'Early Bird', icon: '🌅', unlocked: true },
+        { id: 'streak_3', name: '3 Day Streak', icon: '🔥', unlocked: streak >= 3 },
+        { id: 'master', name: 'Task Master', icon: '🏆', unlocked: streak >= 7 }
     ];
     
     const list = document.getElementById('achievements-list');
     list.innerHTML = achievements.map(a => `
         <div class="achievement-badge ${a.unlocked ? 'unlocked' : ''}">
+            <span class="icon">${a.icon}</span>
             <span class="name">${a.name}</span>
         </div>
     `).join('');
@@ -869,6 +873,7 @@ function showSmartSuggestion() {
     if (suggestion) {
         container.innerHTML = `
             <div class="suggestion-box">
+                <span class="icon">✨</span>
                 <p>${suggestion}</p>
             </div>
         `;
@@ -884,6 +889,7 @@ function renderTasks(tasks) {
     if (!tasks || tasks.length === 0) {
         list.innerHTML = `
             <div class="empty-state">
+                <span class="empty-state-icon">📝</span>
                 <h3 class="empty-state-title">${t('no_tasks')}</h3>
                 <p class="empty-state-text">Start by adding your first task for today.</p>
                 <button onclick="toggleTaskForm()" class="btn primary">${t('add_new_task')}</button>
@@ -896,9 +902,6 @@ function renderTasks(tasks) {
     const today = new Date();
     today.setHours(0,0,0,0);
 
-    const checkIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-    const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
-
     tasks.forEach(task => {
         const card = document.createElement('div');
         card.className = `task-card ${task.status}`;
@@ -910,7 +913,7 @@ function renderTasks(tasks) {
             const isComplex = task.title.length > 40;
             const isHard = task.difficulty === 'hard';
             if (isComplex || isHard) {
-                riskHtml = `<span class="task-risk-warning">${isComplex ? t('suggest_simpler') : t('high_risk')}</span>`;
+                riskHtml = `<span class="task-risk-warning">⚠️ ${isComplex ? t('suggest_simpler') : t('high_risk')}</span>`;
             }
         }
 
@@ -919,11 +922,11 @@ function renderTasks(tasks) {
         if (task.status === 'pending' && task.due_date) {
             const dueDate = new Date(task.due_date);
             if (dueDate < today) {
-                overdueHtml = `<span class="overdue-badge">${t('overdue')}</span>`;
+                overdueHtml = `<span class="overdue-badge">⚠️ ${t('overdue')}</span>`;
             }
         }
 
-        const recurringIcon = task.recurring !== 'none' ? `<span class="recurring-icon" title="${t(task.recurring)}"></span>` : '';
+        const recurringIcon = task.recurring !== 'none' ? `<span class="recurring-icon" title="${t(task.recurring)}">🔄</span>` : '';
 
         card.innerHTML = `
             <div class="task-info">
@@ -934,20 +937,20 @@ function renderTasks(tasks) {
                 <div class="task-meta">
                     <p>${task.category} | ${t(task.difficulty)}</p>
                     ${recurringIcon}
-                    ${task.due_date ? `<p>${task.due_date}</p>` : ''}
+                    ${task.due_date ? `<p>📅 ${task.due_date}</p>` : ''}
                     ${overdueHtml}
                 </div>
                 ${riskHtml}
             </div>
             <div class="task-actions">
                 ${task.status === 'pending' ? `
-                    <button class="btn btn-complete" onclick="handleTaskUpdate(${task.id}, 'completed', this)">
-                        ${checkIcon} <span>Completed</span>
+                    <button class="btn btn-task-complete" onclick="handleTaskUpdate(${task.id}, 'completed', this)" title="${t('completed')}">
+                        <span>${t('completed')}</span> <span class="btn-icon">✔</span>
                     </button>
-                    <button class="btn btn-failed" onclick="handleTaskUpdate(${task.id}, 'failed', this)">
-                        ${crossIcon} <span>Failed</span>
+                    <button class="btn btn-task-fail" onclick="handleTaskUpdate(${task.id}, 'failed', this)" title="${t('failed')}">
+                        <span>${t('failed')}</span> <span class="btn-icon">✖</span>
                     </button>
-                ` : `<span class="status-icon">${task.status === 'completed' ? checkIcon : crossIcon}</span>`}
+                ` : `<span class="status-icon">${task.status === 'completed' ? t('completed') + ' ✔' : t('failed') + ' ✖'}</span>`}
             </div>
         `;
         list.appendChild(card);
@@ -966,28 +969,27 @@ async function addTask(title, category, difficulty) {
     submitBtn.innerHTML = '<span>⏳</span> Processing...';
     
     try {
-            const today = new Date().toISOString().split('T')[0];
-            await apiFetch('/tasks', {
-                method: 'POST',
-                body: JSON.stringify({ 
-                    user_id: currentUser.user_id,
-                    title, category, difficulty,
-                    priority, recurring,
-                    due_date: dueDate || null,
-                    date: today 
-                })
-            });
-            toggleTaskForm();
-            loadTasks();
-            if (currentView === 'dashboard') loadDashboard();
-            showToast(t('task_added'), 'success');
-        } catch (err) {
-            // Error toast handled by apiFetch
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
-        }
+        const today = new Date().toISOString().split('T')[0];
+        await apiFetch('/tasks', {
+            method: 'POST',
+            body: JSON.stringify({ 
+                user_id: currentUser.user_id,
+                title, category, difficulty,
+                priority, recurring,
+                due_date: dueDate || null,
+                date: today 
+            })
+        });
+        toggleTaskForm();
+        loadTasks();
+        showToast(t('task_added'), 'success');
+    } catch (err) {
+        // Error toast handled by apiFetch
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
     }
+}
 
 async function handleTaskUpdate(taskId, status, btnEl) {
     // OPTIMISTIC UI: Instant feedback
@@ -997,14 +999,11 @@ async function handleTaskUpdate(taskId, status, btnEl) {
     
     // Update local state and UI immediately
     card.className = `task-card ${status}`;
-    card.querySelector('.task-actions').innerHTML = `<span>Updating...</span>`;
+    card.querySelector('.task-actions').innerHTML = `<span>⏳</span>`;
     
     // Update cache
     const taskIdx = cachedTasks.findIndex(t => t.id === taskId);
     if (taskIdx !== -1) cachedTasks[taskIdx].status = status;
-
-    const checkIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-    const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
 
     try {
         await apiFetch(`/tasks/${taskId}`, {
@@ -1012,8 +1011,8 @@ async function handleTaskUpdate(taskId, status, btnEl) {
             body: JSON.stringify({ status })
         });
         
-        // Success: Replace loader with status icon
-        card.querySelector('.task-actions').innerHTML = `<span class="status-icon">${status === 'completed' ? checkIcon : crossIcon}</span>`;
+        // Success: Replace loader with status text + icon
+        card.querySelector('.task-actions').innerHTML = `<span class="status-icon">${status === 'completed' ? t('completed') + ' ✔' : t('failed') + ' ✖'}</span>`;
         showToast(t('task_updated'), 'success');
         
         // Motivation feedback
