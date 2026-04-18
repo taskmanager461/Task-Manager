@@ -424,7 +424,9 @@ function applyTheme() {
         document.body.classList.add('light-mode');
     }
     const switchEl = document.getElementById('dark-mode-switch');
-    if (switchEl) switchEl.checked = isDarkMode;
+    if (switchEl) {
+        switchEl.checked = isDarkMode;
+    }
 }
 
 function initLanguage() {
@@ -527,6 +529,7 @@ function showView(viewId) {
     if (viewId === 'dashboard') loadDashboard();
     if (viewId === 'tasks') loadTasks();
     if (viewId === 'insights') loadInsights();
+    if (viewId === 'settings') applyTheme(); // Sync theme switch state
 }
 
 

@@ -225,6 +225,17 @@
                 </div>
                 
                 <div class="card" style="margin-bottom: 1.25rem;">
+                    <h3 data-i18n="theme" style="margin-bottom: 1rem;">Theme</h3>
+                    <div class="settings-row">
+                        <span data-i18n="toggle_dark">Toggle Dark Mode</span>
+                        <label class="switch">
+                            <input type="checkbox" id="dark-mode-switch" onchange="toggleDarkMode()">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom: 1.25rem;">
                     <h3 data-i18n="language" style="margin-bottom: 1rem;">Language</h3>
                     <select id="lang-selector" onchange="changeLanguage(this.value)">
                         <option value="en">English</option>
