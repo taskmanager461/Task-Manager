@@ -12,8 +12,18 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="light-mode">
+<body class="dark-mode"> <!-- Default to dark mode for pro feel -->
     <div id="toast-container" class="toast-container"></div>
+
+    <header class="mobile-header">
+        <button class="hamburger" onclick="toggleSidebar()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <h2 data-i18n="app_title">Task Manager</h2>
+        <div style="width: 40px;"></div> <!-- Spacer for balance -->
+    </header>
 
     <!-- Auth Page -->
     <div id="auth-page" class="page active">
@@ -70,8 +80,8 @@
                 </button>
             </nav>
             <div class="sidebar-footer">
-                <button id="install-btn" class="btn secondary" style="display:none">Install App</button>
-                <button onclick="logout()" class="btn logout-btn">
+                <button id="install-btn" class="btn secondary full-width" style="display:none; margin-bottom: 1rem;">Install App</button>
+                <button onclick="logout()" class="btn logout-btn full-width">
                     <span class="nav-icon">🚪</span>
                     <span data-i18n="logout">Logout</span>
                 </button>
@@ -88,33 +98,41 @@
                         <span data-i18n="focus_mode">Focus Mode</span>
                     </button>
                 </div>
+                
                 <div class="metrics-grid">
                     <div class="metric-card">
-                        <span class="icon">🎯</span>
-                        <span class="label" data-i18n="trust_score">Trust Score</span>
-                        <span id="score-value" class="value">0.0</span>
+                        <div class="icon">🎯</div>
+                        <div class="metric-info">
+                            <span class="label" data-i18n="trust_score">Trust Score</span>
+                            <span id="score-value" class="value">0.0</span>
+                        </div>
                     </div>
                     <div class="metric-card">
-                        <span class="icon">🔥</span>
-                        <span class="label" data-i18n="streak">Streak</span>
-                        <span id="streak-value" class="value">0</span>
+                        <div class="icon">🔥</div>
+                        <div class="metric-info">
+                            <span class="label" data-i18n="streak">Streak</span>
+                            <span id="streak-value" class="value">0</span>
+                        </div>
                     </div>
                     <div class="metric-card">
-                        <span class="icon">📈</span>
-                        <span class="label" data-i18n="success">Success</span>
-                        <span id="success-value" class="value">0%</span>
+                        <div class="icon">📈</div>
+                        <div class="metric-info">
+                            <span class="label" data-i18n="success">Success</span>
+                            <span id="success-value" class="value">0%</span>
+                        </div>
                     </div>
                 </div>
-                <div class="progress-section">
+
+                <div class="card progress-section" style="margin-bottom: 2rem;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                        <label data-i18n="daily_progress" style="margin: 0;">Daily Progress</label>
+                        <label data-i18n="daily_progress" style="margin: 0; font-weight: 700;">Daily Progress</label>
                         <span id="multiplier-badge" class="priority-badge priority-low" style="display:none">1.0x Boost</span>
                     </div>
                     <div class="progress-bar"><div id="daily-progress-fill" style="width: 0%"></div></div>
                 </div>
 
                 <div class="charts-section">
-                    <h2 class="view-subtitle" data-i18n="statistics">Statistics</h2>
+                    <h2 class="view-subtitle" data-i18n="statistics" style="margin-bottom: 1.5rem;">Statistics</h2>
                     <div class="chart-grid">
                         <div class="chart-container">
                             <h3 data-i18n="task_distribution">Task Distribution</h3>
@@ -127,6 +145,7 @@
                     </div>
                 </div>
             </section>
+
 
             <!-- Insights View -->
             <section id="view-insights" class="view">

@@ -10,6 +10,8 @@ let taskChart = null;
 let trendChart = null;
 let insightsChart = null;
 let isFocusMode = localStorage.getItem('tm_focus_mode') === '1';
+let currentView = 'dashboard';
+let cachedTasks = []; // Performance: Cache tasks locally
 
 const translations = {
     en: {
@@ -398,18 +400,31 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
 });
 
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+}
+
 function initTheme() {
+    // Pro Tech Style: Always dark mode unless explicitly changed
+    if (localStorage.getItem('tm_dark_mode') === null) {
+        isDarkMode = true;
+        localStorage.setItem('tm_dark_mode', '1');
+    }
+    
+    applyTheme();
+}
+
+function applyTheme() {
     if (isDarkMode) {
         document.body.classList.add('dark-mode');
         document.body.classList.remove('light-mode');
-        const switchEl = document.getElementById('dark-mode-switch');
-        if (switchEl) switchEl.checked = true;
     } else {
         document.body.classList.remove('dark-mode');
         document.body.classList.add('light-mode');
-        const switchEl = document.getElementById('dark-mode-switch');
-        if (switchEl) switchEl.checked = false;
     }
+    const switchEl = document.getElementById('dark-mode-switch');
+    if (switchEl) switchEl.checked = isDarkMode;
 }
 
 function initLanguage() {
@@ -469,26 +484,52 @@ async function checkAuth() {
 function renderLogin() {
     document.getElementById('auth-page').classList.add('active');
     document.getElementById('main-app').classList.remove('active');
+    const mobileHeader = document.querySelector('.mobile-header');
+    if (mobileHeader) mobileHeader.style.display = 'none';
 }
 
 function renderApp() {
     document.getElementById('auth-page').classList.remove('active');
     document.getElementById('main-app').classList.add('active');
     document.getElementById('user-display-name').textContent = currentUser.name || currentUser.username;
+    
+    // Check if mobile
+    const mobileHeader = document.querySelector('.mobile-header');
+    if (mobileHeader && window.innerWidth <= 900) {
+        mobileHeader.style.display = 'flex';
+    }
+
     updateUILanguage();
     applyFocusMode();
     showView('dashboard');
 }
 
 function showView(viewId) {
+    currentView = viewId;
+    
+    // UI Update
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     const target = document.getElementById(`view-${viewId}`);
-    target.classList.add('active');
+    if (target) target.classList.add('active');
     
     document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.toggle('active', item.getAttribute('onclick').includes(viewId));
+        const onClickAttr = item.getAttribute('onclick');
+        if (onClickAttr && onClickAttr.includes(viewId)) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
     });
 
+    // Close mobile sidebar if open
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) sidebar.classList.remove('open');
+
+    // Scroll content to top
+    const content = document.getElementById('content');
+    if (content) content.scrollTop = 0;
+
+    // Load Data
     if (viewId === 'dashboard') loadDashboard();
     if (viewId === 'tasks') loadTasks();
     if (viewId === 'insights') loadInsights();
@@ -832,12 +873,10 @@ function updateTaskChart(tasks) {
 async function loadTasks() {
     const list = document.getElementById('task-list');
     
-    // Get filter values
-    const priority = document.getElementById('filter-priority').value;
-    const status = document.getElementById('filter-status').value;
-
-    // Show skeletons
-    if (list.innerHTML === '' || list.querySelector('.empty-state')) {
+    // Performance: If we have cached tasks, show them first
+    if (cachedTasks.length > 0) {
+        renderTasks(cachedTasks);
+    } else if (list.innerHTML === '' || list.querySelector('.empty-state')) {
         list.innerHTML = `
             <div class="task-card skeleton" style="height: 80px; opacity: 0.6;"></div>
             <div class="task-card skeleton" style="height: 80px; opacity: 0.4;"></div>
@@ -847,15 +886,21 @@ async function loadTasks() {
 
     try {
         const today = new Date().toISOString().split('T')[0];
+        const priority = document.getElementById('filter-priority').value;
+        const status = document.getElementById('filter-status').value;
+        
         let url = `/tasks?user_id=${currentUser.user_id}&day=${today}`;
         if (priority) url += `&priority=${priority}`;
         if (status) url += `&status=${status}`;
 
         const tasks = await apiFetch(url);
+        cachedTasks = tasks;
         renderTasks(tasks);
     } catch (err) {
         console.error('Tasks load failed', err);
-        list.innerHTML = `<div class="empty-state"><p class="error-msg">${t('error_occurred')}</p></div>`;
+        if (cachedTasks.length === 0) {
+            list.innerHTML = `<div class="empty-state"><p class="error-msg">${t('error_occurred')}</p></div>`;
+        }
     }
 }
 
@@ -988,33 +1033,43 @@ async function addTask(title, category, difficulty) {
 }
 
 async function handleTaskUpdate(taskId, status, btnEl) {
-    // Instant visual feedback
+    // OPTIMISTIC UI: Instant feedback
     const card = btnEl.closest('.task-card');
+    const originalStatus = card.className;
     const originalActions = card.querySelector('.task-actions').innerHTML;
     
-    // Disable and show mini-loader
-    btnEl.disabled = true;
-    card.querySelector('.task-actions').innerHTML = '<span>⏳</span>';
+    // Update local state and UI immediately
+    card.className = `task-card ${status}`;
+    card.querySelector('.task-actions').innerHTML = `<span>⏳</span>`;
     
+    // Update cache
+    const taskIdx = cachedTasks.findIndex(t => t.id === taskId);
+    if (taskIdx !== -1) cachedTasks[taskIdx].status = status;
+
     try {
         await apiFetch(`/tasks/${taskId}`, {
             method: 'PATCH',
             body: JSON.stringify({ status })
         });
         
-        // Success state
-        card.className = `task-card ${status}`;
-        card.querySelector('.task-actions').innerHTML = `<span>${status === 'completed' ? '✅' : '❌'}</span>`;
-        
-        loadDashboard(); // Update score in background
+        // Success: Replace loader with status icon
+        card.querySelector('.task-actions').innerHTML = `<span class="status-icon">${status === 'completed' ? '✅' : '❌'}</span>`;
+        showToast(t('task_updated'), 'success');
         
         // Motivation feedback
-        const messages = status === 'completed' ? [t('well_done'), t('keep_going')] : [t('keep_going')];
-        const randomMsg = messages[Math.floor(Math.random() * messages.length)];
-        showToast(randomMsg, 'success');
+        if (status === 'completed') {
+            const messages = [t('well_done'), t('keep_going')];
+            const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+            showToast(randomMsg, 'success');
+        }
+
+        // If in dashboard, refresh stats silently
+        if (currentView === 'dashboard') loadDashboard();
     } catch (err) {
-        // Revert on error
+        // Rollback on error
+        card.className = originalStatus;
         card.querySelector('.task-actions').innerHTML = originalActions;
+        if (taskIdx !== -1) cachedTasks[taskIdx].status = 'pending';
         showToast(err.message, 'error');
     }
 }
@@ -1067,8 +1122,11 @@ function showAuthError(msg) {
 function toggleDarkMode() {
     isDarkMode = !isDarkMode;
     localStorage.setItem('tm_dark_mode', isDarkMode ? '1' : '0');
-    initTheme();
-    if (currentUser) loadDashboard(); // Re-render charts with new theme colors
+    applyTheme();
+    if (currentUser) {
+        if (currentView === 'dashboard') loadDashboard();
+        if (currentView === 'tasks') renderTasks(cachedTasks);
+    }
     showToast(t('task_updated'), 'success');
 }
 
