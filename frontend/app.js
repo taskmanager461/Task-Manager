@@ -522,7 +522,9 @@ function showView(viewId) {
 
     // Close mobile sidebar if open
     const sidebar = document.getElementById('sidebar');
-    if (sidebar) sidebar.classList.remove('open');
+    if (sidebar && sidebar.classList.contains('open')) {
+        toggleSidebar();
+    }
 
     // Scroll content to top
     const content = document.getElementById('content');
