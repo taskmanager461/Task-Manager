@@ -47,7 +47,7 @@ def signup(payload: SignupRequest, background_tasks: BackgroundTasks, db: Sessio
 
 @router.post("/login", response_model=AuthResponse)
 def login(payload: LoginRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
-    identifier = payload.username.strip()
+    identifier = payload.username.strip().lower()
     user = db.query(User).filter(or_(User.username == identifier, User.email == identifier)).first()
     if not user or not verify_password(payload.password, user.password):
         raise HTTPException(status_code=401, detail="Invalid credentials")

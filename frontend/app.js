@@ -608,20 +608,31 @@ async function apiFetch(endpoint, options = {}) {
     
     options.headers = {
         ...options.headers,
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${currentToken}`
+        'Content-Type': 'application/json'
     };
+    
+    // Performance: Don't send token for login/signup
+    if (currentToken && !endpoint.includes('/login') && !endpoint.includes('/signup')) {
+        options.headers['Authorization'] = `Bearer ${currentToken}`;
+    }
     
     try {
         const response = await fetch(`${API_BASE_URL}${apiEndpoint}`, options);
-        if (response.status === 401) {
+        if (response.status === 401 && !endpoint.includes('/login')) {
             logout();
             showToast(t('session_expired'), 'error');
             throw new Error('Session expired');
         }
         if (!response.ok) {
             const error = await response.json();
-            throw new Error(error.detail || t('error_occurred'));
+            // Handle Pydantic validation errors
+            let message = t('error_occurred');
+            if (typeof error.detail === 'string') {
+                message = error.detail;
+            } else if (Array.isArray(error.detail)) {
+                message = error.detail.map(d => `${d.loc.join('.')}: ${d.msg}`).join('\n');
+            }
+            throw new Error(message);
         }
         return response.json();
     } catch (err) {
