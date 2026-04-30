@@ -5,48 +5,45 @@ def create_icon(size: int, filename: str) -> None:
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
     
-    # Calculate dimensions
-    outer_pad = int(size * 0.06)
+    # Outer rounded rectangle
+    outer_pad = int(size * 0.10)
     radius = int(size * 0.22)
     
-    # Draw rounded rectangle background
     draw.rounded_rectangle(
         [outer_pad, outer_pad, size - outer_pad, size - outer_pad],
         radius=radius,
-        fill=(10, 10, 10, 255),
-        outline=(96, 165, 250, 255),
+        fill=(5, 5, 5, 255),
+        outline=(0, 122, 255, 255),
         width=max(2, size // 32)
     )
     
     # Calculate T dimensions
-    t_width = int(size * 0.3)
-    t_height = int(size * 0.44)
+    cx, cy = size // 2, size // 2
+    t_top_width = int(size * 0.32)
     t_top_height = int(size * 0.08)
     t_stem_width = int(size * 0.14)
+    t_stem_height = int(size * 0.40)
     
-    t_center_x = size // 2
-    t_center_y = size // 2
-    
-    # Top bar of T
-    top_bar_left = t_center_x - (t_width // 2)
-    top_bar_top = t_center_y - (t_height // 2)
-    top_bar_right = top_bar_left + t_width
-    top_bar_bottom = top_bar_top + t_top_height
+    # Top bar of T (with rounded ends)
+    top_x1 = cx - t_top_width // 2
+    top_y1 = cy - t_stem_height // 2
+    top_x2 = cx + t_top_width // 2
+    top_y2 = top_y1 + t_top_height
     draw.rounded_rectangle(
-        [top_bar_left, top_bar_top, top_bar_right, top_bar_bottom],
-        radius=max(1, t_top_height // 2),
-        fill=(96, 165, 250, 255)
+        [top_x1, top_y1, top_x2, top_y2],
+        radius=t_top_height // 2,
+        fill=(0, 122, 255, 255)
     )
     
-    # Stem of T
-    stem_left = t_center_x - (t_stem_width // 2)
-    stem_top = top_bar_top
-    stem_right = stem_left + t_stem_width
-    stem_bottom = stem_top + t_height
+    # Stem of T (with rounded ends)
+    stem_x1 = cx - t_stem_width // 2
+    stem_y1 = top_y1
+    stem_x2 = cx + t_stem_width // 2
+    stem_y2 = stem_y1 + t_stem_height
     draw.rounded_rectangle(
-        [stem_left, stem_top, stem_right, stem_bottom],
-        radius=max(1, t_stem_width // 2),
-        fill=(96, 165, 250, 255)
+        [stem_x1, stem_y1, stem_x2, stem_y2],
+        radius=t_stem_width // 2,
+        fill=(0, 122, 255, 255)
     )
     
     # Save to frontend/static
