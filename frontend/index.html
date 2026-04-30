@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Task Manager</title>
+    <title>Tobedone</title>
     <link rel="stylesheet" href="styles.css?v=3.2.1">
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/png" href="/favicon.png">
@@ -29,14 +29,44 @@
             <span></span>
             <span></span>
         </button>
-        <h2 data-i18n="app_title">Task Manager</h2>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <svg class="brand-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                <rect x="15" y="15" width="70" height="70" rx="18" fill="#0a0a0a" stroke="#60A5FA" stroke-width="3" filter="url(#glow)"/>
+                <rect x="35" y="28" width="30" height="8" rx="4" fill="#60A5FA"/>
+                <rect x="43" y="28" width="14" height="44" rx="4" fill="#60A5FA"/>
+            </svg>
+            <h2 data-i18n="app_title">Tobedone</h2>
+        </div>
         <div style="width: 40px;"></div> <!-- Spacer for balance -->
     </header>
 
     <!-- Auth Page -->
     <div id="auth-page" class="page active">
         <div class="auth-container">
-            <h1 class="main-title" data-i18n="app_title">Task Manager</h1>
+            <svg class="auth-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <filter id="auth-glow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                <rect x="15" y="15" width="70" height="70" rx="18" fill="#0a0a0a" stroke="#60A5FA" stroke-width="3" filter="url(#auth-glow)"/>
+                <rect x="35" y="28" width="30" height="8" rx="4" fill="#60A5FA"/>
+                <rect x="43" y="28" width="14" height="44" rx="4" fill="#60A5FA"/>
+            </svg>
+            <h1 class="main-title" data-i18n="app_title">Tobedone</h1>
             <div class="tabs">
                 <button id="tab-login" class="tab active" onclick="switchAuthTab('login')" data-i18n="login">Login</button>
                 <button id="tab-signup" class="tab" onclick="switchAuthTab('signup')" data-i18n="signup">Sign Up</button>
@@ -68,9 +98,22 @@
         </button>
         <aside id="sidebar">
             <div class="sidebar-header">
-                <img src="/icon-192.png" alt="Logo" class="sidebar-logo">
+                <svg class="sidebar-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <filter id="sidebar-glow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <rect x="15" y="15" width="70" height="70" rx="18" fill="#0a0a0a" stroke="#60A5FA" stroke-width="3" filter="url(#sidebar-glow)"/>
+                    <rect x="35" y="28" width="30" height="8" rx="4" fill="#60A5FA"/>
+                    <rect x="43" y="28" width="14" height="44" rx="4" fill="#60A5FA"/>
+                </svg>
                 <div class="sidebar-info">
-                    <h2 data-i18n="app_title">Task Manager</h2>
+                    <h2 data-i18n="app_title">Tobedone</h2>
                     <span id="user-display-name">User</span>
                 </div>
             </div>
@@ -335,7 +378,24 @@
     </div>
 
     <div id="loading-overlay" class="loading-overlay">
-        <div class="spinner"></div>
+        <div class="loading-content">
+            <svg class="loading-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <filter id="loading-glow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                <rect x="15" y="15" width="70" height="70" rx="18" fill="#0a0a0a" stroke="#60A5FA" stroke-width="3" filter="url(#loading-glow)"/>
+                <rect x="35" y="28" width="30" height="8" rx="4" fill="#60A5FA"/>
+                <rect x="43" y="28" width="14" height="44" rx="4" fill="#60A5FA"/>
+            </svg>
+            <h2 class="loading-title">Tobedone</h2>
+            <div class="spinner"></div>
+        </div>
     </div>
 
 

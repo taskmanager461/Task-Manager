@@ -17,7 +17,7 @@ let notifiedTasks = new Set();
 
 const translations = {
     en: {
-        app_title: "Task Manager",
+        app_title: "Tobedone",
         login: "Login",
         signup: "Sign Up",
         username_email: "Username or Email",
@@ -97,7 +97,7 @@ const translations = {
         mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun"
     },
     el: {
-        app_title: "Task Manager",
+        app_title: "Tobedone",
         login: "Σύνδεση",
         signup: "Εγγραφή",
         username_email: "Όνομα χρήστη ή Email",
@@ -177,7 +177,7 @@ const translations = {
         mon: "Δευ", tue: "Τρι", wed: "Τετ", thu: "Πεμ", fri: "Παρ", sat: "Σαβ", sun: "Κυρ"
     },
     es: {
-        app_title: "Task Manager",
+        app_title: "Tobedone",
         login: "Iniciar Sesión",
         signup: "Registrarse",
         username_email: "Usuario o Email",
@@ -220,7 +220,7 @@ const translations = {
         error_occurred: "Ocurrió un error"
     },
     fr: {
-        app_title: "Task Manager",
+        app_title: "Tobedone",
         login: "Connexion",
         signup: "S'inscrire",
         username_email: "Nom d'utilisateur ou Email",
@@ -263,7 +263,7 @@ const translations = {
         error_occurred: "Une erreur est survenue"
     },
     de: {
-        app_title: "Task Manager",
+        app_title: "Tobedone",
         login: "Anmelden",
         signup: "Registrieren",
         username_email: "Benutzername oder Email",
@@ -306,7 +306,7 @@ const translations = {
         error_occurred: "Fehler aufgetreten"
     },
     it: {
-        app_title: "Task Manager",
+        app_title: "Tobedone",
         login: "Accedi",
         signup: "Registrati",
         username_email: "Username o Email",
@@ -349,7 +349,7 @@ const translations = {
         error_occurred: "Errore verificato"
     },
     pt: {
-        app_title: "Task Manager",
+        app_title: "Tobedone",
         login: "Entrar",
         signup: "Cadastrar",
         username_email: "Usuário ou Email",

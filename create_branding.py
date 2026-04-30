@@ -1,71 +1,54 @@
 import os
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 
 def create_icon(size: int, filename: str) -> None:
-    bg = (10, 31, 68, 255)
-    paper = (245, 250, 255, 255)
-    stroke = (130, 196, 255, 255)
-    ink = (10, 31, 68, 255)
-
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
-
+    
+    # Calculate dimensions
     outer_pad = int(size * 0.06)
+    radius = int(size * 0.22)
+    
+    # Draw rounded rectangle background
     draw.rounded_rectangle(
         [outer_pad, outer_pad, size - outer_pad, size - outer_pad],
-        radius=int(size * 0.22),
-        fill=bg,
+        radius=radius,
+        fill=(10, 10, 10, 255),
+        outline=(96, 165, 250, 255),
+        width=max(2, size // 32)
     )
-
-    card_pad = int(size * 0.18)
-    draw.rounded_rectangle(
-        [card_pad, card_pad, size - card_pad, size - card_pad],
-        radius=int(size * 0.12),
-        fill=paper,
-    )
-
-    # Drawing "T" over "M" in a list style
-    line_w = max(2, size // 32)
-    left = card_pad + int(size * 0.12)
-    top = card_pad + int(size * 0.15)
-    row_gap = int(size * 0.25)
-    box_size = int(size * 0.18)
     
-    # Draw two rows for "T" and "M"
-    for row, char in enumerate(["T", "M"]):
-        y = top + row * row_gap
-        # Checkbox
-        draw.rounded_rectangle(
-            [left, y, left + box_size, y + box_size],
-            radius=max(2, box_size // 4),
-            outline=stroke,
-            width=line_w,
-        )
-        # Checkmark
-        draw.line(
-            [
-                (left + box_size * 0.2, y + box_size * 0.55),
-                (left + box_size * 0.45, y + box_size * 0.8),
-                (left + box_size * 0.85, y + box_size * 0.25),
-            ],
-            fill=stroke,
-            width=line_w,
-            joint="curve",
-        )
-        
-        # Text "T" or "M" next to the box
-        try:
-            char_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", int(size * 0.22))
-        except Exception:
-            char_font = ImageFont.load_default()
-            
-        draw.text(
-            (left + box_size + int(size * 0.08), y - int(size * 0.02)),
-            char,
-            fill=ink,
-            font=char_font
-        )
-
+    # Calculate T dimensions
+    t_width = int(size * 0.3)
+    t_height = int(size * 0.44)
+    t_top_height = int(size * 0.08)
+    t_stem_width = int(size * 0.14)
+    
+    t_center_x = size // 2
+    t_center_y = size // 2
+    
+    # Top bar of T
+    top_bar_left = t_center_x - (t_width // 2)
+    top_bar_top = t_center_y - (t_height // 2)
+    top_bar_right = top_bar_left + t_width
+    top_bar_bottom = top_bar_top + t_top_height
+    draw.rounded_rectangle(
+        [top_bar_left, top_bar_top, top_bar_right, top_bar_bottom],
+        radius=max(1, t_top_height // 2),
+        fill=(96, 165, 250, 255)
+    )
+    
+    # Stem of T
+    stem_left = t_center_x - (t_stem_width // 2)
+    stem_top = top_bar_top
+    stem_right = stem_left + t_stem_width
+    stem_bottom = stem_top + t_height
+    draw.rounded_rectangle(
+        [stem_left, stem_top, stem_right, stem_bottom],
+        radius=max(1, t_stem_width // 2),
+        fill=(96, 165, 250, 255)
+    )
+    
     # Save to frontend/static
     output_dir = os.path.join("frontend", "static")
     os.makedirs(output_dir, exist_ok=True)
