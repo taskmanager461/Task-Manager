@@ -8,7 +8,7 @@ def create_icon(size: int, filename: str) -> None:
     core = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     draw = ImageDraw.Draw(core)
 
-    stroke = max(2, round(5.2 * scale))
+    stroke = max(2, round(4.6 * scale))
 
     # Top capsule (close to reference)
     top_bbox = (
@@ -18,7 +18,7 @@ def create_icon(size: int, filename: str) -> None:
         round(43 * scale),
     )
     radius = max(4, round(15 * scale))
-    draw.rounded_rectangle(top_bbox, radius=radius, outline=(10, 134, 255, 255), width=stroke)
+    draw.rounded_rectangle(top_bbox, radius=radius, outline=(9, 135, 255, 255), width=stroke)
 
     # Angled stem
     stem_w = max(8, round(20 * scale))
@@ -31,7 +31,7 @@ def create_icon(size: int, filename: str) -> None:
         round(41 * scale) + stem_w,
         round(41 * scale) + stem_h,
     )
-    stem_draw.rounded_rectangle(stem_box, radius=max(5, round(10 * scale)), outline=(10, 134, 255, 255), width=stroke)
+    stem_draw.rounded_rectangle(stem_box, radius=max(5, round(9 * scale)), outline=(9, 135, 255, 255), width=stroke)
     stem_layer = stem_layer.rotate(12, resample=Image.Resampling.BICUBIC, center=(round(50 * scale), round(44 * scale)))
     core = Image.alpha_composite(core, stem_layer)
 
@@ -45,8 +45,8 @@ def create_icon(size: int, filename: str) -> None:
         width=max(1, round(1.2 * scale)),
     )
 
-    glow_soft = core.filter(ImageFilter.GaussianBlur(radius=max(1, round(7.2 * scale))))
-    glow_hard = core.filter(ImageFilter.GaussianBlur(radius=max(1, round(3.0 * scale))))
+    glow_soft = core.filter(ImageFilter.GaussianBlur(radius=max(1, round(4.3 * scale))))
+    glow_hard = core.filter(ImageFilter.GaussianBlur(radius=max(1, round(1.4 * scale))))
 
     img = Image.alpha_composite(img, glow_soft)
     img = Image.alpha_composite(img, glow_hard)
