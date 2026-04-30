@@ -52,40 +52,45 @@
     <!-- Auth Page -->
     <div id="auth-page" class="page active">
         <div class="auth-container">
-            <svg class="auth-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <filter id="auth-glow" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
-                        <feMerge>
-                            <feMergeNode in="coloredBlur"/>
-                            <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
-                    </filter>
-                </defs>
-                <rect x="15" y="15" width="70" height="70" rx="18" fill="#0a0a0a" stroke="#60A5FA" stroke-width="3" filter="url(#auth-glow)"/>
-                <rect x="35" y="28" width="30" height="8" rx="4" fill="#60A5FA"/>
-                <rect x="43" y="28" width="14" height="44" rx="4" fill="#60A5FA"/>
-            </svg>
-            <h1 class="main-title" data-i18n="app_title">Tobedone</h1>
-            <div class="tabs">
-                <button id="tab-login" class="tab active" onclick="switchAuthTab('login')" data-i18n="login">Login</button>
-                <button id="tab-signup" class="tab" onclick="switchAuthTab('signup')" data-i18n="signup">Sign Up</button>
+            <div class="logo-card">
+                <svg class="auth-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <filter id="auth-glow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <rect x="12" y="12" width="76" height="76" rx="20" fill="#0a0a0a" stroke="#60A5FA" stroke-width="3" filter="url(#auth-glow)"/>
+                    <rect x="30" y="26" width="40" height="10" rx="5" fill="#60A5FA"/>
+                    <rect x="40" y="26" width="20" height="48" rx="5" fill="#60A5FA"/>
+                </svg>
             </div>
-            
-            <form id="login-form" class="auth-form active">
-                <input type="text" id="login-username" data-i18n="username_email" placeholder="Username or Email" required autocomplete="username">
-                <input type="password" id="login-password" data-i18n="password" placeholder="Password" required autocomplete="current-password">
-                <button type="submit" class="btn primary" data-i18n="login">Login</button>
-            </form>
+            <h1 class="main-title">Tobedone</h1>
+            <p class="subtitle">Plan it. Do it. Done.</p>
+            <div class="auth-card">
+                <div class="tabs">
+                    <button id="tab-login" class="tab active" onclick="switchAuthTab('login')" data-i18n="login">Login</button>
+                    <button id="tab-signup" class="tab" onclick="switchAuthTab('signup')" data-i18n="signup">Sign Up</button>
+                </div>
+                
+                <form id="login-form" class="auth-form active">
+                    <input type="text" id="login-username" data-i18n="username_email" placeholder="Username or Email" required autocomplete="username">
+                    <input type="password" id="login-password" data-i18n="password" placeholder="Password" required autocomplete="current-password">
+                    <button type="submit" class="btn primary" data-i18n="login">Login</button>
+                </form>
 
-            <form id="signup-form" class="auth-form">
-                <input type="text" id="signup-name" data-i18n="full_name" placeholder="Full Name" required autocomplete="name">
-                <input type="text" id="signup-username" data-i18n="username_email" placeholder="Username" required autocomplete="username">
-                <input type="email" id="signup-email" data-i18n="email" placeholder="Email" required autocomplete="email">
-                <input type="password" id="signup-password" data-i18n="password" placeholder="Password" required autocomplete="new-password">
-                <button type="submit" class="btn primary" data-i18n="create_account">Create Account</button>
-            </form>
-            <div id="auth-error" class="error-msg"></div>
+                <form id="signup-form" class="auth-form">
+                    <input type="text" id="signup-name" data-i18n="full_name" placeholder="Full Name" required autocomplete="name">
+                    <input type="text" id="signup-username" data-i18n="username_email" placeholder="Username" required autocomplete="username">
+                    <input type="email" id="signup-email" data-i18n="email" placeholder="Email" required autocomplete="email">
+                    <input type="password" id="signup-password" data-i18n="password" placeholder="Password" required autocomplete="new-password">
+                    <button type="submit" class="btn primary" data-i18n="create_account">Create Account</button>
+                </form>
+                <div id="auth-error" class="error-msg"></div>
+            </div>
         </div>
     </div>
 
