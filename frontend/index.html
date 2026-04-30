@@ -13,6 +13,41 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="dark-mode"> <!-- Default to dark mode for pro feel -->
+    <svg class="logo-defs" aria-hidden="true" focusable="false">
+        <defs>
+            <filter id="logo-glow-soft" x="-80%" y="-80%" width="260%" height="260%">
+                <feGaussianBlur stdDeviation="5.4" result="blur"/>
+                <feColorMatrix in="blur" type="matrix" values="
+                    0 0 0 0 0
+                    0 0 0 0 0.52
+                    0 0 0 0 1
+                    0 0 0 0.95 0"/>
+            </filter>
+            <filter id="logo-glow-core" x="-70%" y="-70%" width="240%" height="240%">
+                <feGaussianBlur stdDeviation="2.4" result="coreBlur"/>
+                <feMerge>
+                    <feMergeNode in="coreBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+            </filter>
+            <symbol id="tobedone-logo" viewBox="0 0 100 100">
+                <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="16" y="13" width="68" height="30" rx="15"
+                          stroke="#007dff" stroke-width="8" filter="url(#logo-glow-soft)"/>
+                    <rect x="16" y="13" width="68" height="30" rx="15"
+                          stroke="#0b84ff" stroke-width="5" filter="url(#logo-glow-core)"/>
+                    <rect x="41" y="41" width="20" height="50" rx="10"
+                          transform="rotate(12 50 44)"
+                          stroke="#007dff" stroke-width="8" filter="url(#logo-glow-soft)"/>
+                    <rect x="41" y="41" width="20" height="50" rx="10"
+                          transform="rotate(12 50 44)"
+                          stroke="#0b84ff" stroke-width="5" filter="url(#logo-glow-core)"/>
+                    <path d="M22 18H75C79 18 83 21 83 26C83 30 79 34 75 34"
+                          stroke="#bde6ff" stroke-opacity="0.98" stroke-width="1.5"/>
+                </g>
+            </symbol>
+        </defs>
+    </svg>
     <div class="bg-lines-container">
         <div class="bg-line bg-line-1"></div>
         <div class="bg-line bg-line-2"></div>
@@ -30,18 +65,8 @@
             <span></span>
         </button>
         <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <svg class="brand-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-                        <feMerge>
-                            <feMergeNode in="coloredBlur"/>
-                            <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
-                    </filter>
-                </defs>
-                <path d="M20,35 Q20,20 35,20 L65,20 Q80,20 80,35 Q80,45 70,50 L55,55 Q45,58 45,68 L45,80 Q45,85 40,85 Q35,85 35,80 L35,60 Q35,50 45,45 L60,40 Q65,38 65,35 Q65,30 60,30 L40,30 Q35,30 35,35 Z" 
-                      fill="none" stroke="#0080FF" stroke-width="8" stroke-linecap="round" filter="url(#glow)"/>
+            <svg class="brand-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <use href="#tobedone-logo"></use>
             </svg>
             <h2 data-i18n="app_title">tobedone</h2>
         </div>
@@ -51,18 +76,8 @@
     <!-- Auth Page -->
     <div id="auth-page" class="page active">
         <div class="auth-container">
-            <svg class="auth-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <filter id="auth-glow" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
-                        <feMerge>
-                            <feMergeNode in="coloredBlur"/>
-                            <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
-                    </filter>
-                </defs>
-                <path d="M15,35 Q15,15 35,15 L65,15 Q85,15 85,35 Q85,48 72,52 L55,58 Q42,62 42,75 L42,85 Q42,90 37,90 Q32,90 32,85 L32,58 Q32,45 47,40 L63,35 Q70,33 70,35 Q70,25 63,25 L37,25 Q30,25 30,35 Z" 
-                      fill="none" stroke="#0080FF" stroke-width="10" stroke-linecap="round" filter="url(#auth-glow)"/>
+            <svg class="auth-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <use href="#tobedone-logo"></use>
             </svg>
             <h1 class="main-title" data-i18n="app_title">tobedone</h1>
             <div class="tabs">
@@ -96,18 +111,8 @@
         </button>
         <aside id="sidebar">
             <div class="sidebar-header">
-                <svg class="sidebar-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <filter id="sidebar-glow" x="-50%" y="-50%" width="200%" height="200%">
-                            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-                            <feMerge>
-                                <feMergeNode in="coloredBlur"/>
-                                <feMergeNode in="SourceGraphic"/>
-                            </feMerge>
-                        </filter>
-                    </defs>
-                    <path d="M20,35 Q20,20 35,20 L65,20 Q80,20 80,35 Q80,45 70,50 L55,55 Q45,58 45,68 L45,80 Q45,85 40,85 Q35,85 35,80 L35,60 Q35,50 45,45 L60,40 Q65,38 65,35 Q65,30 60,30 L40,30 Q35,30 35,35 Z" 
-                          fill="none" stroke="#0080FF" stroke-width="8" stroke-linecap="round" filter="url(#sidebar-glow)"/>
+                <svg class="sidebar-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <use href="#tobedone-logo"></use>
                 </svg>
                 <div class="sidebar-info">
                     <h2 data-i18n="app_title">tobedone</h2>
@@ -376,18 +381,8 @@
 
     <div id="loading-overlay" class="loading-overlay">
         <div class="loading-content">
-            <svg class="loading-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <filter id="loading-glow" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
-                        <feMerge>
-                            <feMergeNode in="coloredBlur"/>
-                            <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
-                    </filter>
-                </defs>
-                <path d="M15,35 Q15,15 35,15 L65,15 Q85,15 85,35 Q85,48 72,52 L55,58 Q42,62 42,75 L42,85 Q42,90 37,90 Q32,90 32,85 L32,58 Q32,45 47,40 L63,35 Q70,33 70,35 Q70,25 63,25 L37,25 Q30,25 30,35 Z" 
-                      fill="none" stroke="#0080FF" stroke-width="10" stroke-linecap="round" filter="url(#loading-glow)"/>
+            <svg class="loading-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <use href="#tobedone-logo"></use>
             </svg>
             <h2 class="loading-title">tobedone</h2>
             <div class="spinner"></div>

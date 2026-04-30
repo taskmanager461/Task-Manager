@@ -1,48 +1,62 @@
 import os
-from PIL import Image, ImageDraw
-
-def draw_bezier(draw, points, color, width, scale):
-    # points is list of (start, c1, c2, end) tuples
-    for segment in points:
-        start = (int(segment[0][0]*scale), int(segment[0][1]*scale))
-        c1 = (int(segment[1][0]*scale), int(segment[1][1]*scale))
-        c2 = (int(segment[2][0]*scale), int(segment[2][1]*scale))
-        end = (int(segment[3][0]*scale), int(segment[3][1]*scale))
-        
-        path_points = []
-        for t in range(101):
-            t = t / 100
-            x = (1-t)**3*start[0] + 3*(1-t)**2*t*c1[0] + 3*(1-t)*t**2*c2[0] + t**3*end[0]
-            y = (1-t)**3*start[1] + 3*(1-t)**2*t*c1[1] + 3*(1-t)*t**2*c2[1] + t**3*end[1]
-            path_points.append((x, y))
-        if len(path_points) > 1:
-            draw.line(path_points, fill=color, width=int(width*scale), joint="curve")
+from PIL import Image, ImageDraw, ImageFilter
 
 def create_icon(size: int, filename: str) -> None:
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(img)
-    scale = size / 200
+    scale = size / 100
+
+    core = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(core)
+
+    stroke = max(2, round(5 * scale))
+
+    # Top capsule (close to reference)
+    top_bbox = (
+        round(16 * scale),
+        round(13 * scale),
+        round(84 * scale),
+        round(43 * scale),
+    )
+    radius = max(4, round(15 * scale))
+    draw.rounded_rectangle(top_bbox, radius=radius, outline=(11, 132, 255, 255), width=stroke)
+
+    # Angled stem
+    stem_w = max(8, round(20 * scale))
+    stem_h = max(16, round(50 * scale))
+    stem_layer = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    stem_draw = ImageDraw.Draw(stem_layer)
+    stem_box = (
+        round(41 * scale),
+        round(41 * scale),
+        round(41 * scale) + stem_w,
+        round(41 * scale) + stem_h,
+    )
+    stem_draw.rounded_rectangle(stem_box, radius=max(5, round(10 * scale)), outline=(11, 132, 255, 255), width=stroke)
+    stem_layer = stem_layer.rotate(12, resample=Image.Resampling.BICUBIC, center=(round(50 * scale), round(44 * scale)))
+    core = Image.alpha_composite(core, stem_layer)
+
+    # Soft inner highlight
+    hi = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    hi_draw = ImageDraw.Draw(hi)
+    hi_draw.rounded_rectangle(
+        (round(22 * scale), round(18 * scale), round(75 * scale), round(34 * scale)),
+        radius=max(3, round(8 * scale)),
+        outline=(180, 227, 255, 180),
+        width=max(1, round(1.2 * scale)),
+    )
+
+    glow_soft = core.filter(ImageFilter.GaussianBlur(radius=max(1, round(5.4 * scale))))
+    glow_hard = core.filter(ImageFilter.GaussianBlur(radius=max(1, round(2.5 * scale))))
+
+    img = Image.alpha_composite(img, glow_soft)
+    img = Image.alpha_composite(img, glow_hard)
+    img = Image.alpha_composite(img, core)
+    img = Image.alpha_composite(img, hi)
     
-    # Define the segments
-    segments1 = [
-        ((100, 20), (70, 20), (50, 40), (50, 60)),
-        ((50, 60), (50, 80), (65, 100), (80, 120)),
-        ((80, 120), (90, 135), (90, 155), (80, 170)),
-        ((100, 20), (130, 20), (150, 40), (150, 60))
-    ]
-    segments2 = [
-        ((150, 60), (150, 40), (130, 20), (100, 20)),
-        ((100, 20), (70, 20), (50, 40), (50, 60)),
-        ((50, 60), (50, 80), (65, 100), (80, 120)),
-        ((80, 120), (90, 135), (90, 155), (80, 170))
-    ]
-    
-    draw_bezier(draw, segments1, (59, 130, 246, 255), 16, scale)
-    draw_bezier(draw, segments2, (96, 165, 250, 255), 8, scale)
-    
+    # Save to frontend/static
     output_dir = os.path.join("frontend", "static")
     os.makedirs(output_dir, exist_ok=True)
-    img.save(os.path.join(output_dir, filename))
+    img.save(os.path.join(output_dir, filename), "PNG")
     print(f"Saved {filename} to {output_dir}")
 
 
