@@ -30,18 +30,19 @@
             <span></span>
         </button>
         <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <svg class="brand-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <svg class="brand-logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                    <filter id="brand-glow" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
                         <feMerge>
                             <feMergeNode in="coloredBlur"/>
                             <feMergeNode in="SourceGraphic"/>
                         </feMerge>
                     </filter>
                 </defs>
-                <rect x="10" y="10" width="80" height="80" rx="22" fill="#050505" stroke="#007AFF" stroke-width="3" filter="url(#brand-glow)"/>
-                <path d="M 30 30 Q 30 22 38 22 L 62 22 Q 70 22 70 30 Q 70 38 62 38 L 54 38 L 54 70 Q 54 78 46 78 Q 38 78 38 70 Q 38 62 46 62 L 46 38 L 38 38 Q 30 38 30 30 Z" fill="#007AFF"/>
+                <path d="M100 20 C70 20 50 40 50 60 C50 80 65 100 80 120 C90 135 90 155 80 170" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" filter="url(#glow)"/>
+                <path d="M100 20 C130 20 150 40 150 60" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" filter="url(#glow)"/>
+                <path d="M150 60 C150 40 130 20 100 20 C70 20 50 40 50 60 C50 80 65 100 80 120 C90 135 90 155 80 170" fill="none" stroke="#60a5fa" stroke-width="8" stroke-linecap="round" filter="url(#glow)"/>
             </svg>
             <h2 data-i18n="app_title">Tobedone</h2>
         </div>
@@ -51,18 +52,19 @@
     <!-- Auth Page -->
     <div id="auth-page" class="page active">
         <div class="auth-container">
-            <svg class="auth-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <svg class="auth-logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <filter id="auth-glow" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+                        <feGaussianBlur stdDeviation="12" result="coloredBlur"/>
                         <feMerge>
                             <feMergeNode in="coloredBlur"/>
                             <feMergeNode in="SourceGraphic"/>
                         </feMerge>
                     </filter>
                 </defs>
-                <rect x="10" y="10" width="80" height="80" rx="22" fill="#050505" stroke="#007AFF" stroke-width="3" filter="url(#auth-glow)"/>
-                <path d="M 30 30 Q 30 22 38 22 L 62 22 Q 70 22 70 30 Q 70 38 62 38 L 54 38 L 54 70 Q 54 78 46 78 Q 38 78 38 70 Q 38 62 46 62 L 46 38 L 38 38 Q 30 38 30 30 Z" fill="#007AFF"/>
+                <path d="M100 20 C70 20 50 40 50 60 C50 80 65 100 80 120 C90 135 90 155 80 170" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" filter="url(#auth-glow)"/>
+                <path d="M100 20 C130 20 150 40 150 60" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" filter="url(#auth-glow)"/>
+                <path d="M150 60 C150 40 130 20 100 20 C70 20 50 40 50 60 C50 80 65 100 80 120 C90 135 90 155 80 170" fill="none" stroke="#60a5fa" stroke-width="8" stroke-linecap="round" filter="url(#auth-glow)"/>
             </svg>
             <h1 class="main-title" data-i18n="app_title">Tobedone</h1>
             <div class="tabs">
@@ -96,18 +98,19 @@
         </button>
         <aside id="sidebar">
             <div class="sidebar-header">
-                <svg class="sidebar-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <svg class="sidebar-logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <filter id="sidebar-glow" x="-50%" y="-50%" width="200%" height="200%">
-                            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                            <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
                             <feMerge>
                                 <feMergeNode in="coloredBlur"/>
                                 <feMergeNode in="SourceGraphic"/>
                             </feMerge>
                         </filter>
                     </defs>
-                    <rect x="10" y="10" width="80" height="80" rx="22" fill="#050505" stroke="#007AFF" stroke-width="3" filter="url(#sidebar-glow)"/>
-                    <path d="M 30 30 Q 30 22 38 22 L 62 22 Q 70 22 70 30 Q 70 38 62 38 L 54 38 L 54 70 Q 54 78 46 78 Q 38 78 38 70 Q 38 62 46 62 L 46 38 L 38 38 Q 30 38 30 30 Z" fill="#007AFF"/>
+                    <path d="M100 20 C70 20 50 40 50 60 C50 80 65 100 80 120 C90 135 90 155 80 170" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" filter="url(#sidebar-glow)"/>
+                    <path d="M100 20 C130 20 150 40 150 60" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" filter="url(#sidebar-glow)"/>
+                    <path d="M150 60 C150 40 130 20 100 20 C70 20 50 40 50 60 C50 80 65 100 80 120 C90 135 90 155 80 170" fill="none" stroke="#60a5fa" stroke-width="8" stroke-linecap="round" filter="url(#sidebar-glow)"/>
                 </svg>
                 <div class="sidebar-info">
                     <h2 data-i18n="app_title">Tobedone</h2>
@@ -376,18 +379,19 @@
 
     <div id="loading-overlay" class="loading-overlay">
         <div class="loading-content">
-            <svg class="loading-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <svg class="loading-logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <filter id="loading-glow" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+                        <feGaussianBlur stdDeviation="12" result="coloredBlur"/>
                         <feMerge>
                             <feMergeNode in="coloredBlur"/>
                             <feMergeNode in="SourceGraphic"/>
                         </feMerge>
                     </filter>
                 </defs>
-                <rect x="10" y="10" width="80" height="80" rx="22" fill="#050505" stroke="#007AFF" stroke-width="3" filter="url(#loading-glow)"/>
-                <path d="M 30 30 Q 30 22 38 22 L 62 22 Q 70 22 70 30 Q 70 38 62 38 L 54 38 L 54 70 Q 54 78 46 78 Q 38 78 38 70 Q 38 62 46 62 L 46 38 L 38 38 Q 30 38 30 30 Z" fill="#007AFF"/>
+                <path d="M100 20 C70 20 50 40 50 60 C50 80 65 100 80 120 C90 135 90 155 80 170" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" filter="url(#loading-glow)"/>
+                <path d="M100 20 C130 20 150 40 150 60" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" filter="url(#loading-glow)"/>
+                <path d="M150 60 C150 40 130 20 100 20 C70 20 50 40 50 60 C50 80 65 100 80 120 C90 135 90 155 80 170" fill="none" stroke="#60a5fa" stroke-width="8" stroke-linecap="round" filter="url(#loading-glow)"/>
             </svg>
             <h2 class="loading-title">Tobedone</h2>
             <div class="spinner"></div>
@@ -395,6 +399,17 @@
     </div>
 
 
+    <script>
+        document.addEventListener('mousemove', (e) => {
+            document.querySelectorAll('.btn').forEach(btn => {
+                const rect = btn.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                btn.style.setProperty('--mouse-x', `${x}%`);
+                btn.style.setProperty('--mouse-y', `${y}%`);
+            });
+        });
+    </script>
     <script src="app.js?v=3.2.1"></script>
 </body>
 </html>

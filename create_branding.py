@@ -1,55 +1,48 @@
 import os
 from PIL import Image, ImageDraw
 
+def draw_bezier(draw, points, color, width, scale):
+    # points is list of (start, c1, c2, end) tuples
+    for segment in points:
+        start = (int(segment[0][0]*scale), int(segment[0][1]*scale))
+        c1 = (int(segment[1][0]*scale), int(segment[1][1]*scale))
+        c2 = (int(segment[2][0]*scale), int(segment[2][1]*scale))
+        end = (int(segment[3][0]*scale), int(segment[3][1]*scale))
+        
+        path_points = []
+        for t in range(101):
+            t = t / 100
+            x = (1-t)**3*start[0] + 3*(1-t)**2*t*c1[0] + 3*(1-t)*t**2*c2[0] + t**3*end[0]
+            y = (1-t)**3*start[1] + 3*(1-t)**2*t*c1[1] + 3*(1-t)*t**2*c2[1] + t**3*end[1]
+            path_points.append((x, y))
+        if len(path_points) > 1:
+            draw.line(path_points, fill=color, width=int(width*scale), joint="curve")
+
 def create_icon(size: int, filename: str) -> None:
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
+    scale = size / 200
     
-    # Outer rounded rectangle
-    outer_pad = int(size * 0.10)
-    radius = int(size * 0.22)
+    # Define the segments
+    segments1 = [
+        ((100, 20), (70, 20), (50, 40), (50, 60)),
+        ((50, 60), (50, 80), (65, 100), (80, 120)),
+        ((80, 120), (90, 135), (90, 155), (80, 170)),
+        ((100, 20), (130, 20), (150, 40), (150, 60))
+    ]
+    segments2 = [
+        ((150, 60), (150, 40), (130, 20), (100, 20)),
+        ((100, 20), (70, 20), (50, 40), (50, 60)),
+        ((50, 60), (50, 80), (65, 100), (80, 120)),
+        ((80, 120), (90, 135), (90, 155), (80, 170))
+    ]
     
-    draw.rounded_rectangle(
-        [outer_pad, outer_pad, size - outer_pad, size - outer_pad],
-        radius=radius,
-        fill=(5, 5, 5, 255),
-        outline=(0, 122, 255, 255),
-        width=max(2, size // 32)
-    )
+    draw_bezier(draw, segments1, (59, 130, 246, 255), 16, scale)
+    draw_bezier(draw, segments2, (96, 165, 250, 255), 8, scale)
     
-    # Calculate T dimensions
-    cx, cy = size // 2, size // 2
-    t_top_width = int(size * 0.32)
-    t_top_height = int(size * 0.08)
-    t_stem_width = int(size * 0.14)
-    t_stem_height = int(size * 0.40)
-    
-    # Top bar of T (with rounded ends)
-    top_x1 = cx - t_top_width // 2
-    top_y1 = cy - t_stem_height // 2
-    top_x2 = cx + t_top_width // 2
-    top_y2 = top_y1 + t_top_height
-    draw.rounded_rectangle(
-        [top_x1, top_y1, top_x2, top_y2],
-        radius=t_top_height // 2,
-        fill=(0, 122, 255, 255)
-    )
-    
-    # Stem of T (with rounded ends)
-    stem_x1 = cx - t_stem_width // 2
-    stem_y1 = top_y1
-    stem_x2 = cx + t_stem_width // 2
-    stem_y2 = stem_y1 + t_stem_height
-    draw.rounded_rectangle(
-        [stem_x1, stem_y1, stem_x2, stem_y2],
-        radius=t_stem_width // 2,
-        fill=(0, 122, 255, 255)
-    )
-    
-    # Save to frontend/static
     output_dir = os.path.join("frontend", "static")
     os.makedirs(output_dir, exist_ok=True)
-    img.convert("RGBA").save(os.path.join(output_dir, filename), "PNG")
+    img.save(os.path.join(output_dir, filename))
     print(f"Saved {filename} to {output_dir}")
 
 
