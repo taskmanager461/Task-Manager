@@ -15,16 +15,16 @@
 <body class="dark-mode"> <!-- Default to dark mode for pro feel -->
     <svg class="logo-defs" aria-hidden="true" focusable="false">
         <defs>
-            <filter id="logo-glow-soft" x="-80%" y="-80%" width="260%" height="260%">
-                <feGaussianBlur stdDeviation="5.4" result="blur"/>
+            <filter id="logo-glow-soft" x="-90%" y="-90%" width="280%" height="280%">
+                <feGaussianBlur stdDeviation="7.6" result="blur"/>
                 <feColorMatrix in="blur" type="matrix" values="
                     0 0 0 0 0
                     0 0 0 0 0.52
                     0 0 0 0 1
                     0 0 0 0.95 0"/>
             </filter>
-            <filter id="logo-glow-core" x="-70%" y="-70%" width="240%" height="240%">
-                <feGaussianBlur stdDeviation="2.4" result="coreBlur"/>
+            <filter id="logo-glow-core" x="-75%" y="-75%" width="250%" height="250%">
+                <feGaussianBlur stdDeviation="2.1" result="coreBlur"/>
                 <feMerge>
                     <feMergeNode in="coreBlur"/>
                     <feMergeNode in="SourceGraphic"/>
@@ -33,17 +33,17 @@
             <symbol id="tobedone-logo" viewBox="0 0 100 100">
                 <g fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="16" y="13" width="68" height="30" rx="15"
-                          stroke="#007dff" stroke-width="8" filter="url(#logo-glow-soft)"/>
+                          stroke="#0a86ff" stroke-opacity="0.55" stroke-width="13" filter="url(#logo-glow-soft)"/>
                     <rect x="16" y="13" width="68" height="30" rx="15"
-                          stroke="#0b84ff" stroke-width="5" filter="url(#logo-glow-core)"/>
+                          stroke="#0a86ff" stroke-width="5.2" filter="url(#logo-glow-core)"/>
                     <rect x="41" y="41" width="20" height="50" rx="10"
                           transform="rotate(12 50 44)"
-                          stroke="#007dff" stroke-width="8" filter="url(#logo-glow-soft)"/>
+                          stroke="#0a86ff" stroke-opacity="0.55" stroke-width="13" filter="url(#logo-glow-soft)"/>
                     <rect x="41" y="41" width="20" height="50" rx="10"
                           transform="rotate(12 50 44)"
-                          stroke="#0b84ff" stroke-width="5" filter="url(#logo-glow-core)"/>
+                          stroke="#0a86ff" stroke-width="5.2" filter="url(#logo-glow-core)"/>
                     <path d="M22 18H75C79 18 83 21 83 26C83 30 79 34 75 34"
-                          stroke="#bde6ff" stroke-opacity="0.98" stroke-width="1.5"/>
+                          stroke="#bde6ff" stroke-opacity="0.92" stroke-width="1.4"/>
                 </g>
             </symbol>
         </defs>
@@ -79,7 +79,10 @@
             <svg class="auth-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <use href="#tobedone-logo"></use>
             </svg>
-            <h1 class="main-title" data-i18n="app_title">tobedone</h1>
+            <h1 class="main-title">
+                <span class="main-title-accent">to</span><span class="main-title-rest">bedone</span>
+            </h1>
+            <p class="brand-tagline">Plan it. Do it. Done.</p>
             <div class="tabs">
                 <button id="tab-login" class="tab active" onclick="switchAuthTab('login')" data-i18n="login">Login</button>
                 <button id="tab-signup" class="tab" onclick="switchAuthTab('signup')" data-i18n="signup">Sign Up</button>
