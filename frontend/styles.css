@@ -42,7 +42,7 @@
 .auth-logo {
     width: 210px !important;
     height: 210px !important;
-    margin: 0 auto -0.1rem !important;
+    margin: 0 auto -0.3rem !important;
     animation: pulse-glow 3.2s ease-in-out infinite;
     display: block;
 }
