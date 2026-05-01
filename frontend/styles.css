@@ -2,8 +2,8 @@
 :root {
     --primary: #0a84ff;
     --primary-glow: rgba(10, 132, 255, 0.95);
-    --background: #05070c;
-    --background-rgb: 5, 7, 12;
+    --background: #000000;
+    --background-rgb: 0, 0, 0;
     --surface: rgba(10, 14, 22, 0.8);
     --surface-hover: rgba(13, 18, 28, 0.95);
     --text-primary: #FFFFFF;
@@ -40,8 +40,8 @@
 }
 
 .auth-logo {
-    width: 210px !important;
-    height: 210px !important;
+    width: 190px !important;
+    height: 190px !important;
     margin: 0 auto -0.3rem !important;
     animation: pulse-glow 3.2s ease-in-out infinite;
     display: block;
@@ -129,19 +129,17 @@ body.light-mode::before {
 
 body {
     background-color: var(--background);
-    background-image:
-        radial-gradient(140% 100% at 50% 0%, rgba(10, 132, 255, 0.12) 0%, rgba(10, 132, 255, 0.015) 30%, rgba(0, 0, 0, 0) 62%),
-        radial-gradient(120% 120% at 50% 120%, rgba(7, 26, 56, 0.46) 0%, rgba(0, 0, 0, 0) 60%);
     color: var(--text-primary);
     line-height: 1.5;
-    overflow: hidden;
-    height: 100vh;
+    overflow-y: auto;
+    min-height: 100vh;
     width: 100vw;
     position: relative;
 }
 
 /* Chaotic Futuristic Background Lines */
 .bg-lines-container {
+    display: none;
     position: fixed;
     inset: 0;
     z-index: -1;
@@ -317,7 +315,7 @@ p { color: var(--text-secondary); font-size: 0.9375rem; }
 }
 
 /* Layout */
-.page { display: none; height: 100vh; width: 100vw; }
+.page { display: none; min-height: 100vh; width: 100vw; }
 .page.active { display: flex; }
 
 /* Sidebar */
@@ -711,7 +709,7 @@ input:checked + .slider:before {
     box-shadow: none;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    padding-top: 1.2rem;
+    padding: 2rem 1rem;
 }
 
 .main-title {
@@ -989,7 +987,7 @@ body.light-mode input, body.light-mode select {
     position: fixed;
     top: 0; left: 0; right: 0;
     height: 64px;
-    background: rgba(5, 7, 12, 0.88);
+    background: rgba(0, 0, 0, 0.88);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border-bottom: 1px solid rgba(79, 116, 163, 0.3);
