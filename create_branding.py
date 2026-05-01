@@ -8,28 +8,31 @@ def create_icon(size: int, filename: str) -> None:
     core = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     draw = ImageDraw.Draw(core)
 
-    stroke = max(2, round(3.2 * scale))
+    stroke = max(2, round(3.05 * scale))
 
     # Top capsule (close to reference)
     top_bbox = (
         round(14 * scale),
-        round(16 * scale),
+        round(15 * scale),
         round(86 * scale),
-        round(40 * scale),
+        round(39 * scale),
     )
     radius = max(4, round(12 * scale))
     draw.rounded_rectangle(top_bbox, radius=radius, outline=(10, 134, 255, 255), width=stroke)
 
     # Stem with curved shoulder (same geometry as SVG)
     stem_points = [
-        (39, 57), (40, 49), (45, 44), (53, 43),
-        (63, 42), (69, 42), (73, 46), (72, 52),
-        (66, 84), (64, 91), (58, 96), (51, 96),
-        (41, 96), (33, 96), (27, 90), (28, 82),
-        (33, 62), (34, 60), (36, 58), (39, 57),
+        (39, 56), (39, 49), (44, 45), (52, 44),
+        (62, 43), (68, 43), (72, 46), (71, 52),
+        (66, 84), (65, 91), (59, 96), (51, 96),
+        (41, 96), (34, 96), (28, 91), (29, 83),
+        (33, 63), (34, 60), (36, 57), (39, 56),
     ]
     stem_points_scaled = [(round(x * scale), round(y * scale)) for x, y in stem_points]
     draw.line(stem_points_scaled, fill=(10, 134, 255, 255), width=stroke, joint="curve")
+    connector_points = [(48, 45), (48, 41), (51, 38), (56, 37), (64, 36)]
+    connector_scaled = [(round(x * scale), round(y * scale)) for x, y in connector_points]
+    draw.line(connector_scaled, fill=(10, 134, 255, 255), width=stroke, joint="curve")
 
     # Soft inner highlight
     hi = Image.new("RGBA", (size, size), (0, 0, 0, 0))
@@ -41,8 +44,8 @@ def create_icon(size: int, filename: str) -> None:
         width=max(1, round(1.0 * scale)),
     )
 
-    glow_soft = core.filter(ImageFilter.GaussianBlur(radius=max(1, round(3.2 * scale))))
-    glow_hard = core.filter(ImageFilter.GaussianBlur(radius=max(1, round(1.0 * scale))))
+    glow_soft = core.filter(ImageFilter.GaussianBlur(radius=max(1, round(3.0 * scale))))
+    glow_hard = core.filter(ImageFilter.GaussianBlur(radius=max(1, round(0.9 * scale))))
 
     img = Image.alpha_composite(img, glow_soft)
     img = Image.alpha_composite(img, glow_hard)
