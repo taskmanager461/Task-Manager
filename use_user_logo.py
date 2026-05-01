@@ -5,6 +5,18 @@ PUBLIC_ASSETS_DIR = os.path.join("frontend", "public", "assets")
 STATIC_DIR = os.path.join("frontend", "static")
 USER_LOGO_PATH = "Screenshot 2026-05-01 133245.png"
 
+def crop_to_content(img: Image.Image) -> Image.Image:
+    bbox = img.getbbox()
+    if bbox:
+        cropped = img.crop(bbox)
+        square_size = max(cropped.width, cropped.height)
+        square_img = Image.new("RGBA", (square_size, square_size), (0, 0, 0, 255))
+        paste_x = (square_size - cropped.width) // 2
+        paste_y = (square_size - cropped.height) // 2
+        square_img.paste(cropped, (paste_x, paste_y))
+        return square_img
+    return img
+
 def resize_and_save(img: Image.Image, size: int, output_path: str) -> None:
     resized = img.resize((size, size), Image.Resampling.LANCZOS)
     resized.save(output_path, "PNG")
@@ -15,6 +27,7 @@ def main() -> None:
     os.makedirs(STATIC_DIR, exist_ok=True)
 
     img = Image.open(USER_LOGO_PATH).convert("RGBA")
+    img = crop_to_content(img)
 
     resize_and_save(img, 1024, os.path.join(PUBLIC_ASSETS_DIR, "logo.png"))
     resize_and_save(img, 512, os.path.join(PUBLIC_ASSETS_DIR, "logo-512.png"))
