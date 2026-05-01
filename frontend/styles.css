@@ -40,19 +40,19 @@
 }
 
 .auth-logo {
-    width: 180px;
-    height: 180px;
-    margin: 0 auto 0.8rem;
-    animation: pulse-glow 2.8s ease-in-out infinite;
+    width: 170px;
+    height: 170px;
+    margin: 0 auto 1.1rem;
+    animation: pulse-glow 3.2s ease-in-out infinite;
     display: block;
 }
 
 @keyframes pulse-glow {
     0%, 100% {
-        filter: drop-shadow(0 0 8px rgba(10, 132, 255, 0.55));
+        filter: drop-shadow(0 0 7px rgba(10, 132, 255, 0.58));
     }
     50% {
-        filter: drop-shadow(0 0 16px rgba(10, 132, 255, 0.9));
+        filter: drop-shadow(0 0 14px rgba(10, 132, 255, 0.9));
     }
 }
 
@@ -130,8 +130,8 @@ body.light-mode::before {
 body {
     background-color: var(--background);
     background-image:
-        radial-gradient(140% 100% at 50% 0%, rgba(10, 132, 255, 0.18) 0%, rgba(10, 132, 255, 0.03) 32%, rgba(0, 0, 0, 0) 66%),
-        radial-gradient(120% 120% at 50% 120%, rgba(7, 26, 56, 0.52) 0%, rgba(0, 0, 0, 0) 60%);
+        radial-gradient(140% 100% at 50% 0%, rgba(10, 132, 255, 0.12) 0%, rgba(10, 132, 255, 0.015) 30%, rgba(0, 0, 0, 0) 62%),
+        radial-gradient(120% 120% at 50% 120%, rgba(7, 26, 56, 0.46) 0%, rgba(0, 0, 0, 0) 60%);
     color: var(--text-primary);
     line-height: 1.5;
     overflow: hidden;
@@ -149,53 +149,35 @@ body {
     pointer-events: none;
 }
 
-.bg-lines-container::before {
-    content: "";
-    position: absolute;
-    inset: -20%;
-    background:
-        repeating-linear-gradient(
-            128deg,
-            transparent 0 88px,
-            rgba(10, 132, 255, 0.11) 88px 90px,
-            transparent 90px 168px
-        );
-    opacity: 0.22;
-}
-
 .bg-line {
     position: absolute;
     background: var(--line-color);
-    box-shadow: 0 0 16px var(--primary-glow), 0 0 26px rgba(10, 132, 255, 0.32);
+    box-shadow: 0 0 16px var(--primary-glow), 0 0 28px rgba(10, 132, 255, 0.32);
     border-radius: 100px;
-    opacity: 0.92;
+    opacity: 0.88;
 }
 
-.bg-line-1 { width: 2px; height: 62vh; top: -8%; left: 11%; transform: rotate(36deg); animation: float1 22s infinite alternate ease-in-out; }
-.bg-line-2 { width: 2px; height: 72vh; top: 4%; left: 75%; transform: rotate(36deg); animation: float2 28s infinite alternate ease-in-out; }
-.bg-line-3 { width: 1px; height: 45vh; bottom: 6%; left: 43%; transform: rotate(36deg); animation: float3 24s infinite alternate ease-in-out; }
-.bg-line-4 { width: 2px; height: 70vh; top: 24%; left: 26%; transform: rotate(36deg); animation: float4 33s infinite alternate ease-in-out; }
-.bg-line-5 { width: 2px; height: 58vh; top: 35%; right: 8%; transform: rotate(36deg); animation: float1 26s infinite alternate-reverse ease-in-out; }
-.bg-line-6 { width: 1px; height: 38vh; top: 2%; left: 57%; transform: rotate(36deg); animation: float2 19s infinite alternate ease-in-out; }
-.bg-line-7 { width: 2px; height: 48vh; top: 56%; left: 7%; transform: rotate(36deg); animation: float3 27s infinite alternate ease-in-out; }
-.bg-line-8 { width: 1px; height: 42vh; top: -6%; right: 20%; transform: rotate(36deg); animation: float4 21s infinite alternate ease-in-out; }
-.bg-line-9 { width: 2px; height: 60vh; bottom: -12%; right: 30%; transform: rotate(36deg); animation: float1 31s infinite alternate ease-in-out; }
+.bg-line-1 { width: 2px; height: 38vh; top: -8%; left: 8%; transform: rotate(35deg); animation: float1 26s infinite alternate ease-in-out; }
+.bg-line-2 { width: 3px; height: 34vh; top: 8%; left: 84%; transform: rotate(35deg); animation: float2 31s infinite alternate ease-in-out; }
+.bg-line-3 { width: 2px; height: 30vh; bottom: 14%; left: 16%; transform: rotate(35deg); animation: float3 28s infinite alternate ease-in-out; }
+.bg-line-4 { width: 3px; height: 32vh; top: 64%; left: 72%; transform: rotate(35deg); animation: float4 34s infinite alternate ease-in-out; }
+.bg-line-5 { width: 2px; height: 26vh; top: 40%; right: 2%; transform: rotate(35deg); animation: float1 29s infinite alternate-reverse ease-in-out; }
 
 @keyframes float1 { 
-    0% { transform: translate(0, 0) rotate(36deg); }
-    100% { transform: translate(34px, 22px) rotate(36deg); }
+    0% { transform: translate(0, 0) rotate(-25deg); }
+    100% { transform: translate(50px, 30px) rotate(-20deg); }
 }
 @keyframes float2 { 
-    0% { transform: translate(0, 0) rotate(36deg); }
-    100% { transform: translate(-26px, 42px) rotate(36deg); }
+    0% { transform: translate(0, 0) rotate(15deg); }
+    100% { transform: translate(-40px, 60px) rotate(20deg); }
 }
 @keyframes float3 { 
-    0% { transform: translate(0, 0) rotate(36deg); }
-    100% { transform: translate(20px, -32px) rotate(36deg); }
+    0% { transform: translate(0, 0) rotate(110deg); }
+    100% { transform: translate(30px, -40px) rotate(115deg); }
 }
 @keyframes float4 { 
-    0% { transform: translate(0, 0) rotate(36deg); }
-    100% { transform: translate(-30px, -16px) rotate(36deg); }
+    0% { transform: translate(0, 0) rotate(45deg); }
+    100% { transform: translate(-60px, -20px) rotate(40deg); }
 }
 
 /* Scrollbar */
@@ -733,17 +715,18 @@ input:checked + .slider:before {
 }
 
 .main-title {
-    font-size: 2.8rem;
+    font-size: 2.95rem;
     font-weight: 800;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.28rem;
     color: #ffffff;
     text-transform: lowercase;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.024em;
     line-height: 1;
+    font-family: "Poppins", "Inter", system-ui, sans-serif;
 }
 
 .main-title-accent {
-    color: #0987ff;
+    color: #0a86ff;
 }
 
 .main-title-rest {
@@ -751,15 +734,10 @@ input:checked + .slider:before {
 }
 
 .brand-tagline {
-    margin-bottom: 2rem;
-    font-size: 0.96rem;
-    color: #8f9daf;
-    letter-spacing: 0.005em;
-}
-
-.tag-dot {
-    color: #0987ff;
-    font-weight: 700;
+    margin-bottom: 2.1rem;
+    font-size: 0.98rem;
+    color: #8e9daf;
+    letter-spacing: 0.01em;
 }
 
 .tabs {
