@@ -449,6 +449,10 @@ function applyTheme() {
     if (switchEl) {
         switchEl.checked = isDarkMode;
     }
+    // Refresh charts to match theme
+    if (currentUser && currentView === 'dashboard') {
+        loadDashboard();
+    }
 }
 
 function initLanguage() {
@@ -933,12 +937,11 @@ function updateTrendChart(history) {
     const labels = history.map(s => s.date.split('-').slice(1).reverse().join('/'));
     const data = history.map(s => s.score);
 
-    const colors = {
-        line: '#2563EB',
-        text: '#E5E7EB',
-        grid: 'rgba(255, 255, 255, 0.05)',
-        background: '#111827'
-    };
+    const textColor = isDarkMode ? '#FFFFFF' : '#0F172A';
+    const bgColor = isDarkMode ? '#111827' : '#FFFFFF';
+    const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
+    const lineColor = '#0066FF';
+    const fillColor = isDarkMode ? 'rgba(0, 102, 255, 0.15)' : 'rgba(0, 102, 255, 0.1)';
 
     trendChart = new Chart(ctx, {
         type: 'line',
@@ -947,12 +950,15 @@ function updateTrendChart(history) {
             datasets: [{
                 label: t('trust_score'),
                 data: data,
-                borderColor: colors.line,
-                backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                borderColor: lineColor,
+                backgroundColor: fillColor,
                 fill: true,
-                tension: 0.4,
-                pointRadius: 4,
-                pointHoverRadius: 6
+                tension: 0.35,
+                pointRadius: 5,
+                pointBackgroundColor: lineColor,
+                pointBorderColor: bgColor,
+                pointBorderWidth: 3,
+                pointHoverRadius: 7
             }]
         },
         options: {
@@ -963,11 +969,11 @@ function updateTrendChart(history) {
                 tooltip: {
                     mode: 'index',
                     intersect: false,
-                    padding: 10,
-                    backgroundColor: colors.background,
-                    titleColor: colors.text,
-                    bodyColor: colors.text,
-                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                    padding: 12,
+                    backgroundColor: bgColor,
+                    titleColor: textColor,
+                    bodyColor: textColor,
+                    borderColor: gridColor,
                     borderWidth: 1
                 }
             },
@@ -975,12 +981,12 @@ function updateTrendChart(history) {
                 y: {
                     beginAtZero: true,
                     max: 150,
-                    grid: { color: colors.grid },
-                    ticks: { color: colors.text, font: { size: 10 } }
+                    grid: { color: gridColor },
+                    ticks: { color: textColor, font: { size: 11, weight: '500' } }
                 },
                 x: {
                     grid: { display: false },
-                    ticks: { color: colors.text, font: { size: 10 } }
+                    ticks: { color: textColor, font: { size: 11, weight: '500' } }
                 }
             }
         }
@@ -1000,13 +1006,10 @@ function updateTaskChart(tasks) {
         taskChart.destroy();
     }
 
-    const colors = {
-        completed: '#10B981',
-        failed: '#EF4444',
-        pending: 'rgba(255, 255, 255, 0.1)',
-        text: '#E5E7EB',
-        background: '#111827'
-    };
+    const textColor = isDarkMode ? '#FFFFFF' : '#0F172A';
+    const bgColor = isDarkMode ? '#111827' : '#FFFFFF';
+    const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
+    const pendingColor = isDarkMode ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.08)';
 
     taskChart = new Chart(ctx, {
         type: 'doughnut',
@@ -1014,9 +1017,10 @@ function updateTaskChart(tasks) {
             labels: [t('completed'), t('failed'), t('pending')],
             datasets: [{
                 data: [counts.completed, counts.failed, counts.pending],
-                backgroundColor: [colors.completed, colors.failed, colors.pending],
-                borderWidth: 0,
-                hoverOffset: 15
+                backgroundColor: ['#10B981', '#EF4444', pendingColor],
+                borderWidth: 4,
+                borderColor: bgColor,
+                hoverOffset: 10
             }]
         },
         options: {
@@ -1026,25 +1030,25 @@ function updateTaskChart(tasks) {
                 legend: {
                     position: 'bottom',
                     labels: {
-                        color: colors.text,
-                        padding: 20,
+                        color: textColor,
+                        padding: 15,
                         usePointStyle: true,
                         pointStyle: 'circle',
                         font: { size: 12, weight: '600' }
                     }
                 },
                 tooltip: {
-                    backgroundColor: colors.background,
-                    titleColor: colors.text,
-                    bodyColor: colors.text,
-                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                    backgroundColor: bgColor,
+                    titleColor: textColor,
+                    bodyColor: textColor,
+                    borderColor: gridColor,
                     borderWidth: 1,
                     padding: 12,
                     boxPadding: 6,
                     usePointStyle: true
                 }
             },
-            cutout: '75%'
+            cutout: '65%'
         }
     });
 }
