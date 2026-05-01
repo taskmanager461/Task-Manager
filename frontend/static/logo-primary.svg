@@ -1,15 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 100 100">
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
   <defs>
-    <filter id="glow-soft" x="-80%" y="-80%" width="260%" height="260%">
-      <feGaussianBlur stdDeviation="2.0"/>
-    </filter>
-    <filter id="glow-core" x="-60%" y="-60%" width="220%" height="220%">
-      <feGaussianBlur stdDeviation="0.7"/>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="20" result="blur"/>
+      <feFlood flood-color="#2563EB" flood-opacity="0.25" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
     </filter>
   </defs>
-  <rect x="10" y="10" width="80" height="80" rx="20" fill="#0A0A0A"/>
-  <rect x="10" y="10" width="80" height="80" rx="20" fill="none" stroke="rgba(31,41,55,0.35)" stroke-width="1"/>
-  <rect x="18" y="23" width="64" height="20" rx="10" fill="none" stroke="#2563EB" stroke-width="3.4"/>
-  <path d="M50 43C44 44 40 48 38 54L34 77C33 84 37 89 43 89H46C52 89 56 85 58 79L64 55C65 49 62 44 56 43Z" fill="none" stroke="#2563EB" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M46 45C46 40 50 37 56 36L63 35" fill="none" stroke="#2563EB" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="0" y="0" width="1024" height="1024" fill="#000000"/>
+  <rect x="72" y="72" width="880" height="880" rx="220" fill="#0A0A0A"/>
+  <g fill="none" stroke="#2563EB" stroke-width="64" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+    <line x1="152" y1="360" x2="872" y2="360"/>
+    <line x1="512" y1="380" x2="628.43" y2="927.763"/>
+  </g>
 </svg>

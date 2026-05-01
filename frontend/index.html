@@ -15,40 +15,21 @@
 <body class="dark-mode"> <!-- Default to dark mode for pro feel -->
     <svg class="logo-defs" aria-hidden="true" focusable="false">
         <defs>
-            <filter id="logo-glow-soft" x="-90%" y="-90%" width="280%" height="280%">
-                <feGaussianBlur stdDeviation="3.8" result="blur"/>
-                <feColorMatrix in="blur" type="matrix" values="
-                    0 0 0 0 0
-                    0 0 0 0 0.52
-                    0 0 0 0 1
-                    0 0 0 0.95 0"/>
-            </filter>
-            <filter id="logo-glow-core" x="-75%" y="-75%" width="250%" height="250%">
-                <feGaussianBlur stdDeviation="1.0" result="coreBlur"/>
+            <filter id="logo-glow-tight" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur in="SourceAlpha" stdDeviation="20" result="blur"/>
+                <feFlood flood-color="#2563EB" flood-opacity="0.25" result="color"/>
+                <feComposite in="color" in2="blur" operator="in" result="glow"/>
                 <feMerge>
-                    <feMergeNode in="coreBlur"/>
+                    <feMergeNode in="glow"/>
                     <feMergeNode in="SourceGraphic"/>
                 </feMerge>
             </filter>
-            <symbol id="tobedone-logo" viewBox="0 0 100 100">
-                <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="10" y="10" width="80" height="80" rx="20" fill="#0a0a0a"/>
-                    <rect x="10" y="10" width="80" height="80" rx="20" stroke="#1f2937" stroke-opacity="0.35" stroke-width="1"/>
-
-                    <rect x="18" y="23" width="64" height="20" rx="10"
-                          stroke="#2563eb" stroke-opacity="0.26" stroke-width="8.8" filter="url(#logo-glow-soft)"/>
-                    <rect x="18" y="23" width="64" height="20" rx="10"
-                          stroke="#2563eb" stroke-width="3.4" filter="url(#logo-glow-core)"/>
-
-                    <path d="M50 43C44 44 40 48 38 54L34 77C33 84 37 89 43 89H46C52 89 56 85 58 79L64 55C65 49 62 44 56 43Z"
-                          stroke="#2563eb" stroke-opacity="0.26" stroke-width="8.8" filter="url(#logo-glow-soft)"/>
-                    <path d="M50 43C44 44 40 48 38 54L34 77C33 84 37 89 43 89H46C52 89 56 85 58 79L64 55C65 49 62 44 56 43Z"
-                          stroke="#2563eb" stroke-width="3.4" filter="url(#logo-glow-core)"/>
-
-                    <path d="M46 45C46 40 50 37 56 36L63 35"
-                          stroke="#2563eb" stroke-opacity="0.26" stroke-width="8.8" filter="url(#logo-glow-soft)"/>
-                    <path d="M46 45C46 40 50 37 56 36L63 35"
-                          stroke="#2563eb" stroke-width="3.4" filter="url(#logo-glow-core)"/>
+            <symbol id="tobedone-logo" viewBox="0 0 1024 1024">
+                <rect x="0" y="0" width="1024" height="1024" fill="#000000"/>
+                <rect x="72" y="72" width="880" height="880" rx="220" fill="#0A0A0A"/>
+                <g fill="none" stroke="#2563EB" stroke-width="64" stroke-linecap="round" stroke-linejoin="round" filter="url(#logo-glow-tight)">
+                    <line x1="152" y1="360" x2="872" y2="360"/>
+                    <line x1="512" y1="380" x2="628.430" y2="927.763"/>
                 </g>
             </symbol>
         </defs>
