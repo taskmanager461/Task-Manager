@@ -15,7 +15,7 @@ def _draw_t_logo(size: int) -> Image.Image:
     core = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     draw = ImageDraw.Draw(core)
 
-    # Top pill stroke (matches reference proportions)
+    # Top pill stroke
     top_box = (
         round(54 * scale),
         round(44 * scale),
@@ -39,12 +39,20 @@ def _draw_t_logo(size: int) -> Image.Image:
     stem = stem.rotate(12, resample=Image.Resampling.BICUBIC, center=(round(122 * scale), round(92 * scale)))
     core = Image.alpha_composite(core, stem)
 
-    # Subtle shoulder connector to avoid hard intersection
-    connector_pts = [
-        (118, 92), (117, 88), (121, 84), (128, 82), (137, 81)
+    # Critical middle junction where lines merge and change side
+    # This creates the visible "switch" at the center (as in reference).
+    junction_pts = [
+        (116, 93), (114, 87), (118, 82), (128, 79), (142, 78), (156, 79)
     ]
-    connector_scaled = [(round(x * scale), round(y * scale)) for x, y in connector_pts]
-    draw.line(connector_scaled, fill=neon, width=stroke, joint="curve")
+    junction_scaled = [(round(x * scale), round(y * scale)) for x, y in junction_pts]
+    draw.line(junction_scaled, fill=neon, width=stroke, joint="curve")
+
+    # Short return curve to blend into top bar lower edge
+    blend_pts = [
+        (134, 82), (131, 86), (126, 89), (120, 91)
+    ]
+    blend_scaled = [(round(x * scale), round(y * scale)) for x, y in blend_pts]
+    draw.line(blend_scaled, fill=neon, width=max(2, round(stroke * 0.92)), joint="curve")
 
     # Tight controlled glow
     glow_soft = core.filter(ImageFilter.GaussianBlur(radius=max(1, round(4 * scale))))
@@ -76,7 +84,8 @@ def _write_svg(path: str) -> None:
   <g fill="none" stroke="#0A7BFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" filter="url(#g1)">
     <rect x="54" y="44" width="150" height="44" rx="22"/>
     <rect x="104" y="88" width="40" height="100" rx="20" transform="rotate(12 122 92)"/>
-    <path d="M118 92C117 88 121 84 128 82L137 81"/>
+    <path d="M116 93C114 87 118 82 128 79C142 78 156 79 156 79"/>
+    <path d="M134 82C131 86 126 89 120 91"/>
   </g>
 </svg>
 """

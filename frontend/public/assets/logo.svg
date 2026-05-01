@@ -11,6 +11,7 @@
   <g fill="none" stroke="#0A7BFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" filter="url(#g1)">
     <rect x="54" y="44" width="150" height="44" rx="22"/>
     <rect x="104" y="88" width="40" height="100" rx="20" transform="rotate(12 122 92)"/>
-    <path d="M118 92C117 88 121 84 128 82L137 81"/>
+    <path d="M116 93C114 87 118 82 128 79C142 78 156 79 156 79"/>
+    <path d="M134 82C131 86 126 89 120 91"/>
   </g>
 </svg>
