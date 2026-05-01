@@ -52,6 +52,9 @@ if not STATIC_DIR.exists():
     logger.error(f"STATIC_DIR does not exist at {STATIC_DIR.absolute()}")
     STATIC_DIR.mkdir(parents=True, exist_ok=True)
 
+ASSETS_DIR = FRONTEND_DIR / "public" / "assets"
+ASSETS_DIR.mkdir(parents=True, exist_ok=True)
+
 app = FastAPI(
     title=settings.app_name, 
     version=settings.app_version, 
@@ -108,6 +111,7 @@ async def get_js():
 
 # Mount frontend static directory
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
 
 app.add_middleware(
     CORSMiddleware,

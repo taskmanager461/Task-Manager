@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tobedone</title>
     <link rel="stylesheet" href="styles.css?v=3.2.1">
+    <link rel="stylesheet" href="/src/styles/logo.css">
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/png" href="/favicon.png">
     <meta name="theme-color" content="#020617">
@@ -13,27 +14,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="dark-mode"> <!-- Default to dark mode for pro feel -->
-    <svg class="logo-defs" aria-hidden="true" focusable="false">
-        <defs>
-            <filter id="logo-glow-tight" x="-40%" y="-40%" width="180%" height="180%">
-                <feGaussianBlur in="SourceAlpha" stdDeviation="20" result="blur"/>
-                <feFlood flood-color="#2563EB" flood-opacity="0.25" result="color"/>
-                <feComposite in="color" in2="blur" operator="in" result="glow"/>
-                <feMerge>
-                    <feMergeNode in="glow"/>
-                    <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-            </filter>
-            <symbol id="tobedone-logo" viewBox="0 0 1024 1024">
-                <rect x="0" y="0" width="1024" height="1024" fill="#000000"/>
-                <rect x="72" y="72" width="880" height="880" rx="220" fill="#0A0A0A"/>
-                <g fill="none" stroke="#2563EB" stroke-width="64" stroke-linecap="round" stroke-linejoin="round" filter="url(#logo-glow-tight)">
-                    <line x1="152" y1="360" x2="872" y2="360"/>
-                    <line x1="512" y1="380" x2="628.430" y2="927.763"/>
-                </g>
-            </symbol>
-        </defs>
-    </svg>
     <div class="bg-lines-container">
         <div class="bg-line bg-line-1"></div>
         <div class="bg-line bg-line-2"></div>
@@ -51,9 +31,7 @@
             <span></span>
         </button>
         <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <svg class="brand-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <use href="#tobedone-logo"></use>
-            </svg>
+            <img class="brand-logo logo" src="/assets/logo.png" alt="Tobedone logo">
             <h2 data-i18n="app_title">tobedone</h2>
         </div>
         <div style="width: 40px;"></div> <!-- Spacer for balance -->
@@ -62,9 +40,7 @@
     <!-- Auth Page -->
     <div id="auth-page" class="page active">
         <div class="auth-container">
-            <svg class="auth-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <use href="#tobedone-logo"></use>
-            </svg>
+            <img class="auth-logo logo" src="/assets/logo.png" alt="Tobedone logo">
             <h1 class="main-title">
                 <span class="main-title-accent">to</span><span class="main-title-rest">bedone</span>
             </h1>
@@ -100,9 +76,7 @@
         </button>
         <aside id="sidebar">
             <div class="sidebar-header">
-                <svg class="sidebar-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <use href="#tobedone-logo"></use>
-                </svg>
+                <img class="sidebar-logo logo" src="/assets/logo.png" alt="Tobedone logo">
                 <div class="sidebar-info">
                     <h2 data-i18n="app_title">tobedone</h2>
                     <span id="user-display-name">User</span>
@@ -370,9 +344,7 @@
 
     <div id="loading-overlay" class="loading-overlay">
         <div class="loading-content">
-            <svg class="loading-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <use href="#tobedone-logo"></use>
-            </svg>
+            <img class="loading-logo logo" src="/assets/logo.png" alt="Tobedone logo">
             <h2 class="loading-title">tobedone</h2>
             <div class="spinner"></div>
         </div>
