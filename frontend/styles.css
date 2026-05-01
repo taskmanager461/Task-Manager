@@ -40,9 +40,9 @@
 }
 
 .auth-logo {
-    width: 190px !important;
-    height: 190px !important;
-    margin: 0 auto 0.35rem !important;
+    width: 200px !important;
+    height: 200px !important;
+    margin: 0 auto 0.2rem !important;
     animation: pulse-glow 3.2s ease-in-out infinite;
     display: block;
 }
@@ -720,7 +720,7 @@ input:checked + .slider:before {
     margin-bottom: 0.28rem;
     color: #ffffff;
     text-transform: lowercase;
-    letter-spacing: -0.024em;
+    letter-spacing: -0.04em;
     line-height: 1;
     font-family: "Poppins", "Inter", system-ui, sans-serif;
 }
