@@ -139,7 +139,6 @@ body {
 
 /* Chaotic Futuristic Background Lines */
 .bg-lines-container {
-    display: none;
     position: fixed;
     inset: 0;
     z-index: -1;
