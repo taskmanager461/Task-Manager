@@ -38,18 +38,19 @@ def _draw_t_logo(size: int) -> Image.Image:
     sdraw.rounded_rectangle(stem_box, radius=stem_radius, outline=neon, width=stroke)
     stem = stem.rotate(12, resample=Image.Resampling.BICUBIC, center=(round(122 * scale), round(92 * scale)))
     core = Image.alpha_composite(core, stem)
+    draw = ImageDraw.Draw(core)
 
     # Critical middle junction where lines merge and change side
     # This creates the visible "switch" at the center (as in reference).
     junction_pts = [
-        (116, 93), (114, 87), (118, 82), (128, 79), (142, 78), (156, 79)
+        (114, 95), (112, 88), (116, 83), (126, 79), (142, 78), (160, 79)
     ]
     junction_scaled = [(round(x * scale), round(y * scale)) for x, y in junction_pts]
     draw.line(junction_scaled, fill=neon, width=stroke, joint="curve")
 
     # Short return curve to blend into top bar lower edge
     blend_pts = [
-        (134, 82), (131, 86), (126, 89), (120, 91)
+        (140, 82), (136, 87), (130, 91), (122, 94)
     ]
     blend_scaled = [(round(x * scale), round(y * scale)) for x, y in blend_pts]
     draw.line(blend_scaled, fill=neon, width=max(2, round(stroke * 0.92)), joint="curve")
