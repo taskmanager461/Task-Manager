@@ -15,7 +15,7 @@ class Settings(BaseSettings):
 
     jwt_secret_key: str = "change-me-in-production"
     jwt_algorithm: str = "HS256"
-    jwt_expire_minutes: int = 60 * 24 * 30
+    jwt_expire_minutes: int = 60 * 24
 
     email_provider: str = "smtp"
     smtp_host: str = "smtp.gmail.com"
@@ -33,9 +33,6 @@ class Settings(BaseSettings):
     @property
     def pg_url(self) -> str:
         # Handle Render/Heroku 'postgres://' vs SQLAlchemy 'postgresql://'
-        if not self.database_url or self.database_url.startswith("http"):
-            return "sqlite:///./self_trust.db"
-        
         if self.database_url.startswith("postgres://"):
             return self.database_url.replace("postgres://", "postgresql://", 1)
         return self.database_url
