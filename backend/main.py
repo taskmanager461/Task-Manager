@@ -19,6 +19,7 @@ PROJECT_ROOT = Path(__file__).parent.parent
 STATIC_DIR = PROJECT_ROOT / "frontend" / "static"
 FRONTEND_DIR = PROJECT_ROOT / "frontend"
 ASSETS_DIR = FRONTEND_DIR / "public" / "assets"
+INDEX_FILE = FRONTEND_DIR / "index.html"
 
 def get_origins():
     raw_origins = settings.cors_origins
@@ -27,6 +28,12 @@ def get_origins():
     return [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
 
 app = FastAPI(title=settings.app_name, version=settings.app_version, docs_url="/docs", redoc_url="/redoc")
+
+
+@app.get("/", include_in_schema=False)
+async def serve_frontend_root():
+    # In single-service deployment, always render the frontend shell at root.
+    return FileResponse(INDEX_FILE)
 
 # Serve PWA files directly from /
 @app.get("/manifest.json")
