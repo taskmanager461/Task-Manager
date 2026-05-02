@@ -18,6 +18,7 @@ settings = get_settings()
 PROJECT_ROOT = Path(__file__).parent.parent
 STATIC_DIR = PROJECT_ROOT / "frontend" / "static"
 FRONTEND_DIR = PROJECT_ROOT / "frontend"
+ASSETS_DIR = FRONTEND_DIR / "public" / "assets"
 
 def get_origins():
     raw_origins = settings.cors_origins
@@ -75,9 +76,12 @@ def healthcheck():
     }
 
 
-app.include_router(auth_router)
-app.include_router(tasks_router)
-app.include_router(score_router)
+app.include_router(auth_router, prefix="/api")
+app.include_router(tasks_router, prefix="/api")
+app.include_router(score_router, prefix="/api")
+
+# Serve branding assets under /assets
+app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
 
 # Serve frontend app at root
 app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
