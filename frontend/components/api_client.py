@@ -8,11 +8,14 @@ import requests
 
 class APIClient:
     def __init__(self, base_url: str):
-        self.base_url = base_url.rstrip("/")
+        normalized_base = base_url.rstrip("/")
+        # Backends in this project expose endpoints under /api.
+        # Accept both BASE_URL and BASE_URL/api to avoid config mistakes.
+        self.api_base = normalized_base if normalized_base.endswith("/api") else f"{normalized_base}/api"
         self.access_token: str | None = None
 
     def _url(self, path: str) -> str:
-        return f"{self.base_url}{path}"
+        return f"{self.api_base}{path}"
 
     def set_token(self, token: str | None) -> None:
         self.access_token = token
