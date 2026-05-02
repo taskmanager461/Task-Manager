@@ -14,11 +14,9 @@ from config.settings import get_settings
 Base.metadata.create_all(bind=engine)
 settings = get_settings()
 
-# Define project paths
+# Define static path (relative to project root)
 PROJECT_ROOT = Path(__file__).parent.parent
 STATIC_DIR = PROJECT_ROOT / "frontend" / "static"
-FRONTEND_DIR = PROJECT_ROOT / "frontend"
-ASSETS_DIR = FRONTEND_DIR / "public" / "assets"
 
 def get_origins():
     raw_origins = settings.cors_origins
@@ -46,6 +44,7 @@ async def get_icon512():
     return FileResponse(STATIC_DIR / "icon-512.png")
 
 # --- DATABASE CLEANUP LOGIC FOR FREE TIER ---
+import os
 from sqlalchemy import text
 if os.getenv("CLEANUP_DATABASE") == "true":
     try:
@@ -66,7 +65,7 @@ app.add_middleware(
 )
 
 
-@app.get("/health")
+@app.get("/")
 def healthcheck():
     return {
         "status": "ok",
@@ -76,12 +75,6 @@ def healthcheck():
     }
 
 
-app.include_router(auth_router, prefix="/api")
-app.include_router(tasks_router, prefix="/api")
-app.include_router(score_router, prefix="/api")
-
-# Serve branding assets under /assets
-app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
-
-# Serve frontend app at root
-app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
+app.include_router(auth_router)
+app.include_router(tasks_router)
+app.include_router(score_router)

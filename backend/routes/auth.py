@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from backend.database import get_db
 from backend.models.user import User
 from backend.schemas import AuthResponse, LoginRequest, SignupRequest
-from backend.services.auth_service import create_access_token, get_current_user, hash_password, verify_password
+from backend.services.auth_service import create_access_token, hash_password, verify_password
 from backend.services.email_service import send_login_notification, send_signup_confirmation
 
 router = APIRouter(tags=["auth"])
@@ -47,12 +47,3 @@ def login(payload: LoginRequest, background_tasks: BackgroundTasks, db: Session 
     access_token = create_access_token(user_id=user.id, username=user.username)
     background_tasks.add_task(send_login_notification, user.email, user.name)
     return AuthResponse(user_id=user.id, username=user.username, name=user.name, access_token=access_token)
-
-
-@router.get("/me")
-def me(current_user: User = Depends(get_current_user)):
-    return {
-        "user_id": current_user.id,
-        "username": current_user.username,
-        "name": current_user.name,
-    }
