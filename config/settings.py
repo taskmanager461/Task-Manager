@@ -1,3 +1,4 @@
+import os
 from functools import lru_cache
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -11,7 +12,7 @@ class Settings(BaseSettings):
     api_prefix: str = ""
 
     database_url: str = "sqlite:///./self_trust.db"
-    environment: str = "development"
+    environment: str = "production" if os.getenv("RENDER") else "development"
 
     jwt_secret_key: str = "change-me-in-production"
     jwt_algorithm: str = "HS256"

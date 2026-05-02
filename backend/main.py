@@ -75,6 +75,18 @@ def healthcheck():
         "environment": settings.environment,
     }
 
+@app.get("/")
+def app_root():
+    index_path = FRONTEND_DIR / "index.html"
+    if index_path.exists():
+        return FileResponse(index_path)
+    return {
+        "status": "ok",
+        "service": settings.app_name,
+        "version": settings.app_version,
+        "environment": settings.environment,
+    }
+
 
 # Keep both route styles for compatibility:
 # - /api/* used by web frontend (app.js)
