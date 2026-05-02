@@ -32,10 +32,15 @@ class Settings(BaseSettings):
 
     @property
     def pg_url(self) -> str:
-        # Handle Render/Heroku 'postgres://' vs SQLAlchemy 'postgresql://'
-        if self.database_url.startswith("postgres://"):
-            return self.database_url.replace("postgres://", "postgresql://", 1)
-        return self.database_url
+        # Normalize DB URL and fail safe to SQLite for invalid values.
+        raw = (self.database_url or "").strip()
+        if not raw:
+            return "sqlite:///./self_trust.db"
+        if raw.startswith("postgres://"):
+            return raw.replace("postgres://", "postgresql://", 1)
+        if raw.startswith("http://") or raw.startswith("https://"):
+            return "sqlite:///./self_trust.db"
+        return raw
 
 
 @lru_cache
