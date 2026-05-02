@@ -887,6 +887,13 @@ function logout() {
     renderLogin();
 }
 
+function getScoreLabel(score) {
+    if (score >= 80) return { text: 'Excellent', class: 'excellent' };
+    if (score >= 60) return { text: 'Good', class: 'good' };
+    if (score >= 40) return { text: 'Average', class: 'average' };
+    return { text: 'Low', class: 'low' };
+}
+
 // --- Dashboard Logic ---
 async function loadDashboard() {
     try {
@@ -896,10 +903,17 @@ async function loadDashboard() {
             body: JSON.stringify({ user_id: currentUser.user_id, day: today })
         });
         
+        // Basic stats
         document.getElementById('score-value').textContent = score.score.toFixed(1);
         document.getElementById('streak-value').textContent = score.streak;
         document.getElementById('success-value').textContent = `${(score.success_rate * 100).toFixed(0)}%`;
         document.getElementById('daily-progress-fill').style.width = `${score.success_rate * 100}%`;
+
+        // Score label
+        const scoreLabel = getScoreLabel(score.score);
+        const scoreLabelEl = document.getElementById('score-label');
+        scoreLabelEl.textContent = scoreLabel.text;
+        scoreLabelEl.className = 'score-label ' + scoreLabel.class;
 
         // Update Multiplier Badge
         const multBadge = document.getElementById('multiplier-badge');
@@ -910,6 +924,11 @@ async function loadDashboard() {
             multBadge.style.display = 'none';
         }
 
+        // Load all additional data
+        loadScoreComparison();
+        loadMissedTasks();
+        loadWeeklySummary();
+
         // Fetch tasks to update pie chart
         const tasks = await apiFetch(`/tasks?user_id=${currentUser.user_id}&day=${today}`);
         updateTaskChart(tasks);
@@ -918,6 +937,133 @@ async function loadDashboard() {
         loadWeeklyTrend();
     } catch (err) {
         console.error('Dashboard load failed', err);
+    }
+}
+
+async function loadScoreComparison() {
+    try {
+        const history = await apiFetch('/score/history');
+        const today = new Date().toISOString().split('T')[0];
+        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+        
+        const todayScore = history.find(h => h.date === today);
+        const yesterdayScore = history.find(h => h.date === yesterday);
+        
+        const comparisonEl = document.getElementById('score-comparison');
+        const comparisonText = document.getElementById('score-comparison-text');
+        
+        if (todayScore && yesterdayScore) {
+            const diff = todayScore.score - yesterdayScore.score;
+            comparisonEl.style.display = 'block';
+            
+            if (diff > 0) {
+                comparisonEl.className = 'card score-comparison improved';
+                comparisonText.textContent = `You improved by ${diff.toFixed(1)} points compared to yesterday! 🎉`;
+            } else if (diff < 0) {
+                comparisonEl.className = 'card score-comparison dropped';
+                comparisonText.textContent = `You dropped by ${Math.abs(diff).toFixed(1)} points compared to yesterday`;
+            } else {
+                comparisonEl.style.display = 'none';
+            }
+        } else {
+            comparisonEl.style.display = 'none';
+        }
+    } catch (err) {
+        console.error('Score comparison load failed', err);
+        document.getElementById('score-comparison').style.display = 'none';
+    }
+}
+
+async function loadMissedTasks() {
+    try {
+        const data = await apiFetch('/tasks/missed');
+        const alertEl = document.getElementById('missed-tasks-alert');
+        const textEl = document.getElementById('missed-tasks-text');
+        
+        if (data.count > 0) {
+            alertEl.style.display = 'block';
+            let message = `You missed ${data.count} task${data.count > 1 ? 's' : ''}`;
+            
+            const today = new Date().toISOString().split('T')[0];
+            const todayTasks = await apiFetch(`/tasks?user_id=${currentUser.user_id}&day=${today}`);
+            const hasCompletedToday = todayTasks.some(t => t.status === 'completed');
+            const streakValue = parseInt(document.getElementById('streak-value').textContent) || 0;
+            
+            if (streakValue > 0 && !hasCompletedToday) {
+                message += ` — You are at risk of losing your streak! ⚠️`;
+            }
+            
+            textEl.textContent = message;
+        } else {
+            alertEl.style.display = 'none';
+        }
+    } catch (err) {
+        console.error('Missed tasks load failed', err);
+        document.getElementById('missed-tasks-alert').style.display = 'none';
+    }
+}
+
+async function loadWeeklySummary() {
+    try {
+        const data = await apiFetch('/score/weekly-summary');
+        const container = document.getElementById('weekly-summary');
+        const content = document.getElementById('weekly-summary-content');
+        
+        container.style.display = 'block';
+        
+        content.innerHTML = `
+            <div class="weekly-summary-stats">
+                <div class="weekly-summary-stat">
+                    <span class="label">Total Tasks</span>
+                    <span class="value">${data.current_week.total_tasks}</span>
+                </div>
+                <div class="weekly-summary-stat">
+                    <span class="label">Completed</span>
+                    <span class="value">${data.current_week.completed_tasks}</span>
+                </div>
+                <div class="weekly-summary-stat">
+                    <span class="label">Success Rate</span>
+                    <span class="value">${data.current_week.success_rate}%</span>
+                </div>
+                <div class="weekly-summary-stat">
+                    <span class="label">Streak</span>
+                    <span class="value">${data.current_week.streak}</span>
+                </div>
+            </div>
+            <div class="weekly-summary-change ${data.success_change >= 0 ? 'positive' : 'negative'}">
+                ${data.success_change >= 0 ? '↑' : '↓'} ${Math.abs(data.success_change)}% ${data.success_change >= 0 ? 'improvement' : 'drop'} from last week
+            </div>
+        `;
+    } catch (err) {
+        console.error('Weekly summary load failed', err);
+    }
+}
+
+// --- Insights Logic ---
+async function loadInsights() {
+    try {
+        // Load smart insights
+        const smartData = await apiFetch('/insights/smart');
+        const container = document.getElementById('smart-insights-container');
+        
+        if (smartData.insights.length > 0) {
+            container.innerHTML = smartData.insights.map(insight => `
+                <div class="insight-card">
+                    <span class="icon">✨</span>
+                    <div class="insight-content">
+                        <p style="font-weight: 600; color: var(--text-primary);">${insight}</p>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = '';
+        }
+        
+        // Load the original insights as fallback
+        const history = await apiFetch(`/score/history?user_id=${currentUser.user_id}&days=30`);
+        renderRealInsights(await apiFetch('/tasks/range?start_date=2000-01-01&end_date=2100-12-31'));
+    } catch (err) {
+        console.error('Insights load failed', err);
     }
 }
 

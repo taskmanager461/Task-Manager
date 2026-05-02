@@ -16,9 +16,6 @@ router = APIRouter(tags=["tasks"])
 def get_tasks(
     user_id: int | None = Query(default=None),
     day: date = Query(...),
-    category: str | None = Query(default=None),
-    priority: str | None = Query(default=None),
-    status: str | None = Query(default=None),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -26,31 +23,12 @@ def get_tasks(
     if target_user_id != current_user.id:
         raise HTTPException(status_code=403, detail="Forbidden")
 
-    query = db.query(Task).filter(Task.user_id == target_user_id, Task.date == day)
-    
-    if category:
-        query = query.filter(Task.category == category.lower())
-    if priority:
-        query = query.filter(Task.priority == priority)
-    if status:
-        query = query.filter(Task.status == status)
-
-    tasks = query.order_by(Task.created_at.asc()).all()
-    return tasks
-
-
-@router.get("/tasks/range", response_model=list[TaskResponse])
-def get_tasks_range(
-    start_date: date = Query(...),
-    end_date: date = Query(...),
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-):
-    tasks = db.query(Task).filter(
-        Task.user_id == current_user.id,
-        Task.date >= start_date,
-        Task.date <= end_date
-    ).all()
+    tasks = (
+        db.query(Task)
+        .filter(Task.user_id == target_user_id, Task.date == day)
+        .order_by(Task.created_at.asc())
+        .all()
+    )
     return tasks
 
 
@@ -63,13 +41,8 @@ def create_task(payload: TaskCreate, current_user: User = Depends(get_current_us
     task = Task(
         user_id=target_user_id,
         title=payload.title,
-        description=payload.description,
-        category=(payload.category or "general").lower(),
-        difficulty=payload.difficulty or "medium",
-        priority=payload.priority or "medium",
-        recurring=payload.recurring or "none",
-        due_date=payload.due_date,
-        time=payload.time,
+        category=payload.category.lower(),
+        difficulty=payload.difficulty,
         status="pending",
         date=payload.date,
     )
@@ -93,16 +66,10 @@ def update_task_status(
     if task.user_id != current_user.id:
         raise HTTPException(status_code=403, detail="Forbidden")
 
-    if payload.status:
-        if payload.status not in {"completed", "failed", "pending"}:
-            raise HTTPException(status_code=400, detail="Invalid task status")
-        task.status = payload.status
-    
-    if payload.priority:
-        if payload.priority not in {"low", "medium", "high"}:
-            raise HTTPException(status_code=400, detail="Invalid priority")
-        task.priority = payload.priority
+    if payload.status not in {"completed", "failed", "pending"}:
+        raise HTTPException(status_code=400, detail="Invalid task status")
 
+    task.status = payload.status
     db.commit()
     db.refresh(task)
 

@@ -45,15 +45,6 @@ class APIClient:
         response.raise_for_status()
         return response.json()
 
-    def me(self) -> dict[str, Any]:
-        response = requests.get(
-            self._url("/me"),
-            headers=self._auth_headers(),
-            timeout=15,
-        )
-        response.raise_for_status()
-        return response.json()
-
     def get_tasks(self, user_id: int, day: date) -> list[dict[str, Any]]:
         response = requests.get(
             self._url("/tasks"),

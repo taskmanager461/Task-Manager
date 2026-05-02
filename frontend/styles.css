@@ -34,6 +34,13 @@
     overflow: hidden;
 }
 
+.logo {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimizeQuality;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 .brand-logo {
     width: 32px;
     height: 32px;
@@ -1053,4 +1060,142 @@ canvas {
 
 .chart-container canvas {
     flex: 1;
+}
+
+/* New styles for behavior system */
+.metric-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.score-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 100px;
+    width: fit-content;
+    margin-top: 0.25rem;
+}
+
+.score-label.excellent {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10B981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.score-label.good {
+    background: rgba(0, 102, 255, 0.15);
+    color: #0066FF;
+    border: 1px solid rgba(0, 102, 255, 0.3);
+}
+
+.score-label.average {
+    background: rgba(245, 158, 11, 0.15);
+    color: #F59E0B;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.score-label.low {
+    background: rgba(239, 68, 68, 0.15);
+    color: #EF4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.score-comparison {
+    padding: 1rem 1.5rem;
+    text-align: center;
+}
+
+.score-comparison span {
+    font-weight: 600;
+}
+
+.score-comparison.improved span {
+    color: #10B981;
+}
+
+.score-comparison.dropped span {
+    color: #EF4444;
+}
+
+.missed-tasks-alert {
+    padding: 1rem 1.5rem;
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.missed-tasks-alert span {
+    font-weight: 600;
+    color: #F59E0B;
+}
+
+.smart-insight-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+}
+
+.smart-insight-card .icon {
+    font-size: 1.5rem;
+}
+
+.smart-insight-card h4 {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+}
+
+.smart-insight-card p {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.weekly-summary-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.weekly-summary-stat {
+    text-align: center;
+}
+
+.weekly-summary-stat .label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.weekly-summary-stat .value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.weekly-summary-change {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+}
+
+.weekly-summary-change.positive {
+    color: #10B981;
+}
+
+.weekly-summary-change.negative {
+    color: #EF4444;
 }
