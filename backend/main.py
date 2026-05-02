@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -80,12 +80,7 @@ def app_root():
     index_path = FRONTEND_DIR / "index.html"
     if index_path.exists():
         return FileResponse(index_path)
-    return {
-        "status": "ok",
-        "service": settings.app_name,
-        "version": settings.app_version,
-        "environment": settings.environment,
-    }
+    raise HTTPException(status_code=500, detail="Frontend index.html is missing")
 
 
 # Keep both route styles for compatibility:

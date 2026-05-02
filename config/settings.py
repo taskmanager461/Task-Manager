@@ -12,7 +12,11 @@ class Settings(BaseSettings):
     api_prefix: str = ""
 
     database_url: str = "sqlite:///./self_trust.db"
-    environment: str = "production" if os.getenv("RENDER") else "development"
+    environment: str = (
+        os.getenv("ENVIRONMENT")
+        or os.getenv("RENDER_ENVIRONMENT")
+        or ("production" if (os.getenv("RENDER") or os.getenv("RENDER_EXTERNAL_URL")) else "development")
+    )
 
     jwt_secret_key: str = "change-me-in-production"
     jwt_algorithm: str = "HS256"
