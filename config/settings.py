@@ -1,4 +1,3 @@
-import os
 from functools import lru_cache
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -12,11 +11,7 @@ class Settings(BaseSettings):
     api_prefix: str = ""
 
     database_url: str = "sqlite:///./self_trust.db"
-    environment: str = (
-        os.getenv("ENVIRONMENT")
-        or os.getenv("RENDER_ENVIRONMENT")
-        or ("production" if (os.getenv("RENDER") or os.getenv("RENDER_EXTERNAL_URL")) else "development")
-    )
+    environment: str = "development"
 
     jwt_secret_key: str = "change-me-in-production"
     jwt_algorithm: str = "HS256"
@@ -37,15 +32,10 @@ class Settings(BaseSettings):
 
     @property
     def pg_url(self) -> str:
-        # Normalize DB URL and fail safe to SQLite for invalid values.
-        raw = (self.database_url or "").strip()
-        if not raw:
-            return "sqlite:///./self_trust.db"
-        if raw.startswith("postgres://"):
-            return raw.replace("postgres://", "postgresql://", 1)
-        if raw.startswith("http://") or raw.startswith("https://"):
-            return "sqlite:///./self_trust.db"
-        return raw
+        # Handle Render/Heroku 'postgres://' vs SQLAlchemy 'postgresql://'
+        if self.database_url.startswith("postgres://"):
+            return self.database_url.replace("postgres://", "postgresql://", 1)
+        return self.database_url
 
 
 @lru_cache

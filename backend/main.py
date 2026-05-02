@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -75,20 +75,7 @@ def healthcheck():
         "environment": settings.environment,
     }
 
-@app.get("/")
-def app_root():
-    index_path = FRONTEND_DIR / "index.html"
-    if index_path.exists():
-        return FileResponse(index_path)
-    raise HTTPException(status_code=500, detail="Frontend index.html is missing")
 
-
-# Keep both route styles for compatibility:
-# - /api/* used by web frontend (app.js)
-# - /* used by Streamlit frontend API client
-app.include_router(auth_router)
-app.include_router(tasks_router)
-app.include_router(score_router)
 app.include_router(auth_router, prefix="/api")
 app.include_router(tasks_router, prefix="/api")
 app.include_router(score_router, prefix="/api")
