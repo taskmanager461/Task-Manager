@@ -5,6 +5,7 @@ from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 Difficulty = Literal["easy", "medium", "hard"]
 TaskStatus = Literal["pending", "completed", "failed"]
+GoalStatus = Literal["active", "achieved", "failed"]
 
 
 class SignupRequest(BaseModel):
@@ -51,6 +52,7 @@ class TaskCreate(BaseModel):
     recurring: Optional[Recurring] = "none"
     due_date: Optional[date] = None
     time: Optional[str] = None
+    goal_id: Optional[int] = None
     date: date
 
 
@@ -58,6 +60,7 @@ class TaskUpdate(BaseModel):
     status: Optional[TaskStatus] = None
     priority: Optional[Priority] = None
     time: Optional[str] = None
+    goal_id: Optional[int] = None
 
 
 class TaskResponse(BaseModel):
@@ -65,6 +68,7 @@ class TaskResponse(BaseModel):
 
     id: int
     user_id: int
+    goal_id: Optional[int]
     title: str
     category: str
     difficulty: Difficulty
@@ -75,6 +79,50 @@ class TaskResponse(BaseModel):
     status: TaskStatus
     date: date
     created_at: datetime
+
+
+class GoalCreate(BaseModel):
+    title: str = Field(min_length=2, max_length=255)
+    category: Optional[str] = Field(default="general", min_length=2, max_length=50)
+    deadline: date
+
+
+class GoalResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    user_id: int
+    title: str
+    category: str
+    deadline: date
+    status: GoalStatus
+    created_at: datetime
+    completed_at: Optional[datetime] = None
+    linked_tasks_count: int = 0
+    completed_tasks_count: int = 0
+    progress_percent: float = 0.0
+
+
+class GoalAnalyticsResponse(BaseModel):
+    goal_completion_rate: float
+    goals_achieved: int
+    goals_failed: int
+    average_completion_time_days: float
+    insights: list[str]
+
+
+class BadgeResponse(BaseModel):
+    id: str
+    label: str
+    unlocked: bool
+
+
+class IdentityProfileResponse(BaseModel):
+    level: int
+    completed_tasks: int
+    completed_goals: int
+    streak: int
+    badges: list[BadgeResponse]
 
 
 class DailyScoreResponse(BaseModel):
@@ -99,6 +147,7 @@ class DailyScoreComputationResponse(BaseModel):
     streak: int
     multiplier: float
     total_tasks: int
+    goal_bonus: float = 0.0
 
 
 class PushSubscriptionBase(BaseModel):
@@ -123,4 +172,3 @@ class PushNotification(BaseModel):
     title: str
     body: str
     url: str = "/"
-

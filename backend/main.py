@@ -14,8 +14,11 @@ from fastapi.responses import FileResponse
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
-from backend.database import Base, engine, SessionLocal
+from backend import models  # noqa: F401
+from backend.database import Base, SessionLocal, engine, ensure_schema_compatibility
 from backend.routes.auth import router as auth_router
+from backend.routes.goals import router as goals_router
+from backend.routes.identity import router as identity_router
 from backend.routes.score import router as score_router
 from backend.routes.tasks import router as tasks_router
 from backend.routes.push import router as push_router, run_scheduled_jobs
@@ -40,6 +43,7 @@ async def lifespan(app: FastAPI):
     logger.info("Starting up and initializing database...")
     try:
         Base.metadata.create_all(bind=engine)
+        ensure_schema_compatibility()
         logger.info("Database initialized successfully.")
     except Exception as e:
         logger.error(f"Database initialization failed: {e}")
@@ -87,7 +91,9 @@ app = FastAPI(
 
 app.include_router(auth_router, prefix="/api")
 app.include_router(tasks_router, prefix="/api")
+app.include_router(goals_router, prefix="/api")
 app.include_router(score_router, prefix="/api")
+app.include_router(identity_router, prefix="/api")
 app.include_router(push_router, prefix="/api")
 
 @app.get("/health")

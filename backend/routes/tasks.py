@@ -4,10 +4,12 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from backend.database import get_db
+from backend.models.goal import Goal
 from backend.models.task import Task
 from backend.models.user import User
 from backend.schemas import TaskCreate, TaskResponse, TaskUpdate
 from backend.services.auth_service import get_current_user
+from backend.services.goal_service import refresh_goal_status_by_id
 
 router = APIRouter(tags=["tasks"])
 
@@ -60,8 +62,14 @@ def create_task(payload: TaskCreate, current_user: User = Depends(get_current_us
     if target_user_id != current_user.id:
         raise HTTPException(status_code=403, detail="Forbidden")
 
+    if payload.goal_id is not None:
+        goal = db.query(Goal).filter(Goal.id == payload.goal_id, Goal.user_id == current_user.id).first()
+        if not goal:
+            raise HTTPException(status_code=404, detail="Goal not found")
+
     task = Task(
         user_id=target_user_id,
+        goal_id=payload.goal_id,
         title=payload.title,
         description=payload.description,
         category=(payload.category or "general").lower(),
@@ -75,6 +83,9 @@ def create_task(payload: TaskCreate, current_user: User = Depends(get_current_us
     )
     db.add(task)
     db.commit()
+    if task.goal_id:
+        refresh_goal_status_by_id(db, task.goal_id)
+        db.commit()
     db.refresh(task)
 
     return task
@@ -93,6 +104,8 @@ def update_task_status(
     if task.user_id != current_user.id:
         raise HTTPException(status_code=403, detail="Forbidden")
 
+    previous_goal_id = task.goal_id
+
     if payload.status:
         if payload.status not in {"completed", "failed", "pending"}:
             raise HTTPException(status_code=400, detail="Invalid task status")
@@ -103,7 +116,24 @@ def update_task_status(
             raise HTTPException(status_code=400, detail="Invalid priority")
         task.priority = payload.priority
 
+    if payload.goal_id is not None:
+        if payload.goal_id <= 0:
+            task.goal_id = None
+        else:
+            goal = db.query(Goal).filter(Goal.id == payload.goal_id, Goal.user_id == current_user.id).first()
+            if not goal:
+                raise HTTPException(status_code=404, detail="Goal not found")
+            task.goal_id = payload.goal_id
+
     db.commit()
+
+    if previous_goal_id:
+        refresh_goal_status_by_id(db, previous_goal_id)
+    if task.goal_id:
+        refresh_goal_status_by_id(db, task.goal_id)
+    if previous_goal_id or task.goal_id:
+        db.commit()
+
     db.refresh(task)
 
     return task

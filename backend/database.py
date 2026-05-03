@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 from config.settings import get_settings
@@ -34,3 +34,15 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+def ensure_schema_compatibility() -> None:
+    inspector = inspect(engine)
+    table_names = set(inspector.get_table_names())
+    if "tasks" not in table_names:
+        return
+
+    task_columns = {col["name"] for col in inspector.get_columns("tasks")}
+    if "goal_id" not in task_columns:
+        with engine.begin() as connection:
+            connection.execute(text("ALTER TABLE tasks ADD COLUMN goal_id INTEGER"))

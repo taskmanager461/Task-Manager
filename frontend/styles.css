@@ -1199,3 +1199,91 @@ canvas {
 .weekly-summary-change.negative {
     color: #EF4444;
 }
+
+.identity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.identity-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.75rem;
+}
+
+.identity-stat-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.65rem 0.75rem;
+}
+
+.identity-stat-item .label {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+}
+
+.identity-stat-item .value {
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.identity-badges {
+    margin-top: 0.9rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.identity-badge {
+    font-size: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.25rem 0.65rem;
+    color: var(--text-secondary);
+}
+
+.identity-badge.unlocked {
+    color: #10B981;
+    border-color: rgba(16, 185, 129, 0.3);
+    background: rgba(16, 185, 129, 0.08);
+}
+
+.goal-card {
+    border-left: 3px solid rgba(0, 102, 255, 0.55);
+}
+
+.goal-card.failed {
+    border-left-color: rgba(239, 68, 68, 0.6);
+}
+
+.goal-card.achieved {
+    border-left-color: rgba(16, 185, 129, 0.7);
+}
+
+.goal-progress-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+}
+
+.goal-link-control {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.goal-link-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}

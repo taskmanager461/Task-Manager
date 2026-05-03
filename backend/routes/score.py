@@ -1,16 +1,18 @@
-from datetime import date, timedelta, datetime
+from datetime import date, timedelta
 from collections import defaultdict
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from backend.database import get_db
 from backend.models.daily_score import DailyScore
+from backend.models.goal import Goal
 from backend.models.task import Task
 from backend.models.user import User
 from backend.schemas import DailyScoreComputationResponse, DailyScoreRequest, DailyScoreResponse
 from backend.services.auth_service import get_current_user
-from backend.services.score_service import compute_daily_metrics, compute_next_streak
+from backend.services.goal_service import compute_goal_task_counts, refresh_goal_status
 
 router = APIRouter(tags=["score"])
 
@@ -54,9 +56,26 @@ def compute_daily_score(
 
     tasks = db.query(Task).filter(Task.user_id == target_user_id, Task.date == day).all()
     if not tasks:
+        goal_bonus = 0.0
+        completed_goals_today = db.query(Goal).filter(
+            Goal.user_id == target_user_id,
+            Goal.status == "achieved",
+            func.date(Goal.completed_at) == day,
+        ).all()
+        for goal in completed_goals_today:
+            goal_bonus += 15.0
+            if goal.completed_at and goal.completed_at.date() <= goal.deadline:
+                goal_bonus += 5.0
+
         db.commit()
         return DailyScoreComputationResponse(
-            date=day, score=0.0, success_rate=0.0, streak=current_user.streak, multiplier=1.0, total_tasks=0
+            date=day,
+            score=goal_bonus,
+            success_rate=0.0,
+            streak=current_user.streak,
+            multiplier=1.0,
+            total_tasks=0,
+            goal_bonus=goal_bonus,
         )
 
     # 2. Compute Score with Difficulty & Priority weights
@@ -81,6 +100,20 @@ def compute_daily_score(
     base_score = (earned_weight / total_weight) * 100 if total_weight > 0 else 0
     final_score = base_score * multiplier
 
+    # Goals have stronger trust-score impact than regular tasks.
+    goal_bonus = 0.0
+    completed_goals_today = db.query(Goal).filter(
+        Goal.user_id == target_user_id,
+        Goal.status == "achieved",
+        func.date(Goal.completed_at) == day,
+    ).all()
+    for goal in completed_goals_today:
+        goal_bonus += 15.0
+        if goal.completed_at and goal.completed_at.date() <= goal.deadline:
+            goal_bonus += 5.0
+
+    final_score += goal_bonus
+
     # 4. Save/Update DailyScore
     daily_score = db.query(DailyScore).filter(DailyScore.user_id == target_user_id, DailyScore.date == day).first()
     if not daily_score:
@@ -99,6 +132,7 @@ def compute_daily_score(
         streak=current_user.streak,
         multiplier=multiplier,
         total_tasks=len(tasks),
+        goal_bonus=goal_bonus,
     )
 
 
@@ -185,13 +219,19 @@ def smart_insights(
     db: Session = Depends(get_db),
 ):
     all_tasks = db.query(Task).filter(Task.user_id == current_user.id).all()
+    user_goals = db.query(Goal).filter(Goal.user_id == current_user.id).all()
+    counts_map = compute_goal_task_counts(db, [g.id for g in user_goals])
     
-    if not all_tasks:
+    if not all_tasks and not user_goals:
         return {
             "productive_hour": None,
             "failure_hour": None,
             "productive_day": None,
-            "insights": []
+            "insights": [],
+            "goal_completion_rate": 0.0,
+            "goals_achieved": 0,
+            "goals_failed": 0,
+            "average_completion_time": 0.0,
         }
     
     completed_by_hour = defaultdict(int)
@@ -248,11 +288,50 @@ def smart_insights(
     if productive_day:
         insights.append(f"Your most productive day is {productive_day}")
     
+    for goal in user_goals:
+        counts = counts_map.get(goal.id, {"total": 0, "completed": 0})
+        refresh_goal_status(goal, counts["total"], counts["completed"])
+    db.commit()
+
+    goals_achieved = sum(1 for g in user_goals if g.status == "achieved")
+    goals_failed = sum(1 for g in user_goals if g.status == "failed")
+    goal_completion_rate = (goals_achieved / len(user_goals) * 100) if user_goals else 0.0
+
+    avg_completion_days = 0.0
+    completion_samples = [
+        max(0, (g.completed_at.date() - g.created_at.date()).days)
+        for g in user_goals
+        if g.status == "achieved" and g.completed_at
+    ]
+    if completion_samples:
+        avg_completion_days = sum(completion_samples) / len(completion_samples)
+
+    short_term_samples = []
+    long_term_samples = []
+    for g in user_goals:
+        if g.status != "achieved" or not g.completed_at:
+            continue
+        days_to_complete = max(0, (g.completed_at.date() - g.created_at.date()).days)
+        timeframe_days = max(1, (g.deadline - g.created_at.date()).days)
+        if timeframe_days <= 14:
+            short_term_samples.append(days_to_complete)
+        if timeframe_days >= 30:
+            long_term_samples.append(days_to_complete)
+
+    if short_term_samples and long_term_samples and (sum(short_term_samples) / len(short_term_samples)) < (sum(long_term_samples) / len(long_term_samples)):
+        insights.append("You complete short-term goals faster")
+    if goals_failed > goals_achieved and len(user_goals) >= 3:
+        insights.append("You struggle with long-term goals")
+
     return {
         "productive_hour": productive_hour,
         "failure_hour": failure_hour,
         "productive_day": productive_day,
-        "insights": insights
+        "insights": insights,
+        "goal_completion_rate": round(goal_completion_rate, 1),
+        "goals_achieved": goals_achieved,
+        "goals_failed": goals_failed,
+        "average_completion_time": round(avg_completion_days, 1),
     }
 
 

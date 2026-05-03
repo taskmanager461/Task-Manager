@@ -11,6 +11,7 @@ class Task(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), index=True, nullable=False)
+    goal_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("goals.id"), index=True, nullable=True)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str] = mapped_column(String(500), nullable=True)
     category: Mapped[str] = mapped_column(String(50), default="general", nullable=False)
@@ -24,3 +25,4 @@ class Task(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
 
     user = relationship("User", back_populates="tasks")
+    goal = relationship("Goal", back_populates="tasks")

@@ -11,6 +11,7 @@ let trendChart = null;
 let insightsChart = null;
 let currentView = 'dashboard';
 let cachedTasks = []; // Performance: Cache tasks locally
+let cachedGoals = [];
 let calendarDate = new Date();
 let calendarTasks = [];
 let notifiedTasks = new Set();
@@ -523,6 +524,7 @@ function renderApp() {
     
     // Initial view
     updateUILanguage();
+    loadGoals();
     showView('dashboard');
 }
 
@@ -556,6 +558,7 @@ function showView(viewId) {
     // Load Data
     if (viewId === 'dashboard') loadDashboard();
     if (viewId === 'tasks') loadTasks();
+    if (viewId === 'goals') loadGoals();
     if (viewId === 'insights') loadInsights();
     if (viewId === 'settings') applyTheme(); // Sync theme switch state
 }
@@ -918,7 +921,7 @@ async function loadDashboard() {
         // Update Multiplier Badge
         const multBadge = document.getElementById('multiplier-badge');
         if (score.multiplier > 1.0) {
-            multBadge.textContent = `${score.multiplier.toFixed(1)}x Boost`;
+            multBadge.textContent = `${score.multiplier.toFixed(1)}x Boost${score.goal_bonus > 0 ? ` +${score.goal_bonus.toFixed(0)} Goal` : ''}`;
             multBadge.style.display = 'inline-block';
         } else {
             multBadge.style.display = 'none';
@@ -928,6 +931,7 @@ async function loadDashboard() {
         loadScoreComparison();
         loadMissedTasks();
         loadWeeklySummary();
+        loadIdentityProfile();
 
         // Fetch tasks to update pie chart
         const tasks = await apiFetch(`/tasks?user_id=${currentUser.user_id}&day=${today}`);
@@ -1058,10 +1062,17 @@ async function loadInsights() {
         } else {
             container.innerHTML = '';
         }
-        
-        // Load the original insights as fallback
-        const history = await apiFetch(`/score/history?user_id=${currentUser.user_id}&days=30`);
+
+        const completionRate = document.getElementById('goal-completion-rate');
+        const achievedFailed = document.getElementById('goal-achieved-failed');
+        const averageTime = document.getElementById('goal-average-time');
+        if (completionRate) completionRate.textContent = `${smartData.goal_completion_rate || 0}%`;
+        if (achievedFailed) achievedFailed.textContent = `${smartData.goals_achieved || 0} / ${smartData.goals_failed || 0}`;
+        if (averageTime) averageTime.textContent = `${smartData.average_completion_time || 0}d`;
+
+        // Load baseline insights from task history
         renderRealInsights(await apiFetch('/tasks/range?start_date=2000-01-01&end_date=2100-12-31'));
+        loadIdentityProfile();
     } catch (err) {
         console.error('Insights load failed', err);
     }
@@ -1312,6 +1323,7 @@ function renderTasks(tasks) {
                 </div>
                 <div class="task-meta">
                     <p>${task.category} | ${t(task.difficulty)}</p>
+                    ${task.goal_id ? `<p>🎯 Linked Goal</p>` : ''}
                     ${recurringIcon}
                     ${task.due_date ? `<p>📅 ${task.due_date}</p>` : ''}
                     ${overdueHtml}
@@ -1343,6 +1355,9 @@ async function addTask(title, category, difficulty, date, time) {
     const priority = document.getElementById('task-priority').value;
     const recurring = document.getElementById('task-recurring').value;
     const dueDate = document.getElementById('task-due-date').value;
+    const linkGoal = document.getElementById('task-link-goal-checkbox').checked;
+    const goalIdRaw = document.getElementById('task-goal-select').value;
+    const goalId = linkGoal && goalIdRaw ? Number(goalIdRaw) : null;
 
     const submitBtn = document.querySelector('#add-task-form button[type="submit"]');
     const originalText = submitBtn.innerHTML;
@@ -1360,11 +1375,13 @@ async function addTask(title, category, difficulty, date, time) {
                 priority, recurring,
                 due_date: dueDate || null,
                 date: taskDate,
-                time: time || null
+                time: time || null,
+                goal_id: goalId
             })
         });
         toggleTaskForm();
         loadTasks();
+        if (goalId) loadGoals();
         showToast(t('task_added'), 'success');
     } catch (err) {
         // Error toast handled by apiFetch
@@ -1411,6 +1428,7 @@ async function handleTaskUpdate(taskId, status, btnEl) {
 
         // If in dashboard, refresh stats silently
         if (currentView === 'dashboard') loadDashboard();
+        loadGoals();
     } catch (err) {
         // Rollback on error
         card.className = originalStatus;
@@ -1418,6 +1436,162 @@ async function handleTaskUpdate(taskId, status, btnEl) {
         if (taskIdx !== -1) cachedTasks[taskIdx].status = 'pending';
         showToast(err.message, 'error');
     }
+}
+
+function toggleTaskGoalLink(isEnabled) {
+    const select = document.getElementById('task-goal-select');
+    if (!select) return;
+    select.disabled = !isEnabled;
+    if (!isEnabled) {
+        select.value = '';
+    } else if (cachedGoals.length === 0) {
+        loadGoals();
+    }
+}
+
+async function loadGoals() {
+    const list = document.getElementById('goals-list');
+    try {
+        const goals = await apiFetch('/goals');
+        cachedGoals = goals;
+        populateGoalOptions();
+        if (list) {
+            renderGoals(goals);
+        }
+    } catch (err) {
+        if (list) {
+            list.innerHTML = `<div class="empty-state"><p class="error-msg">${err.message}</p></div>`;
+        }
+    }
+}
+
+function populateGoalOptions() {
+    const select = document.getElementById('task-goal-select');
+    if (!select) return;
+    const activeGoals = cachedGoals.filter(g => g.status === 'active');
+    select.innerHTML = `<option value="">Select goal</option>` + activeGoals.map(g => `<option value="${g.id}">${g.title}</option>`).join('');
+}
+
+function renderGoals(goals) {
+    const list = document.getElementById('goals-list');
+    if (!list) return;
+    if (!goals || goals.length === 0) {
+        list.innerHTML = `
+            <div class="empty-state">
+                <span class="empty-state-icon">🎯</span>
+                <h3 class="empty-state-title">No goals yet</h3>
+                <p class="empty-state-text">Create your first goal to track long-term progress.</p>
+                <button onclick="toggleGoalForm()" class="btn primary">Create Goal</button>
+            </div>
+        `;
+        return;
+    }
+    list.innerHTML = goals.map(goal => `
+        <div class="task-card goal-card ${goal.status}">
+            <div class="task-info">
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <h3>${goal.title}</h3>
+                    <span class="priority-badge priority-low">${goal.category}</span>
+                </div>
+                <div class="task-meta">
+                    <p>Deadline: ${goal.deadline}</p>
+                    <p>Tasks: ${goal.completed_tasks_count}/${goal.linked_tasks_count}</p>
+                </div>
+                <div class="progress-bar" style="margin-top:0.75rem;">
+                    <div id="goal-progress-${goal.id}" style="height:100%; width:${goal.progress_percent}%; background:linear-gradient(90deg,#0066FF,#10B981);"></div>
+                </div>
+                <div class="goal-progress-meta">
+                    <span>${goal.progress_percent.toFixed(0)}%</span>
+                    <span>${goal.status}</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function toggleGoalForm() {
+    const container = document.getElementById('goal-form-container');
+    container.classList.toggle('active');
+    if (container.classList.contains('active')) {
+        document.getElementById('goal-title').value = '';
+        document.getElementById('goal-category').value = 'General';
+        document.getElementById('goal-deadline-preset').value = 'tomorrow';
+        handleGoalDeadlinePreset();
+    }
+}
+
+function handleGoalDeadlinePreset() {
+    const preset = document.getElementById('goal-deadline-preset').value;
+    const customInput = document.getElementById('goal-custom-deadline');
+    customInput.disabled = preset !== 'custom';
+    if (preset !== 'custom') {
+        customInput.value = '';
+    }
+}
+
+function resolveGoalDeadline() {
+    const preset = document.getElementById('goal-deadline-preset').value;
+    const custom = document.getElementById('goal-custom-deadline').value;
+    const base = new Date();
+    if (preset === 'custom') {
+        return custom;
+    }
+    if (preset === 'tomorrow') {
+        base.setDate(base.getDate() + 1);
+    } else if (preset === 'week') {
+        base.setDate(base.getDate() + 7);
+    } else if (preset === 'month') {
+        base.setMonth(base.getMonth() + 1);
+    }
+    return base.toISOString().split('T')[0];
+}
+
+async function addGoal(title, category) {
+    const deadline = resolveGoalDeadline();
+    if (!deadline) {
+        showToast('Please choose a deadline', 'error');
+        return;
+    }
+    await apiFetch('/goals', {
+        method: 'POST',
+        body: JSON.stringify({ title, category, deadline })
+    });
+    toggleGoalForm();
+    await loadGoals();
+    showToast('Goal created', 'success');
+}
+
+async function loadIdentityProfile() {
+    try {
+        const identity = await apiFetch('/identity/profile');
+        renderIdentity(identity);
+        const achievementList = document.getElementById('achievements-list');
+        if (achievementList) {
+            achievementList.innerHTML = identity.badges.map(b => `
+                <div class="achievement-badge ${b.unlocked ? 'unlocked' : ''}">
+                    <span class="icon">${b.unlocked ? '🏅' : '🔒'}</span>
+                    <span class="name">${b.label}</span>
+                </div>
+            `).join('');
+        }
+    } catch (err) {
+        console.error('Identity load failed', err);
+    }
+}
+
+function renderIdentity(identity) {
+    const levelEl = document.getElementById('identity-level-badge');
+    const statsEl = document.getElementById('identity-stats');
+    const badgesEl = document.getElementById('identity-badges');
+    if (!levelEl || !statsEl || !badgesEl) return;
+
+    levelEl.textContent = `Level ${identity.level}`;
+    statsEl.innerHTML = `
+        <div class="identity-stat-item"><span class="label">Completed Tasks</span><span class="value">${identity.completed_tasks}</span></div>
+        <div class="identity-stat-item"><span class="label">Completed Goals</span><span class="value">${identity.completed_goals}</span></div>
+        <div class="identity-stat-item"><span class="label">Streak</span><span class="value">${identity.streak}</span></div>
+    `;
+    badgesEl.innerHTML = identity.badges.map(b => `<span class="identity-badge ${b.unlocked ? 'unlocked' : ''}">${b.label}</span>`).join('');
 }
 
 // --- Helpers & Listeners ---
@@ -1464,6 +1638,16 @@ function setupEventListeners() {
         });
     }
 
+    const addGoalForm = document.getElementById('add-goal-form');
+    if (addGoalForm) {
+        addGoalForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('goal-title').value.trim();
+            const category = document.getElementById('goal-category').value.trim();
+            addGoal(title, category || 'general');
+        });
+    }
+
     // Set default date/time in form
     const taskDateInput = document.getElementById('task-date');
     const taskTimeInput = document.getElementById('task-time');
@@ -1504,8 +1688,15 @@ function toggleDarkMode() {
 }
 
 function toggleTaskForm() {
-    document.getElementById('task-form-container').classList.toggle('active');
+    const container = document.getElementById('task-form-container');
+    container.classList.toggle('active');
     document.getElementById('task-title').value = '';
+    if (container.classList.contains('active')) {
+        populateGoalOptions();
+        const checkbox = document.getElementById('task-link-goal-checkbox');
+        checkbox.checked = false;
+        toggleTaskGoalLink(false);
+    }
 }
 
 async function forceUpdateApp() {

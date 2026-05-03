@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tobedone</title>
-    <link rel="stylesheet" href="styles.css?v=3.5.0">
+    <link rel="stylesheet" href="styles.css?v=3.6.0">
     <link rel="stylesheet" href="/src/styles/logo.css?v=3">
     <link rel="manifest" href="/manifest.json">
-    <link rel="icon" type="image/png" href="/assets/app-logo-20260501.png?v=4">
+    <link rel="icon" type="image/png" href="/icon-192.png?v=5">
     <meta name="theme-color" content="#000000">
-    <link rel="apple-touch-icon" href="/assets/app-logo-20260501.png?v=4">
+    <link rel="apple-touch-icon" href="/icon-192.png?v=5">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -91,6 +91,10 @@
                     <span class="nav-icon">✅</span>
                     <span data-i18n="tasks">Tasks</span>
                 </button>
+                <button class="nav-item" onclick="showView('goals')">
+                    <span class="nav-icon">🎯</span>
+                    <span>Goals</span>
+                </button>
                 <button class="nav-item" onclick="showView('insights')">
                     <span class="nav-icon">📊</span>
                     <span data-i18n="insights">Insights</span>
@@ -157,6 +161,15 @@
                     <div class="progress-bar"><div id="daily-progress-fill" style="width: 0%"></div></div>
                 </div>
 
+                <div class="card identity-card" style="margin-top: 1.25rem;">
+                    <div class="identity-header">
+                        <h3>Identity</h3>
+                        <span id="identity-level-badge" class="priority-badge priority-low">Level 1</span>
+                    </div>
+                    <div id="identity-stats" class="identity-stats"></div>
+                    <div id="identity-badges" class="identity-badges"></div>
+                </div>
+
                 <div class="charts-section">
                     <h2 class="view-subtitle" data-i18n="statistics">Statistics</h2>
                     <div class="chart-grid">
@@ -210,6 +223,24 @@
                 
                 <div id="smart-insights-container" class="insights-container" style="margin-bottom: 2rem;">
                     <!-- Smart insights will be injected here -->
+                </div>
+
+                <div class="card" style="margin-bottom: 1.5rem;">
+                    <h3 style="margin-bottom: 1rem;">Goal Analytics</h3>
+                    <div class="weekly-summary-stats">
+                        <div class="weekly-summary-stat">
+                            <span class="label">Completion Rate</span>
+                            <span id="goal-completion-rate" class="value">0%</span>
+                        </div>
+                        <div class="weekly-summary-stat">
+                            <span class="label">Achieved / Failed</span>
+                            <span id="goal-achieved-failed" class="value">0 / 0</span>
+                        </div>
+                        <div class="weekly-summary-stat">
+                            <span class="label">Avg Completion Time</span>
+                            <span id="goal-average-time" class="value">0d</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="insights-container">
@@ -274,6 +305,14 @@
                 <div id="task-list" class="task-list">
                     <!-- Tasks injected here -->
                 </div>
+            </section>
+
+            <section id="view-goals" class="view">
+                <div class="view-header">
+                    <h1>Goals</h1>
+                    <button onclick="toggleGoalForm()" class="btn primary">+ New Goal</button>
+                </div>
+                <div id="goals-list" class="task-list"></div>
             </section>
 
             <!-- Settings View -->
@@ -353,9 +392,49 @@
                 <input type="date" id="task-due-date">
             </div>
 
+            <div class="goal-link-control">
+                <label class="goal-link-toggle">
+                    <input type="checkbox" id="task-link-goal-checkbox" onchange="toggleTaskGoalLink(this.checked)">
+                    <span>Link this task to a goal</span>
+                </label>
+                <select id="task-goal-select" disabled>
+                    <option value="">Select goal</option>
+                </select>
+            </div>
+
             <div class="form-actions">
                 <button type="button" onclick="toggleTaskForm()" class="btn secondary" data-i18n="cancel">Cancel</button>
                 <button type="submit" class="btn primary" data-i18n="add_task">Add Task</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="goal-form-container" class="task-form-modal">
+        <form id="add-goal-form">
+            <h3>New Goal</h3>
+            <input type="text" id="goal-title" placeholder="Goal title" required>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Category</label>
+                    <input type="text" id="goal-category" placeholder="General" value="General" required>
+                </div>
+                <div class="form-group">
+                    <label>Deadline</label>
+                    <select id="goal-deadline-preset" onchange="handleGoalDeadlinePreset()">
+                        <option value="tomorrow">Tomorrow</option>
+                        <option value="week">1 Week</option>
+                        <option value="month">1 Month</option>
+                        <option value="custom">Custom Date</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Custom Deadline</label>
+                <input type="date" id="goal-custom-deadline" disabled>
+            </div>
+            <div class="form-actions">
+                <button type="button" onclick="toggleGoalForm()" class="btn secondary">Cancel</button>
+                <button type="submit" class="btn primary">Create Goal</button>
             </div>
         </form>
     </div>
@@ -369,6 +448,6 @@
     </div>
 
 
-    <script src="app.js?v=3.5.0"></script>
+    <script src="app.js?v=3.6.0"></script>
 </body>
 </html>
