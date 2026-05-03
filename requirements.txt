@@ -1,4 +1,4 @@
-﻿fastapi==0.115.0
+fastapi==0.115.0
 uvicorn==0.30.6
 sqlalchemy==2.0.35
 pydantic==2.9.2
@@ -11,3 +11,5 @@ psycopg2-binary>=2.9.10
 python-multipart==0.0.12
 aiofiles==24.1.0
 Pillow==10.4.0
+pywebpush==1.14.0
+APScheduler==3.10.4

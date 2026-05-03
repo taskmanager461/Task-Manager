@@ -11,12 +11,28 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.interval import IntervalTrigger
 
-from backend.database import Base, engine
+from backend.database import Base, engine, SessionLocal
 from backend.routes.auth import router as auth_router
 from backend.routes.score import router as score_router
 from backend.routes.tasks import router as tasks_router
+from backend.routes.push import router as push_router, run_scheduled_jobs
 from config.settings import get_settings
+
+scheduler = BackgroundScheduler()
+
+
+def scheduled_job_wrapper():
+    db = SessionLocal()
+    try:
+        run_scheduled_jobs(db)
+    except Exception as e:
+        logger.error(f"Scheduled job error: {e}")
+    finally:
+        db.close()
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -27,10 +43,16 @@ async def lifespan(app: FastAPI):
         logger.info("Database initialized successfully.")
     except Exception as e:
         logger.error(f"Database initialization failed: {e}")
-        # In some cases we might want to continue even if DB fails
-        # but for this app, DB is critical. 
+
+    # Start scheduler
+    scheduler.add_job(scheduled_job_wrapper, trigger=IntervalTrigger(minutes=1))
+    scheduler.start()
+    logger.info("Scheduler started.")
+
     yield
-    # Shutdown: Clean up if needed
+
+    # Shutdown
+    scheduler.shutdown()
     logger.info("Shutting down...")
 
 settings = get_settings()
@@ -66,6 +88,7 @@ app = FastAPI(
 app.include_router(auth_router, prefix="/api")
 app.include_router(tasks_router, prefix="/api")
 app.include_router(score_router, prefix="/api")
+app.include_router(push_router, prefix="/api")
 
 @app.get("/health")
 async def health_check():

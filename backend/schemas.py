@@ -99,3 +99,28 @@ class DailyScoreComputationResponse(BaseModel):
     streak: int
     multiplier: float
     total_tasks: int
+
+
+class PushSubscriptionBase(BaseModel):
+    endpoint: str
+    p256dh: str
+    auth: str
+
+
+class PushSubscriptionCreate(PushSubscriptionBase):
+    pass
+
+
+class PushSubscriptionResponse(PushSubscriptionBase):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    user_id: int
+    created_at: datetime
+
+
+class PushNotification(BaseModel):
+    title: str
+    body: str
+    url: str = "/"
+

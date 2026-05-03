@@ -130,3 +130,41 @@ class APIClient:
         )
         response.raise_for_status()
         return response.json()
+
+    def get_vapid_key(self) -> dict[str, Any]:
+        response = requests.get(
+            self._url("/push/vapid-key"),
+            timeout=15,
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def subscribe_push(self, endpoint: str, p256dh: str, auth: str) -> dict[str, Any]:
+        response = requests.post(
+            self._url("/push/subscribe"),
+            json={"endpoint": endpoint, "p256dh": p256dh, "auth": auth},
+            headers=self._auth_headers(),
+            timeout=15,
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def unsubscribe_push(self, endpoint: str) -> dict[str, Any]:
+        response = requests.delete(
+            self._url("/push/unsubscribe"),
+            params={"endpoint": endpoint},
+            headers=self._auth_headers(),
+            timeout=15,
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def send_test_push(self, title: str, body: str, url: str = "/") -> dict[str, Any]:
+        response = requests.post(
+            self._url("/push/send"),
+            json={"title": title, "body": body, "url": url},
+            headers=self._auth_headers(),
+            timeout=15,
+        )
+        response.raise_for_status()
+        return response.json()

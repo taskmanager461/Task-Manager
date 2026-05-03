@@ -1,9 +1,9 @@
-const CACHE_NAME = "task-manager-v3.2.9";
+const CACHE_NAME = "task-manager-v3.3.0";
 const ASSETS_TO_CACHE = [
   "/",
   "/index.html",
-  "/styles.css?v=3.2.5",
-  "/app.js?v=3.2.1",
+  "/styles.css?v=3.3.0",
+  "/app.js?v=3.3.0",
   "/manifest.json",
   "/assets/app-logo-20260501.png?v=3"
 ];
@@ -66,3 +66,27 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+
+// Push Event
+self.addEventListener("push", (event) => {
+  const data = event.data?.json() || { title: "tobedone", body: "New notification!", url: "/" };
+  const options = {
+    body: data.body,
+    data: { url: data.url },
+    icon: "/icon-192.png",
+    badge: "/icon-192.png"
+  };
+  event.waitUntil(
+    self.registration.showNotification(data.title, options)
+  );
+});
+
+// Notification Click Event
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const url = event.notification.data?.url || "/";
+  event.waitUntil(
+    clients.openWindow(url)
+  );
+});
+

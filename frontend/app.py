@@ -176,6 +176,7 @@ def inject_pwa_support() -> None:
             window.addEventListener('load', function() {{
               navigator.serviceWorker.register("{api_url}/sw.js").then(function(reg) {{
                 console.log('ServiceWorker registration successful');
+                window.parent.swRegistration = reg;
               }}).catch(function(err) {{
                 console.log('ServiceWorker registration failed: ', err);
               }});
