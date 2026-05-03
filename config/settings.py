@@ -33,14 +33,15 @@ class Settings(BaseSettings):
     @property
     def pg_url(self) -> str:
         raw_url = (self.database_url or "").strip().strip('"').strip("'")
+        normalized = raw_url.lower()
 
         # Render/Heroku may expose postgres://, while SQLAlchemy expects postgresql://
-        if raw_url.startswith("postgres://"):
-            return raw_url.replace("postgres://", "postgresql://", 1)
+        if normalized.startswith("postgres://"):
+            return "postgresql://" + raw_url[len("postgres://") :]
 
         # Guard against misconfigured URLs (e.g. service HTTP URL pasted as DATABASE_URL).
         # Fallback to SQLite so the app can still boot in development.
-        if raw_url.startswith("http://") or raw_url.startswith("https://"):
+        if normalized.startswith("http://") or normalized.startswith("https://"):
             return "sqlite:///./self_trust.db"
 
         return raw_url or "sqlite:///./self_trust.db"
