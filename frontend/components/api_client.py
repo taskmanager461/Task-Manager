@@ -103,3 +103,30 @@ class APIClient:
         )
         response.raise_for_status()
         return response.json()
+
+    def weekly_summary(self) -> dict[str, Any]:
+        response = requests.get(
+            self._url("/score/weekly-summary"),
+            headers=self._auth_headers(),
+            timeout=15,
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def smart_insights(self) -> dict[str, Any]:
+        response = requests.get(
+            self._url("/insights/smart"),
+            headers=self._auth_headers(),
+            timeout=15,
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def get_missed_tasks(self) -> dict[str, Any]:
+        response = requests.get(
+            self._url("/tasks/missed"),
+            headers=self._auth_headers(),
+            timeout=15,
+        )
+        response.raise_for_status()
+        return response.json()

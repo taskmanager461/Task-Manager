@@ -27,19 +27,30 @@ def compute_daily_score(
 
     day = payload.day or date.today()
     
-    # 1. Update Streak logic
-    yesterday = day - timedelta(days=1)
+    # 1. Update Streak logic: Check consecutive days with at least one completed task
+    # Find the last date the user had a completed task
+    last_completed_date = None
+    all_user_tasks = db.query(Task).filter(Task.user_id == target_user_id, Task.status == "completed").order_by(Task.date.desc()).all()
+    if all_user_tasks:
+        last_completed_date = all_user_tasks[0].date
     
-    # Check if user had any tasks yesterday
-    yesterday_tasks = db.query(Task).filter(Task.user_id == target_user_id, Task.date == yesterday).all()
-    if yesterday_tasks:
-        # If there were tasks, at least one must be completed to maintain streak
-        completed_yesterday = any(t.status == "completed" for t in yesterday_tasks)
-        if not completed_yesterday:
-            current_user.streak = 0
-    else:
-        # If no tasks yesterday, we don't necessarily break the streak
-        pass
+    # Calculate current streak
+    current_streak = 0
+    if last_completed_date:
+        check_date = last_completed_date
+        while True:
+            # Check if there's at least one completed task on check_date
+            tasks_on_date = db.query(Task).filter(
+                Task.user_id == target_user_id,
+                Task.date == check_date,
+                Task.status == "completed"
+            ).first()
+            if tasks_on_date:
+                current_streak += 1
+                check_date -= timedelta(days=1)
+            else:
+                break
+    current_user.streak = current_streak
 
     tasks = db.query(Task).filter(Task.user_id == target_user_id, Task.date == day).all()
     if not tasks:
@@ -63,19 +74,12 @@ def compute_daily_score(
             earned_weight += weight
             completed_count += 1
 
-    success_rate = completed_count / len(tasks)
+    success_rate = completed_count / len(tasks) if len(tasks) > 0 else 0.0
     
     # Streak multiplier
     multiplier = 1.0 + (min(current_user.streak, 10) * 0.1)
     base_score = (earned_weight / total_weight) * 100 if total_weight > 0 else 0
     final_score = base_score * multiplier
-
-    # 3. Update streak if AT LEAST ONE task today is completed
-    if completed_count >= 1:
-        # Check if we already updated streak today
-        today_score = db.query(DailyScore).filter(DailyScore.user_id == target_user_id, DailyScore.date == day).first()
-        if not today_score:
-            current_user.streak += 1
 
     # 4. Save/Update DailyScore
     daily_score = db.query(DailyScore).filter(DailyScore.user_id == target_user_id, DailyScore.date == day).first()

@@ -545,6 +545,17 @@ def plot_category_success(category_stats: pd.DataFrame, dark_mode: bool) -> go.F
     return fig
 
 
+def get_score_label(score: float) -> str:
+    if score >= 80:
+        return "Excellent"
+    elif score >= 60:
+        return "Good"
+    elif score >= 40:
+        return "Average"
+    else:
+        return "Low"
+
+
 def dashboard_page(client: APIClient, user_id: int) -> None:
     st.markdown(f"<div class='section-title'>{t('dashboard')}</div>", unsafe_allow_html=True)
     selected_day = st.date_input(t("day"), value=date.today(), key="dash_day")
@@ -555,13 +566,25 @@ def dashboard_page(client: APIClient, user_id: int) -> None:
         return
     assert score is not None and tasks is not None
 
+    # Get missed tasks
+    missed, missed_err = call_api(client.get_missed_tasks, fallback_message="Could not load missed tasks")
+    missed_count = missed.get("count", 0) if missed else 0
+
     c1, c2, c3 = st.columns(3)
     with c1:
-        metric_card("🎯", t("self_trust_score"), f"{score['score']:.1f}", t("daily_score"))
+        score_label = get_score_label(score["score"])
+        metric_card("🎯", t("self_trust_score"), f"{score['score']:.1f}", f"{score_label}")
     with c2:
         metric_card("🔥", t("current_streak"), f"{score['streak']}", t("multiplier", value=str(score["multiplier"])))
     with c3:
         metric_card("✅", t("success_rate"), f"{score['success_rate'] * 100:.0f}%", t("tasks_count", count=str(score["total_tasks"])))
+
+    # Missed tasks feedback
+    if missed_count > 0:
+        warning_msg = f"You missed {missed_count} task{'' if missed_count == 1 else 's'}"
+        if score["streak"] > 0:
+            warning_msg += ". You are at risk of losing your streak!"
+        st.warning(warning_msg)
 
     completed = sum(1 for task in tasks if task["status"] == "completed")
     modern_progress(t("today_completion"), (completed / len(tasks)) if tasks else 0.0, tone="auto")
@@ -581,6 +604,116 @@ def dashboard_page(client: APIClient, user_id: int) -> None:
     with charts_col2:
         st.markdown(f"<div class='section-title'>{t('status_mix')}</div>", unsafe_allow_html=True)
         st.plotly_chart(plot_status_pie(pd.DataFrame(tasks), st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
+
+
+def weekly_report_page(client: APIClient, user_id: int) -> None:
+    st.markdown(f"<div class='section-title'>{t('weekly_report')}</div>", unsafe_allow_html=True)
+    end_day = st.date_input(t("week_ending"), value=date.today(), key="week_end")
+    start_day = end_day - timedelta(days=6)
+    st.caption(t("range_label", start=start_day.isoformat(), end=end_day.isoformat()))
+
+    history, err = call_api(client.score_history, user_id=user_id, fallback_message=t("weekly_history_failed"))
+    if err:
+        st.error(err)
+        return
+
+    hist_df = pd.DataFrame(history or [])
+    all_days = pd.date_range(start=start_day, end=end_day)
+    if hist_df.empty:
+        weekly_df = pd.DataFrame({"date": all_days, "score": 0.0, "success_rate": 0.0})
+    else:
+        hist_df["date"] = pd.to_datetime(hist_df["date"])
+        weekly_df = hist_df[(hist_df["date"] >= pd.Timestamp(start_day)) & (hist_df["date"] <= pd.Timestamp(end_day))]
+        weekly_df = weekly_df[["date", "score", "success_rate"]]
+        weekly_df = weekly_df.set_index("date").reindex(all_days, fill_value=0.0).reset_index()
+        weekly_df = weekly_df.rename(columns={"index": "date"})
+
+    weekly_success = float(weekly_df["success_rate"].mean() * 100) if not weekly_df.empty else 0.0
+    c1, c2 = st.columns(2)
+    with c1:
+        metric_card("📊", t("weekly_success"), f"{weekly_success:.1f}%", t("avg_completion_consistency"))
+    with c2:
+        metric_card("📈", t("weekly_avg_score"), f"{weekly_df['score'].mean():.1f}", t("mean_daily_score"))
+
+    st.plotly_chart(plot_score_trend(weekly_df, st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
+    success_fig = px.area(weekly_df, x="date", y="success_rate")
+    theme = get_theme_tokens(st.session_state.dark_mode)
+    success_fig.update_traces(line_color="#22c55e", fillcolor="rgba(34, 197, 94, 0.25)")
+    success_fig.update_layout(
+        paper_bgcolor=theme["surface"],
+        plot_bgcolor=theme["surface"],
+        font_color=theme["text"],
+        margin=dict(l=10, r=10, t=20, b=10),
+        xaxis_title="",
+        yaxis_title=t("success_rate_axis"),
+        yaxis_tickformat=".0%",
+    )
+    st.plotly_chart(success_fig, use_container_width=True, config={"displayModeBar": False})
+
+    category_tasks: list[dict[str, Any]] = []
+    current = start_day
+    while current <= end_day:
+        day_tasks, day_err = call_api(client.get_tasks, user_id=user_id, day=current, fallback_message=t("category_breakdown_failed"))
+        if day_err:
+            st.warning(day_err)
+            break
+        category_tasks.extend(day_tasks or [])
+        current += timedelta(days=1)
+
+    st.markdown(f"<div class='section-title'>{t('category_breakdown')}</div>", unsafe_allow_html=True)
+    if category_tasks:
+        category_df = pd.DataFrame(category_tasks)
+        breakdown = category_df.groupby("category").size().reset_index(name="count")
+        fig = px.bar(breakdown, x="category", y="count", text="count")
+        fig.update_traces(marker_color=theme["accent_2"], textposition="outside")
+        fig.update_layout(
+            paper_bgcolor=theme["surface"],
+            plot_bgcolor=theme["surface"],
+            font_color=theme["text"],
+            margin=dict(l=10, r=10, t=20, b=10),
+            xaxis_title="",
+            yaxis_title=t("tasks_axis"),
+        )
+        st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
+    else:
+        st.info(t("no_tasks_week"))
+
+    insight, next_step = build_weekly_insight(weekly_df, weekly_success, t)
+    st.info(f"**{t('insight_title')}**\n\n{insight}\n\n{next_step}")
+
+    # Add weekly summary and smart insights
+    st.markdown("---")
+    st.markdown(f"<div class='section-title'>Weekly Summary</div>", unsafe_allow_html=True)
+    weekly_summary, summary_err = call_api(client.weekly_summary, fallback_message="Could not load weekly summary")
+    if weekly_summary:
+        current_week = weekly_summary["current_week"]
+        prev_week = weekly_summary["previous_week"]
+        success_change = weekly_summary["success_change"]
+
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            metric_card("📋", "Total Tasks", str(current_week["total_tasks"]))
+        with col2:
+            metric_card("✅", "Completed", str(current_week["completed_tasks"]))
+        with col3:
+            metric_card("📈", "Success Rate", f"{current_week['success_rate']}%")
+        with col4:
+            metric_card("🔥", "Streak", str(current_week["streak"]))
+
+        if success_change != 0:
+            change_label = f"+{success_change}% improvement" if success_change > 0 else f"{success_change}% drop"
+            st.info(f"Compared to last week: {change_label}")
+
+    st.markdown("---")
+    st.markdown(f"<div class='section-title'>Smart Insights</div>", unsafe_allow_html=True)
+    smart_insights, insights_err = call_api(client.smart_insights, fallback_message="Could not load smart insights")
+    if smart_insights:
+        insights = smart_insights.get("insights", [])
+        if insights:
+            for insight_text in insights:
+                st.markdown(f"• {insight_text}")
+        else:
+            st.info("Complete more tasks to unlock smart insights!")
 
 
 def tasks_analytics_page(client: APIClient, user_id: int) -> None:
