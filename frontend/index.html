@@ -280,30 +280,43 @@
             <section id="view-tasks" class="view">
                 <div class="view-header">
                     <h1 data-i18n="tasks">Tasks</h1>
-                    <button onclick="toggleTaskForm()" class="btn primary" data-i18n="add_new_task">+ Add Task</button>
+                    <button id="tasks-goals-add-btn" onclick="toggleCurrentForm()" class="btn primary" data-i18n="add_new_task">+ Add Task</button>
                 </div>
-                
-                <div id="smart-suggestion-container"></div>
 
-                <div class="card" style="margin-bottom: 1.5rem; padding: 1rem;">
-                    <div class="filters-bar">
-                        <select id="filter-priority" onchange="loadTasks()">
-                            <option value="" data-i18n="all">All Priorities</option>
-                            <option value="high" data-i18n="high">High</option>
-                            <option value="medium" data-i18n="medium">Medium</option>
-                            <option value="low" data-i18n="low">Low</option>
-                        </select>
-                        <select id="filter-status" onchange="loadTasks()">
-                            <option value="" data-i18n="all">All Status</option>
-                            <option value="pending" data-i18n="pending">Pending</option>
-                            <option value="completed" data-i18n="completed">Completed</option>
-                            <option value="failed" data-i18n="failed">Failed</option>
-                        </select>
+                <div class="card" style="margin-bottom: 1.5rem;">
+                    <div class="tabs" style="margin: 0;">
+                        <button id="tab-tasks-only" class="tab active" onclick="switchTasksGoalsTab('tasks')" data-i18n="tasks">Tasks</button>
+                        <button id="tab-goals-only" class="tab" onclick="switchTasksGoalsTab('goals')">Goals</button>
                     </div>
                 </div>
 
-                <div id="task-list" class="task-list">
-                    <!-- Tasks injected here -->
+                <div id="smart-suggestion-container" style="display: none;"></div>
+
+                <div id="tasks-only-container">
+                    <div class="card" style="margin-bottom: 1.5rem; padding: 1rem;">
+                        <div class="filters-bar">
+                            <select id="filter-priority" onchange="loadTasks()">
+                                <option value="" data-i18n="all">All Priorities</option>
+                                <option value="high" data-i18n="high">High</option>
+                                <option value="medium" data-i18n="medium">Medium</option>
+                                <option value="low" data-i18n="low">Low</option>
+                            </select>
+                            <select id="filter-status" onchange="loadTasks()">
+                                <option value="" data-i18n="all">All Status</option>
+                                <option value="pending" data-i18n="pending">Pending</option>
+                                <option value="completed" data-i18n="completed">Completed</option>
+                                <option value="failed" data-i18n="failed">Failed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="task-list" class="task-list">
+                        <!-- Tasks injected here -->
+                    </div>
+                </div>
+
+                <div id="goals-only-container" style="display: none;">
+                    <div id="goals-list" class="task-list"></div>
                 </div>
             </section>
 
@@ -419,6 +432,16 @@
                     <input type="text" id="goal-category" placeholder="General" value="General" required>
                 </div>
                 <div class="form-group">
+                    <label>Goal Type</label>
+                    <select id="goal-type">
+                        <option value="short_term">Short-term (1-3 days)</option>
+                        <option value="mid_term" selected>Mid-term (1-2 weeks)</option>
+                        <option value="long_term">Long-term (1 month+)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
                     <label>Deadline</label>
                     <select id="goal-deadline-preset" onchange="handleGoalDeadlinePreset()">
                         <option value="tomorrow">Tomorrow</option>
@@ -427,14 +450,32 @@
                         <option value="custom">Custom Date</option>
                     </select>
                 </div>
-            </div>
-            <div class="form-group">
-                <label>Custom Deadline</label>
-                <input type="date" id="goal-custom-deadline" disabled>
+                <div class="form-group">
+                    <label>Custom Deadline</label>
+                    <input type="date" id="goal-custom-deadline" disabled>
+                </div>
             </div>
             <div class="form-actions">
                 <button type="button" onclick="toggleGoalForm()" class="btn secondary">Cancel</button>
                 <button type="submit" class="btn primary">Create Goal</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="goal-reflection-modal" class="task-form-modal">
+        <form id="goal-reflection-form">
+            <h3>Goal Reflection</h3>
+            <div class="form-group">
+                <label>What went well?</label>
+                <textarea id="reflection-went-well" placeholder="Tell us about what worked..." rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label>What didn't go well?</label>
+                <textarea id="reflection-didnt-go-well" placeholder="What could be improved..." rows="3"></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="button" onclick="closeReflectionModal()" class="btn secondary">Skip</button>
+                <button type="submit" class="btn primary">Save Reflection</button>
             </div>
         </form>
     </div>

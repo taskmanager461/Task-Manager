@@ -15,6 +15,8 @@ let cachedGoals = [];
 let calendarDate = new Date();
 let calendarTasks = [];
 let notifiedTasks = new Set();
+let currentTasksGoalsTab = 'tasks';
+let currentGoalForReflection = null;
 
 const translations = {
     en: {
@@ -1546,19 +1548,191 @@ function resolveGoalDeadline() {
     return base.toISOString().split('T')[0];
 }
 
+function switchTasksGoalsTab(tab) {
+    currentTasksGoalsTab = tab;
+    document.getElementById('tab-tasks-only').classList.toggle('active', tab === 'tasks');
+    document.getElementById('tab-goals-only').classList.toggle('active', tab === 'goals');
+    document.getElementById('tasks-only-container').style.display = tab === 'tasks' ? 'block' : 'none';
+    document.getElementById('goals-only-container').style.display = tab === 'goals' ? 'block' : 'none';
+    document.getElementById('smart-suggestion-container').style.display = tab === 'tasks' ? 'block' : 'none';
+    const addBtn = document.getElementById('tasks-goals-add-btn');
+    addBtn.textContent = tab === 'tasks' ? '+ Add Task' : '+ New Goal';
+    if (tab === 'tasks') {
+        loadTasks();
+    } else {
+        loadGoals();
+    }
+}
+
+function toggleCurrentForm() {
+    if (currentTasksGoalsTab === 'tasks') {
+        toggleTaskForm();
+    } else {
+        toggleGoalForm();
+    }
+}
+
+function calculatePressureStatus(goal) {
+    const deadline = new Date(goal.deadline);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    deadline.setHours(0, 0, 0, 0);
+
+    const daysRemaining = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
+    const progress = goal.progress_percent || 0;
+
+    if (daysRemaining < 0) {
+        return { status: 'overdue', color: '#EF4444', daysRemaining };
+    } else if (daysRemaining <= 2 && progress < 60) {
+        return { status: 'at_risk', color: '#F59E0B', daysRemaining };
+    } else {
+        return { status: 'on_track', color: '#0066FF', daysRemaining };
+    }
+}
+
+function getGoalTypeLabel(type) {
+    const labels = {
+        short_term: 'Short-term',
+        mid_term: 'Mid-term',
+        long_term: 'Long-term'
+    };
+    return labels[type] || type;
+}
+
 async function addGoal(title, category) {
     const deadline = resolveGoalDeadline();
+    const goalType = document.getElementById('goal-type').value;
     if (!deadline) {
         showToast('Please choose a deadline', 'error');
         return;
     }
     await apiFetch('/goals', {
         method: 'POST',
-        body: JSON.stringify({ title, category, deadline })
+        body: JSON.stringify({ title, category, deadline, goal_type: goalType })
     });
     toggleGoalForm();
     await loadGoals();
     showToast('Goal created', 'success');
+}
+
+async function handleGoalComplete(goalId) {
+    try {
+        currentGoalForReflection = goalId;
+        await apiFetch(`/goals/${goalId}`, {
+            method: 'PATCH',
+            body: JSON.stringify({ status: 'achieved' })
+        });
+        document.getElementById('goal-reflection-modal').classList.add('active');
+        loadGoals();
+        loadDashboard();
+    } catch (err) {
+        console.error('Failed to complete goal:', err);
+    }
+}
+
+async function handleGoalFail(goalId) {
+    try {
+        await apiFetch(`/goals/${goalId}`, {
+            method: 'PATCH',
+            body: JSON.stringify({ status: 'failed' })
+        });
+        loadGoals();
+        loadDashboard();
+        showToast('Goal marked as failed', 'error');
+    } catch (err) {
+        console.error('Failed to update goal:', err);
+    }
+}
+
+async function saveGoalReflection() {
+    const wentWell = document.getElementById('reflection-went-well').value;
+    const didntGoWell = document.getElementById('reflection-didnt-go-well').value;
+    try {
+        await apiFetch(`/goals/${currentGoalForReflection}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+                reflection_went_well: wentWell,
+                reflection_didnt_go_well: didntGoWell
+            })
+        });
+        closeReflectionModal();
+        showToast('Reflection saved!', 'success');
+    } catch (err) {
+        console.error('Failed to save reflection:', err);
+    }
+}
+
+function closeReflectionModal() {
+    document.getElementById('goal-reflection-modal').classList.remove('active');
+    document.getElementById('reflection-went-well').value = '';
+    document.getElementById('reflection-didnt-go-well').value = '';
+    currentGoalForReflection = null;
+}
+
+function renderGoals(goals) {
+    const list = document.getElementById('goals-list');
+    if (!list) return;
+    if (!goals || goals.length === 0) {
+        list.innerHTML = `
+            <div class="empty-state">
+                <span class="empty-state-icon">🎯</span>
+                <h3 class="empty-state-title">No goals yet</h3>
+                <p class="empty-state-text">Create your first goal to track long-term progress.</p>
+                <button onclick="toggleGoalForm()" class="btn primary">Create Goal</button>
+            </div>
+        `;
+        return;
+    }
+    list.innerHTML = goals.map(goal => {
+        const pressure = calculatePressureStatus(goal);
+        const typeLabel = getGoalTypeLabel(goal.goal_type);
+        return `
+        <div class="task-card goal-card ${goal.status}" style="border-left: 4px solid ${pressure.color};">
+            <div class="task-info">
+                <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap: wrap;">
+                    <h3 style="margin: 0;">${goal.title}</h3>
+                    <span class="priority-badge priority-low">${goal.category}</span>
+                    <span class="priority-badge priority-medium">${typeLabel}</span>
+                    <span class="priority-badge" style="background: ${pressure.color}20; color: ${pressure.color}; border-color: ${pressure.color};">
+                        ${pressure.status === 'on_track' ? 'On Track' : pressure.status === 'at_risk' ? 'At Risk' : 'Overdue'}
+                    </span>
+                </div>
+                <div class="task-meta">
+                    <p>Deadline: ${goal.deadline} (${pressure.daysRemaining} days left)</p>
+                    <p>Tasks: ${goal.completed_tasks_count}/${goal.linked_tasks_count}</p>
+                </div>
+                <div class="progress-bar" style="margin-top:0.75rem;">
+                    <div style="height:100%; width:${goal.progress_percent}%; background:linear-gradient(90deg,#0066FF,#10B981);"></div>
+                </div>
+                <div class="goal-progress-meta">
+                    <span>${goal.progress_percent.toFixed(0)}%</span>
+                    <span>${goal.status}</span>
+                </div>
+                ${goal.reflection_went_well || goal.reflection_didnt_go_well ? `
+                <div style="margin-top:0.75rem; padding:0.75rem; background:rgba(255,255,255,0.05); border-radius:8px;">
+                    ${goal.reflection_went_well ? `<p><strong>What went well:</strong> ${goal.reflection_went_well}</p>` : ''}
+                    ${goal.reflection_didnt_go_well ? `<p><strong>What didn't:</strong> ${goal.reflection_didnt_go_well}</p>` : ''}
+                </div>
+                ` : ''}
+            </div>
+            <div class="task-actions">
+                ${goal.status === 'active' ? `
+                    <button class="btn task-btn completed" onclick="handleGoalComplete(${goal.id})">
+                        <span>Achieved</span>
+                        <span class="btn-icon">✔</span>
+                    </button>
+                    <button class="btn task-btn failed" onclick="handleGoalFail(${goal.id})">
+                        <span>Failed</span>
+                        <span class="btn-icon">✖</span>
+                    </button>
+                ` : `
+                    <div class="status-badge ${goal.status}">
+                        <span>${goal.status === 'achieved' ? 'Achieved ✔' : 'Failed ✖'}</span>
+                    </div>
+                `}
+            </div>
+        </div>
+    `}).join('');
 }
 
 async function loadIdentityProfile() {
@@ -1645,6 +1819,14 @@ function setupEventListeners() {
             const title = document.getElementById('goal-title').value.trim();
             const category = document.getElementById('goal-category').value.trim();
             addGoal(title, category || 'general');
+        });
+    }
+
+    const reflectionForm = document.getElementById('goal-reflection-form');
+    if (reflectionForm) {
+        reflectionForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            saveGoalReflection();
         });
     }
 
