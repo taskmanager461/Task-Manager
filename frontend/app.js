@@ -1526,15 +1526,9 @@ function handleGoalTypeChange() {
     const goalType = document.getElementById('goal-type').value;
     const deadlinePresetEl = document.getElementById('goal-deadline-preset');
     
-    const typePresets = {
-        short_term: ['tomorrow'],
-        mid_term: ['tomorrow', 'week'],
-        long_term: ['week', 'month', 'custom']
-    };
+    const allPresets = ['tomorrow', 'week', 'month', 'custom'];
     
-    const allowedPresets = typePresets[goalType] || typePresets.mid_term;
-    
-    deadlinePresetEl.innerHTML = allowedPresets.map(preset => {
+    deadlinePresetEl.innerHTML = allPresets.map(preset => {
         const labels = {
             tomorrow: 'Tomorrow',
             week: '1 Week',
@@ -1544,9 +1538,62 @@ function handleGoalTypeChange() {
         return `<option value="${preset}">${labels[preset]}</option>`;
     }).join('');
     
-    deadlinePresetEl.value = allowedPresets[0];
+    const defaultPresets = {
+        short_term: 'tomorrow',
+        mid_term: 'week',
+        long_term: 'month'
+    };
+    
+    deadlinePresetEl.value = defaultPresets[goalType] || 'week';
     handleGoalDeadlinePreset();
     restrictCustomDeadline();
+}
+
+function validateGoalDeadline() {
+    const goalType = document.getElementById('goal-type').value;
+    const preset = document.getElementById('goal-deadline-preset').value;
+    const customInput = document.getElementById('goal-custom-deadline');
+    
+    let deadline;
+    if (preset === 'custom') {
+        if (!customInput.value) {
+            return { valid: false, message: 'Please select a custom deadline' };
+        }
+        deadline = new Date(customInput.value);
+    } else {
+        deadline = new Date(resolveGoalDeadline());
+    }
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    deadline.setHours(0, 0, 0, 0);
+    
+    let maxDate = new Date(today);
+    if (goalType === 'short_term') {
+        maxDate.setDate(today.getDate() + 3);
+    } else if (goalType === 'mid_term') {
+        maxDate.setDate(today.getDate() + 14);
+    } else {
+        maxDate.setDate(today.getDate() + 365);
+    }
+    
+    if (deadline < today) {
+        return { valid: false, message: 'Deadline cannot be in the past' };
+    }
+    
+    if (deadline > maxDate) {
+        const typeLabels = {
+            short_term: 'short-term (1-3 days)',
+            mid_term: 'mid-term (1-2 weeks)',
+            long_term: 'long-term (1 month+)'
+        };
+        return { 
+            valid: false, 
+            message: `This deadline is outside the range for ${typeLabels[goalType]} goals` 
+        };
+    }
+    
+    return { valid: true };
 }
 
 function restrictCustomDeadline() {
@@ -1566,15 +1613,6 @@ function restrictCustomDeadline() {
         }
         
         customInput.min = today.toISOString().split('T')[0];
-        customInput.max = maxDate.toISOString().split('T')[0];
-        
-        const currentValue = customInput.value;
-        if (currentValue) {
-            const currentDate = new Date(currentValue);
-            if (currentDate < today || currentDate > maxDate) {
-                customInput.value = '';
-            }
-        }
     }
 }
 
@@ -1661,12 +1699,15 @@ function getGoalTypeLabel(type) {
 }
 
 async function addGoal(title, category) {
-    const deadline = resolveGoalDeadline();
-    const goalType = document.getElementById('goal-type').value;
-    if (!deadline) {
-        showToast('Please choose a deadline', 'error');
+    const validation = validateGoalDeadline();
+    if (!validation.valid) {
+        showToast(validation.message, 'error');
         return;
     }
+    
+    const deadline = resolveGoalDeadline();
+    const goalType = document.getElementById('goal-type').value;
+    
     await apiFetch('/goals', {
         method: 'POST',
         body: JSON.stringify({ title, category, deadline, goal_type: goalType })
