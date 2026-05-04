@@ -15,14 +15,14 @@ try:
     from frontend.components.api_client import APIClient
     from frontend.components.styles import get_theme_css, get_theme_tokens
     from frontend.components.translations import LANGUAGES, translate
-    from frontend.components.ui import metric_card, modern_progress, task_card
+    from frontend.components.ui import metric_card, modern_progress, task_card, goal_card
     from frontend.services.insights import build_weekly_insight
     from frontend.services.notifications import build_time_notifications
 except ModuleNotFoundError:
     from components.api_client import APIClient
     from components.styles import get_theme_css, get_theme_tokens
     from components.translations import LANGUAGES, translate
-    from components.ui import metric_card, modern_progress, task_card
+    from components.ui import metric_card, modern_progress, task_card, goal_card
     from services.insights import build_weekly_insight
     from services.notifications import build_time_notifications
 
@@ -719,191 +719,247 @@ def weekly_report_page(client: APIClient, user_id: int) -> None:
 
 def tasks_analytics_page(client: APIClient, user_id: int) -> None:
     st.markdown(f"<div class='section-title'>{t('tasks_analytics')}</div>", unsafe_allow_html=True)
-    selected_day = st.date_input(t("task_day"), value=date.today(), key="task_day")
+    
+    # Initialize active tab in session state if not exists
+    if "tasks_goals_tab" not in st.session_state:
+        st.session_state.tasks_goals_tab = "Tasks"
+    
+    # Create tab buttons with styling
+    tab1, tab2 = st.columns(2)
+    with tab1:
+        if st.button("📋 Tasks", key="tab_tasks", use_container_width=True, type="primary" if st.session_state.tasks_goals_tab == "Tasks" else "secondary"):
+            st.session_state.tasks_goals_tab = "Tasks"
+            st.rerun()
+    with tab2:
+        if st.button("🎯 Goals", key="tab_goals", use_container_width=True, type="primary" if st.session_state.tasks_goals_tab == "Goals" else "secondary"):
+            st.session_state.tasks_goals_tab = "Goals"
+            st.rerun()
+    
+    st.markdown("---")
+    
+    if st.session_state.tasks_goals_tab == "Tasks":
+        selected_day = st.date_input(t("task_day"), value=date.today(), key="task_day")
 
-    with st.form("add_task"):
-        c1, c2, c3 = st.columns([3, 2, 2])
-        with c1:
-            title = st.text_input(t("task_title"))
-        with c2:
-            category = st.text_input(t("category"), value=t("category_placeholder"))
-        with c3:
-            difficulty = st.selectbox(
-                t("difficulty"),
-                ["easy", "medium", "hard"],
-                format_func=lambda val: t(f"difficulty_{val}"),
-            )
-        submitted = st.form_submit_button(t("add_task"), type="primary")
-        if submitted and title.strip():
-            _, create_err = call_api(
-                client.create_task,
-                user_id=user_id,
-                title=title.strip(),
-                category=category.strip() or "general",
-                difficulty=difficulty,
-                day=selected_day,
-                fallback_message=t("task_create_failed"),
-            )
-            if create_err:
-                st.error(create_err)
-            else:
-                st.toast(t("task_added"))
-                st.rerun()
+        with st.form("add_task"):
+            c1, c2, c3 = st.columns([3, 2, 2])
+            with c1:
+                title = st.text_input(t("task_title"))
+            with c2:
+                category = st.text_input(t("category"), value=t("category_placeholder"))
+            with c3:
+                difficulty = st.selectbox(
+                    t("difficulty"),
+                    ["easy", "medium", "hard"],
+                    format_func=lambda val: t(f"difficulty_{val}"),
+                )
+            submitted = st.form_submit_button(t("add_task"), type="primary")
+            if submitted and title.strip():
+                _, create_err = call_api(
+                    client.create_task,
+                    user_id=user_id,
+                    title=title.strip(),
+                    category=category.strip() or "general",
+                    difficulty=difficulty,
+                    day=selected_day,
+                    fallback_message=t("task_create_failed"),
+                )
+                if create_err:
+                    st.error(create_err)
+                else:
+                    st.toast(t("task_added"))
+                    st.rerun()
 
-    tasks, err = call_api(client.get_tasks, user_id=user_id, day=selected_day, fallback_message=t("could_not_load_tasks"))
-    if err:
-        st.error(err)
-        return
-    tasks = tasks or []
-
-    left, right = st.columns([1.3, 1])
-    with left:
-        st.markdown(f"<div class='section-title'>{t('task_cards')}</div>", unsafe_allow_html=True)
-        if not tasks:
-            st.info(t("no_tasks_day"))
-        for task in tasks:
-            task_card(
-                task,
-                labels={
-                    "category": t("category"),
-                    "difficulty": t("difficulty"),
-                    "status": t("status_col"),
-                    "unknown_title": t("unknown_title"),
-                    "uncategorized": t("uncategorized"),
-                    "easy": t("difficulty_easy"),
-                    "medium": t("difficulty_medium"),
-                    "hard": t("difficulty_hard"),
-                    "pending": t("pending"),
-                    "completed": t("completed"),
-                    "failed": t("failed"),
-                },
-            )
-            b1, b2, _ = st.columns([1.15, 1, 2.8])
-            with b1:
-                if st.button(f"✔ {t('complete')}", key=f"complete_{task['id']}", type="secondary"):
-                    _, update_err = call_api(client.update_task_status, task_id=task["id"], status="completed", fallback_message=t("update_task_failed"))
-                    if update_err:
-                        st.error(update_err)
-                    else:
-                        st.toast(t("task_completed"))
-                        st.rerun()
-            with b2:
-                if st.button(f"❌ {t('fail')}", key=f"fail_{task['id']}", type="secondary"):
-                    _, update_err = call_api(client.update_task_status, task_id=task["id"], status="failed", fallback_message=t("update_task_failed"))
-                    if update_err:
-                        st.error(update_err)
-                    else:
-                        st.toast(t("task_failed_marked"))
-                        st.rerun()
-
-    with right:
-        st.markdown(f"<div class='section-title'>{t('analytics')}</div>", unsafe_allow_html=True)
-        if not tasks:
-            st.info(t("add_tasks_unlock"))
+        tasks, err = call_api(client.get_tasks, user_id=user_id, day=selected_day, fallback_message=t("could_not_load_tasks"))
+        if err:
+            st.error(err)
             return
+        tasks = tasks or []
 
-        df = pd.DataFrame(tasks)
-        completed_count = int((df["status"] == "completed").sum())
-        modern_progress(t("completion_rate"), completed_count / len(df), tone="auto")
+        left, right = st.columns([1.3, 1])
+        with left:
+            st.markdown(f"<div class='section-title'>{t('task_cards')}</div>", unsafe_allow_html=True)
+            if not tasks:
+                st.info(t("no_tasks_day"))
+            for task in tasks:
+                task_card(
+                    task,
+                    labels={
+                        "category": t("category"),
+                        "difficulty": t("difficulty"),
+                        "status": t("status_col"),
+                        "unknown_title": t("unknown_title"),
+                        "uncategorized": t("uncategorized"),
+                        "easy": t("difficulty_easy"),
+                        "medium": t("difficulty_medium"),
+                        "hard": t("difficulty_hard"),
+                        "pending": t("pending"),
+                        "completed": t("completed"),
+                        "failed": t("failed"),
+                    },
+                )
+                b1, b2, _ = st.columns([1.15, 1, 2.8])
+                with b1:
+                    if st.button(f"✔ {t('complete')}", key=f"complete_{task['id']}", type="secondary"):
+                        _, update_err = call_api(client.update_task_status, task_id=task["id"], status="completed", fallback_message=t("update_task_failed"))
+                        if update_err:
+                            st.error(update_err)
+                        else:
+                            st.toast(t("task_completed"))
+                            st.rerun()
+                with b2:
+                    if st.button(f"❌ {t('fail')}", key=f"fail_{task['id']}", type="secondary"):
+                        _, update_err = call_api(client.update_task_status, task_id=task["id"], status="failed", fallback_message=t("update_task_failed"))
+                        if update_err:
+                            st.error(update_err)
+                        else:
+                            st.toast(t("task_failed_marked"))
+                            st.rerun()
 
-        category_total = df.groupby("category").size().rename("total")
-        category_completed = df[df["status"] == "completed"].groupby("category").size().rename("completed")
-        category_stats = pd.concat([category_total, category_completed], axis=1).fillna(0)
-        category_stats["success_rate"] = (category_stats["completed"] / category_stats["total"]).fillna(0.0)
-        category_stats = category_stats.reset_index().rename(columns={"index": "category"})
+        with right:
+            st.markdown(f"<div class='section-title'>{t('analytics')}</div>", unsafe_allow_html=True)
+            if not tasks:
+                st.info(t("add_tasks_unlock"))
+                return
 
-        st.plotly_chart(plot_category_success(category_stats[["category", "success_rate"]], st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
-        st.plotly_chart(plot_status_pie(df, st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
-        df["difficulty"] = df["difficulty"].map(lambda val: t(f"difficulty_{val}"))
-        df["status"] = df["status"].map(lambda val: t(val))
-        st.dataframe(
-            df[["title", "category", "difficulty", "status"]].rename(
-                columns={
-                    "title": t("title_col"),
-                    "category": t("category_col"),
-                    "difficulty": t("difficulty_col"),
-                    "status": t("status_col"),
-                }
-            ),
-            use_container_width=True,
-            hide_index=True,
-        )
+            df = pd.DataFrame(tasks)
+            completed_count = int((df["status"] == "completed").sum())
+            modern_progress(t("completion_rate"), completed_count / len(df), tone="auto")
 
+            category_total = df.groupby("category").size().rename("total")
+            category_completed = df[df["status"] == "completed"].groupby("category").size().rename("completed")
+            category_stats = pd.concat([category_total, category_completed], axis=1).fillna(0)
+            category_stats["success_rate"] = (category_stats["completed"] / category_stats["total"]).fillna(0.0)
+            category_stats = category_stats.reset_index().rename(columns={"index": "category"})
 
-def weekly_report_page(client: APIClient, user_id: int) -> None:
-    st.markdown(f"<div class='section-title'>{t('weekly_report')}</div>", unsafe_allow_html=True)
-    end_day = st.date_input(t("week_ending"), value=date.today(), key="week_end")
-    start_day = end_day - timedelta(days=6)
-    st.caption(t("range_label", start=start_day.isoformat(), end=end_day.isoformat()))
-
-    history, err = call_api(client.score_history, user_id=user_id, fallback_message=t("weekly_history_failed"))
-    if err:
-        st.error(err)
-        return
-
-    hist_df = pd.DataFrame(history or [])
-    all_days = pd.date_range(start=start_day, end=end_day)
-    if hist_df.empty:
-        weekly_df = pd.DataFrame({"date": all_days, "score": 0.0, "success_rate": 0.0})
+            st.plotly_chart(plot_category_success(category_stats[["category", "success_rate"]], st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
+            st.plotly_chart(plot_status_pie(df, st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
+            df["difficulty"] = df["difficulty"].map(lambda val: t(f"difficulty_{val}"))
+            df["status"] = df["status"].map(lambda val: t(val))
+            st.dataframe(
+                df[["title", "category", "difficulty", "status"]].rename(
+                    columns={
+                        "title": t("title_col"),
+                        "category": t("category_col"),
+                        "difficulty": t("difficulty_col"),
+                        "status": t("status_col"),
+                    }
+                ),
+                use_container_width=True,
+                hide_index=True,
+            )
+    
     else:
-        hist_df["date"] = pd.to_datetime(hist_df["date"])
-        weekly_df = hist_df[(hist_df["date"] >= pd.Timestamp(start_day)) & (hist_df["date"] <= pd.Timestamp(end_day))]
-        weekly_df = weekly_df[["date", "score", "success_rate"]]
-        weekly_df = weekly_df.set_index("date").reindex(all_days, fill_value=0.0).reset_index()
-        weekly_df = weekly_df.rename(columns={"index": "date"})
-
-    weekly_success = float(weekly_df["success_rate"].mean() * 100) if not weekly_df.empty else 0.0
-    c1, c2 = st.columns(2)
-    with c1:
-        metric_card("📊", t("weekly_success"), f"{weekly_success:.1f}%", t("avg_completion_consistency"))
-    with c2:
-        metric_card("📈", t("weekly_avg_score"), f"{weekly_df['score'].mean():.1f}", t("mean_daily_score"))
-
-    st.plotly_chart(plot_score_trend(weekly_df, st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
-    success_fig = px.area(weekly_df, x="date", y="success_rate")
-    theme = get_theme_tokens(st.session_state.dark_mode)
-    success_fig.update_traces(line_color="#22c55e", fillcolor="rgba(34, 197, 94, 0.25)")
-    success_fig.update_layout(
-        paper_bgcolor=theme["surface"],
-        plot_bgcolor=theme["surface"],
-        font_color=theme["text"],
-        margin=dict(l=10, r=10, t=20, b=10),
-        xaxis_title="",
-        yaxis_title=t("success_rate_axis"),
-        yaxis_tickformat=".0%",
-    )
-    st.plotly_chart(success_fig, use_container_width=True, config={"displayModeBar": False})
-
-    category_tasks: list[dict[str, Any]] = []
-    current = start_day
-    while current <= end_day:
-        day_tasks, day_err = call_api(client.get_tasks, user_id=user_id, day=current, fallback_message=t("category_breakdown_failed"))
-        if day_err:
-            st.warning(day_err)
-            break
-        category_tasks.extend(day_tasks or [])
-        current += timedelta(days=1)
-
-    st.markdown(f"<div class='section-title'>{t('category_breakdown')}</div>", unsafe_allow_html=True)
-    if category_tasks:
-        category_df = pd.DataFrame(category_tasks)
-        breakdown = category_df.groupby("category").size().reset_index(name="count")
-        fig = px.bar(breakdown, x="category", y="count", text="count")
-        fig.update_traces(marker_color=theme["accent_2"], textposition="outside")
-        fig.update_layout(
-            paper_bgcolor=theme["surface"],
-            plot_bgcolor=theme["surface"],
-            font_color=theme["text"],
-            margin=dict(l=10, r=10, t=20, b=10),
-            xaxis_title="",
-            yaxis_title=t("tasks_axis"),
-        )
-        st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
-    else:
-        st.info(t("no_tasks_week"))
-
-    insight, next_step = build_weekly_insight(weekly_df, weekly_success, t)
-    st.info(f"**{t('insight_title')}**\n\n{insight}\n\n{next_step}")
+        # Goals Tab
+        st.markdown(f"<div class='section-title'>Your Goals</div>", unsafe_allow_html=True)
+        
+        # Add Goal Form
+        with st.form("add_goal"):
+            c1, c2, c3, c4 = st.columns([3, 1.5, 1.5, 1.5])
+            with c1:
+                goal_title = st.text_input("Goal Title")
+            with c2:
+                goal_category = st.text_input("Category", value="general")
+            with c3:
+                goal_deadline = st.date_input("Deadline", min_value=date.today())
+            with c4:
+                goal_type = st.selectbox("Goal Type", ["short_term", "mid_term", "long_term"], format_func=lambda x: {
+                    "short_term": "Short-term (1-3 days)",
+                    "mid_term": "Mid-term (1-2 weeks)",
+                    "long_term": "Long-term (1+ month)"
+                }[x])
+            
+            goal_submitted = st.form_submit_button("🎯 Create Goal", type="primary")
+            if goal_submitted and goal_title.strip():
+                _, goal_err = call_api(
+                    client.create_goal,
+                    title=goal_title.strip(),
+                    category=goal_category.strip() or "general",
+                    deadline=goal_deadline,
+                    goal_type=goal_type,
+                    fallback_message="Failed to create goal",
+                )
+                if goal_err:
+                    st.error(goal_err)
+                else:
+                    st.toast("Goal created successfully!")
+                    st.rerun()
+        
+        # Load and display goals
+        goals, goals_err = call_api(client.get_goals, fallback_message="Could not load goals")
+        if goals_err:
+            st.error(goals_err)
+            return
+        goals = goals or []
+        
+        if not goals:
+            st.info("No goals yet. Create your first goal above!")
+        else:
+            # Display goals in 2 columns
+            goal_cols = st.columns(2)
+            for idx, goal in enumerate(goals):
+                with goal_cols[idx % 2]:
+                    goal_card(goal)
+                    
+                    # Action buttons for the goal
+                    b1, b2, _ = st.columns([1, 1, 2])
+                    
+                    # Only show complete button if goal is active
+                    if goal["status"] == "active":
+                        with b1:
+                            if st.button(f"✅ Complete", key=f"complete_goal_{goal['id']}", type="secondary"):
+                                _, update_err = call_api(
+                                    client.update_goal,
+                                    goal_id=goal["id"],
+                                    status="achieved",
+                                    fallback_message="Failed to complete goal"
+                                )
+                                if update_err:
+                                    st.error(update_err)
+                                else:
+                                    st.toast("🎉 Goal completed!")
+                                    st.rerun()
+                    
+                    with b2:
+                        if st.button(f"🗑️ Delete", key=f"delete_goal_{goal['id']}", type="secondary"):
+                            _, delete_err = call_api(
+                                client.delete_goal,
+                                goal_id=goal["id"],
+                                fallback_message="Failed to delete goal"
+                            )
+                            if delete_err:
+                                st.error(delete_err)
+                            else:
+                                st.toast("Goal deleted")
+                                st.rerun()
+                    
+                    # Reflection modal for completed goals
+                    if goal["status"] == "achieved" and (not goal.get("reflection_went_well") or not goal.get("reflection_didnt_go_well")):
+                        with st.expander("💭 Add Reflection", expanded=False):
+                            with st.form(f"reflection_{goal['id']}"):
+                                went_well = st.text_area("What went well?", value=goal.get("reflection_went_well", ""))
+                                didnt_go_well = st.text_area("What didn't go well?", value=goal.get("reflection_didnt_go_well", ""))
+                                save_reflection = st.form_submit_button("Save Reflection")
+                                if save_reflection:
+                                    _, update_err = call_api(
+                                        client.update_goal,
+                                        goal_id=goal["id"],
+                                        reflection_went_well=went_well,
+                                        reflection_didnt_go_well=didnt_go_well,
+                                        fallback_message="Failed to save reflection"
+                                    )
+                                    if update_err:
+                                        st.error(update_err)
+                                    else:
+                                        st.toast("Reflection saved!")
+                                        st.rerun()
+                    
+                    # Show existing reflection
+                    elif goal["status"] == "achieved" and (goal.get("reflection_went_well") or goal.get("reflection_didnt_go_well")):
+                        with st.expander("💭 Reflection", expanded=False):
+                            if goal.get("reflection_went_well"):
+                                st.markdown(f"**What went well:**\n{goal['reflection_went_well']}")
+                            if goal.get("reflection_didnt_go_well"):
+                                st.markdown(f"**What didn't go well:**\n{goal['reflection_didnt_go_well']}")
 
 
 def notifications_page() -> None:

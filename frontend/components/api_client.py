@@ -168,3 +168,55 @@ class APIClient:
         )
         response.raise_for_status()
         return response.json()
+    
+    def get_goals(self) -> list[dict[str, Any]]:
+        response = requests.get(
+            self._url("/goals"),
+            headers=self._auth_headers(),
+            timeout=15,
+        )
+        response.raise_for_status()
+        return response.json()
+    
+    def create_goal(self, title: str, category: str, deadline: date, goal_type: str) -> dict[str, Any]:
+        response = requests.post(
+            self._url("/goals"),
+            json={
+                "title": title,
+                "category": category,
+                "deadline": deadline.isoformat(),
+                "goal_type": goal_type,
+            },
+            headers=self._auth_headers(),
+            timeout=15,
+        )
+        response.raise_for_status()
+        return response.json()
+    
+    def update_goal(self, goal_id: int, **kwargs) -> dict[str, Any]:
+        response = requests.patch(
+            self._url(f"/goals/{goal_id}"),
+            json=kwargs,
+            headers=self._auth_headers(),
+            timeout=15,
+        )
+        response.raise_for_status()
+        return response.json()
+    
+    def delete_goal(self, goal_id: int) -> dict[str, Any]:
+        response = requests.delete(
+            self._url(f"/goals/{goal_id}"),
+            headers=self._auth_headers(),
+            timeout=15,
+        )
+        response.raise_for_status()
+        return response.json()
+    
+    def get_goals_analytics(self) -> dict[str, Any]:
+        response = requests.get(
+            self._url("/goals/analytics"),
+            headers=self._auth_headers(),
+            timeout=15,
+        )
+        response.raise_for_status()
+        return response.json()

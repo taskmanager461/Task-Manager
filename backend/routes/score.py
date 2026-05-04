@@ -63,9 +63,19 @@ def compute_daily_score(
             func.date(Goal.completed_at) == day,
         ).all()
         for goal in completed_goals_today:
-            goal_bonus += 15.0
-            if goal.completed_at and goal.completed_at.date() <= goal.deadline:
+            goal_bonus += 30.0
+            if goal.completed_at and goal.completed_at.date() < goal.deadline:
+                goal_bonus += 15.0
+            elif goal.completed_at and goal.completed_at.date() == goal.deadline:
                 goal_bonus += 5.0
+        
+        failed_goals_today = db.query(Goal).filter(
+            Goal.user_id == target_user_id,
+            Goal.status == "failed",
+            func.date(Goal.deadline) == day,
+        ).all()
+        for goal in failed_goals_today:
+            goal_bonus -= 25.0
 
         db.commit()
         return DailyScoreComputationResponse(
@@ -100,17 +110,30 @@ def compute_daily_score(
     base_score = (earned_weight / total_weight) * 100 if total_weight > 0 else 0
     final_score = base_score * multiplier
 
-    # Goals have stronger trust-score impact than regular tasks.
+    # Goals have stronger trust-score impact than regular tasks - MUCH HIGHER WEIGHT!
     goal_bonus = 0.0
+    
+    # Completed goals - BIG boost!
     completed_goals_today = db.query(Goal).filter(
         Goal.user_id == target_user_id,
         Goal.status == "achieved",
         func.date(Goal.completed_at) == day,
     ).all()
     for goal in completed_goals_today:
-        goal_bonus += 15.0
-        if goal.completed_at and goal.completed_at.date() <= goal.deadline:
+        goal_bonus += 30.0
+        if goal.completed_at and goal.completed_at.date() < goal.deadline:
+            goal_bonus += 15.0
+        elif goal.completed_at and goal.completed_at.date() == goal.deadline:
             goal_bonus += 5.0
+    
+    # Failed goals - Penalty!
+    failed_goals_today = db.query(Goal).filter(
+        Goal.user_id == target_user_id,
+        Goal.status == "failed",
+        func.date(Goal.deadline) == day,
+    ).all()
+    for goal in failed_goals_today:
+        goal_bonus -= 25.0
 
     final_score += goal_bonus
 

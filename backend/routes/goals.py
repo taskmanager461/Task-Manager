@@ -6,9 +6,9 @@ from sqlalchemy.orm import Session
 from backend.database import get_db
 from backend.models.goal import Goal
 from backend.models.user import User
-from backend.schemas import GoalAnalyticsResponse, GoalCreate, GoalResponse
+from backend.schemas import GoalAnalyticsResponse, GoalCreate, GoalResponse, GoalUpdate
 from backend.services.auth_service import get_current_user
-from backend.services.goal_service import compute_goal_task_counts, refresh_goal_status
+from backend.services.goal_service import compute_goal_task_counts, refresh_goal_status, get_days_remaining
 
 router = APIRouter(tags=["goals"])
 
@@ -26,6 +26,7 @@ def get_goals(
     )
     goal_ids = [g.id for g in goals]
     counts_map = compute_goal_task_counts(db, goal_ids)
+    today = date.today()
 
     changed = False
     response: list[GoalResponse] = []
@@ -44,11 +45,16 @@ def get_goals(
                 category=goal.category,
                 deadline=goal.deadline,
                 status=goal.status,
+                pressure_status=goal.pressure_status,
+                goal_type=goal.goal_type,
+                reflection_went_well=goal.reflection_went_well,
+                reflection_didnt_go_well=goal.reflection_didnt_go_well,
                 created_at=goal.created_at,
                 completed_at=goal.completed_at,
                 linked_tasks_count=counts["total"],
                 completed_tasks_count=counts["completed"],
                 progress_percent=round(progress, 1),
+                days_remaining=get_days_remaining(goal, today),
             )
         )
     if changed:
@@ -71,6 +77,8 @@ def create_goal(
         category=(payload.category or "general").strip().lower(),
         deadline=payload.deadline,
         status="active",
+        goal_type=payload.goal_type,
+        pressure_status="on_track",
     )
     db.add(goal)
     db.commit()
@@ -82,12 +90,77 @@ def create_goal(
         category=goal.category,
         deadline=goal.deadline,
         status=goal.status,
+        pressure_status=goal.pressure_status,
+        goal_type=goal.goal_type,
+        reflection_went_well=goal.reflection_went_well,
+        reflection_didnt_go_well=goal.reflection_didnt_go_well,
         created_at=goal.created_at,
         completed_at=goal.completed_at,
         linked_tasks_count=0,
         completed_tasks_count=0,
         progress_percent=0.0,
+        days_remaining=get_days_remaining(goal, date.today()),
     )
+
+
+@router.patch("/goals/{goal_id}", response_model=GoalResponse)
+def update_goal(
+    goal_id: int,
+    payload: GoalUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    goal = db.query(Goal).filter(Goal.id == goal_id, Goal.user_id == current_user.id).first()
+    if not goal:
+        raise HTTPException(status_code=404, detail="Goal not found")
+    
+    if payload.status is not None:
+        goal.status = payload.status
+    if payload.reflection_went_well is not None:
+        goal.reflection_went_well = payload.reflection_went_well
+    if payload.reflection_didnt_go_well is not None:
+        goal.reflection_didnt_go_well = payload.reflection_didnt_go_well
+    
+    db.commit()
+    db.refresh(goal)
+    
+    counts_map = compute_goal_task_counts(db, [goal.id])
+    counts = counts_map.get(goal.id, {"total": 0, "completed": 0})
+    progress = (counts["completed"] / counts["total"] * 100) if counts["total"] > 0 else 0.0
+    
+    return GoalResponse(
+        id=goal.id,
+        user_id=goal.user_id,
+        title=goal.title,
+        category=goal.category,
+        deadline=goal.deadline,
+        status=goal.status,
+        pressure_status=goal.pressure_status,
+        goal_type=goal.goal_type,
+        reflection_went_well=goal.reflection_went_well,
+        reflection_didnt_go_well=goal.reflection_didnt_go_well,
+        created_at=goal.created_at,
+        completed_at=goal.completed_at,
+        linked_tasks_count=counts["total"],
+        completed_tasks_count=counts["completed"],
+        progress_percent=round(progress, 1),
+        days_remaining=get_days_remaining(goal, date.today()),
+    )
+
+
+@router.delete("/goals/{goal_id}")
+def delete_goal(
+    goal_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    goal = db.query(Goal).filter(Goal.id == goal_id, Goal.user_id == current_user.id).first()
+    if not goal:
+        raise HTTPException(status_code=404, detail="Goal not found")
+    
+    db.delete(goal)
+    db.commit()
+    return {"message": "Goal deleted successfully"}
 
 
 @router.get("/goals/analytics", response_model=GoalAnalyticsResponse)

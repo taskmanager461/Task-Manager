@@ -6,6 +6,8 @@ from pydantic import BaseModel, ConfigDict, EmailStr, Field
 Difficulty = Literal["easy", "medium", "hard"]
 TaskStatus = Literal["pending", "completed", "failed"]
 GoalStatus = Literal["active", "achieved", "failed"]
+GoalPressureStatus = Literal["on_track", "at_risk", "overdue"]
+GoalType = Literal["short_term", "mid_term", "long_term"]
 
 
 class SignupRequest(BaseModel):
@@ -85,6 +87,13 @@ class GoalCreate(BaseModel):
     title: str = Field(min_length=2, max_length=255)
     category: Optional[str] = Field(default="general", min_length=2, max_length=50)
     deadline: date
+    goal_type: GoalType = "mid_term"
+
+
+class GoalUpdate(BaseModel):
+    status: Optional[GoalStatus] = None
+    reflection_went_well: Optional[str] = None
+    reflection_didnt_go_well: Optional[str] = None
 
 
 class GoalResponse(BaseModel):
@@ -96,11 +105,16 @@ class GoalResponse(BaseModel):
     category: str
     deadline: date
     status: GoalStatus
+    pressure_status: GoalPressureStatus
+    goal_type: GoalType
+    reflection_went_well: Optional[str] = None
+    reflection_didnt_go_well: Optional[str] = None
     created_at: datetime
     completed_at: Optional[datetime] = None
     linked_tasks_count: int = 0
     completed_tasks_count: int = 0
     progress_percent: float = 0.0
+    days_remaining: Optional[int] = None
 
 
 class GoalAnalyticsResponse(BaseModel):
