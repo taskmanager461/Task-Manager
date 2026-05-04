@@ -862,16 +862,17 @@ def tasks_analytics_page(client: APIClient, user_id: int) -> None:
             with c3:
                 goal_deadline = st.date_input("Deadline", min_value=date.today())
             with c4:
-                goal_type = st.selectbox("Goal Type", ["today", "tomorrow", "three_days", "one_week", "two_weeks", "one_month", "three_months", "six_months", "one_year"], format_func=lambda x: {
-                    "today": "Today",
-                    "tomorrow": "Tomorrow",
-                    "three_days": "1-3 days",
-                    "one_week": "1 week",
-                    "two_weeks": "1-2 weeks",
-                    "one_month": "1 month",
-                    "three_months": "3 months",
-                    "six_months": "6 months",
-                    "one_year": "1 year"
+                goal_type = st.selectbox("Goal Type", ["today", "tomorrow", "three_days", "one_week", "two_weeks", "one_month", "three_months", "six_months", "one_year", "one_year_plus"], format_func=lambda x: {
+                    "today": "Today (High Priority)",
+                    "tomorrow": "Tomorrow (High Priority)",
+                    "three_days": "1-3 days (High Priority)",
+                    "one_week": "1 week (Medium Priority)",
+                    "two_weeks": "1-2 weeks (Medium Priority)",
+                    "one_month": "1 month (Medium Priority)",
+                    "three_months": "3 months (Low Priority)",
+                    "six_months": "6 months (Low Priority)",
+                    "one_year": "1 year (Low Priority)",
+                    "one_year_plus": "1 year+ (Low Priority)"
                 }[x])
             
             goal_submitted = st.form_submit_button("🎯 Create Goal", type="primary")

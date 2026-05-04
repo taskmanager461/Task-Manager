@@ -82,6 +82,7 @@ def create_goal(
         "three_months": (30, 90),
         "six_months": (90, 180),
         "one_year": (180, 365),
+        "one_year_plus": (365, 3650),
     }
     
     if payload.goal_type in goal_type_ranges:
@@ -99,6 +100,7 @@ def create_goal(
                 "three_months": "3 months",
                 "six_months": "6 months",
                 "one_year": "1 year",
+                "one_year_plus": "1 year+",
             }
             raise HTTPException(
                 status_code=400, 

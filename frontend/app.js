@@ -1562,6 +1562,10 @@ function handleGoalTypeChange() {
         one_year: {
             presets: ['six_months', 'one_year', 'custom'],
             default: 'one_year'
+        },
+        one_year_plus: {
+            presets: ['one_year', 'one_year_plus', 'custom'],
+            default: 'one_year_plus'
         }
     };
     
@@ -1577,6 +1581,7 @@ function handleGoalTypeChange() {
         three_months: '3 months',
         six_months: '6 months',
         one_year: '1 year',
+        one_year_plus: '1 year+',
         custom: 'Custom Date'
     };
     
@@ -1618,6 +1623,7 @@ function validateGoalDeadline() {
         three_months: { min: 30, max: 90 },
         six_months: { min: 90, max: 180 },
         one_year: { min: 180, max: 365 },
+        one_year_plus: { min: 365, max: 3650 },
     };
     
     const range = goalTypeRanges[goalType] || goalTypeRanges['two_weeks'];
@@ -1639,6 +1645,7 @@ function validateGoalDeadline() {
             three_months: '3 months',
             six_months: '6 months',
             one_year: '1 year',
+            one_year_plus: '1 year+',
         };
         return { 
             valid: false, 
@@ -1666,6 +1673,7 @@ function restrictCustomDeadline() {
             three_months: { min: 30, max: 90 },
             six_months: { min: 90, max: 180 },
             one_year: { min: 180, max: 365 },
+            one_year_plus: { min: 365, max: 3650 },
         };
         
         const range = goalTypeRanges[goalType] || goalTypeRanges['two_weeks'];
@@ -1716,6 +1724,8 @@ function resolveGoalDeadline() {
         base.setMonth(base.getMonth() + 6);
     } else if (preset === 'one_year') {
         base.setFullYear(base.getFullYear() + 1);
+    } else if (preset === 'one_year_plus') {
+        base.setFullYear(base.getFullYear() + 2);
     }
     return base.toISOString().split('T')[0];
 }
@@ -1769,15 +1779,16 @@ function calculatePressureStatus(goal) {
 
 function getGoalTypeLabel(type) {
     const labels = {
-        today: 'Today',
-        tomorrow: 'Tomorrow',
-        three_days: '1-3 days',
-        one_week: '1 week',
-        two_weeks: '1-2 weeks',
-        one_month: '1 month',
-        three_months: '3 months',
-        six_months: '6 months',
-        one_year: '1 year'
+        today: 'Today (High)',
+        tomorrow: 'Tomorrow (High)',
+        three_days: '1-3 days (High)',
+        one_week: '1 week (Medium)',
+        two_weeks: '1-2 weeks (Medium)',
+        one_month: '1 month (Medium)',
+        three_months: '3 months (Low)',
+        six_months: '6 months (Low)',
+        one_year: '1 year (Low)',
+        one_year_plus: '1 year+ (Low)'
     };
     return labels[type] || type;
 }
