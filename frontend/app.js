@@ -1517,7 +1517,7 @@ function toggleGoalForm() {
     if (container.classList.contains('active')) {
         document.getElementById('goal-title').value = '';
         document.getElementById('goal-category').value = 'General';
-        document.getElementById('goal-type').value = 'mid_term';
+        document.getElementById('goal-type').value = 'two_weeks';
         handleGoalTypeChange();
     }
 }
@@ -1526,25 +1526,65 @@ function handleGoalTypeChange() {
     const goalType = document.getElementById('goal-type').value;
     const deadlinePresetEl = document.getElementById('goal-deadline-preset');
     
-    const allPresets = ['tomorrow', 'week', 'month', 'custom'];
-    
-    deadlinePresetEl.innerHTML = allPresets.map(preset => {
-        const labels = {
-            tomorrow: 'Tomorrow',
-            week: '1 Week',
-            month: '1 Month',
-            custom: 'Custom Date'
-        };
-        return `<option value="${preset}">${labels[preset]}</option>`;
-    }).join('');
-    
-    const defaultPresets = {
-        short_term: 'tomorrow',
-        mid_term: 'week',
-        long_term: 'month'
+    const goalTypeConfig = {
+        today: {
+            presets: ['today', 'custom'],
+            default: 'today'
+        },
+        tomorrow: {
+            presets: ['tomorrow', 'custom'],
+            default: 'tomorrow'
+        },
+        three_days: {
+            presets: ['tomorrow', 'three_days', 'custom'],
+            default: 'three_days'
+        },
+        one_week: {
+            presets: ['three_days', 'one_week', 'custom'],
+            default: 'one_week'
+        },
+        two_weeks: {
+            presets: ['one_week', 'two_weeks', 'custom'],
+            default: 'two_weeks'
+        },
+        one_month: {
+            presets: ['two_weeks', 'one_month', 'custom'],
+            default: 'one_month'
+        },
+        three_months: {
+            presets: ['one_month', 'three_months', 'custom'],
+            default: 'three_months'
+        },
+        six_months: {
+            presets: ['three_months', 'six_months', 'custom'],
+            default: 'six_months'
+        },
+        one_year: {
+            presets: ['six_months', 'one_year', 'custom'],
+            default: 'one_year'
+        }
     };
     
-    deadlinePresetEl.value = defaultPresets[goalType] || 'week';
+    const config = goalTypeConfig[goalType] || goalTypeConfig['two_weeks'];
+    
+    const presetLabels = {
+        today: 'Today',
+        tomorrow: 'Tomorrow',
+        three_days: '3 days',
+        one_week: '1 week',
+        two_weeks: '2 weeks',
+        one_month: '1 month',
+        three_months: '3 months',
+        six_months: '6 months',
+        one_year: '1 year',
+        custom: 'Custom Date'
+    };
+    
+    deadlinePresetEl.innerHTML = config.presets.map(preset => 
+        `<option value="${preset}">${presetLabels[preset]}</option>`
+    ).join('');
+    
+    deadlinePresetEl.value = config.default;
     handleGoalDeadlinePreset();
     restrictCustomDeadline();
 }
@@ -1568,24 +1608,37 @@ function validateGoalDeadline() {
     today.setHours(0, 0, 0, 0);
     deadline.setHours(0, 0, 0, 0);
     
-    let maxDate = new Date(today);
-    if (goalType === 'short_term') {
-        maxDate.setDate(today.getDate() + 3);
-    } else if (goalType === 'mid_term') {
-        maxDate.setDate(today.getDate() + 14);
-    } else {
-        maxDate.setDate(today.getDate() + 365);
-    }
+    const goalTypeRanges = {
+        today: { min: 0, max: 0 },
+        tomorrow: { min: 1, max: 1 },
+        three_days: { min: 1, max: 3 },
+        one_week: { min: 1, max: 7 },
+        two_weeks: { min: 7, max: 14 },
+        one_month: { min: 14, max: 30 },
+        three_months: { min: 30, max: 90 },
+        six_months: { min: 90, max: 180 },
+        one_year: { min: 180, max: 365 },
+    };
+    
+    const range = goalTypeRanges[goalType] || goalTypeRanges['two_weeks'];
     
     if (deadline < today) {
         return { valid: false, message: 'Deadline cannot be in the past' };
     }
     
-    if (deadline > maxDate) {
+    const daysUntilDeadline = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
+    
+    if (daysUntilDeadline < range.min || daysUntilDeadline > range.max) {
         const typeLabels = {
-            short_term: 'short-term (1-3 days)',
-            mid_term: 'mid-term (1-2 weeks)',
-            long_term: 'long-term (1 month+)'
+            today: 'Today',
+            tomorrow: 'Tomorrow',
+            three_days: '1-3 days',
+            one_week: '1 week',
+            two_weeks: '1-2 weeks',
+            one_month: '1 month',
+            three_months: '3 months',
+            six_months: '6 months',
+            one_year: '1 year',
         };
         return { 
             valid: false, 
@@ -1603,16 +1656,28 @@ function restrictCustomDeadline() {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         
-        let maxDate = new Date(today);
-        if (goalType === 'short_term') {
-            maxDate.setDate(today.getDate() + 3);
-        } else if (goalType === 'mid_term') {
-            maxDate.setDate(today.getDate() + 14);
-        } else {
-            maxDate.setDate(today.getDate() + 365);
-        }
+        const goalTypeRanges = {
+            today: { min: 0, max: 0 },
+            tomorrow: { min: 1, max: 1 },
+            three_days: { min: 1, max: 3 },
+            one_week: { min: 1, max: 7 },
+            two_weeks: { min: 7, max: 14 },
+            one_month: { min: 14, max: 30 },
+            three_months: { min: 30, max: 90 },
+            six_months: { min: 90, max: 180 },
+            one_year: { min: 180, max: 365 },
+        };
         
-        customInput.min = today.toISOString().split('T')[0];
+        const range = goalTypeRanges[goalType] || goalTypeRanges['two_weeks'];
+        
+        const minDate = new Date(today);
+        minDate.setDate(today.getDate() + range.min);
+        
+        const maxDate = new Date(today);
+        maxDate.setDate(today.getDate() + range.max);
+        
+        customInput.min = minDate.toISOString().split('T')[0];
+        customInput.max = maxDate.toISOString().split('T')[0];
     }
 }
 
@@ -1622,6 +1687,8 @@ function handleGoalDeadlinePreset() {
     customInput.disabled = preset !== 'custom';
     if (preset !== 'custom') {
         customInput.value = '';
+    } else {
+        restrictCustomDeadline();
     }
 }
 
@@ -1632,12 +1699,23 @@ function resolveGoalDeadline() {
     if (preset === 'custom') {
         return custom;
     }
-    if (preset === 'tomorrow') {
+    if (preset === 'today') {
+    } else if (preset === 'tomorrow') {
         base.setDate(base.getDate() + 1);
-    } else if (preset === 'week') {
+    } else if (preset === 'three_days') {
+        base.setDate(base.getDate() + 3);
+    } else if (preset === 'one_week') {
         base.setDate(base.getDate() + 7);
-    } else if (preset === 'month') {
+    } else if (preset === 'two_weeks') {
+        base.setDate(base.getDate() + 14);
+    } else if (preset === 'one_month') {
         base.setMonth(base.getMonth() + 1);
+    } else if (preset === 'three_months') {
+        base.setMonth(base.getMonth() + 3);
+    } else if (preset === 'six_months') {
+        base.setMonth(base.getMonth() + 6);
+    } else if (preset === 'one_year') {
+        base.setFullYear(base.getFullYear() + 1);
     }
     return base.toISOString().split('T')[0];
 }
@@ -1691,9 +1769,15 @@ function calculatePressureStatus(goal) {
 
 function getGoalTypeLabel(type) {
     const labels = {
-        short_term: 'Short-term',
-        mid_term: 'Mid-term',
-        long_term: 'Long-term'
+        today: 'Today',
+        tomorrow: 'Tomorrow',
+        three_days: '1-3 days',
+        one_week: '1 week',
+        two_weeks: '1-2 weeks',
+        one_month: '1 month',
+        three_months: '3 months',
+        six_months: '6 months',
+        one_year: '1 year'
     };
     return labels[type] || type;
 }

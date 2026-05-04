@@ -7,7 +7,7 @@ Difficulty = Literal["easy", "medium", "hard"]
 TaskStatus = Literal["pending", "completed", "failed"]
 GoalStatus = Literal["active", "achieved", "failed"]
 GoalPressureStatus = Literal["on_track", "at_risk", "overdue"]
-GoalType = Literal["short_term", "mid_term", "long_term"]
+GoalType = Literal["today", "tomorrow", "three_days", "one_week", "two_weeks", "one_month", "three_months", "six_months", "one_year"]
 
 
 class SignupRequest(BaseModel):

@@ -70,6 +70,40 @@ def create_goal(
 ):
     if payload.deadline < date.today():
         raise HTTPException(status_code=400, detail="Deadline cannot be in the past")
+    
+    today = date.today()
+    goal_type_ranges = {
+        "today": (0, 0),
+        "tomorrow": (1, 1),
+        "three_days": (1, 3),
+        "one_week": (1, 7),
+        "two_weeks": (7, 14),
+        "one_month": (14, 30),
+        "three_months": (30, 90),
+        "six_months": (90, 180),
+        "one_year": (180, 365),
+    }
+    
+    if payload.goal_type in goal_type_ranges:
+        min_days, max_days = goal_type_ranges[payload.goal_type]
+        days_until_deadline = (payload.deadline - today).days
+        
+        if days_until_deadline < min_days or days_until_deadline > max_days:
+            type_labels = {
+                "today": "Today",
+                "tomorrow": "Tomorrow",
+                "three_days": "1-3 days",
+                "one_week": "1 week",
+                "two_weeks": "1-2 weeks",
+                "one_month": "1 month",
+                "three_months": "3 months",
+                "six_months": "6 months",
+                "one_year": "1 year",
+            }
+            raise HTTPException(
+                status_code=400, 
+                detail=f"This deadline is outside the range for {type_labels[payload.goal_type]} goals"
+            )
 
     goal = Goal(
         user_id=current_user.id,
