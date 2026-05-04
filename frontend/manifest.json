@@ -12,17 +12,17 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/static/icon-home-192-v7.png",
+      "src": "/static/icon-home-192-v8.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/static/icon-home-512-v7.png",
+      "src": "/static/icon-home-512-v8.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "/static/icon-home-512-v7.png",
+      "src": "/static/icon-home-512-v8.png",
       "sizes": "512x512",
       "type": "image/png"
     }

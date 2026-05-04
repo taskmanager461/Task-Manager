@@ -1,12 +1,12 @@
-const CACHE_NAME = "task-manager-v3.6.2";
+const CACHE_NAME = "task-manager-v3.6.3";
 const ASSETS_TO_CACHE = [
   "/",
   "/index.html",
   "/styles.css?v=3.6.0",
   "/app.js?v=3.6.0",
   "/manifest.json",
-  "/static/icon-home-192-v7.png",
-  "/static/icon-home-512-v7.png"
+  "/static/icon-home-192-v8.png",
+  "/static/icon-home-512-v8.png"
 ];
 
 // Install Event
