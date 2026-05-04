@@ -91,10 +91,6 @@
                     <span class="nav-icon">✅</span>
                     <span data-i18n="tasks">Tasks</span>
                 </button>
-                <button class="nav-item" onclick="showView('goals')">
-                    <span class="nav-icon">🎯</span>
-                    <span>Goals</span>
-                </button>
                 <button class="nav-item" onclick="showView('insights')">
                     <span class="nav-icon">📊</span>
                     <span data-i18n="insights">Insights</span>
@@ -279,7 +275,7 @@
             <!-- Tasks View -->
             <section id="view-tasks" class="view">
                 <div class="view-header">
-                    <h1 data-i18n="tasks">Tasks</h1>
+                    <h1 id="tasks-goals-title" data-i18n="tasks">Tasks</h1>
                     <button id="tasks-goals-add-btn" onclick="toggleCurrentForm()" class="btn primary" data-i18n="add_new_task">+ Add Task</button>
                 </div>
 

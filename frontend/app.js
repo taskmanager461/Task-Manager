@@ -1517,8 +1517,64 @@ function toggleGoalForm() {
     if (container.classList.contains('active')) {
         document.getElementById('goal-title').value = '';
         document.getElementById('goal-category').value = 'General';
-        document.getElementById('goal-deadline-preset').value = 'tomorrow';
-        handleGoalDeadlinePreset();
+        document.getElementById('goal-type').value = 'mid_term';
+        handleGoalTypeChange();
+    }
+}
+
+function handleGoalTypeChange() {
+    const goalType = document.getElementById('goal-type').value;
+    const deadlinePresetEl = document.getElementById('goal-deadline-preset');
+    
+    const typePresets = {
+        short_term: ['tomorrow'],
+        mid_term: ['tomorrow', 'week'],
+        long_term: ['week', 'month', 'custom']
+    };
+    
+    const allowedPresets = typePresets[goalType] || typePresets.mid_term;
+    
+    deadlinePresetEl.innerHTML = allowedPresets.map(preset => {
+        const labels = {
+            tomorrow: 'Tomorrow',
+            week: '1 Week',
+            month: '1 Month',
+            custom: 'Custom Date'
+        };
+        return `<option value="${preset}">${labels[preset]}</option>`;
+    }).join('');
+    
+    deadlinePresetEl.value = allowedPresets[0];
+    handleGoalDeadlinePreset();
+    restrictCustomDeadline();
+}
+
+function restrictCustomDeadline() {
+    const goalType = document.getElementById('goal-type').value;
+    const customInput = document.getElementById('goal-custom-deadline');
+    if (!customInput.disabled) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        let maxDate = new Date(today);
+        if (goalType === 'short_term') {
+            maxDate.setDate(today.getDate() + 3);
+        } else if (goalType === 'mid_term') {
+            maxDate.setDate(today.getDate() + 14);
+        } else {
+            maxDate.setDate(today.getDate() + 365);
+        }
+        
+        customInput.min = today.toISOString().split('T')[0];
+        customInput.max = maxDate.toISOString().split('T')[0];
+        
+        const currentValue = customInput.value;
+        if (currentValue) {
+            const currentDate = new Date(currentValue);
+            if (currentDate < today || currentDate > maxDate) {
+                customInput.value = '';
+            }
+        }
     }
 }
 
@@ -1555,11 +1611,16 @@ function switchTasksGoalsTab(tab) {
     document.getElementById('tasks-only-container').style.display = tab === 'tasks' ? 'block' : 'none';
     document.getElementById('goals-only-container').style.display = tab === 'goals' ? 'block' : 'none';
     document.getElementById('smart-suggestion-container').style.display = tab === 'tasks' ? 'block' : 'none';
+    
+    const titleEl = document.getElementById('tasks-goals-title');
     const addBtn = document.getElementById('tasks-goals-add-btn');
-    addBtn.textContent = tab === 'tasks' ? '+ Add Task' : '+ New Goal';
     if (tab === 'tasks') {
+        titleEl.textContent = t('tasks');
+        addBtn.textContent = '+ Add Task';
         loadTasks();
     } else {
+        titleEl.textContent = 'Goals';
+        addBtn.textContent = '+ New Goal';
         loadGoals();
     }
 }
@@ -1828,6 +1889,16 @@ function setupEventListeners() {
             e.preventDefault();
             saveGoalReflection();
         });
+    }
+
+    const goalTypeSelect = document.getElementById('goal-type');
+    if (goalTypeSelect) {
+        goalTypeSelect.addEventListener('change', handleGoalTypeChange);
+    }
+
+    const customDeadlineInput = document.getElementById('goal-custom-deadline');
+    if (customDeadlineInput) {
+        customDeadlineInput.addEventListener('change', restrictCustomDeadline);
     }
 
     // Set default date/time in form
