@@ -39,10 +39,24 @@ def get_db():
 def ensure_schema_compatibility() -> None:
     inspector = inspect(engine)
     table_names = set(inspector.get_table_names())
-    if "tasks" not in table_names:
-        return
+    with engine.begin() as connection:
+        if "tasks" in table_names:
+            task_columns = {col["name"] for col in inspector.get_columns("tasks")}
+            if "goal_id" not in task_columns:
+                connection.execute(text("ALTER TABLE tasks ADD COLUMN goal_id INTEGER"))
+            if "xp_awarded" not in task_columns:
+                connection.execute(text("ALTER TABLE tasks ADD COLUMN xp_awarded BOOLEAN NOT NULL DEFAULT 0"))
 
-    task_columns = {col["name"] for col in inspector.get_columns("tasks")}
-    if "goal_id" not in task_columns:
-        with engine.begin() as connection:
-            connection.execute(text("ALTER TABLE tasks ADD COLUMN goal_id INTEGER"))
+        if "goals" in table_names:
+            goal_columns = {col["name"] for col in inspector.get_columns("goals")}
+            if "xp_awarded" not in goal_columns:
+                connection.execute(text("ALTER TABLE goals ADD COLUMN xp_awarded BOOLEAN NOT NULL DEFAULT 0"))
+
+        if "users" in table_names:
+            user_columns = {col["name"] for col in inspector.get_columns("users")}
+            if "total_xp" not in user_columns:
+                connection.execute(text("ALTER TABLE users ADD COLUMN total_xp INTEGER NOT NULL DEFAULT 0"))
+            if "level" not in user_columns:
+                connection.execute(text("ALTER TABLE users ADD COLUMN level INTEGER NOT NULL DEFAULT 1"))
+            if "trust_score" not in user_columns:
+                connection.execute(text("ALTER TABLE users ADD COLUMN trust_score FLOAT NOT NULL DEFAULT 0"))

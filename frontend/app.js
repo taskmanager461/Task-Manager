@@ -17,6 +17,8 @@ let calendarTasks = [];
 let notifiedTasks = new Set();
 let currentTasksGoalsTab = 'tasks';
 let currentGoalForReflection = null;
+let identityInitialized = false;
+let identitySnapshot = { level: 1, unlockedBadgeIds: [] };
 
 const translations = {
     en: {
@@ -523,6 +525,8 @@ function renderApp() {
     document.getElementById('auth-page').classList.remove('active');
     document.getElementById('main-app').classList.add('active');
     document.getElementById('user-display-name').textContent = currentUser.name || currentUser.username;
+    identityInitialized = false;
+    identitySnapshot = { level: 1, unlockedBadgeIds: [] };
     
     // Initial view
     updateUILanguage();
@@ -1935,7 +1939,21 @@ function renderGoals(goals) {
 async function loadIdentityProfile() {
     try {
         const identity = await apiFetch('/identity/profile');
+        if (identityInitialized) {
+            if (identity.level > identitySnapshot.level) {
+                showToast(`Level Up! You reached Level ${identity.level}`, 'success');
+            }
+            const currentUnlocked = identity.badges.filter(b => b.unlocked).map(b => b.id);
+            const previousUnlocked = new Set(identitySnapshot.unlockedBadgeIds);
+            const newlyUnlocked = currentUnlocked.filter(id => !previousUnlocked.has(id));
+            newlyUnlocked.forEach(() => showToast('New Badge Unlocked', 'info'));
+        }
         renderIdentity(identity);
+        identitySnapshot = {
+            level: identity.level,
+            unlockedBadgeIds: identity.badges.filter(b => b.unlocked).map(b => b.id),
+        };
+        identityInitialized = true;
         const achievementList = document.getElementById('achievements-list');
         if (achievementList) {
             achievementList.innerHTML = identity.badges.map(b => `
@@ -1954,9 +1972,15 @@ function renderIdentity(identity) {
     const levelEl = document.getElementById('identity-level-badge');
     const statsEl = document.getElementById('identity-stats');
     const badgesEl = document.getElementById('identity-badges');
-    if (!levelEl || !statsEl || !badgesEl) return;
+    const xpFillEl = document.getElementById('identity-xp-fill');
+    const xpTextEl = document.getElementById('identity-xp-text');
+    const trustEl = document.getElementById('identity-trust-value');
+    if (!levelEl || !statsEl || !badgesEl || !xpFillEl || !xpTextEl || !trustEl) return;
 
     levelEl.textContent = `Level ${identity.level}`;
+    xpFillEl.style.width = `${identity.level_progress_percent || 0}%`;
+    xpTextEl.textContent = `XP ${identity.xp_into_current_level}/${identity.xp_for_next_level} • Total ${identity.total_xp}`;
+    trustEl.textContent = `${(identity.trust_score || 0).toFixed(1)}`;
     statsEl.innerHTML = `
         <div class="identity-stat-item"><span class="label">Completed Tasks</span><span class="value">${identity.completed_tasks}</span></div>
         <div class="identity-stat-item"><span class="label">Completed Goals</span><span class="value">${identity.completed_goals}</span></div>

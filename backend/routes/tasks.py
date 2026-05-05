@@ -10,6 +10,7 @@ from backend.models.user import User
 from backend.schemas import TaskCreate, TaskResponse, TaskUpdate
 from backend.services.auth_service import get_current_user
 from backend.services.goal_service import refresh_goal_status_by_id
+from backend.services.identity_service import award_task_completion_xp
 
 router = APIRouter(tags=["tasks"])
 
@@ -105,6 +106,7 @@ def update_task_status(
         raise HTTPException(status_code=403, detail="Forbidden")
 
     previous_goal_id = task.goal_id
+    previous_status = task.status
 
     if payload.status:
         if payload.status not in {"completed", "failed", "pending"}:
@@ -124,6 +126,10 @@ def update_task_status(
             if not goal:
                 raise HTTPException(status_code=404, detail="Goal not found")
             task.goal_id = payload.goal_id
+
+    if task.status == "completed" and previous_status != "completed" and not task.xp_awarded:
+        award_task_completion_xp(db, current_user, task)
+        task.xp_awarded = True
 
     db.commit()
 

@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from sqlalchemy import Date, DateTime, ForeignKey, Integer, String, func
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.database import Base
@@ -19,6 +19,7 @@ class Task(Base):
     status: Mapped[str] = mapped_column(String(20), default="pending", nullable=False)
     priority: Mapped[str] = mapped_column(String(20), default="medium", nullable=False)
     recurring: Mapped[str] = mapped_column(String(20), default="none", nullable=False)
+    xp_awarded: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     due_date: Mapped[date] = mapped_column(Date, nullable=True)
     time: Mapped[str] = mapped_column(String(10), nullable=True) # HH:MM format
     date: Mapped[date] = mapped_column(Date, nullable=False, index=True)

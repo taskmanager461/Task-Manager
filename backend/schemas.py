@@ -133,6 +133,13 @@ class BadgeResponse(BaseModel):
 
 class IdentityProfileResponse(BaseModel):
     level: int
+    total_xp: int
+    next_level: int
+    next_level_xp: int
+    xp_into_current_level: int
+    xp_for_next_level: int
+    level_progress_percent: float
+    trust_score: float
     completed_tasks: int
     completed_goals: int
     streak: int

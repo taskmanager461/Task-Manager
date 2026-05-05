@@ -13,6 +13,7 @@ from backend.models.user import User
 from backend.schemas import DailyScoreComputationResponse, DailyScoreRequest, DailyScoreResponse
 from backend.services.auth_service import get_current_user
 from backend.services.goal_service import compute_goal_task_counts, refresh_goal_status
+from backend.services.identity_service import recompute_streak
 
 router = APIRouter(tags=["score"])
 
@@ -29,30 +30,7 @@ def compute_daily_score(
 
     day = payload.day or date.today()
     
-    # 1. Update Streak logic: Check consecutive days with at least one completed task
-    # Find the last date the user had a completed task
-    last_completed_date = None
-    all_user_tasks = db.query(Task).filter(Task.user_id == target_user_id, Task.status == "completed").order_by(Task.date.desc()).all()
-    if all_user_tasks:
-        last_completed_date = all_user_tasks[0].date
-    
-    # Calculate current streak
-    current_streak = 0
-    if last_completed_date:
-        check_date = last_completed_date
-        while True:
-            # Check if there's at least one completed task on check_date
-            tasks_on_date = db.query(Task).filter(
-                Task.user_id == target_user_id,
-                Task.date == check_date,
-                Task.status == "completed"
-            ).first()
-            if tasks_on_date:
-                current_streak += 1
-                check_date -= timedelta(days=1)
-            else:
-                break
-    current_user.streak = current_streak
+    current_streak = recompute_streak(db, current_user, today=day)
 
     tasks = db.query(Task).filter(Task.user_id == target_user_id, Task.date == day).all()
     if not tasks:
@@ -77,10 +55,22 @@ def compute_daily_score(
         for goal in failed_goals_today:
             goal_bonus -= 25.0
 
+        level = max(1, current_user.level or 1)
+        stability = min(0.82, 0.35 + level * 0.03)
+        xp_factor = min(18.0, (current_user.total_xp or 0) / 120.0)
+        level_factor = level * 1.2
+        current_user.trust_score = max(
+            0.0,
+            min(
+                150.0,
+                ((current_user.trust_score or 0.0) * stability) + (goal_bonus * (1 - stability)) + xp_factor + level_factor,
+            ),
+        )
+
         db.commit()
         return DailyScoreComputationResponse(
             date=day,
-            score=goal_bonus,
+            score=round(current_user.trust_score, 2),
             success_rate=0.0,
             streak=current_user.streak,
             multiplier=1.0,
@@ -105,8 +95,8 @@ def compute_daily_score(
 
     success_rate = completed_count / len(tasks) if len(tasks) > 0 else 0.0
     
-    # Streak multiplier
-    multiplier = 1.0 + (min(current_user.streak, 10) * 0.1)
+    # Streak multiplier (bonus only, not primary source)
+    multiplier = 1.0 + (min(current_streak, 10) * 0.1)
     base_score = (earned_weight / total_weight) * 100 if total_weight > 0 else 0
     final_score = base_score * multiplier
 
@@ -135,22 +125,39 @@ def compute_daily_score(
     for goal in failed_goals_today:
         goal_bonus -= 25.0
 
-    final_score += goal_bonus
+    performance_score = max(0.0, final_score + goal_bonus)
+    level = max(1, current_user.level or 1)
+    stability = min(0.82, 0.35 + level * 0.03)
+    xp_factor = min(18.0, (current_user.total_xp or 0) / 120.0)
+    level_factor = level * 1.2
+    trust_delta_from_goals = 0.0
+    if goal_bonus > 0:
+        trust_delta_from_goals = min(5.0, goal_bonus * 0.08)
+    elif goal_bonus < 0:
+        trust_delta_from_goals = max(-4.0, goal_bonus * 0.06)
+    stabilized_trust = (
+        ((current_user.trust_score or 0.0) * stability)
+        + (performance_score * (1 - stability))
+        + xp_factor
+        + level_factor
+        + trust_delta_from_goals
+    )
+    current_user.trust_score = max(0.0, min(150.0, stabilized_trust))
 
     # 4. Save/Update DailyScore
     daily_score = db.query(DailyScore).filter(DailyScore.user_id == target_user_id, DailyScore.date == day).first()
     if not daily_score:
-        daily_score = DailyScore(user_id=target_user_id, date=day, score=final_score, success_rate=success_rate)
+        daily_score = DailyScore(user_id=target_user_id, date=day, score=current_user.trust_score, success_rate=success_rate)
         db.add(daily_score)
     else:
-        daily_score.score = final_score
+        daily_score.score = current_user.trust_score
         daily_score.success_rate = success_rate
 
     db.commit()
 
     return DailyScoreComputationResponse(
         date=day,
-        score=final_score,
+        score=round(current_user.trust_score, 2),
         success_rate=success_rate,
         streak=current_user.streak,
         multiplier=multiplier,

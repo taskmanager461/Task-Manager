@@ -1207,6 +1207,23 @@ canvas {
     margin-bottom: 0.75rem;
 }
 
+.identity-progress-wrap {
+    margin-bottom: 0.75rem;
+}
+
+.identity-xp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0066ff, #10b981);
+    box-shadow: 0 0 14px var(--primary-glow);
+    transition: width 0.4s ease;
+}
+
+.identity-xp-text {
+    margin-top: 0.45rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
 .identity-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -1237,6 +1254,27 @@ canvas {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
+}
+
+.identity-trust {
+    margin-top: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: rgba(0, 102, 255, 0.08);
+}
+
+.identity-trust .label {
+    color: var(--text-secondary);
+    font-size: 0.74rem;
+}
+
+.identity-trust .value {
+    color: #38a7ff;
+    font-weight: 700;
 }
 
 .identity-badge {

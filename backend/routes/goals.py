@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -9,6 +9,7 @@ from backend.models.user import User
 from backend.schemas import GoalAnalyticsResponse, GoalCreate, GoalResponse, GoalUpdate
 from backend.services.auth_service import get_current_user
 from backend.services.goal_service import compute_goal_task_counts, refresh_goal_status, get_days_remaining
+from backend.services.identity_service import award_goal_completion_xp
 
 router = APIRouter(tags=["goals"])
 
@@ -150,12 +151,22 @@ def update_goal(
     if not goal:
         raise HTTPException(status_code=404, detail="Goal not found")
     
+    previous_status = goal.status
+
     if payload.status is not None:
         goal.status = payload.status
+        if payload.status == "achieved" and goal.completed_at is None:
+            goal.completed_at = datetime.utcnow()
+        if payload.status != "achieved":
+            goal.completed_at = None
     if payload.reflection_went_well is not None:
         goal.reflection_went_well = payload.reflection_went_well
     if payload.reflection_didnt_go_well is not None:
         goal.reflection_didnt_go_well = payload.reflection_didnt_go_well
+
+    if goal.status == "achieved" and previous_status != "achieved" and not goal.xp_awarded:
+        award_goal_completion_xp(db, current_user, goal)
+        goal.xp_awarded = True
     
     db.commit()
     db.refresh(goal)

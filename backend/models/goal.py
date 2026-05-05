@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from sqlalchemy import Date, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.database import Base
@@ -17,6 +17,7 @@ class Goal(Base):
     status: Mapped[str] = mapped_column(String(20), default="active", nullable=False)
     pressure_status: Mapped[str] = mapped_column(String(20), default="on_track", nullable=False)
     goal_type: Mapped[str] = mapped_column(String(20), default="mid_term", nullable=False)
+    xp_awarded: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     reflection_went_well: Mapped[str] = mapped_column(Text, nullable=True)
     reflection_didnt_go_well: Mapped[str] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
