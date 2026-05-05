@@ -630,6 +630,12 @@ def weekly_report_page(client: APIClient, user_id: int) -> None:
         weekly_df = weekly_df.rename(columns={"index": "date"})
 
     weekly_success = float(weekly_df["success_rate"].mean() * 100) if not weekly_df.empty else 0.0
+    theme = get_theme_tokens(st.session_state.dark_mode)
+    
+    # --- Load Smart Insights ---
+    smart_insights, insights_err = call_api(client.smart_insights, fallback_message="Could not load smart insights")
+
+    # --- Weekly Overview ---
     c1, c2 = st.columns(2)
     with c1:
         metric_card("📊", t("weekly_success"), f"{weekly_success:.1f}%", t("avg_completion_consistency"))
@@ -638,7 +644,6 @@ def weekly_report_page(client: APIClient, user_id: int) -> None:
 
     st.plotly_chart(plot_score_trend(weekly_df, st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
     success_fig = px.area(weekly_df, x="date", y="success_rate")
-    theme = get_theme_tokens(st.session_state.dark_mode)
     success_fig.update_traces(line_color="#22c55e", fillcolor="rgba(34, 197, 94, 0.25)")
     success_fig.update_layout(
         paper_bgcolor=theme["surface"],
@@ -651,40 +656,141 @@ def weekly_report_page(client: APIClient, user_id: int) -> None:
     )
     st.plotly_chart(success_fig, use_container_width=True, config={"displayModeBar": False})
 
-    category_tasks: list[dict[str, Any]] = []
-    current = start_day
-    while current <= end_day:
-        day_tasks, day_err = call_api(client.get_tasks, user_id=user_id, day=current, fallback_message=t("category_breakdown_failed"))
-        if day_err:
-            st.warning(day_err)
-            break
-        category_tasks.extend(day_tasks or [])
-        current += timedelta(days=1)
-
-    st.markdown(f"<div class='section-title'>{t('category_breakdown')}</div>", unsafe_allow_html=True)
-    if category_tasks:
-        category_df = pd.DataFrame(category_tasks)
-        breakdown = category_df.groupby("category").size().reset_index(name="count")
-        fig = px.bar(breakdown, x="category", y="count", text="count")
-        fig.update_traces(marker_color=theme["accent_2"], textposition="outside")
-        fig.update_layout(
-            paper_bgcolor=theme["surface"],
-            plot_bgcolor=theme["surface"],
-            font_color=theme["text"],
-            margin=dict(l=10, r=10, t=20, b=10),
-            xaxis_title="",
-            yaxis_title=t("tasks_axis"),
-        )
-        st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
-    else:
-        st.info(t("no_tasks_week"))
-
-    insight, next_step = build_weekly_insight(weekly_df, weekly_success, t)
-    st.info(f"**{t('insight_title')}**\n\n{insight}\n\n{next_step}")
-
-    # Add weekly summary and smart insights
     st.markdown("---")
-    st.markdown(f"<div class='section-title'>Weekly Summary</div>", unsafe_allow_html=True)
+    
+    # --- 1. FAILURE ANALYSIS ---
+    if smart_insights and smart_insights.get("failure_analysis"):
+        st.markdown(f"<div class='section-title'>🔍 Failure Analysis</div>", unsafe_allow_html=True)
+        
+        failure_analysis = smart_insights["failure_analysis"]
+        
+        if failure_analysis["top_failure_categories"] or failure_analysis["failure_hours"] or failure_analysis["failure_days"]:
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                if failure_analysis["top_failure_categories"]:
+                    st.markdown("**Categories with Highest Failure Rate**")
+                    for item in failure_analysis["top_failure_categories"][:3]:
+                        st.markdown(f"- **{item['category']}**: {item['rate']}% failure rate")
+            
+            with col2:
+                if failure_analysis["failure_hours"]:
+                    st.markdown("**Most Common Failure Hours**")
+                    for hour, count in failure_analysis["failure_hours"][:3]:
+                        st.markdown(f"- {hour:02d}:00 - {count} failed tasks")
+            
+            st.info("💡 Understanding when and where you fail helps you adjust your schedule and expectations!")
+            
+            st.markdown("---")
+    
+    # --- 2. SUCCESS PATTERNS ---
+    if smart_insights and smart_insights.get("success_analysis"):
+        st.markdown(f"<div class='section-title'>✨ Success Patterns</div>", unsafe_allow_html=True)
+        
+        success_analysis = smart_insights["success_analysis"]
+        
+        if success_analysis["top_success_categories"] or success_analysis["success_hours"] or success_analysis["success_days"]:
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                if success_analysis["top_success_categories"]:
+                    st.markdown("**Your Strongest Categories**")
+                    for item in success_analysis["top_success_categories"][:3]:
+                        st.markdown(f"- **{item['category']}**: {item['rate']}% success rate")
+            
+            with col2:
+                if success_analysis["success_hours"]:
+                    st.markdown("**Most Productive Hours**")
+                    for hour, count in success_analysis["success_hours"][:3]:
+                        st.markdown(f"- {hour:02d}:00 - {count} completed tasks")
+            
+            st.info("💡 Build on your strengths! Schedule important tasks during your productive hours!")
+            
+            st.markdown("---")
+    
+    # --- 3. GOAL ANALYSIS ---
+    if smart_insights and smart_insights.get("goal_analysis"):
+        st.markdown(f"<div class='section-title'>🎯 Goal Analysis</div>", unsafe_allow_html=True)
+        
+        goal_analysis = smart_insights["goal_analysis"]
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            metric_card("📆", "Short-term Success", f"{goal_analysis['short_term_success']}%", "≤14 days goals")
+            if goal_analysis["avg_completion_short"] > 0:
+                st.caption(f"Avg completion: {goal_analysis['avg_completion_short']} days")
+        
+        with col2:
+            metric_card("📅", "Long-term Success", f"{goal_analysis['long_term_success']}%", ">14 days goals")
+            if goal_analysis["avg_completion_long"] > 0:
+                st.caption(f"Avg completion: {goal_analysis['avg_completion_long']} days")
+        
+        if goal_analysis["short_term_success"] > goal_analysis["long_term_success"]:
+            st.info("💡 You excel at short-term goals! Consider breaking long-term goals into smaller milestones!")
+        elif goal_analysis["long_term_success"] > goal_analysis["short_term_success"]:
+            st.info("💡 You're great at long-term commitments! Keep up the consistency!")
+        
+        st.markdown("---")
+    
+    # --- 4. HABIT ANALYSIS ---
+    if smart_insights and (smart_insights.get("best_habits") or smart_insights.get("worst_habits") or smart_insights.get("habit_insights")):
+        st.markdown(f"<div class='section-title'>🔄 Habit Analysis</div>", unsafe_allow_html=True)
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            if smart_insights["best_habits"]:
+                st.markdown("**Your Best Habits**")
+                for habit in smart_insights["best_habits"][:3]:
+                    st.markdown(f"- ✨ {habit['title']} ({habit['consistency']:.0f}% consistent)")
+        
+        with col2:
+            if smart_insights["worst_habits"]:
+                st.markdown("**Habits Needing Attention**")
+                for habit in smart_insights["worst_habits"][:3]:
+                    st.markdown(f"- ⚠️ {habit['title']} ({habit['consistency']:.0f}% consistent)")
+        
+        if smart_insights["habit_insights"]:
+            for insight in smart_insights["habit_insights"]:
+                st.info(f"💡 {insight}")
+        
+        st.markdown("---")
+    
+    # --- 5. CATEGORY ANALYSIS ---
+    if smart_insights and smart_insights.get("category_analysis"):
+        st.markdown(f"<div class='section-title'>📂 Category Performance</div>", unsafe_allow_html=True)
+        
+        category_data = smart_insights["category_analysis"]
+        if category_data:
+            df_cat = pd.DataFrame(category_data)
+            fig = px.bar(
+                df_cat, 
+                x="category", 
+                y="success_rate",
+                text="success_rate",
+                color="success_rate",
+                color_continuous_scale=["#ef4444", "#f59e0b", "#22c55e"]
+            )
+            fig.update_traces(textposition="outside")
+            fig.update_layout(
+                paper_bgcolor=theme["surface"],
+                plot_bgcolor=theme["surface"],
+                font_color=theme["text"],
+                margin=dict(l=10, r=10, t=20, b=10),
+                xaxis_title="",
+                yaxis_title="Success Rate (%)",
+                coloraxis_showscale=False
+            )
+            fig.update_yaxes(range=[0, 100])
+            st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
+            
+            st.info("💡 Focus on categories with lower success rates and build on your strengths!")
+    
+    st.markdown("---")
+    
+    # --- 6. WEEKLY COMPARISON ---
+    st.markdown(f"<div class='section-title'>Weekly Summary & Comparison</div>", unsafe_allow_html=True)
     weekly_summary, summary_err = call_api(client.weekly_summary, fallback_message="Could not load weekly summary")
     if weekly_summary:
         current_week = weekly_summary["current_week"]
@@ -704,17 +810,26 @@ def weekly_report_page(client: APIClient, user_id: int) -> None:
         if success_change != 0:
             change_label = f"+{success_change}% improvement" if success_change > 0 else f"{success_change}% drop"
             st.info(f"Compared to last week: {change_label}")
-
+    
     st.markdown("---")
-    st.markdown(f"<div class='section-title'>Smart Insights</div>", unsafe_allow_html=True)
-    smart_insights, insights_err = call_api(client.smart_insights, fallback_message="Could not load smart insights")
+    
+    # --- 7. KEY INSIGHTS ---
+    st.markdown(f"<div class='section-title'>🔑 Key Insights & Recommendations</div>", unsafe_allow_html=True)
     if smart_insights:
         insights = smart_insights.get("insights", [])
+        suggestions = smart_insights.get("suggestions", [])
+        
         if insights:
-            for insight_text in insights:
+            st.markdown("**What your data is telling you:**")
+            for insight_text in insights[:4]:
                 st.markdown(f"• {insight_text}")
-        else:
-            st.info("Complete more tasks to unlock smart insights!")
+        
+        if suggestions:
+            st.markdown("**Recommendations:**")
+            for suggestion in suggestions[:4]:
+                st.markdown(f"• 💡 {suggestion}")
+        elif not insights and not suggestions:
+            st.info("Complete more tasks to unlock personalized insights!")
 
 
 def tasks_analytics_page(client: APIClient, user_id: int) -> None:

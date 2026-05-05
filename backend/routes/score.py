@@ -56,7 +56,7 @@ def compute_daily_score(
         failed_goals_today = db.query(Goal).filter(
             Goal.user_id == target_user_id,
             Goal.status == "failed",
-            func.date(Goal.deadline) == day,
+            (func.date(Goal.deadline) == day) | (func.date(Goal.completed_at) == day),
         ).all()
         for goal in failed_goals_today:
             goal_bonus -= 25.0
@@ -78,7 +78,7 @@ def compute_daily_score(
             date=day,
             score=round(current_user.trust_score, 2),
             success_rate=0.0,
-            streak=current_user.streak,
+            streak=current_streak,
             multiplier=1.0,
             total_tasks=0,
             goal_bonus=goal_bonus,
@@ -126,7 +126,7 @@ def compute_daily_score(
     failed_goals_today = db.query(Goal).filter(
         Goal.user_id == target_user_id,
         Goal.status == "failed",
-        func.date(Goal.deadline) == day,
+        (func.date(Goal.deadline) == day) | (func.date(Goal.completed_at) == day),
     ).all()
     for goal in failed_goals_today:
         goal_bonus -= 25.0
@@ -165,7 +165,7 @@ def compute_daily_score(
         date=day,
         score=round(current_user.trust_score, 2),
         success_rate=success_rate,
-        streak=current_user.streak,
+        streak=current_streak,
         multiplier=multiplier,
         total_tasks=len(tasks),
         goal_bonus=goal_bonus,
@@ -324,44 +324,86 @@ def smart_insights(
             "habit_insights": [],
             "best_habits": [],
             "worst_habits": [],
+            "failure_analysis": {
+                "top_failure_categories": [],
+                "failure_hours": [],
+                "failure_days": []
+            },
+            "success_analysis": {
+                "top_success_categories": [],
+                "success_hours": [],
+                "success_days": []
+            },
+            "goal_analysis": {
+                "short_term_success": 0.0,
+                "long_term_success": 0.0,
+                "avg_completion_short": 0.0,
+                "avg_completion_long": 0.0
+            },
+            "category_analysis": [],
+            "weekly_comparison": None
         }
         SMART_INSIGHTS_CACHE[current_user.id] = {"signature": signature, "timestamp": time(), "payload": payload}
         return payload
 
+    # --- FAILURE ANALYSIS ---
     completed_by_hour = defaultdict(int)
     failed_by_hour = defaultdict(int)
     completed_by_day = defaultdict(int)
+    failed_by_day = defaultdict(int)
+    completed_by_category = defaultdict(int)
+    failed_by_category = defaultdict(int)
+    total_by_category = defaultdict(int)
     active_days: dict[date, bool] = {}
 
     completed_tasks = 0
     failed_tasks = 0
     for task in all_tasks:
+        total_by_category[task.category] += 1
         if task.status == "completed":
             completed_tasks += 1
+            completed_by_category[task.category] += 1
         elif task.status == "failed":
             failed_tasks += 1
+            failed_by_category[task.category] += 1
         if task.status in {"completed", "failed"}:
             active_days[task.date] = True
 
-        if not task.time:
-            continue
-        try:
-            hour = int(task.time.split(":")[0])
-        except (ValueError, IndexError):
-            continue
-        if task.status == "completed":
-            completed_by_hour[hour] += 1
-        elif task.status == "failed":
-            failed_by_hour[hour] += 1
+        if task.time:
+            try:
+                hour = int(task.time.split(":")[0])
+                if task.status == "completed":
+                    completed_by_hour[hour] += 1
+                elif task.status == "failed":
+                    failed_by_hour[hour] += 1
+            except (ValueError, IndexError):
+                pass
+        
+        if task.date:
+            if task.status == "completed":
+                completed_by_day[task.date.weekday()] += 1
+            elif task.status == "failed":
+                failed_by_day[task.date.weekday()] += 1
 
-    for task in all_tasks:
-        if task.status == "completed" and task.date:
-            completed_by_day[task.date.weekday()] += 1
+    # Calculate failure rates per category
+    category_failure_rates = []
+    for category, total in total_by_category.items():
+        if total >= 3:
+            failure_rate = failed_by_category.get(category, 0) / total
+            category_failure_rates.append((category, failure_rate, total))
+    category_failure_rates.sort(key=lambda x: -x[1])
 
-    productive_hour = max(completed_by_hour, key=completed_by_hour.get) if completed_by_hour else None
-    failure_hour = max(failed_by_hour, key=failed_by_hour.get) if failed_by_hour else None
+    # --- SUCCESS ANALYSIS ---
+    category_success_rates = []
+    for category, total in total_by_category.items():
+        if total >= 3:
+            success_rate = completed_by_category.get(category, 0) / total
+            category_success_rates.append((category, success_rate, total))
+    category_success_rates.sort(key=lambda x: -x[1])
 
     day_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    productive_hour = max(completed_by_hour, key=completed_by_hour.get) if completed_by_hour else None
+    failure_hour = max(failed_by_hour, key=failed_by_hour.get) if failed_by_hour else None
     productive_day_index = max(completed_by_day, key=completed_by_day.get) if completed_by_day else None
     productive_day = day_names[productive_day_index] if productive_day_index is not None else None
 
@@ -389,17 +431,39 @@ def smart_insights(
         refresh_goal_status(goal, counts["total"], counts["completed"])
     db.commit()
 
+    # --- GOAL ANALYSIS ---
     goals_achieved = sum(1 for g in user_goals if g.status == "achieved")
     goals_failed = sum(1 for g in user_goals if g.status == "failed")
     goal_completion_rate = (goals_achieved / len(user_goals) * 100) if user_goals else 0.0
 
-    completion_samples = [
-        max(0, (g.completed_at.date() - g.created_at.date()).days)
-        for g in user_goals
-        if g.status == "achieved" and g.completed_at
-    ]
+    short_term_goals = []
+    long_term_goals = []
+    completion_samples = []
+    for g in user_goals:
+        target_days = max(1, (g.deadline - g.created_at.date()).days)
+        if g.status == "achieved" and g.completed_at:
+            duration = max(0, (g.completed_at.date() - g.created_at.date()).days)
+            completion_samples.append(duration)
+            if target_days <= 14:
+                short_term_goals.append({"status": "achieved", "duration": duration})
+            else:
+                long_term_goals.append({"status": "achieved", "duration": duration})
+        elif g.status == "failed":
+            if target_days <= 14:
+                short_term_goals.append({"status": "failed"})
+            else:
+                long_term_goals.append({"status": "failed"})
+
+    short_term_achieved = sum(1 for g in short_term_goals if g["status"] == "achieved")
+    long_term_achieved = sum(1 for g in long_term_goals if g["status"] == "achieved")
+    short_term_success = (short_term_achieved / len(short_term_goals) * 100) if short_term_goals else 0.0
+    long_term_success = (long_term_achieved / len(long_term_goals) * 100) if long_term_goals else 0.0
+
+    avg_completion_short = sum(g["duration"] for g in short_term_goals if g["status"] == "achieved") / short_term_achieved if short_term_achieved else 0
+    avg_completion_long = sum(g["duration"] for g in long_term_goals if g["status"] == "achieved") / long_term_achieved if long_term_achieved else 0
     avg_completion_days = round((sum(completion_samples) / len(completion_samples)), 1) if completion_samples else 0.0
 
+    # --- HABIT ANALYSIS ---
     today = date.today()
     habit_insights: list[str] = []
     best_habits: list[dict] = []
@@ -511,6 +575,24 @@ def smart_insights(
         for_you.extend(["Keep tracking progress daily for sharper personalization"])
     for_you = for_you[:4]
 
+    # --- CATEGORY ANALYSIS ---
+    category_analysis = []
+    for cat, success_rate, total in category_success_rates:
+        category_analysis.append({
+            "category": cat,
+            "total": total,
+            "success_rate": round(success_rate * 100, 1),
+            "failure_rate": round((1 - success_rate) * 100, 1)
+        })
+    for cat, failure_rate, total in category_failure_rates:
+        if not any(a["category"] == cat for a in category_analysis):
+            category_analysis.append({
+                "category": cat,
+                "total": total,
+                "success_rate": round((1 - failure_rate) * 100, 1),
+                "failure_rate": round(failure_rate * 100, 1)
+            })
+
     payload = {
         "productive_hour": productive_hour,
         "failure_hour": failure_hour,
@@ -519,17 +601,35 @@ def smart_insights(
         "failure_window": failure_window,
         "consistency_score": consistency_score,
         "pressure_level": pressure_level,
-        "insights": insights[:5],
-        "suggestions": suggestions[:5],
+        "insights": insights,
+        "suggestions": suggestions,
         "for_you": for_you,
-        "adaptive_feedback": adaptive_feedback[:3],
+        "adaptive_feedback": adaptive_feedback,
         "goal_completion_rate": round(goal_completion_rate, 1),
         "goals_achieved": goals_achieved,
         "goals_failed": goals_failed,
         "average_completion_time": avg_completion_days,
-        "habit_insights": habit_insights[:4],
-        "best_habits": best_habits[:3],
-        "worst_habits": worst_habits[:3],
+        "habit_insights": habit_insights,
+        "best_habits": best_habits,
+        "worst_habits": worst_habits,
+        "failure_analysis": {
+            "top_failure_categories": [{"category": cat, "rate": round(rate*100,1)} for cat, rate, _ in category_failure_rates[:5]],
+            "failure_hours": sorted(failed_by_hour.items(), key=lambda x: -x[1])[:5],
+            "failure_days": [{"day": day_names[d], "count": c} for d, c in sorted(failed_by_day.items(), key=lambda x: -x[1])[:5]]
+        },
+        "success_analysis": {
+            "top_success_categories": [{"category": cat, "rate": round(rate*100,1)} for cat, rate, _ in category_success_rates[:5]],
+            "success_hours": sorted(completed_by_hour.items(), key=lambda x: -x[1])[:5],
+            "success_days": [{"day": day_names[d], "count": c} for d, c in sorted(completed_by_day.items(), key=lambda x: -x[1])[:5]]
+        },
+        "goal_analysis": {
+            "short_term_success": round(short_term_success,1),
+            "long_term_success": round(long_term_success,1),
+            "avg_completion_short": round(avg_completion_short,1),
+            "avg_completion_long": round(avg_completion_long,1)
+        },
+        "category_analysis": category_analysis,
+        "weekly_comparison": None
     }
     SMART_INSIGHTS_CACHE[current_user.id] = {"signature": signature, "timestamp": time(), "payload": payload}
     return payload

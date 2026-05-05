@@ -157,7 +157,9 @@ def update_goal(
         goal.status = payload.status
         if payload.status == "achieved" and goal.completed_at is None:
             goal.completed_at = datetime.utcnow()
-        if payload.status != "achieved":
+        elif payload.status == "failed" and goal.completed_at is None:
+            goal.completed_at = datetime.utcnow()
+        elif payload.status == "active":
             goal.completed_at = None
     if payload.reflection_went_well is not None:
         goal.reflection_went_well = payload.reflection_went_well
