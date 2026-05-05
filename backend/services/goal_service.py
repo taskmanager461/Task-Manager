@@ -63,16 +63,13 @@ def calculate_pressure_status(goal: Goal, total_tasks: int, completed_tasks: int
 
 def refresh_goal_status(goal: Goal, total_tasks: int, completed_tasks: int) -> None:
     today = date.today()
-    achieved = total_tasks > 0 and completed_tasks >= total_tasks
-
-    if achieved:
-        goal.status = "achieved"
-        if goal.completed_at is None:
-            goal.completed_at = datetime.utcnow()
-    elif goal.deadline < today:
+    
+    if goal.status != "achieved" and goal.deadline < today:
         goal.status = "failed"
         goal.completed_at = None
-    else:
+    elif goal.status == "achieved":
+        pass
+    elif goal.status == "failed" and goal.deadline >= today:
         goal.status = "active"
         goal.completed_at = None
     
