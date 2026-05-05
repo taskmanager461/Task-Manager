@@ -1291,6 +1291,37 @@ canvas {
     font-size: 0.84rem;
 }
 
+.habit-list {
+    display: grid;
+    gap: 0.7rem;
+}
+
+.habit-card {
+    border-left: 4px solid #8b5cf6;
+}
+
+.habit-meta {
+    display: flex;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+    margin-top: 0.35rem;
+}
+
+.habit-days-picker {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.4rem;
+    margin-top: 0.3rem;
+}
+
+.habit-days-picker label {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
 .identity-badge {
     font-size: 0.75rem;
     border: 1px solid var(--border);

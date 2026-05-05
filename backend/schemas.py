@@ -8,6 +8,8 @@ TaskStatus = Literal["pending", "completed", "failed"]
 GoalStatus = Literal["active", "achieved", "failed"]
 GoalPressureStatus = Literal["on_track", "at_risk", "overdue"]
 GoalType = Literal["today", "tomorrow", "three_days", "one_week", "two_weeks", "one_month", "three_months", "six_months", "one_year", "one_year_plus"]
+HabitFrequencyType = Literal["daily", "weekly"]
+HabitTrackStatus = Literal["completed", "skipped"]
 
 
 class SignupRequest(BaseModel):
@@ -123,6 +125,35 @@ class GoalAnalyticsResponse(BaseModel):
     goals_failed: int
     average_completion_time_days: float
     insights: list[str]
+
+
+class HabitCreate(BaseModel):
+    title: str = Field(min_length=2, max_length=255)
+    category: Optional[str] = Field(default="general", min_length=2, max_length=50)
+    frequency_type: HabitFrequencyType = "daily"
+    frequency_days: Optional[list[int]] = None
+    preferred_time: Optional[str] = None
+
+
+class HabitTrackRequest(BaseModel):
+    status: HabitTrackStatus
+    day: Optional[date] = None
+
+
+class HabitResponse(BaseModel):
+    id: int
+    title: str
+    category: str
+    frequency_type: HabitFrequencyType
+    frequency_days: list[int]
+    preferred_time: Optional[str]
+    streak: int
+    best_streak: int
+    consistency_score: float
+    is_due_today: bool
+    today_status: Optional[HabitTrackStatus]
+    is_active: bool
+    created_at: datetime
 
 
 class BadgeResponse(BaseModel):

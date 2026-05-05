@@ -12,9 +12,11 @@ let insightsChart = null;
 let currentView = 'dashboard';
 let cachedTasks = []; // Performance: Cache tasks locally
 let cachedGoals = [];
+let cachedHabits = [];
 let calendarDate = new Date();
 let calendarTasks = [];
 let notifiedTasks = new Set();
+let notifiedHabits = new Set();
 let currentTasksGoalsTab = 'tasks';
 let currentGoalForReflection = null;
 let identityInitialized = false;
@@ -529,6 +531,8 @@ function renderApp() {
     identityInitialized = false;
     identitySnapshot = { level: 1, unlockedBadgeIds: [] };
     smartPersonalizationCache = { timestamp: 0, data: null };
+    cachedHabits = [];
+    notifiedHabits = new Set();
     
     // Initial view
     updateUILanguage();
@@ -565,7 +569,11 @@ function showView(viewId) {
 
     // Load Data
     if (viewId === 'dashboard') loadDashboard();
-    if (viewId === 'tasks') loadTasks();
+    if (viewId === 'tasks') {
+        if (currentTasksGoalsTab === 'habits') loadHabits();
+        else if (currentTasksGoalsTab === 'goals') loadGoals();
+        else loadTasks();
+    }
     if (viewId === 'goals') loadGoals();
     if (viewId === 'insights') loadInsights();
     if (viewId === 'settings') applyTheme(); // Sync theme switch state
@@ -716,26 +724,42 @@ function renderDayTasks(dateStr) {
 
 // --- Notification Logic ---
 function checkReminders() {
-    if (!cachedTasks || cachedTasks.length === 0) return;
+    const hasTasks = cachedTasks && cachedTasks.length > 0;
+    const hasHabits = cachedHabits && cachedHabits.length > 0;
+    if (!hasTasks && !hasHabits) return;
     
     const now = new Date();
-    const nowStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
     
-    cachedTasks.forEach(task => {
-        if (task.status !== 'pending' || !task.time) return;
-        
-        // Notify 5 minutes before or exactly at the time
-        const [h, m] = task.time.split(':').map(Number);
-        const taskTime = new Date();
-        taskTime.setHours(h, m, 0, 0);
-        
-        const diffMinutes = (taskTime - now) / 60000;
-        
-        if (diffMinutes >= 0 && diffMinutes <= 5 && !notifiedTasks.has(task.id)) {
-            showNotification(task);
-            notifiedTasks.add(task.id);
-        }
-    });
+    if (hasTasks) {
+        cachedTasks.forEach(task => {
+            if (task.status !== 'pending' || !task.time) return;
+            const [h, m] = task.time.split(':').map(Number);
+            const taskTime = new Date();
+            taskTime.setHours(h, m, 0, 0);
+            const diffMinutes = (taskTime - now) / 60000;
+            if (diffMinutes >= 0 && diffMinutes <= 5 && !notifiedTasks.has(task.id)) {
+                showNotification(task);
+                notifiedTasks.add(task.id);
+            }
+        });
+    }
+
+    if (hasHabits) {
+        cachedHabits.forEach(habit => {
+            if (!habit.is_due_today || habit.today_status === 'completed' || !habit.preferred_time) return;
+            const [h, m] = habit.preferred_time.split(':').map(Number);
+            const habitTime = new Date();
+            habitTime.setHours(h, m, 0, 0);
+            const diffMinutes = (habitTime - now) / 60000;
+            if (diffMinutes >= 0 && diffMinutes <= 10 && !notifiedHabits.has(habit.id)) {
+                showToast(`Habit reminder: ${habit.title}`, 'info');
+                notifiedHabits.add(habit.id);
+            } else if (diffMinutes < -90 && !notifiedHabits.has(`nudge-${habit.id}`)) {
+                showToast(`Gentle nudge: keep "${habit.title}" on track today`, 'info');
+                notifiedHabits.add(`nudge-${habit.id}`);
+            }
+        });
+    }
 }
 
 function showNotification(task) {
@@ -941,6 +965,7 @@ async function loadDashboard() {
         loadWeeklySummary();
         loadIdentityProfile();
         loadDashboardPersonalization();
+        loadTodayHabits();
 
         // Fetch tasks to update pie chart
         const tasks = await apiFetch(`/tasks?user_id=${currentUser.user_id}&day=${today}`);
@@ -1097,6 +1122,7 @@ async function loadInsights() {
             ...(smartData.insights || []),
             ...(smartData.suggestions || []),
             ...(smartData.adaptive_feedback || []),
+            ...(smartData.habit_insights || []),
         ].slice(0, 6);
         if (smartMessages.length > 0) {
             container.innerHTML = smartMessages.map(insight => `
@@ -1292,6 +1318,178 @@ async function loadTasks() {
             list.innerHTML = `<div class="empty-state"><p class="error-msg">${t('error_occurred')}</p></div>`;
         }
     }
+}
+
+function formatHabitDays(habit) {
+    if (habit.frequency_type === 'daily') return 'Daily';
+    const names = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return (habit.frequency_days || []).map(d => names[d] || '').filter(Boolean).join(', ');
+}
+
+function renderHabits(habits) {
+    const list = document.getElementById('habits-list');
+    if (!list) return;
+    if (!habits || habits.length === 0) {
+        list.innerHTML = `
+            <div class="empty-state">
+                <span class="empty-state-icon">🧠</span>
+                <h3 class="empty-state-title">No habits yet</h3>
+                <p class="empty-state-text">Build consistency with your first recurring habit.</p>
+                <button onclick="toggleHabitForm()" class="btn primary">Create Habit</button>
+            </div>
+        `;
+        return;
+    }
+    list.innerHTML = habits.map(habit => `
+        <div class="task-card habit-card">
+            <div class="task-info">
+                <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                    <h3>${habit.title}</h3>
+                    <span class="priority-badge priority-medium">${habit.category}</span>
+                    <span class="priority-badge priority-low">🔥 ${habit.streak}</span>
+                    <span class="priority-badge priority-low">${habit.consistency_score.toFixed(0)}% consistency</span>
+                </div>
+                <div class="habit-meta">
+                    <span>${formatHabitDays(habit)}</span>
+                    ${habit.preferred_time ? `<span>⏰ ${habit.preferred_time}</span>` : ''}
+                    <span>Best streak ${habit.best_streak}</span>
+                </div>
+            </div>
+            <div class="task-actions">
+                ${habit.today_status === 'completed' ? `
+                    <div class="status-badge completed"><span>Completed ✔</span></div>
+                ` : habit.today_status === 'skipped' ? `
+                    <div class="status-badge failed"><span>Skipped</span></div>
+                ` : habit.is_due_today ? `
+                    <button class="btn task-btn completed" onclick="trackHabit(${habit.id}, 'completed')">Complete</button>
+                    <button class="btn task-btn failed" onclick="trackHabit(${habit.id}, 'skipped')">Skip</button>
+                ` : `
+                    <div class="status-badge pending"><span>Not scheduled today</span></div>
+                `}
+            </div>
+        </div>
+    `).join('');
+}
+
+async function loadHabits() {
+    try {
+        const habits = await apiFetch('/habits');
+        cachedHabits = habits;
+        renderHabits(habits);
+        if (currentView === 'dashboard') renderTodayHabits(habits);
+    } catch (err) {
+        const list = document.getElementById('habits-list');
+        if (list) list.innerHTML = `<div class="empty-state"><p class="error-msg">${err.message}</p></div>`;
+    }
+}
+
+function renderTodayHabits(habits) {
+    const list = document.getElementById('today-habits-list');
+    if (!list) return;
+    const dueHabits = (habits || []).filter(h => h.is_due_today);
+    if (dueHabits.length === 0) {
+        list.innerHTML = `<div class="for-you-item">No habits scheduled for today.</div>`;
+        return;
+    }
+    list.innerHTML = dueHabits.map(habit => `
+        <div class="for-you-item">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem;">
+                <span>${habit.title} • 🔥 ${habit.streak}</span>
+                <span>${habit.consistency_score.toFixed(0)}%</span>
+            </div>
+            <div style="display:flex; gap:0.45rem; margin-top:0.45rem;">
+                ${habit.today_status ? `<span class="priority-badge ${habit.today_status === 'completed' ? 'priority-low' : 'priority-high'}">${habit.today_status}</span>` : `
+                    <button class="btn task-btn completed" onclick="trackHabit(${habit.id}, 'completed')">Complete</button>
+                    <button class="btn task-btn failed" onclick="trackHabit(${habit.id}, 'skipped')">Skip</button>
+                `}
+            </div>
+        </div>
+    `).join('');
+}
+
+async function loadTodayHabits() {
+    if (cachedHabits.length > 0) {
+        renderTodayHabits(cachedHabits);
+        return;
+    }
+    try {
+        const habits = await apiFetch('/habits');
+        cachedHabits = habits;
+        renderTodayHabits(habits);
+    } catch (err) {
+        const list = document.getElementById('today-habits-list');
+        if (list) list.innerHTML = `<div class="for-you-item">Unable to load habits now.</div>`;
+    }
+}
+
+async function trackHabit(habitId, status) {
+    const previous = [...cachedHabits];
+    cachedHabits = cachedHabits.map(h => h.id === habitId ? { ...h, today_status: status } : h);
+    renderHabits(cachedHabits);
+    renderTodayHabits(cachedHabits);
+    try {
+        await apiFetch(`/habits/${habitId}/track`, {
+            method: 'PATCH',
+            body: JSON.stringify({ status })
+        });
+        smartPersonalizationCache = { timestamp: 0, data: null };
+        await Promise.all([loadHabits(), loadDashboard()]);
+    } catch (err) {
+        cachedHabits = previous;
+        renderHabits(cachedHabits);
+        renderTodayHabits(cachedHabits);
+    }
+}
+
+function toggleHabitDaysSelector(freq) {
+    const group = document.getElementById('habit-days-group');
+    if (!group) return;
+    group.style.display = freq === 'weekly' ? 'block' : 'none';
+}
+
+function getSelectedHabitDays() {
+    return Array.from(document.querySelectorAll('#habit-days-group input[type="checkbox"]:checked'))
+        .map(el => Number(el.value))
+        .filter(v => Number.isInteger(v));
+}
+
+function toggleHabitForm() {
+    const container = document.getElementById('habit-form-container');
+    container.classList.toggle('active');
+    if (container.classList.contains('active')) {
+        document.getElementById('habit-title').value = '';
+        document.getElementById('habit-category').value = 'General';
+        document.getElementById('habit-time').value = '';
+        document.getElementById('habit-frequency').value = 'daily';
+        document.querySelectorAll('#habit-days-group input[type="checkbox"]').forEach(el => { el.checked = false; });
+        toggleHabitDaysSelector('daily');
+    }
+}
+
+async function addHabit() {
+    const title = document.getElementById('habit-title').value.trim();
+    const category = document.getElementById('habit-category').value.trim() || 'general';
+    const frequency = document.getElementById('habit-frequency').value;
+    const preferredTime = document.getElementById('habit-time').value || null;
+    const frequencyDays = frequency === 'weekly' ? getSelectedHabitDays() : null;
+    if (frequency === 'weekly' && (!frequencyDays || frequencyDays.length === 0)) {
+        showToast('Select at least one day for weekly habit', 'error');
+        return;
+    }
+    await apiFetch('/habits', {
+        method: 'POST',
+        body: JSON.stringify({
+            title,
+            category,
+            frequency_type: frequency,
+            frequency_days: frequencyDays,
+            preferred_time: preferredTime,
+        }),
+    });
+    smartPersonalizationCache = { timestamp: 0, data: null };
+    toggleHabitForm();
+    await Promise.all([loadHabits(), loadDashboard()]);
+    showToast('Habit created', 'success');
 }
 
 function showSmartSuggestion() {
@@ -1785,8 +1983,10 @@ function switchTasksGoalsTab(tab) {
     currentTasksGoalsTab = tab;
     document.getElementById('tab-tasks-only').classList.toggle('active', tab === 'tasks');
     document.getElementById('tab-goals-only').classList.toggle('active', tab === 'goals');
+    document.getElementById('tab-habits-only').classList.toggle('active', tab === 'habits');
     document.getElementById('tasks-only-container').style.display = tab === 'tasks' ? 'block' : 'none';
     document.getElementById('goals-only-container').style.display = tab === 'goals' ? 'block' : 'none';
+    document.getElementById('habits-only-container').style.display = tab === 'habits' ? 'block' : 'none';
     document.getElementById('smart-suggestion-container').style.display = tab === 'tasks' ? 'block' : 'none';
     
     const titleEl = document.getElementById('tasks-goals-title');
@@ -1795,18 +1995,24 @@ function switchTasksGoalsTab(tab) {
         titleEl.textContent = t('tasks');
         addBtn.textContent = '+ Add Task';
         loadTasks();
-    } else {
+    } else if (tab === 'goals') {
         titleEl.textContent = 'Goals';
         addBtn.textContent = '+ New Goal';
         loadGoals();
+    } else {
+        titleEl.textContent = 'Habits';
+        addBtn.textContent = '+ New Habit';
+        loadHabits();
     }
 }
 
 function toggleCurrentForm() {
     if (currentTasksGoalsTab === 'tasks') {
         toggleTaskForm();
-    } else {
+    } else if (currentTasksGoalsTab === 'goals') {
         toggleGoalForm();
+    } else {
+        toggleHabitForm();
     }
 }
 
@@ -2090,6 +2296,14 @@ function setupEventListeners() {
             const title = document.getElementById('goal-title').value.trim();
             const category = document.getElementById('goal-category').value.trim();
             addGoal(title, category || 'general');
+        });
+    }
+
+    const addHabitForm = document.getElementById('add-habit-form');
+    if (addHabitForm) {
+        addHabitForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await addHabit();
         });
     }
 

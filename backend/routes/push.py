@@ -10,8 +10,11 @@ from backend.database import get_db
 from backend.models.push_subscription import PushSubscription
 from backend.models.user import User
 from backend.models.task import Task
+from backend.models.habit import Habit
+from backend.models.habit_log import HabitLog
 from backend.schemas import PushSubscriptionCreate, PushSubscriptionResponse, PushNotification
 from backend.services.auth_service import get_current_user
+from backend.services.habit_service import is_habit_due_on
 
 router = APIRouter(tags=["push"])
 
@@ -137,6 +140,33 @@ def run_scheduled_jobs(db: Session):
             except Exception:
                 pass
 
+        # Habit reminders
+        today_habits = db.query(Habit).filter(Habit.user_id == user.id, Habit.is_active.is_(True)).all()
+        for habit in today_habits:
+            if not is_habit_due_on(habit, today):
+                continue
+            today_log = db.query(HabitLog).filter(
+                HabitLog.habit_id == habit.id, HabitLog.user_id == user.id, HabitLog.date == today
+            ).first()
+            if today_log and today_log.status == "completed":
+                continue
+            if not habit.preferred_time:
+                continue
+            try:
+                habit_time = datetime.strptime(habit.preferred_time, "%H:%M").time()
+                habit_datetime = datetime.combine(today, habit_time)
+                diff_minutes = (habit_datetime - now).total_seconds() / 60
+                if 0 < diff_minutes <= 15:
+                    notif = PushNotification(
+                        title=f"Habit Reminder: {habit.title}",
+                        body=f"Stay consistent. '{habit.title}' is due in {int(diff_minutes)} minutes.",
+                        url="/tasks",
+                    )
+                    for sub in subscriptions:
+                        send_push_notification(sub, notif)
+            except Exception:
+                pass
+
         # B. Missed Task Alert
         missed_tasks = db.query(Task).filter(
             Task.user_id == user.id, Task.date < today, Task.status.in_(["pending", "failed"])
@@ -173,6 +203,26 @@ def run_scheduled_jobs(db: Session):
             )
             for sub in subscriptions:
                 send_push_notification(sub, notif)
+
+        # Habit nudge
+        if now.hour == 20:
+            due_habits = [h for h in today_habits if is_habit_due_on(h, today)]
+            if due_habits:
+                completed_habits = db.query(HabitLog).filter(
+                    HabitLog.user_id == user.id,
+                    HabitLog.date == today,
+                    HabitLog.status == "completed",
+                    HabitLog.habit_id.in_([h.id for h in due_habits]),
+                ).count()
+                if completed_habits < len(due_habits):
+                    pending_count = len(due_habits) - completed_habits
+                    notif = PushNotification(
+                        title="Gentle Habit Nudge",
+                        body=f"You still have {pending_count} habit{'' if pending_count == 1 else 's'} pending today.",
+                        url="/tasks",
+                    )
+                    for sub in subscriptions:
+                        send_push_notification(sub, notif)
 
         # E. Weekly Summary (Sunday 10 AM)
         if today.weekday() == 6 and now.hour == 10:

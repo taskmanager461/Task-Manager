@@ -128,6 +128,33 @@ def award_goal_completion_xp(db: Session, user: User, goal: Goal) -> dict:
     return _apply_progression_gain(user, xp_delta=xp_delta, is_goal=True)
 
 
+def apply_habit_impact(user: User, status: str, consistency_score: float, habit_streak: int) -> dict:
+    if status == "completed":
+        xp_delta = 4
+        if consistency_score >= 70:
+            xp_delta += 1
+        if habit_streak >= 7:
+            xp_delta += 1
+        progression = _apply_progression_gain(user, xp_delta=xp_delta, is_goal=False)
+        trust_boost = 0.25 + min(0.9, consistency_score * 0.007)
+        if habit_streak >= 10:
+            trust_boost += 0.2
+        user.trust_score = min(150.0, (user.trust_score or 0.0) + trust_boost)
+        return {
+            "xp_delta": progression["xp_delta"],
+            "trust_delta": round(trust_boost, 2),
+            "leveled_up": progression["leveled_up"],
+        }
+
+    trust_penalty = 0.1
+    if consistency_score < 40:
+        trust_penalty = 0.35
+    elif consistency_score < 60:
+        trust_penalty = 0.2
+    user.trust_score = max(0.0, (user.trust_score or 0.0) - trust_penalty)
+    return {"xp_delta": 0, "trust_delta": -round(trust_penalty, 2), "leveled_up": False}
+
+
 def build_badges(completed_tasks: int, completed_goals: int, streak: int) -> list[dict]:
     unlocked_ids: set[str] = set()
     if completed_tasks >= 1:

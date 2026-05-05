@@ -9,11 +9,14 @@ from sqlalchemy.orm import Session
 from backend.database import get_db
 from backend.models.daily_score import DailyScore
 from backend.models.goal import Goal
+from backend.models.habit import Habit
+from backend.models.habit_log import HabitLog
 from backend.models.task import Task
 from backend.models.user import User
 from backend.schemas import DailyScoreComputationResponse, DailyScoreRequest, DailyScoreResponse
 from backend.services.auth_service import get_current_user
 from backend.services.goal_service import compute_goal_task_counts, refresh_goal_status
+from backend.services.habit_service import compute_consistency_score, is_habit_due_on
 from backend.services.identity_service import recompute_streak
 
 router = APIRouter(tags=["score"])
@@ -264,6 +267,16 @@ def smart_insights(
         func.sum(case((Goal.status == "failed", 1), else_=0)),
         func.max(Goal.id),
     ).filter(Goal.user_id == current_user.id).first()
+    habit_signature = db.query(
+        func.count(Habit.id),
+        func.max(Habit.id),
+    ).filter(Habit.user_id == current_user.id, Habit.is_active.is_(True)).first()
+    habit_log_signature = db.query(
+        func.count(HabitLog.id),
+        func.sum(case((HabitLog.status == "completed", 1), else_=0)),
+        func.sum(case((HabitLog.status == "skipped", 1), else_=0)),
+        func.max(HabitLog.id),
+    ).filter(HabitLog.user_id == current_user.id).first()
     signature = (
         int(task_signature[0] or 0),
         int(task_signature[1] or 0),
@@ -273,6 +286,12 @@ def smart_insights(
         int(goal_signature[1] or 0),
         int(goal_signature[2] or 0),
         int(goal_signature[3] or 0),
+        int(habit_signature[0] or 0),
+        int(habit_signature[1] or 0),
+        int(habit_log_signature[0] or 0),
+        int(habit_log_signature[1] or 0),
+        int(habit_log_signature[2] or 0),
+        int(habit_log_signature[3] or 0),
         int(current_user.streak or 0),
         str(date.today()),
     )
@@ -282,9 +301,10 @@ def smart_insights(
 
     all_tasks = db.query(Task).filter(Task.user_id == current_user.id).all()
     user_goals = db.query(Goal).filter(Goal.user_id == current_user.id).all()
+    habits = db.query(Habit).filter(Habit.user_id == current_user.id, Habit.is_active.is_(True)).all()
     counts_map = compute_goal_task_counts(db, [g.id for g in user_goals])
 
-    if not all_tasks and not user_goals:
+    if not all_tasks and not user_goals and not habits:
         payload = {
             "productive_hour": None,
             "failure_hour": None,
@@ -301,6 +321,9 @@ def smart_insights(
             "goals_achieved": 0,
             "goals_failed": 0,
             "average_completion_time": 0.0,
+            "habit_insights": [],
+            "best_habits": [],
+            "worst_habits": [],
         }
         SMART_INSIGHTS_CACHE[current_user.id] = {"signature": signature, "timestamp": time(), "payload": payload}
         return payload
@@ -377,6 +400,58 @@ def smart_insights(
     ]
     avg_completion_days = round((sum(completion_samples) / len(completion_samples)), 1) if completion_samples else 0.0
 
+    today = date.today()
+    habit_insights: list[str] = []
+    best_habits: list[dict] = []
+    worst_habits: list[dict] = []
+    if habits:
+        habit_ids = [h.id for h in habits]
+        habit_logs = (
+            db.query(HabitLog)
+            .filter(
+                HabitLog.user_id == current_user.id,
+                HabitLog.habit_id.in_(habit_ids),
+                HabitLog.date >= today - timedelta(days=59),
+                HabitLog.date <= today,
+            )
+            .all()
+        )
+        logs_by_habit: dict[int, dict[date, HabitLog]] = defaultdict(dict)
+        for log in habit_logs:
+            logs_by_habit[log.habit_id][log.date] = log
+
+        habit_scores: list[tuple[Habit, float]] = []
+        for habit in habits:
+            consistency = compute_consistency_score(habit, logs_by_habit.get(habit.id, {}), today, window_days=30)
+            habit_scores.append((habit, consistency))
+            if consistency >= 75:
+                best_habits.append({"title": habit.title, "consistency": consistency})
+            if consistency <= 45:
+                worst_habits.append({"title": habit.title, "consistency": consistency})
+
+            weekend_due = 0
+            weekend_skips = 0
+            for days_back in range(14):
+                day = today - timedelta(days=days_back)
+                if day.weekday() not in (5, 6):
+                    continue
+                if not is_habit_due_on(habit, day):
+                    continue
+                weekend_due += 1
+                log = logs_by_habit.get(habit.id, {}).get(day)
+                if log and log.status == "skipped":
+                    weekend_skips += 1
+            if weekend_due >= 3 and weekend_skips / weekend_due >= 0.6:
+                habit_insights.append(f"You skip '{habit.title}' more often on weekends")
+
+        habit_scores.sort(key=lambda item: item[1], reverse=True)
+        if habit_scores:
+            top_habit, top_score = habit_scores[0]
+            habit_insights.append(f"Best performing habit: {top_habit.title} ({top_score:.0f}% consistency)")
+        if len(habit_scores) > 1:
+            low_habit, low_score = habit_scores[-1]
+            habit_insights.append(f"Needs attention: {low_habit.title} ({low_score:.0f}% consistency)")
+
     short_term_samples: list[int] = []
     long_term_samples: list[int] = []
     long_term_failed = 0
@@ -409,6 +484,7 @@ def smart_insights(
         insights.append("You are building strong consistency")
     elif consistency_score < 40 and total_outcomes >= 6:
         insights.append("Your consistency is unstable this period")
+    insights.extend(habit_insights[:2])
 
     suggestions: list[str] = []
     if productive_window:
@@ -451,6 +527,9 @@ def smart_insights(
         "goals_achieved": goals_achieved,
         "goals_failed": goals_failed,
         "average_completion_time": avg_completion_days,
+        "habit_insights": habit_insights[:4],
+        "best_habits": best_habits[:3],
+        "worst_habits": worst_habits[:3],
     }
     SMART_INSIGHTS_CACHE[current_user.id] = {"signature": signature, "timestamp": time(), "payload": payload}
     return payload

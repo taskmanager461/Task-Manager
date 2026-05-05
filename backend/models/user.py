@@ -23,3 +23,5 @@ class User(Base):
     tasks = relationship("Task", back_populates="user", cascade="all, delete-orphan")
     goals = relationship("Goal", back_populates="user", cascade="all, delete-orphan")
     daily_scores = relationship("DailyScore", back_populates="user", cascade="all, delete-orphan")
+    habits = relationship("Habit", back_populates="user", cascade="all, delete-orphan")
+    habit_logs = relationship("HabitLog", back_populates="user", cascade="all, delete-orphan")

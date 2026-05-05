@@ -184,6 +184,14 @@
                     <div id="for-you-list" class="for-you-list"></div>
                 </div>
 
+                <div class="card habits-today-card" style="margin-top: 1.25rem;">
+                    <div class="identity-header">
+                        <h3>Today's Habits</h3>
+                        <span class="priority-badge priority-medium">Consistency</span>
+                    </div>
+                    <div id="today-habits-list" class="habit-list"></div>
+                </div>
+
                 <div class="charts-section">
                     <h2 class="view-subtitle" data-i18n="statistics">Statistics</h2>
                     <div class="chart-grid">
@@ -301,6 +309,7 @@
                     <div class="tabs" style="margin: 0;">
                         <button id="tab-tasks-only" class="tab active" onclick="switchTasksGoalsTab('tasks')" data-i18n="tasks">Tasks</button>
                         <button id="tab-goals-only" class="tab" onclick="switchTasksGoalsTab('goals')">Goals</button>
+                        <button id="tab-habits-only" class="tab" onclick="switchTasksGoalsTab('habits')">Habits</button>
                     </div>
                 </div>
 
@@ -331,6 +340,9 @@
 
                 <div id="goals-only-container" style="display: none;">
                     <div id="goals-list" class="task-list"></div>
+                </div>
+                <div id="habits-only-container" style="display: none;">
+                    <div id="habits-list" class="task-list"></div>
                 </div>
             </section>
 
@@ -479,6 +491,48 @@
             <div class="form-actions">
                 <button type="button" onclick="toggleGoalForm()" class="btn secondary">Cancel</button>
                 <button type="submit" class="btn primary">Create Goal</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="habit-form-container" class="task-form-modal">
+        <form id="add-habit-form">
+            <h3>New Habit</h3>
+            <input type="text" id="habit-title" placeholder="Habit title" required>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Category</label>
+                    <input type="text" id="habit-category" placeholder="General" value="General" required>
+                </div>
+                <div class="form-group">
+                    <label>Preferred Time</label>
+                    <input type="time" id="habit-time">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Frequency</label>
+                    <select id="habit-frequency" onchange="toggleHabitDaysSelector(this.value)">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Specific Days</option>
+                    </select>
+                </div>
+                <div id="habit-days-group" class="form-group" style="display:none;">
+                    <label>Days</label>
+                    <div class="habit-days-picker">
+                        <label><input type="checkbox" value="0">Mon</label>
+                        <label><input type="checkbox" value="1">Tue</label>
+                        <label><input type="checkbox" value="2">Wed</label>
+                        <label><input type="checkbox" value="3">Thu</label>
+                        <label><input type="checkbox" value="4">Fri</label>
+                        <label><input type="checkbox" value="5">Sat</label>
+                        <label><input type="checkbox" value="6">Sun</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" onclick="toggleHabitForm()" class="btn secondary">Cancel</button>
+                <button type="submit" class="btn primary">Create Habit</button>
             </div>
         </form>
     </div>
