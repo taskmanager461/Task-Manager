@@ -908,9 +908,9 @@ def tasks_analytics_page(client: APIClient, user_id: int) -> None:
                     goal_card(goal)
                     
                     # Action buttons for the goal
-                    b1, b2, _ = st.columns([1, 1, 2])
+                    b1, b2, b3, _ = st.columns([1, 1, 1, 1])
                     
-                    # Only show complete button if goal is active
+                    # Only show complete and fail buttons if goal is active
                     if goal["status"] == "active":
                         with b1:
                             if st.button(f"✅ Complete", key=f"complete_goal_{goal['id']}", type="secondary"):
@@ -925,8 +925,21 @@ def tasks_analytics_page(client: APIClient, user_id: int) -> None:
                                 else:
                                     st.toast("🎉 Goal completed!")
                                     st.rerun()
+                        with b2:
+                            if st.button(f"❌ Fail", key=f"fail_goal_{goal['id']}", type="secondary"):
+                                _, update_err = call_api(
+                                    client.update_goal,
+                                    goal_id=goal["id"],
+                                    status="failed",
+                                    fallback_message="Failed to mark goal as failed"
+                                )
+                                if update_err:
+                                    st.error(update_err)
+                                else:
+                                    st.toast("Goal marked as failed!")
+                                    st.rerun()
                     
-                    with b2:
+                    with b3:
                         if st.button(f"🗑️ Delete", key=f"delete_goal_{goal['id']}", type="secondary"):
                             _, delete_err = call_api(
                                 client.delete_goal,
