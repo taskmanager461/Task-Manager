@@ -1,8 +1,9 @@
 from datetime import date, timedelta
 from collections import defaultdict
+from time import time
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import func
+from sqlalchemy import case, func
 from sqlalchemy.orm import Session
 
 from backend.database import get_db
@@ -16,6 +17,8 @@ from backend.services.goal_service import compute_goal_task_counts, refresh_goal
 from backend.services.identity_service import recompute_streak
 
 router = APIRouter(tags=["score"])
+SMART_INSIGHTS_CACHE: dict[int, dict] = {}
+SMART_CACHE_TTL_SECONDS = 300
 
 
 @router.post("/score/daily", response_model=DailyScoreComputationResponse)
@@ -248,76 +251,116 @@ def smart_insights(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    # Build fast signature for lightweight cache invalidation.
+    task_signature = db.query(
+        func.count(Task.id),
+        func.sum(case((Task.status == "completed", 1), else_=0)),
+        func.sum(case((Task.status == "failed", 1), else_=0)),
+        func.max(Task.id),
+    ).filter(Task.user_id == current_user.id).first()
+    goal_signature = db.query(
+        func.count(Goal.id),
+        func.sum(case((Goal.status == "achieved", 1), else_=0)),
+        func.sum(case((Goal.status == "failed", 1), else_=0)),
+        func.max(Goal.id),
+    ).filter(Goal.user_id == current_user.id).first()
+    signature = (
+        int(task_signature[0] or 0),
+        int(task_signature[1] or 0),
+        int(task_signature[2] or 0),
+        int(task_signature[3] or 0),
+        int(goal_signature[0] or 0),
+        int(goal_signature[1] or 0),
+        int(goal_signature[2] or 0),
+        int(goal_signature[3] or 0),
+        int(current_user.streak or 0),
+        str(date.today()),
+    )
+    cached = SMART_INSIGHTS_CACHE.get(current_user.id)
+    if cached and cached.get("signature") == signature and (time() - cached.get("timestamp", 0)) < SMART_CACHE_TTL_SECONDS:
+        return cached["payload"]
+
     all_tasks = db.query(Task).filter(Task.user_id == current_user.id).all()
     user_goals = db.query(Goal).filter(Goal.user_id == current_user.id).all()
     counts_map = compute_goal_task_counts(db, [g.id for g in user_goals])
-    
+
     if not all_tasks and not user_goals:
-        return {
+        payload = {
             "productive_hour": None,
             "failure_hour": None,
             "productive_day": None,
+            "productive_window": None,
+            "failure_window": None,
+            "consistency_score": 0.0,
+            "pressure_level": "light",
             "insights": [],
+            "suggestions": [],
+            "for_you": [],
+            "adaptive_feedback": [],
             "goal_completion_rate": 0.0,
             "goals_achieved": 0,
             "goals_failed": 0,
             "average_completion_time": 0.0,
         }
-    
+        SMART_INSIGHTS_CACHE[current_user.id] = {"signature": signature, "timestamp": time(), "payload": payload}
+        return payload
+
     completed_by_hour = defaultdict(int)
     failed_by_hour = defaultdict(int)
     completed_by_day = defaultdict(int)
-    
+    active_days: dict[date, bool] = {}
+
+    completed_tasks = 0
+    failed_tasks = 0
     for task in all_tasks:
-        if task.time:
-            hour = int(task.time.split(':')[0])
-            if task.status == "completed":
-                completed_by_hour[hour] += 1
-            elif task.status == "failed":
-                failed_by_hour[hour] += 1
-        
+        if task.status == "completed":
+            completed_tasks += 1
+        elif task.status == "failed":
+            failed_tasks += 1
+        if task.status in {"completed", "failed"}:
+            active_days[task.date] = True
+
+        if not task.time:
+            continue
+        try:
+            hour = int(task.time.split(":")[0])
+        except (ValueError, IndexError):
+            continue
+        if task.status == "completed":
+            completed_by_hour[hour] += 1
+        elif task.status == "failed":
+            failed_by_hour[hour] += 1
+
+    for task in all_tasks:
         if task.status == "completed" and task.date:
-            day_of_week = task.date.weekday()
-            completed_by_day[day_of_week] += 1
-    
-    # Find most productive hour
-    productive_hour = None
-    max_completed = 0
-    for h, cnt in completed_by_hour.items():
-        if cnt > max_completed:
-            max_completed = cnt
-            productive_hour = h
-    
-    # Find most failure-prone hour
-    failure_hour = None
-    max_failed = 0
-    for h, cnt in failed_by_hour.items():
-        if cnt > max_failed:
-            max_failed = cnt
-            failure_hour = h
-    
-    # Find most productive day
-    productive_day = None
-    max_day_completed = 0
+            completed_by_day[task.date.weekday()] += 1
+
+    productive_hour = max(completed_by_hour, key=completed_by_hour.get) if completed_by_hour else None
+    failure_hour = max(failed_by_hour, key=failed_by_hour.get) if failed_by_hour else None
+
     day_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    for d, cnt in completed_by_day.items():
-        if cnt > max_day_completed:
-            max_day_completed = cnt
-            productive_day = day_names[d]
-    
-    # Generate human-readable insights
-    insights = []
-    
-    if productive_hour is not None:
-        time_desc = "morning" if 5 <= productive_hour < 12 else "afternoon" if 12 <= productive_hour < 18 else "evening" if 18 <= productive_hour < 22 else "night"
-        insights.append(f"You are more productive in the {time_desc} ({productive_hour}:00)")
-    
-    if failure_hour is not None:
-        insights.append(f"You fail more tasks after {failure_hour}:00")
-    
-    if productive_day:
-        insights.append(f"Your most productive day is {productive_day}")
-    
+    productive_day_index = max(completed_by_day, key=completed_by_day.get) if completed_by_day else None
+    productive_day = day_names[productive_day_index] if productive_day_index is not None else None
+
+    def _hour_window(hour: int | None) -> str | None:
+        if hour is None:
+            return None
+        start = max(0, hour - 1)
+        end = min(23, hour + 2)
+        return f"{start:02d}:00-{end:02d}:00"
+
+    productive_window = _hour_window(productive_hour)
+    failure_window = _hour_window(failure_hour)
+
+    total_outcomes = completed_tasks + failed_tasks
+    success_ratio = (completed_tasks / total_outcomes) if total_outcomes > 0 else 0.0
+    failure_ratio = (failed_tasks / total_outcomes) if total_outcomes > 0 else 0.0
+
+    day_span = max(1, (date.today() - min(active_days.keys())).days + 1) if active_days else 1
+    activity_ratio = min(1.0, len(active_days) / day_span)
+    streak_factor = min(1.0, (current_user.streak or 0) / 14.0)
+    consistency_score = round(((activity_ratio * 0.45) + (success_ratio * 0.40) + (streak_factor * 0.15)) * 100, 1)
+
     for goal in user_goals:
         counts = counts_map.get(goal.id, {"total": 0, "completed": 0})
         refresh_goal_status(goal, counts["total"], counts["completed"])
@@ -327,42 +370,90 @@ def smart_insights(
     goals_failed = sum(1 for g in user_goals if g.status == "failed")
     goal_completion_rate = (goals_achieved / len(user_goals) * 100) if user_goals else 0.0
 
-    avg_completion_days = 0.0
     completion_samples = [
         max(0, (g.completed_at.date() - g.created_at.date()).days)
         for g in user_goals
         if g.status == "achieved" and g.completed_at
     ]
-    if completion_samples:
-        avg_completion_days = sum(completion_samples) / len(completion_samples)
+    avg_completion_days = round((sum(completion_samples) / len(completion_samples)), 1) if completion_samples else 0.0
 
-    short_term_samples = []
-    long_term_samples = []
+    short_term_samples: list[int] = []
+    long_term_samples: list[int] = []
+    long_term_failed = 0
     for g in user_goals:
+        target_days = max(1, (g.deadline - g.created_at.date()).days)
+        if g.status == "failed" and target_days >= 30:
+            long_term_failed += 1
         if g.status != "achieved" or not g.completed_at:
             continue
-        days_to_complete = max(0, (g.completed_at.date() - g.created_at.date()).days)
-        timeframe_days = max(1, (g.deadline - g.created_at.date()).days)
-        if timeframe_days <= 14:
-            short_term_samples.append(days_to_complete)
-        if timeframe_days >= 30:
-            long_term_samples.append(days_to_complete)
+        duration = max(0, (g.completed_at.date() - g.created_at.date()).days)
+        if target_days <= 14:
+            short_term_samples.append(duration)
+        if target_days >= 30:
+            long_term_samples.append(duration)
 
+    pressure_level = "normal"
+    if failure_ratio >= 0.45 or consistency_score < 42:
+        pressure_level = "light"
+    elif failure_ratio <= 0.2 and consistency_score >= 68:
+        pressure_level = "high"
+
+    insights: list[str] = []
+    if productive_window:
+        insights.append(f"You are most productive between {productive_window}")
+    if failure_window:
+        insights.append(f"You tend to fail tasks around {failure_window}")
+    if productive_day:
+        insights.append(f"Your best day is {productive_day}")
+    if consistency_score >= 70:
+        insights.append("You are building strong consistency")
+    elif consistency_score < 40 and total_outcomes >= 6:
+        insights.append("Your consistency is unstable this period")
+
+    suggestions: list[str] = []
+    if productive_window:
+        suggestions.append(f"Try scheduling priority tasks in {productive_window}")
+    if failure_window:
+        suggestions.append("Avoid packing heavy tasks in your failure-prone hours")
     if short_term_samples and long_term_samples and (sum(short_term_samples) / len(short_term_samples)) < (sum(long_term_samples) / len(long_term_samples)):
-        insights.append("You complete short-term goals faster")
-    if goals_failed > goals_achieved and len(user_goals) >= 3:
-        insights.append("You struggle with long-term goals")
+        suggestions.append("You perform better with short-term goals")
+    if long_term_failed >= 2:
+        suggestions.append("Try breaking long-term goals into smaller milestones")
+    if pressure_level == "light":
+        suggestions.append("Keep task load moderate and focus on steady wins")
+    elif pressure_level == "high":
+        suggestions.append("You can handle a more demanding plan this week")
 
-    return {
+    adaptive_feedback: list[str] = []
+    if long_term_failed >= 2:
+        adaptive_feedback.append("Try breaking goals into smaller parts")
+    if consistency_score >= 65:
+        adaptive_feedback.append("You are improving your consistency")
+
+    for_you = (insights + suggestions + adaptive_feedback)[:4]
+    if len(for_you) < 2:
+        for_you.extend(["Keep tracking progress daily for sharper personalization"])
+    for_you = for_you[:4]
+
+    payload = {
         "productive_hour": productive_hour,
         "failure_hour": failure_hour,
         "productive_day": productive_day,
-        "insights": insights,
+        "productive_window": productive_window,
+        "failure_window": failure_window,
+        "consistency_score": consistency_score,
+        "pressure_level": pressure_level,
+        "insights": insights[:5],
+        "suggestions": suggestions[:5],
+        "for_you": for_you,
+        "adaptive_feedback": adaptive_feedback[:3],
         "goal_completion_rate": round(goal_completion_rate, 1),
         "goals_achieved": goals_achieved,
         "goals_failed": goals_failed,
-        "average_completion_time": round(avg_completion_days, 1),
+        "average_completion_time": avg_completion_days,
     }
+    SMART_INSIGHTS_CACHE[current_user.id] = {"signature": signature, "timestamp": time(), "payload": payload}
+    return payload
 
 
 @router.get("/tasks/missed")

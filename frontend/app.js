@@ -19,6 +19,7 @@ let currentTasksGoalsTab = 'tasks';
 let currentGoalForReflection = null;
 let identityInitialized = false;
 let identitySnapshot = { level: 1, unlockedBadgeIds: [] };
+let smartPersonalizationCache = { timestamp: 0, data: null };
 
 const translations = {
     en: {
@@ -527,6 +528,7 @@ function renderApp() {
     document.getElementById('user-display-name').textContent = currentUser.name || currentUser.username;
     identityInitialized = false;
     identitySnapshot = { level: 1, unlockedBadgeIds: [] };
+    smartPersonalizationCache = { timestamp: 0, data: null };
     
     // Initial view
     updateUILanguage();
@@ -938,6 +940,7 @@ async function loadDashboard() {
         loadMissedTasks();
         loadWeeklySummary();
         loadIdentityProfile();
+        loadDashboardPersonalization();
 
         // Fetch tasks to update pie chart
         const tasks = await apiFetch(`/tasks?user_id=${currentUser.user_id}&day=${today}`);
@@ -947,6 +950,41 @@ async function loadDashboard() {
         loadWeeklyTrend();
     } catch (err) {
         console.error('Dashboard load failed', err);
+    }
+}
+
+async function getSmartPersonalization(forceRefresh = false) {
+    const now = Date.now();
+    if (!forceRefresh && smartPersonalizationCache.data && (now - smartPersonalizationCache.timestamp) < 60000) {
+        return smartPersonalizationCache.data;
+    }
+    const data = await apiFetch('/insights/smart');
+    smartPersonalizationCache = { timestamp: now, data };
+    return data;
+}
+
+function renderDashboardPersonalization(smartData) {
+    const listEl = document.getElementById('for-you-list');
+    const pressureEl = document.getElementById('for-you-pressure');
+    if (!listEl || !pressureEl) return;
+
+    const messages = (smartData.for_you || []).slice(0, 4);
+    listEl.innerHTML = messages.map(m => `<div class="for-you-item">• ${m}</div>`).join('');
+    if (messages.length === 0) {
+        listEl.innerHTML = `<div class="for-you-item">• Keep completing tasks to unlock personalized guidance</div>`;
+    }
+
+    const pressure = smartData.pressure_level || 'normal';
+    pressureEl.textContent = pressure === 'light' ? 'Low Pressure' : pressure === 'high' ? 'High Momentum' : 'Balanced';
+    pressureEl.className = `priority-badge ${pressure === 'light' ? 'priority-low' : pressure === 'high' ? 'priority-high' : 'priority-medium'}`;
+}
+
+async function loadDashboardPersonalization() {
+    try {
+        const smartData = await getSmartPersonalization();
+        renderDashboardPersonalization(smartData);
+    } catch (err) {
+        console.error('Dashboard personalization load failed', err);
     }
 }
 
@@ -1052,12 +1090,16 @@ async function loadWeeklySummary() {
 // --- Insights Logic ---
 async function loadInsights() {
     try {
-        // Load smart insights
-        const smartData = await apiFetch('/insights/smart');
+        const smartData = await getSmartPersonalization();
         const container = document.getElementById('smart-insights-container');
         
-        if (smartData.insights.length > 0) {
-            container.innerHTML = smartData.insights.map(insight => `
+        const smartMessages = [
+            ...(smartData.insights || []),
+            ...(smartData.suggestions || []),
+            ...(smartData.adaptive_feedback || []),
+        ].slice(0, 6);
+        if (smartMessages.length > 0) {
+            container.innerHTML = smartMessages.map(insight => `
                 <div class="insight-card">
                     <span class="icon">✨</span>
                     <div class="insight-content">
@@ -1254,14 +1296,17 @@ async function loadTasks() {
 
 function showSmartSuggestion() {
     const container = document.getElementById('smart-suggestion-container');
-    const now = new Date();
-    const hour = now.getHours();
-    
+    if (!container) return;
+
+    const smart = smartPersonalizationCache.data;
     let suggestion = '';
-    if (hour >= 8 && hour <= 10) {
-        suggestion = t('best_time_to_create');
-    } else if (hour >= 14 && hour <= 16) {
-        suggestion = t('optimal_time') + " 15:30";
+    if (smart && smart.suggestions && smart.suggestions.length > 0) {
+        suggestion = smart.suggestions[0];
+    } else {
+        const now = new Date();
+        const hour = now.getHours();
+        if (hour >= 8 && hour <= 10) suggestion = t('best_time_to_create');
+        else if (hour >= 14 && hour <= 16) suggestion = t('optimal_time') + " 15:30";
     }
 
     if (suggestion) {
@@ -1385,6 +1430,7 @@ async function addTask(title, category, difficulty, date, time) {
                 goal_id: goalId
             })
         });
+        smartPersonalizationCache = { timestamp: 0, data: null };
         toggleTaskForm();
         loadTasks();
         if (goalId) loadGoals();
@@ -1433,6 +1479,7 @@ async function handleTaskUpdate(taskId, status, btnEl) {
         }
 
         // If in dashboard, refresh stats silently
+        smartPersonalizationCache = { timestamp: 0, data: null };
         if (currentView === 'dashboard') loadDashboard();
         loadGoals();
     } catch (err) {
@@ -1811,6 +1858,7 @@ async function addGoal(title, category) {
         method: 'POST',
         body: JSON.stringify({ title, category, deadline, goal_type: goalType })
     });
+    smartPersonalizationCache = { timestamp: 0, data: null };
     toggleGoalForm();
     await loadGoals();
     showToast('Goal created', 'success');
@@ -1823,6 +1871,7 @@ async function handleGoalComplete(goalId) {
             method: 'PATCH',
             body: JSON.stringify({ status: 'achieved' })
         });
+        smartPersonalizationCache = { timestamp: 0, data: null };
         document.getElementById('goal-reflection-modal').classList.add('active');
         loadGoals();
         loadDashboard();
@@ -1837,6 +1886,7 @@ async function handleGoalFail(goalId) {
             method: 'PATCH',
             body: JSON.stringify({ status: 'failed' })
         });
+        smartPersonalizationCache = { timestamp: 0, data: null };
         loadGoals();
         loadDashboard();
         showToast('Goal marked as failed', 'error');
