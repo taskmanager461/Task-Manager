@@ -1779,16 +1779,16 @@ function calculatePressureStatus(goal) {
 
 function getGoalTypeLabel(type) {
     const labels = {
-        today: 'Today (High)',
-        tomorrow: 'Tomorrow (High)',
-        three_days: '1-3 days (High)',
+        today: 'Today (Short)',
+        tomorrow: 'Tomorrow (Short)',
+        three_days: '1-3 days (Short)',
         one_week: '1 week (Medium)',
         two_weeks: '1-2 weeks (Medium)',
         one_month: '1 month (Medium)',
-        three_months: '3 months (Low)',
-        six_months: '6 months (Low)',
-        one_year: '1 year (Low)',
-        one_year_plus: '1 year+ (Low)'
+        three_months: '3 months (Long)',
+        six_months: '6 months (Long)',
+        one_year: '1 year (Long)',
+        one_year_plus: '1 year+ (Long)'
     };
     return labels[type] || type;
 }
