@@ -23,6 +23,7 @@ from backend.routes.identity import router as identity_router
 from backend.routes.score import router as score_router
 from backend.routes.tasks import router as tasks_router
 from backend.routes.push import router as push_router, run_scheduled_jobs
+from backend.routes.social import router as social_router
 from config.settings import get_settings
 
 scheduler = BackgroundScheduler()
@@ -97,6 +98,7 @@ app.include_router(habits_router, prefix="/api")
 app.include_router(score_router, prefix="/api")
 app.include_router(identity_router, prefix="/api")
 app.include_router(push_router, prefix="/api")
+app.include_router(social_router, prefix="/api")
 
 @app.get("/health")
 async def health_check():
