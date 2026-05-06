@@ -211,12 +211,12 @@ p { color: var(--text-secondary); font-size: 0.9375rem; }
     position: relative;
     overflow: hidden;
     background: var(--surface);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--border);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(100, 150, 255, 0.3);
     border-radius: var(--radius-lg);
     padding: 1.5rem;
-    box-shadow: var(--card-shadow);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4), 0 0 60px rgba(10, 134, 255, 0.1);
     transition: transform var(--transition), border-color var(--transition), background var(--transition), box-shadow var(--transition);
     z-index: 1;
 }
@@ -224,92 +224,108 @@ p { color: var(--text-secondary); font-size: 0.9375rem; }
 .card:hover, .task-card:hover, .metric-card:hover {
     background: var(--surface-hover);
     border-color: var(--primary);
-    box-shadow: var(--card-hover-shadow);
-    transform: translateY(-4px);
+    box-shadow: 0 12px 50px rgba(0, 0, 0, 0.5), 0 0 80px rgba(10, 134, 255, 0.2);
+    transform: translateY(-6px) scale(1.01);
 }
 
 /* Metric Card Enhancements */
 .metrics-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.25rem;
+    gap: 1.5rem;
 }
 
 .metric-card {
-    padding: 1.25rem;
+    padding: 1.5rem;
     position: relative;
     overflow: hidden;
+    border-radius: 20px;
+    background: rgba(12, 12, 16, 0.9);
+    border: 1px solid rgba(51, 65, 85, 0.4);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
 
+/* Left border glow for each metric card */
 .metric-card::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
-    width: 4px;
+    width: 8px;
     height: 100%;
-    background: linear-gradient(to bottom, var(--primary), #10b981);
+    background: linear-gradient(to bottom, #0a86ff, #10b981);
+    box-shadow: 0 0 30px rgba(10, 134, 255, 0.5);
 }
 
 .metric-card:nth-child(2)::before {
     background: linear-gradient(to bottom, #f59e0b, #ef4444);
+    box-shadow: 0 0 30px rgba(245, 158, 11, 0.5);
 }
 
 .metric-card:nth-child(3)::before {
     background: linear-gradient(to bottom, #10b981, #06b6d4);
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
 }
 
-/* Score label covers entire metric card background */
-.metric-card:nth-child(1):has(.score-label.excellent) {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(16, 185, 129, 0.08));
-}
-.metric-card:nth-child(1):has(.score-label.good) {
-    background: linear-gradient(135deg, rgba(0, 102, 255, 0.25), rgba(0, 102, 255, 0.08));
-}
-.metric-card:nth-child(1):has(.score-label.average) {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(245, 158, 11, 0.08));
-}
-.metric-card:nth-child(1):has(.score-label.low) {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.35), rgba(239, 68, 68, 0.1));
-    border-left: 6px solid #EF4444;
+/* Bottom right glow for each metric card */
+.metric-card::after {
+    content: '';
+    position: absolute;
+    bottom: -30px;
+    right: -30px;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(10, 134, 255, 0.4) 0%, transparent 70%);
+    pointer-events: none;
 }
 
-/* Streak metric card background */
-.metric-card:nth-child(2) {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(239, 68, 68, 0.05));
+.metric-card:nth-child(2)::after {
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.4) 0%, transparent 70%);
 }
 
-/* Success metric card background */
-.metric-card:nth-child(3) {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.05));
+.metric-card:nth-child(3)::after {
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.4) 0%, transparent 70%);
 }
 
 .metric-card .icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #0a86ff, #10b981);
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    background: rgba(10, 134, 255, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
-    color: white;
-    border: 1px solid rgba(10, 134, 255, 0.4);
-    box-shadow: 0 0 12px rgba(10, 134, 255, 0.3);
+    font-size: 1.75rem;
+    color: #0a86ff;
+    border: 2px solid rgba(10, 134, 255, 0.3);
+    margin-bottom: 1rem;
 }
 
 .metric-card:nth-child(2) .icon {
-    background: linear-gradient(135deg, #f59e0b, #ef4444);
-    color: white;
-    border-color: rgba(245, 158, 11, 0.4);
-    box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border-color: rgba(245, 158, 11, 0.3);
 }
 
 .metric-card:nth-child(3) .icon {
-    background: linear-gradient(135deg, #10b981, #06b6d4);
-    color: white;
-    border-color: rgba(16, 185, 129, 0.4);
-    box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.metric-card .label {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.metric-card .value {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 0.5rem;
+    display: block;
 }
 
 
@@ -1280,29 +1296,33 @@ canvas {
 }
 
 .score-label {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    padding: 0.35rem 1rem;
-    border-radius: 100px;
+    padding: 0.4rem 0.9rem;
+    border-radius: 8px;
     width: fit-content;
-    margin-top: 0.25rem;
-    color: white;
+    margin-top: 0.75rem;
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    background: rgba(239, 68, 68, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
 }
 
-.score-label.excellent {
-    background: #10B981;
+.success-progress-bar {
+    margin-top: 0.75rem;
+    height: 8px;
+    background: rgba(148, 163, 184, 0.15);
+    border-radius: 9999px;
+    overflow: hidden;
 }
 
-.score-label.good {
-    background: #0066FF;
-}
-
-.score-label.average {
-    background: #F59E0B;
-}
-
-.score-label.low {
-    background: #EF4444;
+.success-progress-bar #success-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981, #06b6d4);
+    border-radius: 9999px;
+    transition: width 0.5s ease;
 }
 
 .score-comparison {
