@@ -1,21 +1,21 @@
 /* Global Design System - Professional Production Polish */
 :root {
-    --primary: #1e40af;
-    --primary-glow: rgba(30, 64, 175, 0.6);
+    --primary: #2563eb;
+    --primary-glow: rgba(37, 99, 235, 0.7);
     --background: #000000;
     --background-rgb: 0, 0, 0;
-    --surface: rgba(15, 23, 42, 0.92);
-    --surface-hover: rgba(30, 41, 59, 0.98);
-    --surface-soft: rgba(0, 0, 0, 0.6);
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --border: rgba(51, 65, 85, 0.4);
+    --surface: rgba(3, 7, 18, 0.98);
+    --surface-hover: rgba(15, 23, 42, 1);
+    --surface-soft: rgba(0, 0, 0, 0.85);
+    --text-primary: #f1f5f9;
+    --text-secondary: #64748b;
+    --border: rgba(30, 64, 175, 0.25);
     --success: #22c55e;
-    --success-glow: rgba(34, 197, 94, 0.5);
+    --success-glow: rgba(34, 197, 94, 0.6);
     --error: #ef4444;
-    --error-glow: rgba(239, 68, 68, 0.5);
+    --error-glow: rgba(239, 68, 68, 0.6);
     --warning: #f59e0b;
-    --line-color: rgba(30, 64, 175, 0.5);
+    --line-color: rgba(37, 99, 235, 0.6);
     
     /* Glassmorphism */
     --glass-blur: blur(24px);
