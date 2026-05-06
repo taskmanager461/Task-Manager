@@ -15,6 +15,7 @@ let cachedGoals = [];
 let cachedHabits = [];
 let calendarDate = new Date();
 let calendarTasks = [];
+let dashboardCalendarDate = new Date();
 let notifiedTasks = new Set();
 let notifiedHabits = new Set();
 let currentTasksGoalsTab = 'tasks';
@@ -937,6 +938,9 @@ async function loadDashboard() {
             method: 'POST',
             body: JSON.stringify({ user_id: currentUser.user_id, day: today })
         });
+        
+        // Render dashboard calendar
+        renderDashboardCalendar();
         
         // Basic stats
         document.getElementById('score-value').textContent = score.score.toFixed(1);
@@ -2569,4 +2573,71 @@ function copyProfileLink() {
     }).catch(() => {
         showToast('Failed to copy link', 'error');
     });
+}
+
+// --- Dashboard Calendar Functions ---
+async function renderDashboardCalendar() {
+    const grid = document.getElementById('dashboard-calendar-grid');
+    const title = document.getElementById('dashboard-calendar-month-year');
+    if (!grid || !title) return;
+
+    grid.innerHTML = '';
+    const month = dashboardCalendarDate.getMonth();
+    const year = dashboardCalendarDate.getFullYear();
+
+    const monthNames = [t('january'), t('february'), t('march'), t('april'), t('may'), t('june'), t('july'), t('august'), t('september'), t('october'), t('november'), t('december')];
+    title.textContent = `${monthNames[month]} ${year}`;
+
+    // Days Labels
+    const days = [t('mon'), t('tue'), t('wed'), t('thu'), t('fri'), t('sat'), t('sun')];
+    days.forEach(d => grid.innerHTML += `<div class="calendar-day-label">${d}</div>`);
+
+    // Get all tasks for the month to check active days
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startStr = firstDay.toISOString().split('T')[0];
+    const endStr = lastDay.toISOString().split('T')[0];
+
+    let monthTasks = [];
+    try {
+        monthTasks = await apiFetch(`/tasks/range?start_date=${startStr}&end_date=${endStr}`);
+    } catch (err) {
+        console.error('Failed to load month tasks for calendar', err);
+    }
+
+    // Determine active days: days with at least one completed task
+    const activeDays = new Set();
+    monthTasks.forEach(task => {
+        if (task.status === 'completed') {
+            activeDays.add(task.date);
+        }
+    });
+
+    const firstDayIdx = (firstDay.getDay() + 6) % 7; // Monday start
+    const daysInMonth = lastDay.getDate();
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    // Padding for previous month
+    for (let i = 0; i < firstDayIdx; i++) {
+        grid.innerHTML += `<div class="calendar-day other-month"></div>`;
+    }
+
+    // Days in current month
+    for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const isToday = dateStr === todayStr;
+        const isActive = activeDays.has(dateStr);
+        const hasTasks = monthTasks.some(t => t.date === dateStr);
+
+        const dayEl = document.createElement('div');
+        dayEl.className = `calendar-day ${isToday ? 'today' : ''} ${isActive ? 'active-day' : ''}`;
+        dayEl.textContent = d;
+        dayEl.onclick = () => renderDayTasks(dateStr);
+        grid.appendChild(dayEl);
+    }
+}
+
+function changeDashboardMonth(delta) {
+    dashboardCalendarDate.setMonth(dashboardCalendarDate.getMonth() + delta);
+    renderDashboardCalendar();
 }
