@@ -265,25 +265,28 @@ p { color: var(--text-secondary); font-size: 0.9375rem; }
     width: 48px;
     height: 48px;
     border-radius: 12px;
-    background: linear-gradient(135deg, rgba(10, 134, 255, 0.15), rgba(16, 185, 129, 0.1));
+    background: linear-gradient(135deg, #0a86ff, #10b981);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
-    color: var(--primary);
-    border: 1px solid rgba(10, 134, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(10, 134, 255, 0.4);
+    box-shadow: 0 0 12px rgba(10, 134, 255, 0.3);
 }
 
 .metric-card:nth-child(2) .icon {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.1));
-    color: #f59e0b;
-    border-color: rgba(245, 158, 11, 0.2);
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: white;
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
 }
 
 .metric-card:nth-child(3) .icon {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(6, 182, 212, 0.1));
-    color: #10b981;
-    border-color: rgba(16, 185, 129, 0.2);
+    background: linear-gradient(135deg, #10b981, #06b6d4);
+    color: white;
+    border-color: rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
 }
 
 
@@ -1255,35 +1258,28 @@ canvas {
 
 .score-label {
     font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.25rem 0.75rem;
+    font-weight: 700;
+    padding: 0.35rem 1rem;
     border-radius: 100px;
     width: fit-content;
     margin-top: 0.25rem;
+    color: white;
 }
 
 .score-label.excellent {
-    background: rgba(16, 185, 129, 0.15);
-    color: #10B981;
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    background: #10B981;
 }
 
 .score-label.good {
-    background: rgba(0, 102, 255, 0.15);
-    color: #0066FF;
-    border: 1px solid rgba(0, 102, 255, 0.3);
+    background: #0066FF;
 }
 
 .score-label.average {
-    background: rgba(245, 158, 11, 0.15);
-    color: #F59E0B;
-    border: 1px solid rgba(245, 158, 11, 0.3);
+    background: #F59E0B;
 }
 
 .score-label.low {
-    background: rgba(239, 68, 68, 0.15);
-    color: #EF4444;
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: #EF4444;
 }
 
 .score-comparison {
@@ -1700,7 +1696,9 @@ canvas {
 
 /* Dashboard Calendar Container */
 .calendar-container {
-    padding: 0.5rem 0.625rem !important;
+    padding: 0.75rem 1rem !important;
+    max-width: 350px;
+    margin: 0 auto;
 }
 
 /* Dashboard Calendar Header */
@@ -1709,27 +1707,27 @@ canvas {
     justify-content: space-between;
     align-items: center;
     padding: 0;
-    margin-bottom: 0.375rem;
+    margin-bottom: 0.75rem;
 }
 
 .calendar-container .calendar-header h2 {
-    font-size: 0.5rem;
+    font-size: 0.875rem;
     font-weight: 700;
     margin: 0;
 }
 
 .calendar-container .calendar-header .btn {
-    min-width: 16px;
-    height: 16px;
+    min-width: 28px;
+    height: 28px;
     padding: 0;
-    font-size: 0.4375rem;
+    font-size: 0.75rem;
 }
 
 /* Dashboard Calendar Grid */
 .calendar-container .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 0.175rem;
+    gap: 0.25rem;
     padding: 0;
 }
 
@@ -1738,8 +1736,8 @@ canvas {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 4px;
-    font-size: 0.4rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
