@@ -924,10 +924,10 @@ function logout() {
 }
 
 function getScoreLabel(score) {
-    if (score >= 80) return { text: 'Excellent', class: 'excellent' };
-    if (score >= 60) return { text: 'Good', class: 'good' };
-    if (score >= 40) return { text: 'Average', class: 'average' };
-    return { text: 'Low', class: 'low' };
+    if (score >= 80) return { text: '🏆 Excellent', class: 'excellent' };
+    if (score >= 60) return { text: '✨ Good', class: 'good' };
+    if (score >= 40) return { text: '⚡ Average', class: 'average' };
+    return { text: '⚠️ Low', class: 'low' };
 }
 
 // --- Dashboard Logic ---
