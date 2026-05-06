@@ -1451,3 +1451,116 @@ canvas {
     margin-bottom: 0.5rem;
     color: var(--text-primary);
 }
+
+/* Share Modal Content */
+.share-modal-content {
+    background: var(--surface);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    padding: 2rem;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border);
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    box-shadow: var(--card-hover-shadow);
+    transform: scale(0.9);
+    opacity: 0;
+    transition: transform var(--transition), opacity var(--transition);
+}
+
+.task-form-modal.active .share-modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* Share Card */
+.share-card {
+    background: linear-gradient(135deg, #0a0f25 0%, #050a14 100%);
+    border: 1px solid var(--primary);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 0 30px rgba(37, 99, 235, 0.3);
+}
+
+.share-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.share-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+}
+
+.share-card-header h3 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    margin: 0;
+}
+
+.share-card-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+}
+
+.share-stat {
+    background: rgba(37, 99, 235, 0.1);
+    border: 1px solid rgba(37, 99, 235, 0.3);
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.share-stat-label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.share-stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.share-card-footer {
+    margin-top: 1.5rem;
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(37, 99, 235, 0.3);
+}
+
+.share-card-footer span {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* Share Actions */
+.share-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* Profile Link Section */
+.profile-link-section {
+    margin-top: 0.5rem;
+}

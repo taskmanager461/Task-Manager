@@ -2455,3 +2455,118 @@ document.getElementById('install-btn').addEventListener('click', async () => {
         }
     }
 });
+
+// --- Share Functions ---
+let shareData = {
+    level: 1,
+    xp: 0,
+    streak: 0,
+    completedTasks: 0,
+    goalsAchieved: 0
+};
+
+async function openShareModal() {
+    const modal = document.getElementById('share-modal');
+    modal.classList.add('active');
+    
+    try {
+        const [identity, socialProfile, allTasks] = await Promise.all([
+            apiFetch('/identity/profile'),
+            apiFetch('/social/profile'),
+            apiFetch('/tasks/range?start_date=2000-01-01&end_date=2100-12-31')
+        ]);
+        
+        shareData = {
+            level: identity.level,
+            xp: identity.total_xp,
+            streak: identity.streak,
+            completedTasks: identity.completed_tasks,
+            goalsAchieved: socialProfile.goals_achieved || 0
+        };
+        
+        document.getElementById('share-username').textContent = currentUser.name || currentUser.username;
+        document.getElementById('share-level').textContent = shareData.level;
+        document.getElementById('share-xp').textContent = shareData.xp;
+        document.getElementById('share-streak').textContent = shareData.streak;
+        document.getElementById('share-completed-tasks').textContent = shareData.completedTasks;
+        document.getElementById('share-goals-achieved').textContent = shareData.goalsAchieved;
+        document.getElementById('profile-link').value = `${window.location.origin}/user/${currentUser.username}`;
+        
+    } catch (err) {
+        console.error('Failed to load share data:', err);
+        showToast('Failed to load share data', 'error');
+    }
+}
+
+function closeShareModal() {
+    const modal = document.getElementById('share-modal');
+    modal.classList.remove('active');
+}
+
+async function downloadShareCard() {
+    try {
+        const shareCard = document.getElementById('share-card');
+        
+        const html2canvasScript = document.createElement('script');
+        html2canvasScript.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+        html2canvasScript.onload = async () => {
+            const canvas = await html2canvas(shareCard, {
+                backgroundColor: '#0a0f25',
+                scale: 2
+            });
+            
+            const link = document.createElement('a');
+            link.download = 'tobedone-progress.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+            showToast('Image downloaded!', 'success');
+        };
+        document.head.appendChild(html2canvasScript);
+        
+    } catch (err) {
+        console.error('Download failed:', err);
+        showToast('Download failed', 'error');
+    }
+}
+
+function copyShareText() {
+    const text = `Check out my progress on Tobedone! 🎯
+Level: ${shareData.level}
+XP: ${shareData.xp}
+Streak: ${shareData.streak} days
+Completed Tasks: ${shareData.completedTasks}
+Goals Achieved: ${shareData.goalsAchieved}`;
+    
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('Text copied!', 'success');
+    }).catch(() => {
+        showToast('Failed to copy text', 'error');
+    });
+}
+
+async function nativeShare() {
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: 'My Tobedone Progress',
+                text: `Check out my progress on Tobedone! Level ${shareData.level}, ${shareData.streak} day streak!`,
+                url: document.getElementById('profile-link').value
+            });
+            showToast('Shared successfully!', 'success');
+        } catch (err) {
+            console.log('Share cancelled or failed');
+        }
+    } else {
+        copyShareText();
+    }
+}
+
+function copyProfileLink() {
+    const linkInput = document.getElementById('profile-link');
+    navigator.clipboard.writeText(linkInput.value).then(() => {
+        showToast('Profile link copied!', 'success');
+    }).catch(() => {
+        showToast('Failed to copy link', 'error');
+    });
+}

@@ -154,6 +154,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Handle user profile URLs for SPA
+@app.get("/user/{username}")
+async def serve_user_profile(username: str):
+    index_file = FRONTEND_DIR / "index.html"
+    if index_file.exists():
+        return FileResponse(index_file, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
+    return {"message": "Frontend not found"}
+
 # Catch-all route for SPA behavior
 @app.get("/{full_path:path}")
 async def serve_frontend(full_path: str):
