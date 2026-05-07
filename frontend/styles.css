@@ -228,94 +228,126 @@ p { color: var(--text-secondary); font-size: 0.9375rem; }
     transform: translateY(-6px) scale(1.01);
 }
 
-/* Metric Card Enhancements - EXACT INSTRUCTIONS */
+/* Metric Card Enhancements - EXACT PHOTO REPLICATION */
 .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
 }
 
-/* CARD BASE STYLE */
-.card {
-    border-radius: 20px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.1);
-    transition: all 0.2s ease;
+.metric-card {
     position: relative;
+    padding: 1.75rem;
+    border-radius: 20px;
+    background: rgba(13, 13, 18, 0.92);
+    border: 1px solid rgba(51, 65, 85, 0.5);
     overflow: hidden;
 }
 
-/* BLUE CARD (TRUST SCORE) */
-.card-blue {
-    box-shadow: 0 0 40px rgba(0, 120, 255, 0.15), inset 0 0 20px rgba(0, 120, 255, 0.1);
+/* Left border glow */
+.metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    background: linear-gradient(to bottom, #0a86ff, #10b981);
+    box-shadow: 0 0 30px rgba(10, 134, 255, 0.6);
 }
 
-/* ORANGE CARD (STREAK) */
-.card-orange {
-    box-shadow: 0 0 40px rgba(255, 140, 0, 0.15), inset 0 0 20px rgba(255, 140, 0, 0.1);
+.metric-card-orange::before {
+    background: linear-gradient(to bottom, #f59e0b, #ef4444);
+    box-shadow: 0 0 30px rgba(245, 158, 11, 0.6);
 }
 
-/* GREEN CARD (SUCCESS) */
-.card-green {
-    box-shadow: 0 0 40px rgba(0, 255, 150, 0.15), inset 0 0 20px rgba(0, 255, 150, 0.1);
+.metric-card-green::before {
+    background: linear-gradient(to bottom, #10b981, #06b6d4);
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
 }
 
-/* ICON BOX */
-.icon-box {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
+/* Bottom right glow */
+.metric-card::after {
+    content: '';
+    position: absolute;
+    bottom: -40px;
+    right: -40px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(10, 134, 255, 0.45) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.metric-card-orange::after {
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.45) 0%, transparent 60%);
+}
+
+.metric-card-green::after {
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.45) 0%, transparent 60%);
+}
+
+.metric-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255,255,255,0.08);
-    margin-bottom: 12px;
+    font-size: 1.9rem;
+    color: #0a86ff;
+    border: 2px solid rgba(10, 134, 255, 0.4);
+    margin-bottom: 1.1rem;
 }
 
-/* TEXT RULES */
-.title {
-    font-size: 14px;
-    opacity: 0.7;
-    display: block;
-    margin-bottom: 6px;
+.metric-card-orange .metric-icon {
+    color: #f59e0b;
+    border-color: rgba(245, 158, 11, 0.4);
 }
 
-.value {
-    font-size: 32px;
+.metric-card-green .metric-icon {
+    color: #10b981;
+    border-color: rgba(16, 185, 129, 0.4);
+}
+
+.metric-title {
+    font-size: 0.95rem;
+    color: #94a3b8;
+    margin-bottom: 0.35rem;
+}
+
+.metric-value {
+    font-size: 2.75rem;
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 0.6rem;
+}
+
+.metric-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1.1rem;
+    border-radius: 10px;
+    background: rgba(239, 68, 68, 0.18);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.4);
     font-weight: 600;
-    display: block;
-    margin-bottom: 10px;
-}
-
-/* STATUS BADGE */
-.badge-low {
-    padding: 6px 12px;
-    border-radius: 999px;
-    background: rgba(255, 0, 0, 0.15);
-    color: #ff4d4d;
-    border: 1px solid rgba(255,0,0,0.3);
+    font-size: 0.85rem;
     width: fit-content;
 }
 
-/* PROGRESS BAR */
-.progress {
-    height: 6px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.1);
-    margin-top: 10px;
+.metric-progress {
+    margin-top: 0.85rem;
+    height: 8px;
+    background: rgba(51, 65, 85, 0.4);
+    border-radius: 9999px;
+    overflow: hidden;
 }
 
-.progress-fill {
+.metric-progress-fill {
     height: 100%;
-    border-radius: 999px;
-    background: linear-gradient(90deg, #00ff99, #00cc66);
-}
-
-/* HOVER EFFECT */
-.card:hover {
-    transform: scale(1.02);
+    background: linear-gradient(90deg, #10b981, #059669);
+    border-radius: 9999px;
 }
 
 
