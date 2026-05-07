@@ -4,33 +4,39 @@ from __future__ import annotations
 def get_theme_tokens(dark_mode: bool) -> dict[str, str]:
     if dark_mode:
         return {
-            "bg": "#0f172a",
-            "surface": "#1e293b",
-            "surface_soft": "#273449",
-            "sidebar": "#111827",
-            "text": "#e2e8f0",
+            "bg": "#050507",
+            "surface": "rgba(13, 13, 18, 0.92)",
+            "surface_soft": "rgba(20, 20, 28, 1)",
+            "sidebar": "rgba(5, 5, 7, 0.9)",
+            "text": "#f8fafc",
             "muted": "#94a3b8",
-            "accent": "#38bdf8",
-            "accent_2": "#22d3ee",
-            "border": "#334155",
+            "accent": "#0a86ff",
+            "accent_2": "#10b981",
+            "accent_orange": "#f59e0b",
+            "accent_red": "#ef4444",
+            "border": "rgba(51, 65, 85, 0.5)",
             "success": "#22c55e",
             "danger": "#ef4444",
-            "shadow": "0 18px 45px rgba(2, 6, 23, 0.42)",
+            "warning": "#f59e0b",
+            "shadow": "0 8px 40px rgba(0, 0, 0, 0.4), 0 0 60px rgba(10, 134, 255, 0.1)",
         }
 
     return {
-        "bg": "#f1f5f9",
-        "surface": "#ffffff",
-        "surface_soft": "#f8fafc",
+        "bg": "#f8fafc",
+        "surface": "rgba(255, 255, 255, 0.95)",
+        "surface_soft": "rgba(248, 250, 252, 1)",
         "sidebar": "#eef2ff",
         "text": "#0f172a",
         "muted": "#64748b",
-        "accent": "#2563eb",
-        "accent_2": "#0891b2",
-        "border": "#dbeafe",
-        "success": "#16a34a",
-        "danger": "#dc2626",
-        "shadow": "0 14px 35px rgba(15, 23, 42, 0.12)",
+        "accent": "#0a86ff",
+        "accent_2": "#10b981",
+        "accent_orange": "#f59e0b",
+        "accent_red": "#ef4444",
+        "border": "rgba(148, 163, 184, 0.3)",
+        "success": "#22c55e",
+        "danger": "#ef4444",
+        "warning": "#f59e0b",
+        "shadow": "0 10px 30px rgba(15, 23, 42, 0.08)",
     }
 
 
@@ -39,18 +45,19 @@ def get_theme_css(dark_mode: bool) -> str:
     return f"""
     <style>
     /* Hide Streamlit elements to make it look like a normal site */
-    #MainMenu {visibility: hidden;}
-    header {visibility: hidden;}
-    footer {visibility: hidden;}
-    div[data-testid="stStatusWidget"] {visibility: hidden;}
-    [data-testid="stHeader"] {background: transparent; height: 0;}
-    .stAppDeployButton {display: none !important;}
+    #MainMenu {{visibility: hidden;}}
+    header {{visibility: hidden;}}
+    footer {{visibility: hidden;}}
+    div[data-testid="stStatusWidget"] {{visibility: hidden;}}
+    [data-testid="stHeader"] {{background: transparent; height: 0;}}
+    .stAppDeployButton {{display: none !important;}}
     
-    .stApp {
+    .stApp {{
         background: {c["bg"]};
         color: {c["text"]};
         font-family: "Inter", "Segoe UI", sans-serif;
     }}
+    
     /* Mobile Optimization & Bottom Nav */
     @media (max-width: 768px) {{
         .block-container {{
@@ -83,6 +90,7 @@ def get_theme_css(dark_mode: bool) -> str:
             display: none !important;
         }}
     }}
+    
     /* Bottom Navigation Bar */
     .bottom-nav {{
         position: fixed;
@@ -200,45 +208,146 @@ def get_theme_css(dark_mode: bool) -> str:
         border-color: {c["accent"]};
         box-shadow: 0 25px 60px rgba(0,0,0,0.2);
     }}
-    /* Pro Metric Styles */
+    
+    /* === EXACT METRIC CARD STYLES FROM IMAGE === */
     .metric-card {{
-        background: linear-gradient(145deg, {c["surface"]}, {c["surface_soft"]});
-        border-radius: 24px;
-        padding: 1.8rem;
+        position: relative;
+        padding: 1.75rem;
+        border-radius: 20px;
+        background: {c["surface"]};
         border: 1px solid {c["border"]};
+        overflow: hidden;
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
     }}
+    
+    /* Left border glow - blue (default) */
+    .metric-card::before {{
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 6px;
+        height: 100%;
+        background: linear-gradient(to bottom, {c["accent"]}, {c["accent_2"]});
+        box-shadow: 0 0 30px rgba(10, 134, 255, 0.6);
+    }}
+    
+    /* Orange variant */
+    .metric-card.orange::before {{
+        background: linear-gradient(to bottom, {c["accent_orange"]}, {c["accent_red"]});
+        box-shadow: 0 0 30px rgba(245, 158, 11, 0.6);
+    }}
+    
+    /* Green variant */
+    .metric-card.green::before {{
+        background: linear-gradient(to bottom, {c["accent_2"]}, {c["accent"]});
+        box-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
+    }}
+    
+    /* Bottom right glow - blue (default) */
+    .metric-card::after {{
+        content: '';
+        position: absolute;
+        bottom: -40px;
+        right: -40px;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(10, 134, 255, 0.45) 0%, transparent 60%);
+        pointer-events: none;
+    }}
+    
+    .metric-card.orange::after {{
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.45) 0%, transparent 60%);
+    }}
+    
+    .metric-card.green::after {{
+        background: radial-gradient(circle, rgba(16, 185, 129, 0.45) 0%, transparent 60%);
+    }}
+    
     .metric-icon {{
-        font-size: 1.8rem;
-        margin-bottom: 0.8rem;
-        padding: 12px;
-        background: rgba(56, 189, 248, 0.15);
+        position: relative;
+        z-index: 1;
+        width: 56px;
+        height: 56px;
         border-radius: 16px;
-        display: inline-block;
-    }}
-    .metric-label {{
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: {c["muted"]};
-        margin-bottom: 0.6rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }}
-    .metric-value {{
-        font-size: 2.6rem;
-        font-weight: 900;
-        line-height: 1.1;
-        color: {c["text"]};
-        letter-spacing: -0.04em;
-    }}
-    .metric-sub {{
-        font-size: 0.9rem;
-        color: {c["success"]};
-        font-weight: 700;
-        margin-top: 0.8rem;
         display: flex;
         align-items: center;
-        gap: 6px;
+        justify-content: center;
+        font-size: 1.9rem;
+        color: {c["accent"]};
+        border: 2px solid rgba(10, 134, 255, 0.4);
+        margin-bottom: 1.1rem;
+        background: transparent;
     }}
+    
+    .metric-card.orange .metric-icon {{
+        color: {c["accent_orange"]};
+        border-color: rgba(245, 158, 11, 0.4);
+    }}
+    
+    .metric-card.green .metric-icon {{
+        color: {c["accent_2"]};
+        border-color: rgba(16, 185, 129, 0.4);
+    }}
+    
+    .metric-label {{
+        position: relative;
+        z-index: 1;
+        font-size: 0.95rem;
+        color: {c["muted"]};
+        margin-bottom: 0.35rem;
+        font-weight: 500;
+    }}
+    
+    .metric-value {{
+        position: relative;
+        z-index: 1;
+        font-size: 2.75rem;
+        font-weight: 700;
+        color: {c["text"]};
+        margin-bottom: 0.6rem;
+        line-height: 1.1;
+    }}
+    
+    .metric-badge {{
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.55rem 1.1rem;
+        border-radius: 10px;
+        background: rgba(239, 68, 68, 0.18);
+        color: {c["danger"]};
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        font-weight: 600;
+        font-size: 0.85rem;
+        width: fit-content;
+    }}
+    
+    .metric-badge.success {{
+        background: rgba(34, 197, 94, 0.18);
+        color: {c["success"]};
+        border: 1px solid rgba(34, 197, 94, 0.4);
+    }}
+    
+    .metric-progress {{
+        position: relative;
+        z-index: 1;
+        margin-top: 0.85rem;
+        height: 8px;
+        background: rgba(51, 65, 85, 0.4);
+        border-radius: 9999px;
+        overflow: hidden;
+    }}
+    
+    .metric-progress-fill {{
+        height: 100%;
+        background: linear-gradient(90deg, {c["accent_2"]}, #059669);
+        border-radius: 9999px;
+    }}
+    
     /* Install Button Pro */
     .install-btn {{
         background: linear-gradient(135deg, {c["accent"]}, {c["accent_2"]});

@@ -1,14 +1,27 @@
 import streamlit as st
 
 
-def metric_card(icon: str, title: str, value: str, subtitle: str = "") -> None:
+def metric_card(icon: str, title: str, value: str, subtitle: str = "", variant: str = "blue") -> None:
+    variant_classes = {
+        "blue": "",
+        "orange": "orange",
+        "green": "green"
+    }
+    variant_class = variant_classes.get(variant, "")
+    
+    is_success = subtitle and any(x in subtitle.lower() for x in ["success", "completed", "good", "high"])
+    
     st.markdown(
         f"""
-        <div class='surface-card'>
+        <div class='metric-card {variant_class}'>
             <div class='metric-icon'>{icon}</div>
             <div class='metric-label'>{title}</div>
             <div class='metric-value'>{value}</div>
-            <div class='metric-sub'>{subtitle}</div>
+            {f'''
+            <div class='metric-badge {'success' if is_success else ''}'>
+                <i class='fa-solid fa-chart-line'></i> {subtitle}
+            </div>
+            ''' if subtitle else ''}
         </div>
         """,
         unsafe_allow_html=True,

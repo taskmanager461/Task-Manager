@@ -51,7 +51,7 @@ def init_state() -> None:
         "username": "",
         "name": "",
         "access_token": "",
-        "dark_mode": False,
+        "dark_mode": True,
         "lang": "en",
         "menu": "dashboard",
         "last_daily_summary": "",
@@ -574,11 +574,11 @@ def dashboard_page(client: APIClient, user_id: int) -> None:
     c1, c2, c3 = st.columns(3)
     with c1:
         score_label = get_score_label(score["score"])
-        metric_card("🎯", t("self_trust_score"), f"{score['score']:.1f}", f"{score_label}")
+        metric_card("🛡️", t("self_trust_score"), f"{score['score']:.1f}", f"{score_label}", variant="blue")
     with c2:
-        metric_card("🔥", t("current_streak"), f"{score['streak']}", t("multiplier", value=str(score["multiplier"])))
+        metric_card("🔥", t("current_streak"), f"{score['streak']}", t("multiplier", value=str(score["multiplier"])), variant="orange")
     with c3:
-        metric_card("✅", t("success_rate"), f"{score['success_rate'] * 100:.0f}%", t("tasks_count", count=str(score["total_tasks"])))
+        metric_card("✅", t("success_rate"), f"{score['success_rate'] * 100:.0f}%", t("tasks_count", count=str(score["total_tasks"])), variant="green")
 
     # Missed tasks feedback
     if missed_count > 0:
