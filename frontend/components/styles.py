@@ -157,8 +157,8 @@ def get_theme_css(dark_mode: bool) -> str:
     }}
 
     .hero-metric-score {{
-        background: linear-gradient(135deg, {c["accent"]}, {c["accent_2"]}, {c["accent_3"]});
-        box-shadow: 0 20px 60px rgba(139, 92, 246, 0.35);
+        background: linear-gradient(135deg, #0ea5e9, #3b82f6, #2563eb);
+        box-shadow: 0 20px 60px rgba(59, 130, 246, 0.35);
     }}
 
     .hero-metric-streak {{
@@ -172,9 +172,17 @@ def get_theme_css(dark_mode: bool) -> str:
     }}
 
     .hero-metric-icon {{
-        font-size: 2.5rem;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
         margin-bottom: 1rem;
-        filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
     }}
 
     .hero-metric-label {{

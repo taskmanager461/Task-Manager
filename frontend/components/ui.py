@@ -8,19 +8,25 @@ def hero_metrics(score_value: str, score_label: str,
         f"""
         <div class="hero-metric-grid">
             <div class="hero-metric hero-metric-score">
-                <div class="hero-metric-icon">🎯</div>
+                <div class="hero-metric-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
                 <div class="hero-metric-label">Self Trust Score</div>
                 <div class="hero-metric-value">{score_value}</div>
                 <div class="hero-metric-sub">{score_label}</div>
             </div>
             <div class="hero-metric hero-metric-streak">
-                <div class="hero-metric-icon">🔥</div>
+                <div class="hero-metric-icon">
+                    <i class="fa-solid fa-fire"></i>
+                </div>
                 <div class="hero-metric-label">Current Streak</div>
                 <div class="hero-metric-value">{streak_value}</div>
                 <div class="hero-metric-sub">{streak_sub}</div>
             </div>
             <div class="hero-metric hero-metric-success">
-                <div class="hero-metric-icon">✅</div>
+                <div class="hero-metric-icon">
+                    <i class="fa-solid fa-check"></i>
+                </div>
                 <div class="hero-metric-label">Success Rate</div>
                 <div class="hero-metric-value">{success_value}</div>
                 <div class="hero-metric-sub">{success_sub}</div>
