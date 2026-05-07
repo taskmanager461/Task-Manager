@@ -15,14 +15,14 @@ try:
     from frontend.components.api_client import APIClient
     from frontend.components.styles import get_theme_css, get_theme_tokens
     from frontend.components.translations import LANGUAGES, translate
-    from frontend.components.ui import metric_card, modern_progress, task_card, goal_card
+    from frontend.components.ui import metric_card, modern_progress, task_card, goal_card, hero_metrics
     from frontend.services.insights import build_weekly_insight
     from frontend.services.notifications import build_time_notifications
 except ModuleNotFoundError:
     from components.api_client import APIClient
     from components.styles import get_theme_css, get_theme_tokens
     from components.translations import LANGUAGES, translate
-    from components.ui import metric_card, modern_progress, task_card, goal_card
+    from components.ui import metric_card, modern_progress, task_card, goal_card, hero_metrics
     from services.insights import build_weekly_insight
     from services.notifications import build_time_notifications
 
@@ -51,7 +51,7 @@ def init_state() -> None:
         "username": "",
         "name": "",
         "access_token": "",
-        "dark_mode": True,
+        "dark_mode": False,
         "lang": "en",
         "menu": "dashboard",
         "last_daily_summary": "",
@@ -571,14 +571,15 @@ def dashboard_page(client: APIClient, user_id: int) -> None:
     missed, missed_err = call_api(client.get_missed_tasks, fallback_message="Could not load missed tasks")
     missed_count = missed.get("count", 0) if missed else 0
 
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        score_label = get_score_label(score["score"])
-        metric_card("🛡️", t("self_trust_score"), f"{score['score']:.1f}", f"{score_label}", variant="blue")
-    with c2:
-        metric_card("🔥", t("current_streak"), f"{score['streak']}", t("multiplier", value=str(score["multiplier"])), variant="orange")
-    with c3:
-        metric_card("✅", t("success_rate"), f"{score['success_rate'] * 100:.0f}%", t("tasks_count", count=str(score["total_tasks"])), variant="green")
+    score_label = get_score_label(score["score"])
+    hero_metrics(
+        score_value=f"{score['score']:.1f}",
+        score_label=score_label,
+        streak_value=f"{score['streak']}",
+        streak_sub=t("multiplier", value=str(score["multiplier"])),
+        success_value=f"{score['success_rate'] * 100:.0f}%",
+        success_sub=t("tasks_count", count=str(score["total_tasks"]))
+    )
 
     # Missed tasks feedback
     if missed_count > 0:

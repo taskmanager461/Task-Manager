@@ -1,27 +1,44 @@
 import streamlit as st
 
 
-def metric_card(icon: str, title: str, value: str, subtitle: str = "", variant: str = "blue") -> None:
-    variant_classes = {
-        "blue": "",
-        "orange": "orange",
-        "green": "green"
-    }
-    variant_class = variant_classes.get(variant, "")
-    
-    is_success = subtitle and any(x in subtitle.lower() for x in ["success", "completed", "good", "high"])
-    
+def hero_metrics(score_value: str, score_label: str,
+                  streak_value: str, streak_sub: str,
+                  success_value: str, success_sub: str) -> None:
     st.markdown(
         f"""
-        <div class='metric-card {variant_class}'>
-            <div class='metric-icon'>{icon}</div>
-            <div class='metric-label'>{title}</div>
-            <div class='metric-value'>{value}</div>
-            {f'''
-            <div class='metric-badge {'success' if is_success else ''}'>
-                <i class='fa-solid fa-chart-line'></i> {subtitle}
+        <div class="hero-metric-grid">
+            <div class="hero-metric hero-metric-score">
+                <div class="hero-metric-icon">🎯</div>
+                <div class="hero-metric-label">Self Trust Score</div>
+                <div class="hero-metric-value">{score_value}</div>
+                <div class="hero-metric-sub">{score_label}</div>
             </div>
-            ''' if subtitle else ''}
+            <div class="hero-metric hero-metric-streak">
+                <div class="hero-metric-icon">🔥</div>
+                <div class="hero-metric-label">Current Streak</div>
+                <div class="hero-metric-value">{streak_value}</div>
+                <div class="hero-metric-sub">{streak_sub}</div>
+            </div>
+            <div class="hero-metric hero-metric-success">
+                <div class="hero-metric-icon">✅</div>
+                <div class="hero-metric-label">Success Rate</div>
+                <div class="hero-metric-value">{success_value}</div>
+                <div class="hero-metric-sub">{success_sub}</div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def metric_card(icon: str, title: str, value: str, subtitle: str = "") -> None:
+    st.markdown(
+        f"""
+        <div class='surface-card'>
+            <div style='font-size: 1.8rem; margin-bottom: 0.5rem;'>{icon}</div>
+            <div style='font-size: 0.85rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem;'>{title}</div>
+            <div style='font-size: 2rem; font-weight: 900; line-height: 1;'>{value}</div>
+            {f'<div style=\"font-size: 0.9rem; font-weight: 700; color: #10b981; margin-top: 0.5rem;\">{subtitle}</div>' if subtitle else ''}
         </div>
         """,
         unsafe_allow_html=True,
@@ -40,18 +57,21 @@ def modern_progress(label: str, ratio: float, suffix: str = "", tone: str = "aut
             tone = "neutral"
 
     if tone == "success":
-        gradient = "linear-gradient(90deg, #22c55e, #16a34a)"
+        gradient = "linear-gradient(90deg, #10b981, #059669)"
     elif tone == "warning":
         gradient = "linear-gradient(90deg, #f59e0b, #d97706)"
     elif tone == "danger":
         gradient = "linear-gradient(90deg, #ef4444, #dc2626)"
     else:
-        gradient = "linear-gradient(90deg, #94a3b8, #64748b)"
+        gradient = "linear-gradient(90deg, #7c3aed, #8b5cf6)"
 
     st.markdown(
         f"""
         <div class='modern-progress-wrapper'>
-            <div class='modern-progress-label'>{label}: {percentage}% {suffix}</div>
+            <div class='modern-progress-label'>
+                <span>{label}</span>
+                <span style='font-weight: 900;'>{percentage}% {suffix}</span>
+            </div>
             <div class='modern-progress'>
                 <div class='modern-progress-fill' style='width:{percentage}%; background: {gradient};'></div>
             </div>
@@ -72,7 +92,6 @@ def task_card(task: dict, labels: dict[str, str]) -> None:
     unknown_title = labels["unknown_title"]
     uncategorized = labels["uncategorized"]
     
-    # Status-specific icons and colors
     status_icon = {
         "completed": "fa-solid fa-circle-check",
         "failed": "fa-solid fa-circle-xmark",
@@ -80,19 +99,19 @@ def task_card(task: dict, labels: dict[str, str]) -> None:
     }.get(status, "fa-solid fa-circle-question")
     
     status_color = {
-        "completed": "#22c55e",
+        "completed": "#10b981",
         "failed": "#ef4444",
-        "pending": "#94a3b8"
-    }.get(status, "#94a3b8")
+        "pending": "#64748b"
+    }.get(status, "#64748b")
 
     st.markdown(
         f"""
-        <div class='surface-card' style='margin-bottom: 1.5rem;'>
+        <div class='surface-card' style='margin-bottom: 1rem;'>
             <div style='display: flex; justify-content: space-between; align-items: flex-start;'>
-                <div class='task-info'>
-                    <div class='task-title'>{task.get("title", unknown_title)}</div>
-                    <div class='task-meta'>
-                        <span class='badge' style='background: rgba(56, 189, 248, 0.1); color: #0ea5e9;'>
+                <div style='flex: 1;'>
+                    <div style='font-size: 1.2rem; font-weight: 800; margin-bottom: 0.75rem; line-height: 1.3;'>{task.get("title", unknown_title)}</div>
+                    <div style='display: flex; gap: 0.5rem; flex-wrap: wrap;'>
+                        <span class='badge' style='background: rgba(124, 58, 237, 0.1); color: #7c3aed;'>
                             <i class="fa-solid fa-folder-open" style="margin-right: 5px;"></i> {task.get("category", uncategorized)}
                         </span>
                         <span class='badge badge-difficulty-{difficulty}'>
@@ -101,7 +120,7 @@ def task_card(task: dict, labels: dict[str, str]) -> None:
                     </div>
                 </div>
                 <div style='text-align: right;'>
-                    <div style='color: {status_color}; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;'>
+                    <div style='color: {status_color}; font-weight: 900; font-size: 0.85rem; display: flex; align-items: center; gap: 6px;'>
                         <i class="{status_icon}"></i> {status_value.upper()}
                     </div>
                 </div>
@@ -119,23 +138,20 @@ def goal_card(goal: dict) -> None:
     progress = goal.get("progress_percent", 0) / 100
     days_remaining = goal.get("days_remaining")
     
-    # Pressure status colors
     pressure_colors = {
-        "on_track": {"color": "#0ea5e9", "bg": "rgba(14, 165, 233, 0.1)", "label": "On Track"},
+        "on_track": {"color": "#7c3aed", "bg": "rgba(124, 58, 237, 0.1)", "label": "On Track"},
         "at_risk": {"color": "#f59e0b", "bg": "rgba(245, 158, 11, 0.1)", "label": "At Risk"},
         "overdue": {"color": "#ef4444", "bg": "rgba(239, 68, 68, 0.1)", "label": "Overdue"}
     }
     
     pressure = pressure_colors.get(pressure_status, pressure_colors["on_track"])
     
-    # Goal type labels
     type_labels = {
         "short_term": "Short-term",
         "mid_term": "Mid-term",
         "long_term": "Long-term"
     }
     
-    # Status icon
     status_icon = {
         "achieved": "fa-solid fa-trophy",
         "failed": "fa-solid fa-circle-xmark",
@@ -143,12 +159,11 @@ def goal_card(goal: dict) -> None:
     }.get(goal_status, "fa-solid fa-circle")
     
     status_color = {
-        "achieved": "#22c55e",
+        "achieved": "#10b981",
         "failed": "#ef4444",
-        "active": "#0ea5e9"
-    }.get(goal_status, "#94a3b8")
+        "active": "#7c3aed"
+    }.get(goal_status, "#64748b")
     
-    # Progress tone
     if pressure_status == "overdue":
         progress_tone = "danger"
     elif pressure_status == "at_risk":
@@ -161,13 +176,13 @@ def goal_card(goal: dict) -> None:
     
     if progress_tone == "auto":
         if clamped_progress >= 0.7:
-            progress_gradient = "linear-gradient(90deg, #22c55e, #16a34a)"
+            progress_gradient = "linear-gradient(90deg, #10b981, #059669)"
         elif clamped_progress <= 0.3:
             progress_gradient = "linear-gradient(90deg, #ef4444, #dc2626)"
         else:
             progress_gradient = "linear-gradient(90deg, #f59e0b, #d97706)"
     elif progress_tone == "success":
-        progress_gradient = "linear-gradient(90deg, #22c55e, #16a34a)"
+        progress_gradient = "linear-gradient(90deg, #10b981, #059669)"
     elif progress_tone == "warning":
         progress_gradient = "linear-gradient(90deg, #f59e0b, #d97706)"
     else:
@@ -176,60 +191,47 @@ def goal_card(goal: dict) -> None:
     countdown_html = ""
     if days_remaining is not None:
         countdown_text = f"{days_remaining} day{'s' if days_remaining != 1 else ''} left"
-        countdown_html = f"<div class='countdown-badge'><i class='fa-solid fa-clock' style='margin-right: 5px;'></i>{countdown_text}</div>"
+        countdown_html = f"<span style='font-size: 0.85rem; font-weight: 800; color: #64748b;'>{countdown_text}</span>"
     
     linked_count = goal.get("linked_tasks_count", 0)
     completed_count = goal.get("completed_tasks_count", 0)
     
     st.markdown(
         f"""
-        <div class='surface-card' style='margin-bottom: 1.5rem;'>
+        <div class='surface-card' style='margin-bottom: 1rem;'>
             <div style='display: flex; justify-content: space-between; align-items: flex-start;'>
                 <div style='flex: 1;'>
-                    <div style='display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;'>
+                    <div style='display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap;'>
                         <span class='badge' style='background: rgba(139, 92, 246, 0.15); color: #8b5cf6;'>
                             <i class='fa-solid fa-tag' style='margin-right: 5px;'></i>{type_labels.get(goal_type, goal_type)}
                         </span>
                         <span class='badge' style='background: {pressure['bg']}; color: {pressure['color']};'>
                             <i class='fa-solid fa-signal' style='margin-right: 5px;'></i>{pressure['label']}
                         </span>
-                        <span class='badge' style='background: rgba(56, 189, 248, 0.1); color: #0ea5e9;'>
+                        <span class='badge' style='background: rgba(124, 58, 237, 0.1); color: #7c3aed;'>
                             <i class='fa-solid fa-folder-open' style='margin-right: 5px;'></i>{goal.get('category', 'general')}
                         </span>
                     </div>
-                    <div style='display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;'>
+                    <div style='display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;'>
                         <i class='{status_icon}' style='font-size: 1.5rem; color: {status_color};'></i>
-                        <h3 style='margin: 0; font-size: 1.25rem; font-weight: 700;'>{goal.get('title', 'Untitled Goal')}</h3>
+                        <h3 style='margin: 0; font-size: 1.3rem; font-weight: 900; line-height: 1.2;'>{goal.get('title', 'Untitled Goal')}</h3>
                     </div>
                     <div style='margin-bottom: 0.75rem;'>
                         <div style='display: flex; justify-content: space-between; margin-bottom: 0.5rem;'>
-                            <span style='font-size: 0.85rem; color: #94a3b8;'>Progress</span>
-                            <span style='font-size: 0.85rem; font-weight: 700;'>{percentage}% ({completed_count}/{linked_count})</span>
+                            <span style='font-size: 0.85rem; color: #64748b; font-weight: 700;'>Progress</span>
+                            <span style='font-size: 0.85rem; font-weight: 900;'>{percentage}% ({completed_count}/{linked_count})</span>
                         </div>
-                        <div style='height: 8px; background: rgba(148, 163, 184, 0.2); border-radius: 9999px; overflow: hidden;'>
+                        <div style='height: 10px; background: rgba(148, 163, 184, 0.2); border-radius: 9999px; overflow: hidden;'>
                             <div style='width: {percentage}%; height: 100%; background: {progress_gradient}; border-radius: 9999px;'></div>
                         </div>
                     </div>
                     <div style='display: flex; justify-content: space-between; align-items: center;'>
-                        <span style='font-size: 0.85rem; color: #64748b;'>Deadline: {goal.get('deadline', 'N/A')}</span>
+                        <span style='font-size: 0.85rem; color: #64748b; font-weight: 600;'>Deadline: {goal.get('deadline', 'N/A')}</span>
                         {countdown_html}
                     </div>
                 </div>
             </div>
         </div>
-        <style>
-            .countdown-badge {{
-                display: inline-flex;
-                align-items: center;
-                padding: 0.35rem 0.75rem;
-                border-radius: 9999px;
-                font-size: 0.85rem;
-                font-weight: 700;
-                background: {pressure['bg']};
-                color: {pressure['color']};
-                border: 1px solid {pressure['color']}40;
-            }}
-        </style>
         """,
         unsafe_allow_html=True,
     )

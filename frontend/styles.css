@@ -211,12 +211,12 @@ p { color: var(--text-secondary); font-size: 0.9375rem; }
     position: relative;
     overflow: hidden;
     background: var(--surface);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border: 1px solid rgba(100, 150, 255, 0.3);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: 1.5rem;
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4), 0 0 60px rgba(10, 134, 255, 0.1);
+    box-shadow: var(--card-shadow);
     transition: transform var(--transition), border-color var(--transition), background var(--transition), box-shadow var(--transition);
     z-index: 1;
 }
@@ -224,130 +224,92 @@ p { color: var(--text-secondary); font-size: 0.9375rem; }
 .card:hover, .task-card:hover, .metric-card:hover {
     background: var(--surface-hover);
     border-color: var(--primary);
-    box-shadow: 0 12px 50px rgba(0, 0, 0, 0.5), 0 0 80px rgba(10, 134, 255, 0.2);
-    transform: translateY(-6px) scale(1.01);
+    box-shadow: var(--card-hover-shadow);
+    transform: translateY(-4px);
 }
 
-/* Metric Card Enhancements - EXACT PHOTO REPLICATION */
+/* Metric Card Enhancements */
 .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
 }
 
 .metric-card {
+    padding: 1.25rem;
     position: relative;
-    padding: 1.75rem;
-    border-radius: 20px;
-    background: rgba(13, 13, 18, 0.92);
-    border: 1px solid rgba(51, 65, 85, 0.5);
     overflow: hidden;
 }
 
-/* Left border glow */
 .metric-card::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
-    width: 6px;
+    width: 4px;
     height: 100%;
-    background: linear-gradient(to bottom, #0a86ff, #10b981);
-    box-shadow: 0 0 30px rgba(10, 134, 255, 0.6);
+    background: linear-gradient(to bottom, var(--primary), #10b981);
 }
 
-.metric-card-orange::before {
+.metric-card:nth-child(2)::before {
     background: linear-gradient(to bottom, #f59e0b, #ef4444);
-    box-shadow: 0 0 30px rgba(245, 158, 11, 0.6);
 }
 
-.metric-card-green::before {
+.metric-card:nth-child(3)::before {
     background: linear-gradient(to bottom, #10b981, #06b6d4);
-    box-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
 }
 
-/* Bottom right glow */
-.metric-card::after {
-    content: '';
-    position: absolute;
-    bottom: -40px;
-    right: -40px;
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, rgba(10, 134, 255, 0.45) 0%, transparent 60%);
-    pointer-events: none;
+/* Score label covers entire metric card background */
+.metric-card:nth-child(1):has(.score-label.excellent) {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(16, 185, 129, 0.08));
+}
+.metric-card:nth-child(1):has(.score-label.good) {
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.25), rgba(0, 102, 255, 0.08));
+}
+.metric-card:nth-child(1):has(.score-label.average) {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(245, 158, 11, 0.08));
+}
+.metric-card:nth-child(1):has(.score-label.low) {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.35), rgba(239, 68, 68, 0.1));
+    border-left: 6px solid #EF4444;
 }
 
-.metric-card-orange::after {
-    background: radial-gradient(circle, rgba(245, 158, 11, 0.45) 0%, transparent 60%);
+/* Streak metric card background */
+.metric-card:nth-child(2) {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(239, 68, 68, 0.05));
 }
 
-.metric-card-green::after {
-    background: radial-gradient(circle, rgba(16, 185, 129, 0.45) 0%, transparent 60%);
+/* Success metric card background */
+.metric-card:nth-child(3) {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.05));
 }
 
-.metric-icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 16px;
+.metric-card .icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #0a86ff, #10b981);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.9rem;
-    color: #0a86ff;
-    border: 2px solid rgba(10, 134, 255, 0.4);
-    margin-bottom: 1.1rem;
+    font-size: 1.5rem;
+    color: white;
+    border: 1px solid rgba(10, 134, 255, 0.4);
+    box-shadow: 0 0 12px rgba(10, 134, 255, 0.3);
 }
 
-.metric-card-orange .metric-icon {
-    color: #f59e0b;
+.metric-card:nth-child(2) .icon {
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: white;
     border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
 }
 
-.metric-card-green .metric-icon {
-    color: #10b981;
+.metric-card:nth-child(3) .icon {
+    background: linear-gradient(135deg, #10b981, #06b6d4);
+    color: white;
     border-color: rgba(16, 185, 129, 0.4);
-}
-
-.metric-title {
-    font-size: 0.95rem;
-    color: #94a3b8;
-    margin-bottom: 0.35rem;
-}
-
-.metric-value {
-    font-size: 2.75rem;
-    font-weight: 700;
-    color: #f8fafc;
-    margin-bottom: 0.6rem;
-}
-
-.metric-badge {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.55rem 1.1rem;
-    border-radius: 10px;
-    background: rgba(239, 68, 68, 0.18);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.4);
-    font-weight: 600;
-    font-size: 0.85rem;
-    width: fit-content;
-}
-
-.metric-progress {
-    margin-top: 0.85rem;
-    height: 8px;
-    background: rgba(51, 65, 85, 0.4);
-    border-radius: 9999px;
-    overflow: hidden;
-}
-
-.metric-progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #10b981, #059669);
-    border-radius: 9999px;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
 }
 
 
@@ -1317,92 +1279,30 @@ canvas {
     gap: 0.25rem;
 }
 
-/* Status Badge */
 .score-label {
-    font-size: 0.825rem;
+    font-size: 0.75rem;
     font-weight: 700;
-    padding: 0.5rem 1.1rem;
-    border-radius: 9999px;
+    padding: 0.35rem 1rem;
+    border-radius: 100px;
     width: fit-content;
-    margin-top: 0.85rem;
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.35);
-    background: rgba(239, 68, 68, 0.12);
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    position: relative;
-    z-index: 1;
+    margin-top: 0.25rem;
+    color: white;
 }
 
-/* Progress Bar */
-.success-progress-bar {
-    margin-top: 0.85rem;
-    height: 6px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 9999px;
-    overflow: hidden;
-    position: relative;
-    z-index: 1;
+.score-label.excellent {
+    background: #10B981;
 }
 
-.success-progress-bar #success-progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #10b981, #059669);
-    border-radius: 9999px;
-    transition: width 0.5s ease;
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+.score-label.good {
+    background: #0066FF;
 }
 
-/* Light mode - Metric cards */
-body.light-mode .metric-card {
-    background: white;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    border: 1px solid rgba(15, 23, 42, 0.1);
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+.score-label.average {
+    background: #F59E0B;
 }
 
-body.light-mode .metric-card::before,
-body.light-mode .metric-card::after {
-    display: none;
-}
-
-body.light-mode .metric-card .icon {
-    background: linear-gradient(135deg, rgba(10, 134, 255, 0.1), rgba(10, 134, 255, 0.05));
-    color: #0a86ff;
-    border-color: rgba(10, 134, 255, 0.2);
-    box-shadow: 0 0 15px rgba(10, 134, 255, 0.15);
-}
-
-body.light-mode .metric-card:nth-child(2) .icon {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
-    color: #f59e0b;
-    border-color: rgba(245, 158, 11, 0.2);
-    box-shadow: 0 0 15px rgba(245, 158, 11, 0.15);
-}
-
-body.light-mode .metric-card:nth-child(3) .icon {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
-    color: #10b981;
-    border-color: rgba(16, 185, 129, 0.2);
-    box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
-}
-
-body.light-mode .metric-card .label {
-    color: rgba(15, 23, 42, 0.7);
-}
-
-body.light-mode .metric-card .value {
-    color: #0f172a;
-}
-
-body.light-mode .success-progress-bar {
-    background: rgba(15, 23, 42, 0.1);
-}
-
-body.light-mode .success-progress-bar #success-progress-fill {
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+.score-label.low {
+    background: #EF4444;
 }
 
 .score-comparison {

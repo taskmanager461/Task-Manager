@@ -168,31 +168,26 @@
                 </div>
                 
                 <div class="metrics-grid">
-                    <div class="metric-card metric-card-blue">
-                        <div class="metric-icon">
-                            <i class="fas fa-shield-halved"></i>
-                        </div>
-                        <div class="metric-title">Trust Score</div>
-                        <div class="metric-value" id="score-value">2.8</div>
-                        <div class="metric-badge" id="score-label">
-                            <i class="fas fa-chart-line"></i> Low
+                    <div class="metric-card">
+                        <div class="icon"><i class="fas fa-bullseye"></i></div>
+                        <div class="metric-info">
+                            <span class="label" data-i18n="trust_score">Trust Score</span>
+                            <span id="score-value" class="value">0.0</span>
+                            <span id="score-label" class="score-label">--</span>
                         </div>
                     </div>
-                    <div class="metric-card metric-card-orange">
-                        <div class="metric-icon">
-                            <i class="fas fa-fire"></i>
+                    <div class="metric-card">
+                        <div class="icon"><i class="fas fa-fire"></i></div>
+                        <div class="metric-info">
+                            <span class="label" data-i18n="streak">Streak</span>
+                            <span id="streak-value" class="value">0</span>
                         </div>
-                        <div class="metric-title">Streak</div>
-                        <div class="metric-value" id="streak-value">0</div>
                     </div>
-                    <div class="metric-card metric-card-green">
-                        <div class="metric-icon">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="metric-title">Success</div>
-                        <div class="metric-value" id="success-value">0%</div>
-                        <div class="metric-progress">
-                            <div class="metric-progress-fill" id="success-progress-fill" style="width: 0%"></div>
+                    <div class="metric-card">
+                        <div class="icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="metric-info">
+                            <span class="label" data-i18n="success">Success</span>
+                            <span id="success-value" class="value">0%</span>
                         </div>
                     </div>
                 </div>
