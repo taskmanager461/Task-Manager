@@ -924,10 +924,10 @@ function logout() {
 }
 
 function getScoreLabel(score) {
-    if (score >= 80) return { text: '📈 Excellent', color: '#10B981', borderColor: 'rgba(16, 185, 129, 0.4)', bgColor: 'rgba(16, 185, 129, 0.1)' };
-    if (score >= 60) return { text: '📈 Good', color: '#0a86ff', borderColor: 'rgba(10, 134, 255, 0.4)', bgColor: 'rgba(10, 134, 255, 0.1)' };
-    if (score >= 40) return { text: '📊 Average', color: '#F59E0B', borderColor: 'rgba(245, 158, 11, 0.4)', bgColor: 'rgba(245, 158, 11, 0.1)' };
-    return { text: '📉 Low', color: '#EF4444', borderColor: 'rgba(239, 68, 68, 0.4)', bgColor: 'rgba(239, 68, 68, 0.1)' };
+    if (score >= 80) return { text: '🏆 Excellent', class: 'excellent' };
+    if (score >= 60) return { text: '✨ Good', class: 'good' };
+    if (score >= 40) return { text: '⚡ Average', class: 'average' };
+    return { text: '⚠️ Low', class: 'low' };
 }
 
 // --- Dashboard Logic ---
@@ -947,15 +947,12 @@ async function loadDashboard() {
         document.getElementById('streak-value').textContent = score.streak;
         document.getElementById('success-value').textContent = `${(score.success_rate * 100).toFixed(0)}%`;
         document.getElementById('daily-progress-fill').style.width = `${score.success_rate * 100}%`;
-        document.getElementById('success-progress-fill').style.width = `${score.success_rate * 100}%`;
 
         // Score label
         const scoreLabel = getScoreLabel(score.score);
         const scoreLabelEl = document.getElementById('score-label');
         scoreLabelEl.textContent = scoreLabel.text;
-        scoreLabelEl.style.color = scoreLabel.color;
-        scoreLabelEl.style.borderColor = scoreLabel.borderColor;
-        scoreLabelEl.style.background = scoreLabel.bgColor;
+        scoreLabelEl.className = 'score-label ' + scoreLabel.class;
 
         // Update Multiplier Badge
         const multBadge = document.getElementById('multiplier-badge');
