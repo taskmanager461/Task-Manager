@@ -64,11 +64,11 @@ def hero_metrics(score_value: str, score_label: str,
             <!-- Card 1: Trust Score -->
             <div class="hero-metric" style="{get_bg_style('img2', '#0ea5e9')}; border: none !important; box-shadow: none !important; mix-blend-mode: screen;">
                 <div class="hero-metric-icon" style="background: none !important; border: none !important; mix-blend-mode: screen;">
-                    {f'<img src="data:image/png;base64,{images["img1"]}" style="width: 105px; height: 55px; object-fit: contain; mix-blend-mode: screen;">' if images.get("img1") else '🎯'}
+                    {f'<img src="data:image/png;base64,{images["img1"]}" style="width: 45px; height: 45px; object-fit: contain; mix-blend-mode: screen;">' if images.get("img1") else '🎯'}
                 </div>
                 <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
                 <div class="hero-metric-value" style="color: white !important;">{score_value}</div>
-                <div class="status-badge-container" style="margin-top: auto; width: 100px; height: 40px; {f"background-image: url('data:image/png;base64,{images['img3']}'); background-size: 200% 200%; background-position: {status_pos};" if images.get('img3') else f'background: rgba(0,0,0,0.4); border: 1px solid white; border-radius: 8px; text-align: center; line-height: 45px; color: white; font-weight: 800;'}{" border-radius: 12px;" if images.get('img3') else ''}; mix-blend-mode: screen;">
+                <div class="status-badge-container" style="margin-top: auto; width: 120px; height: 55px; {f"background-image: url('data:image/png;base64,{images['img3']}'); background-size: 200% 200%; background-position: {status_pos};" if images.get('img3') else f'background: rgba(0,0,0,0.4); border: 1px solid white; border-radius: 8px; text-align: center; line-height: 55px; color: white; font-weight: 800;'}{" border-radius: 12px;" if images.get('img3') else ''}; mix-blend-mode: screen;">
                     {"" if images.get('img3') else score_label}
                 </div>
             </div>
