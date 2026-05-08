@@ -777,8 +777,8 @@ body.sidebar-open #content {
 
 .status-badge-container {
      margin-top: auto;
-     width: 120px;
-     height: 55px;
+     width: 140px;
+     height: 86px;
      border-radius: 12px;
      background-size: 200% 200%;
      transition: all 0.3s ease;
