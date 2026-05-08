@@ -775,16 +775,18 @@ body.sidebar-open #content {
 }
 
 .status-badge-container {
-     margin-top: auto;
-     width: 130px;
-     height: 50px;
-     border-radius: 12px;
-     background-size: 200% 200%;
-     transition: all 0.3s ease;
-     background-color: transparent !important;
-     box-shadow: none !important;
-     border: none !important;
- }
+      margin-top: auto;
+      width: 130px;
+      height: 50px;
+      border-radius: 12px;
+      background-size: 200% 200%;
+      transition: all 0.3s ease;
+      background-color: transparent !important;
+      box-shadow: none !important;
+      border: none !important;
+      mix-blend-mode: screen; /* Removes black background from the PNG image */
+      filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.3)); /* Adds a subtle glow instead of a box */
+  }
 
 /* Suggestions & Insights */
 .suggestion-box {
