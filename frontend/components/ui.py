@@ -74,7 +74,7 @@ def hero_metrics(score_value: str, score_label: str,
                 </div>
                 <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
                 <div class="hero-metric-value" style="color: white !important;">{score_value}</div>
-                <div class="status-badge-container" style="margin-top: -25px; margin-left: -25px; margin-right: auto; width: 150px; height: 86px; {f"background-image: url('data:image/png;base64,{images['img3']}'); background-size: 200% 200%; background-position: {status_pos};" if images.get('img3') else f'background: rgba(0,0,0,0.4); border: 1px solid white; border-radius: 8px; text-align: center; line-height: 86px; color: white; font-weight: 800;'}{" border-radius: 12px;" if images.get('img3') else ''}; mix-blend-mode: screen;">
+                <div class="status-badge-container" style="margin-top: -25px; margin-left: -20px; margin-right: auto; width: 150px; height: 86px; {f"background-image: url('data:image/png;base64,{images['img3']}'); background-size: 200% 200%; background-position: {status_pos};" if images.get('img3') else f'background: rgba(0,0,0,0.4); border: 1px solid white; border-radius: 8px; text-align: center; line-height: 86px; color: white; font-weight: 800;'}{" border-radius: 12px;" if images.get('img3') else ''}; mix-blend-mode: screen;">
                     {"" if images.get('img3') else score_label}
                 </div>
             </div>
@@ -86,7 +86,6 @@ def hero_metrics(score_value: str, score_label: str,
                 </div>
                 <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Current Streak</div>
                 <div class="hero-metric-value" style="color: white !important;">{streak_value}</div>
-                <div class="hero-metric-sub" style="color: #4ade80 !important; background: rgba(0,0,0,0.3) !important; font-weight: 800; padding: 6px 14px !important;">{streak_sub}</div>
             </div>
 
             <!-- Card 3: Success -->
@@ -96,7 +95,7 @@ def hero_metrics(score_value: str, score_label: str,
                 </div>
                 <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Success Rate</div>
                 <div class="hero-metric-value" style="color: white !important;">{success_value}</div>
-                <div style="margin-top: auto; width: 100%; background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
+                <div style="margin-top: -25px; width: 100%; background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
                     <div style="width: {success_pct}%; height: 100%; background: #4ade80; box-shadow: 0 0 10px #4ade80; border-radius: 10px;"></div>
                 </div>
             </div>

@@ -1020,7 +1020,7 @@ function renderHeroMetrics(score) {
             </div>
             <div class="hero-metric-label">Self Trust Score</div>
             <div class="hero-metric-value">${scoreVal}</div>
-            <div class="status-badge-container" style="background-image: url('${img3}'); background-position: ${statusPos}; background-color: transparent !important; width: 150px; height: 86px; margin-top: -25px; margin-left: -25px; margin-right: auto;"></div>
+            <div class="status-badge-container" style="background-image: url('${img3}'); background-position: ${statusPos}; background-color: transparent !important; width: 150px; height: 86px; margin-top: -25px; margin-left: -20px; margin-right: auto;"></div>
         </div>
 
         <!-- Card 2: Streak -->
@@ -1030,7 +1030,6 @@ function renderHeroMetrics(score) {
             </div>
             <div class="hero-metric-label">Current Streak</div>
             <div class="hero-metric-value">${streakVal}</div>
-            <div class="hero-metric-sub">${streakSub}</div>
         </div>
 
         <!-- Card 3: Success -->
@@ -1040,7 +1039,7 @@ function renderHeroMetrics(score) {
             </div>
             <div class="hero-metric-label">Success Rate</div>
             <div class="hero-metric-value">${successVal}</div>
-            <div style="margin-top: auto; width: 100%; background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
+            <div style="margin-top: -25px; width: 100%; background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
                 <div style="width: ${successPct}%; height: 100%; background: #4ade80; box-shadow: 0 0 10px #4ade80; border-radius: 10px;"></div>
             </div>
         </div>
