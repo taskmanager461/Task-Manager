@@ -696,9 +696,92 @@ body.sidebar-open #content {
     text-transform: uppercase;
 }
 
-.priority-high { background: rgba(239, 68, 68, 0.2); color: var(--error); border: 2px solid rgba(239, 68, 68, 0.4); padding: 0.5rem 1.5rem; }
+.priority-high { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); padding: 0.5rem 1.5rem; }
 .priority-medium { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); }
-.priority-low { background: rgba(10, 132, 255, 0.12); color: #38a7ff; border: 1px solid rgba(10, 132, 255, 0.28); }
+.priority-low { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+/* === HERO METRIC GRID === */
+.hero-metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.hero-metric {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    padding: 1.75rem 1.5rem;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+    min-height: 240px;
+    border: none !important;
+    background-size: 100% 100% !important;
+    background-repeat: no-repeat !important;
+}
+
+.hero-metric:hover {
+    transform: translateY(-8px) scale(1.02);
+}
+
+.hero-metric-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-metric-icon img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+}
+
+.hero-metric-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: white !important;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+}
+
+.hero-metric-value {
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin-bottom: 0.5rem;
+    color: white !important;
+}
+
+.hero-metric-sub {
+    font-size: 0.9rem;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,0,0,0.3) !important;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    backdrop-filter: blur(10px);
+    color: #4ade80 !important;
+    width: fit-content;
+}
+
+.status-badge-container {
+    margin-top: auto;
+    width: 130px;
+    height: 50px;
+    border-radius: 12px;
+    background-size: 200% 200%;
+    transition: all 0.3s ease;
+}
 
 /* Suggestions & Insights */
 .suggestion-box {

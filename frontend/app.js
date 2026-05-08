@@ -75,6 +75,8 @@ const translations = {
         well_done: "Well done!",
         keep_going: "Keep it up!",
         streak_saved: "Streak maintained!",
+        multiplier: "{value}x Boost",
+        tasks_count: "{count} tasks today",
         smart_suggestion: "Smart Suggestion",
         best_time_to_create: "You are most active now! Great time to plan tasks.",
         suggest_simpler: "This task seems complex. Try breaking it down?",
@@ -155,6 +157,8 @@ const translations = {
         well_done: "Μπράβο!",
         keep_going: "Συνέχισε έτσι!",
         streak_saved: "Το σερί διατηρήθηκε!",
+        multiplier: "{value}x Ενίσχυση",
+        tasks_count: "{count} εργασίες σήμερα",
         smart_suggestion: "Έξυπνη Πρόταση",
         best_time_to_create: "Είστε πολύ δραστήριοι τώρα! Ιδανική ώρα για σχεδιασμό.",
         suggest_simpler: "Αυτή η εργασία φαίνεται περίπλοκη. Μήπως να την σπάσετε σε μικρότερες;",
@@ -942,25 +946,22 @@ async function loadDashboard() {
         // Render dashboard calendar
         renderDashboardCalendar();
         
-        // Basic stats
-        document.getElementById('score-value').textContent = score.score.toFixed(1);
-        document.getElementById('streak-value').textContent = score.streak;
-        document.getElementById('success-value').textContent = `${(score.success_rate * 100).toFixed(0)}%`;
-        document.getElementById('daily-progress-fill').style.width = `${score.success_rate * 100}%`;
+        // Render Hero Metrics
+        renderHeroMetrics(score);
 
-        // Score label
-        const scoreLabel = getScoreLabel(score.score);
-        const scoreLabelEl = document.getElementById('score-label');
-        scoreLabelEl.textContent = scoreLabel.text;
-        scoreLabelEl.className = 'score-label ' + scoreLabel.class;
+        // Update Daily Progress Bar
+        const progressFill = document.getElementById('daily-progress-fill');
+        if (progressFill) progressFill.style.width = `${score.success_rate * 100}%`;
 
         // Update Multiplier Badge
         const multBadge = document.getElementById('multiplier-badge');
-        if (score.multiplier > 1.0) {
-            multBadge.textContent = `${score.multiplier.toFixed(1)}x Boost${score.goal_bonus > 0 ? ` +${score.goal_bonus.toFixed(0)} Goal` : ''}`;
-            multBadge.style.display = 'inline-block';
-        } else {
-            multBadge.style.display = 'none';
+        if (multBadge) {
+            if (score.multiplier > 1.0) {
+                multBadge.textContent = `${score.multiplier.toFixed(1)}x Boost${score.goal_bonus > 0 ? ` +${score.goal_bonus.toFixed(0)} Goal` : ''}`;
+                multBadge.style.display = 'inline-block';
+            } else {
+                multBadge.style.display = 'none';
+            }
         }
 
         // Load all additional data
@@ -980,6 +981,66 @@ async function loadDashboard() {
     } catch (err) {
         console.error('Dashboard load failed', err);
     }
+}
+
+function renderHeroMetrics(score) {
+    const container = document.getElementById('dashboard-hero-metrics');
+    if (!container) return;
+
+    const label = getScoreLabel(score.score);
+    const scoreVal = score.score.toFixed(1);
+    const streakVal = score.streak;
+    const successVal = `${(score.success_rate * 100).toFixed(0)}%`;
+    
+    // Simple placeholder replacement
+    const streakSub = t('multiplier').replace('{value}', score.multiplier.toFixed(1));
+    const successSub = t('tasks_count').replace('{count}', score.total_tasks);
+
+    // Image URLs (assuming they are served from root)
+    const img1 = "/ChatGPT Image 8 Μαΐ 2026, 01_28_01 μ.μ..png";
+    const img2 = "/ChatGPT Image 8 Μαΐ 2026, 01_46_55 μ.μ..png";
+    const img3 = "/ChatGPT Image 8 Μαΐ 2026, 05_42_52 μ.μ..png";
+    const img4 = "/ChatGPT Image 8 Μαΐ 2026, 01_40_08 μ.μ..png";
+    const img5 = "/ChatGPT Image 8 Μαΐ 2026, 01_48_33 μ.μ..png";
+    const img6 = "/ChatGPT Image 8 Μαΐ 2026, 05_39_02 μ.μ..png";
+    const img7 = "/ChatGPT Image 8 Μαΐ 2026, 01_50_47 μ.μ..png";
+
+    let statusPos = "0% 0%"; // Default Low
+    if (label.class === "average") statusPos = "100% 0%";
+    else if (label.class === "good") statusPos = "0% 100%";
+    else if (label.class === "excellent") statusPos = "100% 100%";
+
+    container.innerHTML = `
+        <!-- Card 1: Trust Score -->
+        <div class="hero-metric" style="background-image: url('${img2}')">
+            <div class="hero-metric-icon">
+                <img src="${img1}">
+            </div>
+            <div class="hero-metric-label">Self Trust Score</div>
+            <div class="hero-metric-value">${scoreVal}</div>
+            <div class="status-badge-container" style="background-image: url('${img3}'); background-position: ${statusPos};"></div>
+        </div>
+
+        <!-- Card 2: Streak -->
+        <div class="hero-metric" style="background-image: url('${img5}')">
+            <div class="hero-metric-icon">
+                <img src="${img4}">
+            </div>
+            <div class="hero-metric-label">Current Streak</div>
+            <div class="hero-metric-value">${streakVal}</div>
+            <div class="hero-metric-sub">${streakSub}</div>
+        </div>
+
+        <!-- Card 3: Success -->
+        <div class="hero-metric" style="background-image: url('${img7}')">
+            <div class="hero-metric-icon">
+                <img src="${img6}">
+            </div>
+            <div class="hero-metric-label">Success Rate</div>
+            <div class="hero-metric-value">${successVal}</div>
+            <div class="hero-metric-sub">${successSub}</div>
+        </div>
+    `;
 }
 
 async function getSmartPersonalization(forceRefresh = false) {
