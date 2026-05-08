@@ -5,21 +5,25 @@ from pathlib import Path
 
 def get_base64_image(image_path):
     try:
-        if not os.path.exists(image_path):
-            return ""
-        with open(image_path, "rb") as img_file:
-            return base64.b64encode(img_file.read()).decode()
+        # Try multiple path variants to be absolutely sure
+        paths_to_try = [
+            Path(image_path),
+            Path(r"c:\Users\my-pc\.vscode\task manager") / Path(image_path).name,
+            Path(__file__).parent.parent.parent / Path(image_path).name
+        ]
+        
+        for p in paths_to_try:
+            if p.exists():
+                with open(p, "rb") as img_file:
+                    return base64.b64encode(img_file.read()).decode()
+        return ""
     except Exception:
         return ""
 
 def hero_metrics(score_value: str, score_label: str,
                   streak_value: str, streak_sub: str,
                   success_value: str, success_sub: str) -> None:
-    # Dynamically find the project root
-    # Current file is in frontend/components/ui.py
-    current_dir = Path(__file__).parent
-    project_root = current_dir.parent.parent
-
+    
     # Image Filenames
     filenames = {
         "img1": "ChatGPT Image 8 Μαΐ 2026, 01_28_01 μ.μ..png",
@@ -34,8 +38,7 @@ def hero_metrics(score_value: str, score_label: str,
     # Load Base64 strings
     images = {}
     for key, filename in filenames.items():
-        path = project_root / filename
-        images[key] = get_base64_image(str(path))
+        images[key] = get_base64_image(filename)
 
     # Determine status badge position for image 3
     # [Low] [Average]
@@ -49,47 +52,44 @@ def hero_metrics(score_value: str, score_label: str,
     elif label_lower == "excellent":
         status_pos = "100% 100%"
 
-    # Fallback styles if images are missing
-    bg_fallback = "background: #1e293b;"
-    
     def get_bg_style(key, color_fallback):
-        if images[key]:
-            return f"background-image: url('data:image/png;base64,{images[key]}'); background-size: cover;"
+        if images.get(key):
+            return f"background-image: url('data:image/png;base64,{images[key]}'); background-size: 100% 100%; background-repeat: no-repeat;"
         return f"background: {color_fallback};"
 
     st.markdown(
         f"""
         <div class="hero-metric-grid">
             <!-- Card 1: Trust Score -->
-            <div class="hero-metric" style="{get_bg_style('img2', '#0ea5e9')}; border: none;">
-                <div class="hero-metric-icon" style="background: none; box-shadow: none; backdrop-filter: none;">
-                    {f'<img src="data:image/png;base64,{images["img1"]}" style="width: 100%; height: 100%; object-fit: contain;">' if images["img1"] else '🎯'}
+            <div class="hero-metric" style="{get_bg_style('img2', '#0ea5e9')}; border: none !important; box-shadow: none !important;">
+                <div class="hero-metric-icon" style="background: none !important; border: none !important;">
+                    {f'<img src="data:image/png;base64,{images["img1"]}" style="width: 45px; height: 45px; object-fit: contain;">' if images.get("img1") else '🎯'}
                 </div>
-                <div class="hero-metric-label">Self Trust Score</div>
-                <div class="hero-metric-value">{score_value}</div>
-                <div class="status-badge-container" style="margin-top: auto; width: 120px; height: 45px; {f"background-image: url('data:image/png;base64,{images['img3']}'); background-size: 200% 200%; background-position: {status_pos};" if images['img3'] else f'background: rgba(0,0,0,0.3); border: 1px solid white; padding: 4px; border-radius: 4px; text-align: center; line-height: 35px; font-weight: bold;'}{" border-radius: 8px;" if images['img3'] else ''}">
-                    {"" if images['img3'] else score_label}
+                <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
+                <div class="hero-metric-value" style="color: white !important;">{score_value}</div>
+                <div class="status-badge-container" style="margin-top: auto; width: 130px; height: 50px; {f"background-image: url('data:image/png;base64,{images['img3']}'); background-size: 200% 200%; background-position: {status_pos};" if images.get('img3') else f'background: rgba(0,0,0,0.4); border: 1px solid white; border-radius: 8px; text-align: center; line-height: 45px; color: white; font-weight: 800;'}{" border-radius: 12px;" if images.get('img3') else ''}">
+                    {"" if images.get('img3') else score_label}
                 </div>
             </div>
 
             <!-- Card 2: Streak -->
-            <div class="hero-metric" style="{get_bg_style('img5', '#f97316')}; border: none;">
-                <div class="hero-metric-icon" style="background: none; box-shadow: none; backdrop-filter: none;">
-                    {f'<img src="data:image/png;base64,{images["img4"]}" style="width: 100%; height: 100%; object-fit: contain;">' if images["img4"] else '🔥'}
+            <div class="hero-metric" style="{get_bg_style('img5', '#f97316')}; border: none !important; box-shadow: none !important;">
+                <div class="hero-metric-icon" style="background: none !important; border: none !important;">
+                    {f'<img src="data:image/png;base64,{images["img4"]}" style="width: 45px; height: 45px; object-fit: contain;">' if images.get("img4") else '🔥'}
                 </div>
-                <div class="hero-metric-label">Current Streak</div>
-                <div class="hero-metric-value">{streak_value}</div>
-                <div class="hero-metric-sub">{streak_sub}</div>
+                <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Current Streak</div>
+                <div class="hero-metric-value" style="color: white !important;">{streak_value}</div>
+                <div class="hero-metric-sub" style="color: #4ade80 !important; background: rgba(0,0,0,0.3) !important; font-weight: 800; padding: 6px 14px !important;">{streak_sub}</div>
             </div>
 
             <!-- Card 3: Success -->
-            <div class="hero-metric" style="{get_bg_style('img7', '#10b981')}; border: none;">
-                <div class="hero-metric-icon" style="background: none; box-shadow: none; backdrop-filter: none;">
-                    {f'<img src="data:image/png;base64,{images["img6"]}" style="width: 100%; height: 100%; object-fit: contain;">' if images["img6"] else '✅'}
+            <div class="hero-metric" style="{get_bg_style('img7', '#10b981')}; border: none !important; box-shadow: none !important;">
+                <div class="hero-metric-icon" style="background: none !important; border: none !important;">
+                    {f'<img src="data:image/png;base64,{images["img6"]}" style="width: 45px; height: 45px; object-fit: contain;">' if images.get("img6") else '✅'}
                 </div>
-                <div class="hero-metric-label">Success Rate</div>
-                <div class="hero-metric-value">{success_value}</div>
-                <div class="hero-metric-sub">{success_sub}</div>
+                <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Success Rate</div>
+                <div class="hero-metric-value" style="color: white !important;">{success_value}</div>
+                <div class="hero-metric-sub" style="color: #4ade80 !important; background: rgba(0,0,0,0.3) !important; font-weight: 800; padding: 6px 14px !important;">{success_sub}</div>
             </div>
         </div>
         """,
