@@ -64,7 +64,7 @@ def hero_metrics(score_value: str, score_label: str,
             <!-- Card 1: Trust Score -->
             <div class="hero-metric" style="{get_bg_style('img2', '#0ea5e9')}; border: none !important; box-shadow: none !important; mix-blend-mode: screen;">
                 <div class="hero-metric-icon" style="background: none !important; border: none !important; mix-blend-mode: screen;">
-                    {f'<img src="data:image/png;base64,{images["img1"]}" style="width: 45px; height: 45px; object-fit: contain; mix-blend-mode: screen;">' if images.get("img1") else '🎯'}
+                    {f'<img src="data:image/png;base64,{images["img1"]}" style="width: 45px; height: 55px; object-fit: contain; mix-blend-mode: screen;">' if images.get("img1") else '🎯'}
                 </div>
                 <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
                 <div class="hero-metric-value" style="color: white !important;">{score_value}</div>

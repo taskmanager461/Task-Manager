@@ -105,7 +105,6 @@ body.light-mode .sidebar-info h2,
 body.light-mode .mobile-header h2 {
     color: white;
     -webkit-text-stroke: 1.2px black;
-    text-stroke: 1.2px black;
     text-shadow: 0 0 2px rgba(0,0,0,0.8);
 }
 
