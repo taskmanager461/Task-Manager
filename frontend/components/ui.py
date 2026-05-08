@@ -3,13 +3,14 @@ import base64
 import os
 from pathlib import Path
 
-def get_base64_image(image_path):
+@st.cache_data
+def get_base64_image(image_name):
     try:
         # Try multiple path variants to be absolutely sure
         paths_to_try = [
-            Path(image_path),
-            Path(r"c:\Users\my-pc\.vscode\task manager") / Path(image_path).name,
-            Path(__file__).parent.parent.parent / Path(image_path).name
+            Path(r"c:\Users\my-pc\.vscode\task manager\frontend") / image_name,
+            Path(r"c:\Users\my-pc\.vscode\task manager") / image_name,
+            Path(__file__).parent.parent / image_name
         ]
         
         for p in paths_to_try:
@@ -24,18 +25,18 @@ def hero_metrics(score_value: str, score_label: str,
                   streak_value: str, streak_sub: str,
                   success_value: str, success_sub: str) -> None:
     
-    # Image Filenames
+    # Image Filenames (using the simplified ones we created)
     filenames = {
-        "img1": "ChatGPT Image 8 Μαΐ 2026, 01_28_01 μ.μ..png",
-        "img2": "ChatGPT Image 8 Μαΐ 2026, 01_46_55 μ.μ..png",
-        "img3": "ChatGPT Image 8 Μαΐ 2026, 05_42_52 μ.μ..png",
-        "img4": "ChatGPT Image 8 Μαΐ 2026, 01_40_08 μ.μ..png",
-        "img5": "ChatGPT Image 8 Μαΐ 2026, 01_48_33 μ.μ..png",
-        "img6": "ChatGPT Image 8 Μαΐ 2026, 05_39_02 μ.μ..png",
-        "img7": "ChatGPT Image 8 Μαΐ 2026, 01_50_47 μ.μ..png"
+        "img1": "ChatGPT_Image_1.png",
+        "img2": "ChatGPT_Image_2.png",
+        "img3": "ChatGPT_Image_3.png",
+        "img4": "ChatGPT_Image_4.png",
+        "img5": "ChatGPT_Image_5.png",
+        "img6": "ChatGPT_Image_6.png",
+        "img7": "ChatGPT_Image_7.png"
     }
 
-    # Load Base64 strings
+    # Load Base64 strings (cached)
     images = {}
     for key, filename in filenames.items():
         images[key] = get_base64_image(filename)

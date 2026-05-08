@@ -775,13 +775,16 @@ body.sidebar-open #content {
 }
 
 .status-badge-container {
-    margin-top: auto;
-    width: 130px;
-    height: 50px;
-    border-radius: 12px;
-    background-size: 200% 200%;
-    transition: all 0.3s ease;
-}
+     margin-top: auto;
+     width: 130px;
+     height: 50px;
+     border-radius: 12px;
+     background-size: 200% 200%;
+     transition: all 0.3s ease;
+     background-color: transparent !important;
+     box-shadow: none !important;
+     border: none !important;
+ }
 
 /* Suggestions & Insights */
 .suggestion-box {
