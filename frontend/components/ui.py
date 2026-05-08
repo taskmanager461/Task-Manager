@@ -62,21 +62,21 @@ def hero_metrics(score_value: str, score_label: str,
         f"""
         <div class="hero-metric-grid">
             <!-- Card 1: Trust Score -->
-            <div class="hero-metric" style="{get_bg_style('img2', '#0ea5e9')}; border: none !important; box-shadow: none !important;">
-                <div class="hero-metric-icon" style="background: none !important; border: none !important;">
-                    {f'<img src="data:image/png;base64,{images["img1"]}" style="width: 45px; height: 45px; object-fit: contain;">' if images.get("img1") else '🎯'}
+            <div class="hero-metric" style="{get_bg_style('img2', '#0ea5e9')}; border: none !important; box-shadow: none !important; mix-blend-mode: screen;">
+                <div class="hero-metric-icon" style="background: none !important; border: none !important; mix-blend-mode: screen;">
+                    {f'<img src="data:image/png;base64,{images["img1"]}" style="width: 45px; height: 45px; object-fit: contain; mix-blend-mode: screen;">' if images.get("img1") else '🎯'}
                 </div>
                 <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
                 <div class="hero-metric-value" style="color: white !important;">{score_value}</div>
-                <div class="status-badge-container" style="margin-top: auto; width: 130px; height: 50px; {f"background-image: url('data:image/png;base64,{images['img3']}'); background-size: 200% 200%; background-position: {status_pos};" if images.get('img3') else f'background: rgba(0,0,0,0.4); border: 1px solid white; border-radius: 8px; text-align: center; line-height: 45px; color: white; font-weight: 800;'}{" border-radius: 12px;" if images.get('img3') else ''}">
+                <div class="status-badge-container" style="margin-top: auto; width: 130px; height: 50px; {f"background-image: url('data:image/png;base64,{images['img3']}'); background-size: 200% 200%; background-position: {status_pos};" if images.get('img3') else f'background: rgba(0,0,0,0.4); border: 1px solid white; border-radius: 8px; text-align: center; line-height: 45px; color: white; font-weight: 800;'}{" border-radius: 12px;" if images.get('img3') else ''}; mix-blend-mode: screen;">
                     {"" if images.get('img3') else score_label}
                 </div>
             </div>
 
             <!-- Card 2: Streak -->
-            <div class="hero-metric" style="{get_bg_style('img5', '#f97316')}; border: none !important; box-shadow: none !important;">
-                <div class="hero-metric-icon" style="background: none !important; border: none !important;">
-                    {f'<img src="data:image/png;base64,{images["img4"]}" style="width: 45px; height: 45px; object-fit: contain;">' if images.get("img4") else '🔥'}
+            <div class="hero-metric" style="{get_bg_style('img5', '#f97316')}; border: none !important; box-shadow: none !important; mix-blend-mode: screen;">
+                <div class="hero-metric-icon" style="background: none !important; border: none !important; mix-blend-mode: screen;">
+                    {f'<img src="data:image/png;base64,{images["img4"]}" style="width: 45px; height: 45px; object-fit: contain; mix-blend-mode: screen;">' if images.get("img4") else '🔥'}
                 </div>
                 <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Current Streak</div>
                 <div class="hero-metric-value" style="color: white !important;">{streak_value}</div>
@@ -84,9 +84,9 @@ def hero_metrics(score_value: str, score_label: str,
             </div>
 
             <!-- Card 3: Success -->
-            <div class="hero-metric" style="{get_bg_style('img7', '#10b981')}; border: none !important; box-shadow: none !important;">
-                <div class="hero-metric-icon" style="background: none !important; border: none !important;">
-                    {f'<img src="data:image/png;base64,{images["img6"]}" style="width: 45px; height: 45px; object-fit: contain;">' if images.get("img6") else '✅'}
+            <div class="hero-metric" style="{get_bg_style('img7', '#10b981')}; border: none !important; box-shadow: none !important; mix-blend-mode: screen;">
+                <div class="hero-metric-icon" style="background: none !important; border: none !important; mix-blend-mode: screen;">
+                    {f'<img src="data:image/png;base64,{images["img6"]}" style="width: 45px; height: 45px; object-fit: contain; mix-blend-mode: screen;">' if images.get("img6") else '✅'}
                 </div>
                 <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Success Rate</div>
                 <div class="hero-metric-value" style="color: white !important;">{success_value}</div>

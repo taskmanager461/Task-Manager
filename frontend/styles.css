@@ -721,6 +721,7 @@ body.sidebar-open #content {
     border: none !important;
     background-size: 100% 100% !important;
     background-repeat: no-repeat !important;
+    mix-blend-mode: screen; /* Global blend mode to remove black backgrounds from cards */
 }
 
 .hero-metric:hover {
@@ -740,6 +741,7 @@ body.sidebar-open #content {
     width: 45px;
     height: 45px;
     object-fit: contain;
+    mix-blend-mode: screen; /* Removes black from icons */
 }
 
 .hero-metric-label {
@@ -775,18 +777,17 @@ body.sidebar-open #content {
 }
 
 .status-badge-container {
-      margin-top: auto;
-      width: 130px;
-      height: 50px;
-      border-radius: 12px;
-      background-size: 200% 200%;
-      transition: all 0.3s ease;
-      background-color: transparent !important;
-      box-shadow: none !important;
-      border: none !important;
-      mix-blend-mode: screen; /* Removes black background from the PNG image */
-      filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.3)); /* Adds a subtle glow instead of a box */
-  }
+    margin-top: auto;
+    width: 130px;
+    height: 50px;
+    border-radius: 12px;
+    background-size: 200% 200%;
+    transition: all 0.3s ease;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    mix-blend-mode: screen; /* Removes black background from the PNG badge */
+}
 
 /* Suggestions & Insights */
 .suggestion-box {
