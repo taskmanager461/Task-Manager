@@ -68,7 +68,7 @@ def hero_metrics(score_value: str, score_label: str,
                 </div>
                 <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
                 <div class="hero-metric-value" style="color: white !important;">{score_value}</div>
-                <div class="status-badge-container" style="margin-top: auto; width: 140px; height: 86px; {f"background-image: url('data:image/png;base64,{images['img3']}'); background-size: 200% 200%; background-position: {status_pos};" if images.get('img3') else f'background: rgba(0,0,0,0.4); border: 1px solid white; border-radius: 8px; text-align: center; line-height: 86px; color: white; font-weight: 800;'}{" border-radius: 12px;" if images.get('img3') else ''}; mix-blend-mode: screen;">
+                <div class="status-badge-container" style="margin-top: 10px; width: 175px; height: 86px; {f"background-image: url('data:image/png;base64,{images['img3']}'); background-size: 200% 200%; background-position: {status_pos};" if images.get('img3') else f'background: rgba(0,0,0,0.4); border: 1px solid white; border-radius: 8px; text-align: center; line-height: 86px; color: white; font-weight: 800;'}{" border-radius: 12px;" if images.get('img3') else ''}; mix-blend-mode: screen;">
                     {"" if images.get('img3') else score_label}
                 </div>
             </div>
