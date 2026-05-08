@@ -996,14 +996,14 @@ function renderHeroMetrics(score) {
     const streakSub = t('multiplier').replace('{value}', score.multiplier.toFixed(1));
     const successSub = t('tasks_count').replace('{count}', score.total_tasks);
 
-    // Image URLs (assuming they are served from root)
-    const img1 = "/ChatGPT Image 8 Μαΐ 2026, 01_28_01 μ.μ..png";
-    const img2 = "/ChatGPT Image 8 Μαΐ 2026, 01_46_55 μ.μ..png";
-    const img3 = "/ChatGPT Image 8 Μαΐ 2026, 05_42_52 μ.μ..png";
-    const img4 = "/ChatGPT Image 8 Μαΐ 2026, 01_40_08 μ.μ..png";
-    const img5 = "/ChatGPT Image 8 Μαΐ 2026, 01_48_33 μ.μ..png";
-    const img6 = "/ChatGPT Image 8 Μαΐ 2026, 05_39_02 μ.μ..png";
-    const img7 = "/ChatGPT Image 8 Μαΐ 2026, 01_50_47 μ.μ..png";
+    // Image URLs (relative to index.html in frontend folder)
+    const img1 = "ChatGPT_Image_1.png";
+    const img2 = "ChatGPT_Image_2.png";
+    const img3 = "ChatGPT_Image_3.png";
+    const img4 = "ChatGPT_Image_4.png";
+    const img5 = "ChatGPT_Image_5.png";
+    const img6 = "ChatGPT_Image_6.png";
+    const img7 = "ChatGPT_Image_7.png";
 
     let statusPos = "0% 0%"; // Default Low
     if (label.class === "average") statusPos = "100% 0%";
