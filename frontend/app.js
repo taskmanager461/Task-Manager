@@ -1018,7 +1018,7 @@ function renderHeroMetrics(score) {
             </div>
             <div class="hero-metric-label">Self Trust Score</div>
             <div class="hero-metric-value">${scoreVal}</div>
-            <div class="status-badge-container" style="background-image: url('${img3}'); background-position: ${statusPos}; background-color: transparent !important; width: 175px; height: 86px; margin-top: 10px;"></div>
+            <div class="status-badge-container" style="background-image: url('${img3}'); background-position: ${statusPos}; background-color: transparent !important; width: 155px; height: 86px; margin-top: -25px;"></div>
         </div>
 
         <!-- Card 2: Streak -->
