@@ -1,31 +1,73 @@
 import streamlit as st
+import base64
+import os
 
+def get_base64_image(image_path):
+    if not os.path.exists(image_path):
+        return ""
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
 
 def hero_metrics(score_value: str, score_label: str,
                   streak_value: str, streak_sub: str,
                   success_value: str, success_sub: str) -> None:
+    # Image Paths
+    base_path = r"c:\Users\my-pc\.vscode\task manager"
+    img1_path = os.path.join(base_path, "ChatGPT Image 8 Μαΐ 2026, 01_28_01 μ.μ..png")
+    img2_path = os.path.join(base_path, "ChatGPT Image 8 Μαΐ 2026, 01_46_55 μ.μ..png")
+    img3_path = os.path.join(base_path, "ChatGPT Image 8 Μαΐ 2026, 05_42_52 μ.μ..png")
+    img4_path = os.path.join(base_path, "ChatGPT Image 8 Μαΐ 2026, 01_40_08 μ.μ..png")
+    img5_path = os.path.join(base_path, "ChatGPT Image 8 Μαΐ 2026, 01_48_33 μ.μ..png")
+    img6_path = os.path.join(base_path, "ChatGPT Image 8 Μαΐ 2026, 05_39_02 μ.μ..png")
+    img7_path = os.path.join(base_path, "ChatGPT Image 8 Μαΐ 2026, 01_50_47 μ.μ..png")
+
+    # Base64 strings
+    b64_1 = get_base64_image(img1_path)
+    b64_2 = get_base64_image(img2_path)
+    b64_3 = get_base64_image(img3_path)
+    b64_4 = get_base64_image(img4_path)
+    b64_5 = get_base64_image(img5_path)
+    b64_6 = get_base64_image(img6_path)
+    b64_7 = get_base64_image(img7_path)
+
+    # Determine status badge position for image 3
+    # [Low] [Average]
+    # [Good] [Excellent]
+    status_pos = "0% 0%" # Default Low
+    if score_label.lower() == "average":
+        status_pos = "100% 0%"
+    elif score_label.lower() == "good":
+        status_pos = "0% 100%"
+    elif score_label.lower() == "excellent":
+        status_pos = "100% 100%"
+
     st.markdown(
         f"""
         <div class="hero-metric-grid">
-            <div class="hero-metric hero-metric-score">
-                <div class="hero-metric-icon">
-                    <i class="fa-solid fa-shield-halved"></i>
+            <!-- Card 1: Trust Score -->
+            <div class="hero-metric" style="background-image: url('data:image/png;base64,{b64_2}'); background-size: cover; border: none;">
+                <div class="hero-metric-icon" style="background: none; box-shadow: none; backdrop-filter: none;">
+                    <img src="data:image/png;base64,{b64_1}" style="width: 100%; height: 100%; object-fit: contain;">
                 </div>
                 <div class="hero-metric-label">Self Trust Score</div>
                 <div class="hero-metric-value">{score_value}</div>
-                <div class="hero-metric-sub">{score_label}</div>
+                <div class="status-badge-container" style="margin-top: auto; width: 120px; height: 45px; background-image: url('data:image/png;base64,{b64_3}'); background-size: 200% 200%; background-position: {status_pos}; border-radius: 8px;"></div>
             </div>
-            <div class="hero-metric hero-metric-streak">
-                <div class="hero-metric-icon">
-                    <i class="fa-solid fa-fire"></i>
+
+            <!-- Card 2: Streak -->
+            <div class="hero-metric" style="background-image: url('data:image/png;base64,{b64_5}'); background-size: cover; border: none;">
+                <div class="hero-metric-icon" style="background: none; box-shadow: none; backdrop-filter: none;">
+                    <img src="data:image/png;base64,{b64_4}" style="width: 100%; height: 100%; object-fit: contain;">
                 </div>
                 <div class="hero-metric-label">Current Streak</div>
                 <div class="hero-metric-value">{streak_value}</div>
                 <div class="hero-metric-sub">{streak_sub}</div>
             </div>
-            <div class="hero-metric hero-metric-success">
-                <div class="hero-metric-icon">
-                    <i class="fa-solid fa-check"></i>
+
+            <!-- Card 3: Success -->
+            <div class="hero-metric" style="background-image: url('data:image/png;base64,{b64_7}'); background-size: cover; border: none;">
+                <div class="hero-metric-icon" style="background: none; box-shadow: none; backdrop-filter: none;">
+                    <img src="data:image/png;base64,{b64_6}" style="width: 100%; height: 100%; object-fit: contain;">
                 </div>
                 <div class="hero-metric-label">Success Rate</div>
                 <div class="hero-metric-value">{success_value}</div>

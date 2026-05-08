@@ -120,69 +120,26 @@ def get_theme_css(dark_mode: bool) -> str:
         padding: 1.75rem 1.5rem;
         transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: default;
-    }}
-
-    .hero-metric::before {{
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
-        opacity: 0.7;
-        pointer-events: none;
-    }}
-
-    .hero-metric::after {{
-        content: '';
-        position: absolute;
-        width: 200%;
-        height: 200%;
-        top: -50%;
-        left: -50%;
-        background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
-        animation: shimmer 6s infinite;
-        pointer-events: none;
-    }}
-
-    @keyframes shimmer {{
-        0% {{ transform: translate(-30%, -30%); }}
-        50% {{ transform: translate(30%, 30%); }}
-        100% {{ transform: translate(-30%, -30%); }}
+        display: flex;
+        flex-direction: column;
+        min-height: 220px;
     }}
 
     .hero-metric:hover {{
         transform: translateY(-8px) scale(1.02);
     }}
 
-    .hero-metric-score {{
-        background: linear-gradient(135deg, #0ea5e9, #3b82f6, #2563eb);
-        box-shadow: 0 20px 60px rgba(59, 130, 246, 0.35);
-    }}
-
-    .hero-metric-streak {{
-        background: linear-gradient(135deg, #f97316, #ea580c, #dc2626);
-        box-shadow: 0 20px 60px rgba(249, 115, 22, 0.35);
-    }}
-
-    .hero-metric-success {{
-        background: linear-gradient(135deg, #10b981, #059669, #047857);
-        box-shadow: 0 20px 60px rgba(16, 185, 129, 0.35);
-    }}
-
     .hero-metric-icon {{
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.25);
+        width: 50px;
+        height: 50px;
+        margin-bottom: 1rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.75rem;
-        margin-bottom: 1rem;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }}
+
+    .status-badge-container {{
+        transition: all 0.3s ease;
     }}
 
     .hero-metric-label {{
