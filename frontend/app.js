@@ -1039,7 +1039,7 @@ function renderHeroMetrics(score) {
             </div>
             <div class="hero-metric-label">Success Rate</div>
             <div class="hero-metric-value">${successVal}</div>
-            <div style="margin-top: -15px; width: 100%; background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
+            <div style="margin-top: 0; width: 100%; background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
                 <div style="width: ${successPct}%; height: 100%; background: #4ade80; box-shadow: 0 0 10px #4ade80; border-radius: 10px;"></div>
             </div>
         </div>
