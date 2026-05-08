@@ -1,63 +1,81 @@
 import streamlit as st
 import base64
 import os
+from pathlib import Path
 
 def get_base64_image(image_path):
-    if not os.path.exists(image_path):
+    try:
+        if not os.path.exists(image_path):
+            return ""
+        with open(image_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    except Exception:
         return ""
-    with open(image_path, "rb") as img_file:
-        return base64.b64encode(img_file.read()).decode()
 
 def hero_metrics(score_value: str, score_label: str,
                   streak_value: str, streak_sub: str,
                   success_value: str, success_sub: str) -> None:
-    # Image Paths
-    base_path = r"c:\Users\my-pc\.vscode\task manager"
-    img1_path = os.path.join(base_path, "ChatGPT Image 8 Μαΐ 2026, 01_28_01 μ.μ..png")
-    img2_path = os.path.join(base_path, "ChatGPT Image 8 Μαΐ 2026, 01_46_55 μ.μ..png")
-    img3_path = os.path.join(base_path, "ChatGPT Image 8 Μαΐ 2026, 05_42_52 μ.μ..png")
-    img4_path = os.path.join(base_path, "ChatGPT Image 8 Μαΐ 2026, 01_40_08 μ.μ..png")
-    img5_path = os.path.join(base_path, "ChatGPT Image 8 Μαΐ 2026, 01_48_33 μ.μ..png")
-    img6_path = os.path.join(base_path, "ChatGPT Image 8 Μαΐ 2026, 05_39_02 μ.μ..png")
-    img7_path = os.path.join(base_path, "ChatGPT Image 8 Μαΐ 2026, 01_50_47 μ.μ..png")
+    # Dynamically find the project root
+    # Current file is in frontend/components/ui.py
+    current_dir = Path(__file__).parent
+    project_root = current_dir.parent.parent
 
-    # Base64 strings
-    b64_1 = get_base64_image(img1_path)
-    b64_2 = get_base64_image(img2_path)
-    b64_3 = get_base64_image(img3_path)
-    b64_4 = get_base64_image(img4_path)
-    b64_5 = get_base64_image(img5_path)
-    b64_6 = get_base64_image(img6_path)
-    b64_7 = get_base64_image(img7_path)
+    # Image Filenames
+    filenames = {
+        "img1": "ChatGPT Image 8 Μαΐ 2026, 01_28_01 μ.μ..png",
+        "img2": "ChatGPT Image 8 Μαΐ 2026, 01_46_55 μ.μ..png",
+        "img3": "ChatGPT Image 8 Μαΐ 2026, 05_42_52 μ.μ..png",
+        "img4": "ChatGPT Image 8 Μαΐ 2026, 01_40_08 μ.μ..png",
+        "img5": "ChatGPT Image 8 Μαΐ 2026, 01_48_33 μ.μ..png",
+        "img6": "ChatGPT Image 8 Μαΐ 2026, 05_39_02 μ.μ..png",
+        "img7": "ChatGPT Image 8 Μαΐ 2026, 01_50_47 μ.μ..png"
+    }
+
+    # Load Base64 strings
+    images = {}
+    for key, filename in filenames.items():
+        path = project_root / filename
+        images[key] = get_base64_image(str(path))
 
     # Determine status badge position for image 3
     # [Low] [Average]
     # [Good] [Excellent]
     status_pos = "0% 0%" # Default Low
-    if score_label.lower() == "average":
+    label_lower = score_label.lower()
+    if label_lower == "average":
         status_pos = "100% 0%"
-    elif score_label.lower() == "good":
+    elif label_lower == "good":
         status_pos = "0% 100%"
-    elif score_label.lower() == "excellent":
+    elif label_lower == "excellent":
         status_pos = "100% 100%"
+
+    # Fallback styles if images are missing
+    bg_fallback = "background: #1e293b;"
+    
+    def get_bg_style(key, color_fallback):
+        if images[key]:
+            return f"background-image: url('data:image/png;base64,{images[key]}'); background-size: cover;"
+        return f"background: {color_fallback};"
 
     st.markdown(
         f"""
         <div class="hero-metric-grid">
             <!-- Card 1: Trust Score -->
-            <div class="hero-metric" style="background-image: url('data:image/png;base64,{b64_2}'); background-size: cover; border: none;">
+            <div class="hero-metric" style="{get_bg_style('img2', '#0ea5e9')}; border: none;">
                 <div class="hero-metric-icon" style="background: none; box-shadow: none; backdrop-filter: none;">
-                    <img src="data:image/png;base64,{b64_1}" style="width: 100%; height: 100%; object-fit: contain;">
+                    {f'<img src="data:image/png;base64,{images["img1"]}" style="width: 100%; height: 100%; object-fit: contain;">' if images["img1"] else '🎯'}
                 </div>
                 <div class="hero-metric-label">Self Trust Score</div>
                 <div class="hero-metric-value">{score_value}</div>
-                <div class="status-badge-container" style="margin-top: auto; width: 120px; height: 45px; background-image: url('data:image/png;base64,{b64_3}'); background-size: 200% 200%; background-position: {status_pos}; border-radius: 8px;"></div>
+                <div class="status-badge-container" style="margin-top: auto; width: 120px; height: 45px; {f"background-image: url('data:image/png;base64,{images['img3']}'); background-size: 200% 200%; background-position: {status_pos};" if images['img3'] else f'background: rgba(0,0,0,0.3); border: 1px solid white; padding: 4px; border-radius: 4px; text-align: center; line-height: 35px; font-weight: bold;'}{" border-radius: 8px;" if images['img3'] else ''}">
+                    {"" if images['img3'] else score_label}
+                </div>
             </div>
 
             <!-- Card 2: Streak -->
-            <div class="hero-metric" style="background-image: url('data:image/png;base64,{b64_5}'); background-size: cover; border: none;">
+            <div class="hero-metric" style="{get_bg_style('img5', '#f97316')}; border: none;">
                 <div class="hero-metric-icon" style="background: none; box-shadow: none; backdrop-filter: none;">
-                    <img src="data:image/png;base64,{b64_4}" style="width: 100%; height: 100%; object-fit: contain;">
+                    {f'<img src="data:image/png;base64,{images["img4"]}" style="width: 100%; height: 100%; object-fit: contain;">' if images["img4"] else '🔥'}
                 </div>
                 <div class="hero-metric-label">Current Streak</div>
                 <div class="hero-metric-value">{streak_value}</div>
@@ -65,9 +83,9 @@ def hero_metrics(score_value: str, score_label: str,
             </div>
 
             <!-- Card 3: Success -->
-            <div class="hero-metric" style="background-image: url('data:image/png;base64,{b64_7}'); background-size: cover; border: none;">
+            <div class="hero-metric" style="{get_bg_style('img7', '#10b981')}; border: none;">
                 <div class="hero-metric-icon" style="background: none; box-shadow: none; backdrop-filter: none;">
-                    <img src="data:image/png;base64,{b64_6}" style="width: 100%; height: 100%; object-fit: contain;">
+                    {f'<img src="data:image/png;base64,{images["img6"]}" style="width: 100%; height: 100%; object-fit: contain;">' if images["img6"] else '✅'}
                 </div>
                 <div class="hero-metric-label">Success Rate</div>
                 <div class="hero-metric-value">{success_value}</div>

@@ -123,6 +123,8 @@ def get_theme_css(dark_mode: bool) -> str:
         display: flex;
         flex-direction: column;
         min-height: 220px;
+        border: none !important;
+        background-color: transparent !important;
     }}
 
     .hero-metric:hover {{
