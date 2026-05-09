@@ -137,7 +137,7 @@ def get_theme_css(dark_mode: bool) -> str:
         background-size: 130% 130% !important;
         background-position: center !important;
         background-repeat: no-repeat !important;
-        filter: saturate(2.5) brightness(1.3) contrast(1.2);
+        filter: saturate(1.8) brightness(1.15) contrast(1.1);
         z-index: 0;
         pointer-events: none;
         mix-blend-mode: screen !important;
@@ -167,10 +167,12 @@ def get_theme_css(dark_mode: bool) -> str:
 
     .status-badge-container {{
         transition: all 0.3s ease;
+        background: transparent !important;
         background-color: transparent !important;
         border: none !important;
         box-shadow: none !important;
         mix-blend-mode: screen !important;
+        z-index: 2;
     }}
 
     .hero-metric-label {{
