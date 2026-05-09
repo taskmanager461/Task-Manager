@@ -718,13 +718,32 @@ body.sidebar-open #content {
     flex-direction: column;
     min-height: 240px;
     border: none !important;
-    background-size: 120% 120% !important; /* Increased zoom to 120% to fully hide all edge lines */
-    background-position: center !important;
-    background-repeat: no-repeat !important;
     background-color: transparent !important;
     box-shadow: none !important;
-    mix-blend-mode: screen; /* Global blend mode to remove black backgrounds from cards */
-    filter: saturate(1.8) brightness(1.2); /* Boost colors to compensate for zoom */
+    mix-blend-mode: screen;
+}
+
+.hero-metric-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: 125% 125% !important; /* Slightly more zoom for safety */
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    filter: saturate(1.8) brightness(1.15) contrast(1.1); /* Enhanced color intensity */
+    z-index: 0;
+    pointer-events: none;
+}
+
+.hero-metric-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
 }
 
 .hero-metric:hover {

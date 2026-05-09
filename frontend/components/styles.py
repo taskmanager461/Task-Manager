@@ -125,11 +125,6 @@ def get_theme_css(dark_mode: bool) -> str:
         min-height: 220px;
         border: none !important;
         background-color: transparent !important;
-        background-size: 120% 120% !important;
-        background-position: center !important;
-        background-repeat: no-repeat !important;
-        mix-blend-mode: screen;
-        filter: saturate(1.8) brightness(1.2);
     }}
 
     .hero-metric:hover {{
