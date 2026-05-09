@@ -126,7 +126,7 @@ def get_theme_css(dark_mode: bool) -> str:
         border: none !important;
         background-color: transparent !important;
         box-shadow: none !important;
-        mix-blend-mode: screen !important;
+        /* No global mix-blend-mode here as it can hide children */
     }}
 
     .hero-metric-bg {{
@@ -141,6 +141,7 @@ def get_theme_css(dark_mode: bool) -> str:
         filter: saturate(1.8) brightness(1.15) contrast(1.1);
         z-index: 0;
         pointer-events: none;
+        mix-blend-mode: screen !important; /* Blends card background with app background */
     }}
 
     .hero-metric-content {{
@@ -171,6 +172,7 @@ def get_theme_css(dark_mode: bool) -> str:
         background-color: transparent !important;
         border: none !important;
         box-shadow: none !important;
+        mix-blend-mode: screen !important; /* CRITICAL: Blends badge image black background away */
         z-index: 2;
     }}
 
