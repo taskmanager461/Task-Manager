@@ -1006,9 +1006,18 @@ function renderHeroMetrics(score) {
     const img7 = ASSETS.img7;
 
     let statusPos = "0% 0%"; // Default Low
-    if (label.class === "average") statusPos = "100% 0%";
-    else if (label.class === "good") statusPos = "0% 100%";
-    else if (label.class === "excellent") statusPos = "100% 100%";
+    let badgeMarginTop = "-25px";
+    let badgeMarginLeft = "-20px";
+
+    if (label.class === "average") {
+        statusPos = "100% 0%";
+        badgeMarginLeft = "-35px"; // 15px left from -20px
+    } else if (label.class === "good") {
+        statusPos = "0% 100%";
+        badgeMarginTop = "-10px";  // 15px down from -25px
+    } else if (label.class === "excellent") {
+        statusPos = "100% 100%";
+    }
 
     const successPct = score.success_rate * 100;
 
@@ -1020,7 +1029,7 @@ function renderHeroMetrics(score) {
             </div>
             <div class="hero-metric-label">Self Trust Score</div>
             <div class="hero-metric-value">${scoreVal}</div>
-            <div class="status-badge-container" style="background-image: url('${img3}'); background-position: ${statusPos}; background-color: transparent !important; width: 150px; height: 86px; margin-top: -25px; margin-left: -20px; margin-right: auto;"></div>
+            <div class="status-badge-container" style="background-image: url('${img3}'); background-position: ${statusPos}; background-color: transparent !important; width: 150px; height: 86px; margin-top: ${badgeMarginTop}; margin-left: ${badgeMarginLeft}; margin-right: auto;"></div>
         </div>
 
         <!-- Card 2: Streak -->
@@ -1039,7 +1048,7 @@ function renderHeroMetrics(score) {
             </div>
             <div class="hero-metric-label">Success Rate</div>
             <div class="hero-metric-value">${successVal}</div>
-            <div style="margin-top: 0; width: 100%; background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
+            <div style="margin-top: 10px; width: 100%; background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
                 <div style="width: ${successPct}%; height: 100%; background: #4ade80; box-shadow: 0 0 10px #4ade80; border-radius: 10px;"></div>
             </div>
         </div>
