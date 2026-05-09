@@ -718,8 +718,11 @@ body.sidebar-open #content {
     flex-direction: column;
     min-height: 240px;
     border: none !important;
-    background-size: 100% 100% !important;
+    background-size: cover !important;
+    background-position: center !important;
     background-repeat: no-repeat !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
     mix-blend-mode: screen; /* Global blend mode to remove black backgrounds from cards */
 }
 
