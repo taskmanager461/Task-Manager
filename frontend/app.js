@@ -1029,7 +1029,7 @@ function renderHeroMetrics(score) {
     container.innerHTML = `
         <!-- Card 1: Trust Score -->
         <div class="hero-metric" style="background-color: transparent !important;">
-            <div class="hero-metric-bg" style="background-image: url('${img2}')"></div>
+            <div class="hero-metric-bg" style="background-image: url('${img2}'); background-size: 130% 130%;"></div>
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img1}">
@@ -1042,7 +1042,7 @@ function renderHeroMetrics(score) {
 
         <!-- Card 2: Streak -->
         <div class="hero-metric" style="background-color: transparent !important;">
-            <div class="hero-metric-bg" style="background-image: url('${img5}')"></div>
+            <div class="hero-metric-bg" style="background-image: url('${img5}'); background-size: 130% 130%;"></div>
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img4}">
@@ -1054,7 +1054,7 @@ function renderHeroMetrics(score) {
 
         <!-- Card 3: Success -->
         <div class="hero-metric" style="background-color: transparent !important;">
-            <div class="hero-metric-bg" style="background-image: url('${img7}')"></div>
+            <div class="hero-metric-bg" style="background-image: url('${img7}'); background-size: 130% 130%;"></div>
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img6}">

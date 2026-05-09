@@ -125,6 +125,31 @@ def get_theme_css(dark_mode: bool) -> str:
         min-height: 220px;
         border: none !important;
         background-color: transparent !important;
+        box-shadow: none !important;
+        mix-blend-mode: screen !important;
+    }}
+
+    .hero-metric-bg {{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-size: 130% 130% !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        filter: saturate(1.8) brightness(1.15) contrast(1.1);
+        z-index: 0;
+        pointer-events: none;
+    }}
+
+    .hero-metric-content {{
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
     }}
 
     .hero-metric:hover {{
@@ -142,6 +167,10 @@ def get_theme_css(dark_mode: bool) -> str:
 
     .status-badge-container {{
         transition: all 0.3s ease;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        mix-blend-mode: screen !important;
     }}
 
     .hero-metric-label {{
