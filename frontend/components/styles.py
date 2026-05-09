@@ -118,6 +118,7 @@ def get_theme_css(dark_mode: bool) -> str:
         overflow: hidden;
         border-radius: 28px;
         padding: 1.75rem 1.5rem;
+        margin: 0 10px;
         transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: default;
         display: flex;
