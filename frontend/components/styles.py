@@ -122,26 +122,22 @@ def get_theme_css(dark_mode: bool) -> str:
         cursor: default;
         display: flex;
         flex-direction: column;
-        min-height: 220px;
+        min-height: 240px;
         border: none !important;
         background-color: transparent !important;
         box-shadow: none !important;
-        /* No global mix-blend-mode here as it can hide children */
     }}
 
     .hero-metric-bg {{
         position: absolute;
         top: 0;
         left: 0;
-        right: 0;
-        bottom: 0;
-        background-size: 130% 130% !important;
-        background-position: center !important;
-        background-repeat: no-repeat !important;
-        filter: saturate(1.8) brightness(1.15) contrast(1.1);
+        width: 100%;
+        height: 100%;
         z-index: 0;
+        background-position: center;
+        background-repeat: no-repeat;
         pointer-events: none;
-        mix-blend-mode: screen !important; /* Blends card background with app background */
     }}
 
     .hero-metric-content {{

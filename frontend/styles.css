@@ -720,7 +720,6 @@ body.sidebar-open #content {
     border: none !important;
     background-color: transparent !important;
     box-shadow: none !important;
-    mix-blend-mode: screen;
 }
 
 .hero-metric-bg {
@@ -810,8 +809,7 @@ body.sidebar-open #content {
      background-color: transparent !important;
      box-shadow: none !important;
      border: none !important;
-     mix-blend-mode: screen; /* Removes black background from the PNG badge */
-     filter: brightness(1.1); /* Slightly boost badge visibility */
+     mix-blend-mode: screen !important; /* Removes black background from the PNG badge */
  }
 
  .status-badge-container.low { }

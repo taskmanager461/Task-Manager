@@ -1028,22 +1028,22 @@ function renderHeroMetrics(score) {
 
     container.innerHTML = `
         <!-- Card 1: Trust Score -->
-        <div class="hero-metric" style="background-color: transparent !important;">
-            <div class="hero-metric-bg" style="background-image: url('${img2}'); background-size: 130% 130%;"></div>
+        <div class="hero-metric" style="background-color: transparent !important; mix-blend-mode: normal !important;">
+            <div class="hero-metric-bg" style="background-image: url('${img2}'); background-size: 130% 130%; mix-blend-mode: normal !important;"></div>
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img1}">
                 </div>
                 <div class="hero-metric-label">Self Trust Score</div>
                 <div class="hero-metric-value">${scoreVal}</div>
-                <div class="status-badge-container ${label.class}" style="background-image: url('${img3}'); background-size: 320px 185px; background-position: ${statusPos}; width: 150px; height: ${badgeHeight}; margin-top: ${badgeMarginTop}; margin-left: ${badgeMarginLeft}; margin-right: auto; mix-blend-mode: screen !important; box-shadow: none !important; background-color: transparent !important;">
+                <div class="status-badge-container ${label.class}" style="background-image: url('${img3}'); background-size: 320px 185px; background-position: ${statusPos}; width: 150px; height: ${badgeHeight}; margin-top: ${badgeMarginTop}; margin-left: ${badgeMarginLeft}; margin-right: auto; mix-blend-mode: screen !important; box-shadow: none !important; background-color: transparent !important; border: none !important;">
                 </div>
             </div>
         </div>
 
         <!-- Card 2: Streak -->
-        <div class="hero-metric" style="background-color: transparent !important;">
-            <div class="hero-metric-bg" style="background-image: url('${img5}'); background-size: 130% 130%;"></div>
+        <div class="hero-metric" style="background-color: transparent !important; mix-blend-mode: normal !important;">
+            <div class="hero-metric-bg" style="background-image: url('${img5}'); background-size: 130% 130%; mix-blend-mode: normal !important;"></div>
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img4}">
@@ -1054,8 +1054,8 @@ function renderHeroMetrics(score) {
         </div>
 
         <!-- Card 3: Success -->
-        <div class="hero-metric" style="background-color: transparent !important;">
-            <div class="hero-metric-bg" style="background-image: url('${img7}'); background-size: 130% 130%;"></div>
+        <div class="hero-metric" style="background-color: transparent !important; mix-blend-mode: normal !important;">
+            <div class="hero-metric-bg" style="background-image: url('${img7}'); background-size: 130% 130%; mix-blend-mode: normal !important;"></div>
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img6}">
