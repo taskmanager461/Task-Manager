@@ -51,12 +51,14 @@ def hero_metrics(score_value: str, score_label: str,
     label_lower = score_label.lower()
     if label_lower == "average":
         status_pos = "100% 0%"
-        badge_margin_left = "-35px" # 15px left from -20px
+        badge_margin_left = "-5px"
     elif label_lower == "good":
         status_pos = "0% 100%"
-        badge_margin_top = "-10px"  # 15px down from -25px
+        badge_margin_top = "0px"
     elif label_lower == "excellent":
         status_pos = "100% 100%"
+        badge_margin_left = "-35px" # 15px left from -20px
+        badge_margin_top = "-15px"  # 10px down from -25px
 
     def get_bg_style(key, color_fallback):
         if images.get(key):
