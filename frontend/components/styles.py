@@ -170,33 +170,15 @@ def get_theme_css(dark_mode: bool) -> str:
         transition: all 0.3s ease;
         mix-blend-mode: screen !important; /* CRITICAL: Blends badge image black background away */
         z-index: 2;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: 800;
-        text-transform: uppercase;
-        font-size: 0.8rem;
-        letter-spacing: 1px;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
     }}
 
-    .status-badge-container.low {{
-        background-color: rgba(239, 68, 68, 0.2) !important;
-        border: 1px solid rgba(239, 68, 68, 0.3) !important;
-    }}
-    .status-badge-container.average {{
-        background-color: rgba(245, 158, 11, 0.2) !important;
-        border: 1px solid rgba(245, 158, 11, 0.3) !important;
-    }}
-    .status-badge-container.good {{
-        background-color: rgba(16, 185, 129, 0.2) !important;
-        border: 1px solid rgba(16, 185, 129, 0.3) !important;
-    }}
-    .status-badge-container.excellent {{
-        background-color: rgba(139, 92, 246, 0.2) !important;
-        border: 1px solid rgba(139, 92, 246, 0.3) !important;
-        box-shadow: 0 0 15px rgba(139, 92, 246, 0.3) !important;
-    }}
+    .status-badge-container.low {{ }}
+    .status-badge-container.average {{ }}
+    .status-badge-container.good {{ }}
+    .status-badge-container.excellent {{ }}
 
     .hero-metric-label {{
         font-size: 0.85rem;

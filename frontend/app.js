@@ -1036,8 +1036,7 @@ function renderHeroMetrics(score) {
                 </div>
                 <div class="hero-metric-label">Self Trust Score</div>
                 <div class="hero-metric-value">${scoreVal}</div>
-                <div class="status-badge-container ${label.class}" style="background-image: url('${img3}'); background-size: 320px 185px; background-position: ${statusPos}; width: 150px; height: ${badgeHeight}; margin-top: ${badgeMarginTop}; margin-left: ${badgeMarginLeft}; margin-right: auto; mix-blend-mode: screen !important; box-shadow: none !important;">
-                    ${label.text}
+                <div class="status-badge-container ${label.class}" style="background-image: url('${img3}'); background-size: 320px 185px; background-position: ${statusPos}; width: 150px; height: ${badgeHeight}; margin-top: ${badgeMarginTop}; margin-left: ${badgeMarginLeft}; margin-right: auto; mix-blend-mode: screen !important; box-shadow: none !important; background-color: transparent !important;">
                 </div>
             </div>
         </div>
