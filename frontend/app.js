@@ -1028,7 +1028,7 @@ function renderHeroMetrics(score) {
 
     container.innerHTML = `
         <!-- Card 1: Trust Score -->
-        <div class="hero-metric" style="background-image: url('${img2}'); background-size: 120% 120%; background-position: center; background-color: transparent !important;">
+        <div class="hero-metric" style="background-image: url('${img2}'); background-size: 120% 120%; background-position: center; background-color: transparent !important; filter: saturate(1.8) brightness(1.2);">
             <div class="hero-metric-icon">
                 <img src="${img1}">
             </div>
@@ -1038,7 +1038,7 @@ function renderHeroMetrics(score) {
         </div>
 
         <!-- Card 2: Streak -->
-        <div class="hero-metric" style="background-image: url('${img5}'); background-size: 120% 120%; background-position: center; background-color: transparent !important;">
+        <div class="hero-metric" style="background-image: url('${img5}'); background-size: 120% 120%; background-position: center; background-color: transparent !important; filter: saturate(1.8) brightness(1.2);">
             <div class="hero-metric-icon">
                 <img src="${img4}">
             </div>
@@ -1047,7 +1047,7 @@ function renderHeroMetrics(score) {
         </div>
 
         <!-- Card 3: Success -->
-        <div class="hero-metric" style="background-image: url('${img7}'); background-size: 120% 120%; background-position: center; background-color: transparent !important;">
+        <div class="hero-metric" style="background-image: url('${img7}'); background-size: 120% 120%; background-position: center; background-color: transparent !important; filter: saturate(1.8) brightness(1.2);">
             <div class="hero-metric-icon">
                 <img src="${img6}">
             </div>

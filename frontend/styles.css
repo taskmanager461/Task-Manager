@@ -724,6 +724,7 @@ body.sidebar-open #content {
     background-color: transparent !important;
     box-shadow: none !important;
     mix-blend-mode: screen; /* Global blend mode to remove black backgrounds from cards */
+    filter: saturate(1.8) brightness(1.2); /* Enhanced colors to compensate for zoom loss */
 }
 
 .hero-metric:hover {
