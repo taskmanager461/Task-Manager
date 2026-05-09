@@ -1015,12 +1015,13 @@ function renderHeroMetrics(score) {
         badgeMarginLeft = "-5px";
     } else if (label.class === "good") {
         statusPos = "0% 100%";
-        badgeMarginTop = "0px";
-        badgeHeight = "66px"; // Cropped 20px from 86px
+        badgeMarginTop = "10px";
+        badgeHeight = "60px";
     } else if (label.class === "excellent") {
         statusPos = "100% 100%";
         badgeMarginLeft = "0px";
-        badgeMarginTop = "0px";
+        badgeMarginTop = "10px";
+        badgeHeight = "25px";
     }
 
     const successPct = score.success_rate * 100;
