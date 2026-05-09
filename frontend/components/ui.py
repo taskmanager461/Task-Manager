@@ -87,8 +87,8 @@ def hero_metrics(score_value: str, score_label: str,
                     </div>
                     <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
                     <div class="hero-metric-value" style="color: white !important;">{score_value}</div>
-                    <div class="status-badge-container" style="margin-top: {badge_margin_top}; margin-left: {badge_margin_left}; margin-right: auto; width: 150px; height: {badge_height}; {f"background-image: url('data:image/png;base64,{images['img3']}'); background-size: 320px 185px; background-position: {status_pos};" if images.get('img3') else f'background: transparent; border: none; text-align: center; line-height: {badge_height}; color: white; font-weight: 800;'}{" border-radius: 12px;" if images.get('img3') else ''}; mix-blend-mode: screen !important; background-color: transparent !important; border: none !important; box-shadow: none !important;">
-                        {"" if images.get('img3') else score_label}
+                    <div class="status-badge-container {label_lower}" style="margin-top: {badge_margin_top}; margin-left: {badge_margin_left}; margin-right: auto; width: 150px; height: {badge_height}; {f"background-image: url('data:image/png;base64,{images['img3']}'); background-size: 320px 185px; background-position: {status_pos};" if images.get('img3') else ''}; mix-blend-mode: screen !important; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; text-shadow: 0 0 10px rgba(0,0,0,0.5); font-size: 0.85rem; text-transform: uppercase;">
+                        {score_label}
                     </div>
                 </div>
             </div>
