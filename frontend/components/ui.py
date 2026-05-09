@@ -44,24 +44,24 @@ def hero_metrics(score_value: str, score_label: str,
     # Determine status badge position and offsets
     # [Low] [Average]
     # [Good] [Excellent]
-    status_pos = "0% 0%" # Default Low
+    status_pos = "0px 0px" # Default Low
     badge_margin_top = "-25px"
     badge_margin_left = "-20px"
     badge_height = "86px"
     
     label_lower = score_label.lower()
     if label_lower == "average":
-        status_pos = "100% 0%"
+        status_pos = "-150px 0px"
         badge_margin_left = "-5px"
     elif label_lower == "good":
-        status_pos = "0% 100%"
+        status_pos = "0px -86px"
         badge_margin_top = "10px"
         badge_height = "60px"
     elif label_lower == "excellent":
-        status_pos = "100% 100%"
+        status_pos = "-150px -86px"
         badge_margin_left = "0px"
         badge_margin_top = "10px"
-        badge_height = "25px"
+        badge_height = "10px" # As requested "height 10 px"
 
     def get_bg_style(key, color_fallback):
         if images.get(key):
@@ -84,7 +84,7 @@ def hero_metrics(score_value: str, score_label: str,
                 </div>
                 <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
                 <div class="hero-metric-value" style="color: white !important;">{score_value}</div>
-                <div class="status-badge-container" style="margin-top: {badge_margin_top}; margin-left: {badge_margin_left}; margin-right: auto; width: 150px; height: {badge_height}; {f"background-image: url('data:image/png;base64,{images['img3']}'); background-size: 200% 200%; background-position: {status_pos};" if images.get('img3') else f'background: rgba(0,0,0,0.4); border: 1px solid white; border-radius: 8px; text-align: center; line-height: {badge_height}; color: white; font-weight: 800;'}{" border-radius: 12px;" if images.get('img3') else ''}; mix-blend-mode: screen;">
+                <div class="status-badge-container" style="margin-top: {badge_margin_top}; margin-left: {badge_margin_left}; margin-right: auto; width: 150px; height: {badge_height}; {f"background-image: url('data:image/png;base64,{images['img3']}'); background-size: 300px 172px; background-position: {status_pos};" if images.get('img3') else f'background: rgba(0,0,0,0.4); border: 1px solid white; border-radius: 8px; text-align: center; line-height: {badge_height}; color: white; font-weight: 800;'}{" border-radius: 12px;" if images.get('img3') else ''}; mix-blend-mode: screen;">
                     {"" if images.get('img3') else score_label}
                 </div>
             </div>

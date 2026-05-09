@@ -1005,23 +1005,23 @@ function renderHeroMetrics(score) {
     const img6 = ASSETS.img6;
     const img7 = ASSETS.img7;
 
-    let statusPos = "0% 0%"; // Default Low
+    let statusPos = "0px 0px"; // Default Low
     let badgeMarginTop = "-25px";
     let badgeMarginLeft = "-20px";
     let badgeHeight = "86px";
 
     if (label.class === "average") {
-        statusPos = "100% 0%";
+        statusPos = "-150px 0px";
         badgeMarginLeft = "-5px";
     } else if (label.class === "good") {
-        statusPos = "0% 100%";
+        statusPos = "0px -86px";
         badgeMarginTop = "10px";
         badgeHeight = "60px";
     } else if (label.class === "excellent") {
-        statusPos = "100% 100%";
+        statusPos = "-150px -86px";
         badgeMarginLeft = "0px";
         badgeMarginTop = "10px";
-        badgeHeight = "25px";
+        badgeHeight = "10px"; // As requested "height 10 px"
     }
 
     const successPct = score.success_rate * 100;
@@ -1034,7 +1034,7 @@ function renderHeroMetrics(score) {
             </div>
             <div class="hero-metric-label">Self Trust Score</div>
             <div class="hero-metric-value">${scoreVal}</div>
-            <div class="status-badge-container" style="background-image: url('${img3}'); background-position: ${statusPos}; background-color: transparent !important; width: 150px; height: ${badgeHeight}; margin-top: ${badgeMarginTop}; margin-left: ${badgeMarginLeft}; margin-right: auto;"></div>
+            <div class="status-badge-container" style="background-image: url('${img3}'); background-size: 300px 172px; background-position: ${statusPos}; background-color: transparent !important; width: 150px; height: ${badgeHeight}; margin-top: ${badgeMarginTop}; margin-left: ${badgeMarginLeft}; margin-right: auto;"></div>
         </div>
 
         <!-- Card 2: Streak -->
