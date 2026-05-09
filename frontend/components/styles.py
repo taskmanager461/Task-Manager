@@ -126,6 +126,7 @@ def get_theme_css(dark_mode: bool) -> str:
         border: none !important;
         background-color: transparent !important;
         box-shadow: none !important;
+        mix-blend-mode: screen !important;
     }}
 
     .hero-metric-bg {{
@@ -140,7 +141,6 @@ def get_theme_css(dark_mode: bool) -> str:
         filter: saturate(1.8) brightness(1.15) contrast(1.1);
         z-index: 0;
         pointer-events: none;
-        mix-blend-mode: screen !important;
     }}
 
     .hero-metric-content {{
@@ -171,7 +171,6 @@ def get_theme_css(dark_mode: bool) -> str:
         background-color: transparent !important;
         border: none !important;
         box-shadow: none !important;
-        mix-blend-mode: screen !important;
         z-index: 2;
     }}
 
