@@ -718,7 +718,7 @@ body.sidebar-open #content {
     flex-direction: column;
     min-height: 240px;
     border: none !important;
-    background-size: 110% 110% !important; /* Zoomed in to hide black edges */
+    background-size: 120% 120% !important; /* Increased zoom to 120% to fully hide all edge lines */
     background-position: center !important;
     background-repeat: no-repeat !important;
     background-color: transparent !important;
