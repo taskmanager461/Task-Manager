@@ -61,7 +61,7 @@ def hero_metrics(score_value: str, score_label: str,
         status_pos = "-150px -86px"
         badge_margin_left = "0px"
         badge_margin_top = "10px"
-        badge_height = "10px" # As requested "height 10 px"
+        badge_height = "60px"
 
     def get_bg_style(key, color_fallback):
         if images.get(key):

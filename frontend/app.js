@@ -1021,7 +1021,7 @@ function renderHeroMetrics(score) {
         statusPos = "-150px -86px";
         badgeMarginLeft = "0px";
         badgeMarginTop = "10px";
-        badgeHeight = "10px"; // As requested "height 10 px"
+        badgeHeight = "60px";
     }
 
     const successPct = score.success_rate * 100;
