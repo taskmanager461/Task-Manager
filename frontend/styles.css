@@ -811,6 +811,7 @@ body.sidebar-open #content {
      box-shadow: none !important;
      border: none !important;
      mix-blend-mode: screen; /* Removes black background from the PNG badge */
+     filter: brightness(1.1); /* Slightly boost badge visibility */
  }
 
 /* Suggestions & Insights */
