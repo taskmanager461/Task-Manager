@@ -1028,33 +1028,42 @@ function renderHeroMetrics(score) {
 
     container.innerHTML = `
         <!-- Card 1: Trust Score -->
-        <div class="hero-metric" style="background-image: url('${img2}'); background-size: 120% 120%; background-position: center; background-color: transparent !important; filter: saturate(1.8) brightness(1.2);">
-            <div class="hero-metric-icon">
-                <img src="${img1}">
+        <div class="hero-metric">
+            <div class="hero-metric-bg" style="background-image: url('${img2}')"></div>
+            <div class="hero-metric-content">
+                <div class="hero-metric-icon">
+                    <img src="${img1}">
+                </div>
+                <div class="hero-metric-label">Self Trust Score</div>
+                <div class="hero-metric-value">${scoreVal}</div>
+                <div class="status-badge-container" style="background-image: url('${img3}'); background-size: 300px 172px; background-position: ${statusPos}; background-color: transparent !important; width: 150px; height: ${badgeHeight}; margin-top: ${badgeMarginTop}; margin-left: ${badgeMarginLeft}; margin-right: auto;"></div>
             </div>
-            <div class="hero-metric-label">Self Trust Score</div>
-            <div class="hero-metric-value">${scoreVal}</div>
-            <div class="status-badge-container" style="background-image: url('${img3}'); background-size: 300px 172px; background-position: ${statusPos}; background-color: transparent !important; width: 150px; height: ${badgeHeight}; margin-top: ${badgeMarginTop}; margin-left: ${badgeMarginLeft}; margin-right: auto;"></div>
         </div>
 
         <!-- Card 2: Streak -->
-        <div class="hero-metric" style="background-image: url('${img5}'); background-size: 120% 120%; background-position: center; background-color: transparent !important; filter: saturate(1.8) brightness(1.2);">
-            <div class="hero-metric-icon">
-                <img src="${img4}">
+        <div class="hero-metric">
+            <div class="hero-metric-bg" style="background-image: url('${img5}')"></div>
+            <div class="hero-metric-content">
+                <div class="hero-metric-icon">
+                    <img src="${img4}">
+                </div>
+                <div class="hero-metric-label">Current Streak</div>
+                <div class="hero-metric-value">${streakVal}</div>
             </div>
-            <div class="hero-metric-label">Current Streak</div>
-            <div class="hero-metric-value">${streakVal}</div>
         </div>
 
         <!-- Card 3: Success -->
-        <div class="hero-metric" style="background-image: url('${img7}'); background-size: 120% 120%; background-position: center; background-color: transparent !important; filter: saturate(1.8) brightness(1.2);">
-            <div class="hero-metric-icon">
-                <img src="${img6}">
-            </div>
-            <div class="hero-metric-label">Success Rate</div>
-            <div class="hero-metric-value">${successVal}</div>
-            <div style="margin-top: 40px; width: 100%; background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
-                <div style="width: ${successPct}%; height: 100%; background: #4ade80; box-shadow: 0 0 10px #4ade80; border-radius: 10px;"></div>
+        <div class="hero-metric">
+            <div class="hero-metric-bg" style="background-image: url('${img7}')"></div>
+            <div class="hero-metric-content">
+                <div class="hero-metric-icon">
+                    <img src="${img6}">
+                </div>
+                <div class="hero-metric-label">Success Rate</div>
+                <div class="hero-metric-value">${successVal}</div>
+                <div style="margin-top: 40px; width: 100%; background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
+                    <div style="width: ${successPct}%; height: 100%; background: #4ade80; box-shadow: 0 0 10px #4ade80; border-radius: 10px;"></div>
+                </div>
             </div>
         </div>
     `;

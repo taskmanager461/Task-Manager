@@ -127,6 +127,30 @@ def get_theme_css(dark_mode: bool) -> str:
         background-color: transparent !important;
     }}
 
+    .hero-metric-bg {{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background-size: 120% 120% !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        filter: saturate(1.8) brightness(1.2);
+        pointer-events: none;
+    }}
+
+    .hero-metric-content {{
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+        pointer-events: none;
+    }}
+
     .hero-metric:hover {{
         transform: translateY(-8px) scale(1.02);
     }}
