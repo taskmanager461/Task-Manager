@@ -1028,7 +1028,7 @@ function renderHeroMetrics(score) {
 
     container.innerHTML = `
         <!-- Card 1: Trust Score -->
-        <div class="hero-metric" style="background-image: url('${img2}'); background-size: 130% 130%; background-position: center; background-repeat: no-repeat; background-color: #0284c7 !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important;">
+        <div class="hero-metric" style="background-image: url('${img2}'); background-size: 130% 130%; background-position: center; background-repeat: no-repeat; background-color: #0099ff !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.2) !important; filter: saturate(1.2) brightness(1.1) !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img1}">
@@ -1041,7 +1041,7 @@ function renderHeroMetrics(score) {
         </div>
 
         <!-- Card 2: Streak -->
-        <div class="hero-metric" style="background-image: url('${img5}'); background-size: 130% 130%; background-position: center; background-repeat: no-repeat; background-color: #ea580c !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important;">
+        <div class="hero-metric" style="background-image: url('${img5}'); background-size: 130% 130%; background-position: center; background-repeat: no-repeat; background-color: #ff6600 !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.2) !important; filter: saturate(1.2) brightness(1.1) !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img4}">
@@ -1052,7 +1052,7 @@ function renderHeroMetrics(score) {
         </div>
 
         <!-- Card 3: Success -->
-        <div class="hero-metric" style="background-image: url('${img7}'); background-size: 130% 130%; background-position: center; background-repeat: no-repeat; background-color: #059669 !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important;">
+        <div class="hero-metric" style="background-image: url('${img7}'); background-size: 130% 130%; background-position: center; background-repeat: no-repeat; background-color: #00ff88 !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.2) !important; filter: saturate(1.2) brightness(1.1) !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img6}">
