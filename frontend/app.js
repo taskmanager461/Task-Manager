@@ -1028,7 +1028,7 @@ function renderHeroMetrics(score) {
 
     container.innerHTML = `
         <!-- Card 1: Trust Score -->
-        <div class="hero-metric" style="background: radial-gradient(circle at bottom right, rgba(0, 153, 255, 0.8) 0%, rgba(0, 26, 51, 1) 50%, rgba(0, 0, 0, 1) 100%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
+        <div class="hero-metric" style="background: radial-gradient(circle at 90% 90%, rgba(0, 153, 255, 0.6) 0%, rgba(0, 77, 128, 0.2) 45%, rgba(0, 0, 0, 1) 100%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img1}">
@@ -1041,7 +1041,7 @@ function renderHeroMetrics(score) {
         </div>
 
         <!-- Card 2: Streak -->
-        <div class="hero-metric" style="background: radial-gradient(circle at bottom right, rgba(255, 102, 0, 0.8) 0%, rgba(51, 20, 0, 1) 50%, rgba(0, 0, 0, 1) 100%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
+        <div class="hero-metric" style="background: radial-gradient(circle at 90% 90%, rgba(255, 102, 0, 0.6) 0%, rgba(128, 51, 0, 0.2) 45%, rgba(0, 0, 0, 1) 100%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img4}">
@@ -1052,7 +1052,7 @@ function renderHeroMetrics(score) {
         </div>
 
         <!-- Card 3: Success -->
-        <div class="hero-metric" style="background: radial-gradient(circle at bottom right, rgba(0, 255, 136, 0.8) 0%, rgba(0, 51, 27, 1) 50%, rgba(0, 0, 0, 1) 100%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
+        <div class="hero-metric" style="background: radial-gradient(circle at 90% 90%, rgba(0, 255, 136, 0.6) 0%, rgba(0, 128, 68, 0.2) 45%, rgba(0, 0, 0, 1) 100%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img6}">

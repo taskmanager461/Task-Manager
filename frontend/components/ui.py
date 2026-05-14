@@ -79,7 +79,7 @@ def hero_metrics(score_value: str, score_label: str,
         f"""
         <div class="hero-metric-grid">
             <!-- Card 1: Trust Score -->
-            <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important; isolation: isolate !important; background: radial-gradient(circle at bottom right, rgba(0, 153, 255, 0.8) 0%, rgba(0, 26, 51, 1) 50%, rgba(0, 0, 0, 1) 100%) !important;">
+            <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important; isolation: isolate !important; background: radial-gradient(circle at 90% 90%, rgba(0, 153, 255, 0.6) 0%, rgba(0, 77, 128, 0.2) 45%, rgba(0, 0, 0, 1) 100%) !important;">
                 <div class="hero-metric-content">
                     <div class="hero-metric-icon" style="background: none !important; border: none !important;">
                         {f'<img src="data:image/png;base64,{images["img1"]}" style="width: 45px; height: 45px; object-fit: contain;">' if images.get("img1") else '🎯'}
@@ -92,7 +92,7 @@ def hero_metrics(score_value: str, score_label: str,
             </div>
 
             <!-- Card 2: Streak -->
-            <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important; isolation: isolate !important; background: radial-gradient(circle at bottom right, rgba(255, 102, 0, 0.8) 0%, rgba(51, 20, 0, 1) 50%, rgba(0, 0, 0, 1) 100%) !important;">
+            <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important; isolation: isolate !important; background: radial-gradient(circle at 90% 90%, rgba(255, 102, 0, 0.6) 0%, rgba(128, 51, 0, 0.2) 45%, rgba(0, 0, 0, 1) 100%) !important;">
                 <div class="hero-metric-content">
                     <div class="hero-metric-icon" style="background: none !important; border: none !important;">
                         {f'<img src="data:image/png;base64,{images["img4"]}" style="width: 45px; height: 45px; object-fit: contain;">' if images.get("img4") else '🔥'}
@@ -103,7 +103,7 @@ def hero_metrics(score_value: str, score_label: str,
             </div>
 
             <!-- Card 3: Success -->
-            <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important; isolation: isolate !important; background: radial-gradient(circle at bottom right, rgba(0, 255, 136, 0.8) 0%, rgba(0, 51, 27, 1) 50%, rgba(0, 0, 0, 1) 100%) !important;">
+            <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important; isolation: isolate !important; background: radial-gradient(circle at 90% 90%, rgba(0, 255, 136, 0.6) 0%, rgba(0, 128, 68, 0.2) 45%, rgba(0, 0, 0, 1) 100%) !important;">
                 <div class="hero-metric-content">
                     <div class="hero-metric-icon" style="background: none !important; border: none !important;">
                         {f'<img src="data:image/png;base64,{images["img6"]}" style="width: 45px; height: 45px; object-fit: contain;">' if images.get("img6") else '📈'}
