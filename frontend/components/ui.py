@@ -79,21 +79,20 @@ def hero_metrics(score_value: str, score_label: str,
         f"""
         <div class="hero-metric-grid">
             <!-- Card 1: Trust Score -->
-            <div class="hero-metric" style="border: none !important; box-shadow: none !important; mix-blend-mode: normal !important; background-color: #0ea5e9 !important; {get_bg_style('img2', '#0ea5e9')}; background-size: 130% 130%; background-position: center; background-repeat: no-repeat;">
+            <div class="hero-metric" style="border: none !important; box-shadow: none !important; isolation: isolate !important; background-color: #0ea5e9 !important; {get_bg_style('img2', '#0ea5e9')}; background-size: 130% 130%; background-position: center; background-repeat: no-repeat;">
                 <div class="hero-metric-content">
                     <div class="hero-metric-icon" style="background: none !important; border: none !important;">
                         {f'<img src="data:image/png;base64,{images["img1"]}" style="width: 45px; height: 45px; object-fit: contain;">' if images.get("img1") else '🎯'}
                     </div>
                     <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
                     <div class="hero-metric-value" style="color: white !important;">{score_value}</div>
-                    <div class="status-badge-container {label_lower}" style="margin-top: {badge_margin_top}; margin-left: {badge_margin_left}; margin-right: auto; width: 150px; height: {badge_height}; overflow: hidden; background: transparent !important; border: none !important; box-shadow: none !important;">
-                        {f'<img src="data:image/png;base64,{images["img3"]}" style="width: 320px; height: 185px; max-width: none; object-fit: none; object-position: {status_pos}; mix-blend-mode: screen !important; display: block; background: transparent !important;">' if images.get('img3') else ''}
+                    <div class="status-badge-container {label_lower}" style="margin-top: {badge_margin_top}; margin-left: {badge_margin_left}; margin-right: auto; width: 150px; height: {badge_height}; {f"background-image: url('data:image/png;base64,{images['img3']}'); background-size: 320px 185px; background-position: {status_pos};" if images.get('img3') else ''}; mix-blend-mode: screen !important; border-radius: 12px; background-color: transparent !important; border: none !important;">
                     </div>
                 </div>
             </div>
 
             <!-- Card 2: Streak -->
-            <div class="hero-metric" style="border: none !important; box-shadow: none !important; mix-blend-mode: normal !important; background-color: #f97316 !important; {get_bg_style('img5', '#f97316')}; background-size: 130% 130%; background-position: center; background-repeat: no-repeat;">
+            <div class="hero-metric" style="border: none !important; box-shadow: none !important; isolation: isolate !important; background-color: #f97316 !important; {get_bg_style('img5', '#f97316')}; background-size: 130% 130%; background-position: center; background-repeat: no-repeat;">
                 <div class="hero-metric-content">
                     <div class="hero-metric-icon" style="background: none !important; border: none !important;">
                         {f'<img src="data:image/png;base64,{images["img4"]}" style="width: 45px; height: 45px; object-fit: contain;">' if images.get("img4") else '🔥'}
@@ -104,7 +103,7 @@ def hero_metrics(score_value: str, score_label: str,
             </div>
 
             <!-- Card 3: Success -->
-            <div class="hero-metric" style="border: none !important; box-shadow: none !important; mix-blend-mode: normal !important; background-color: #10b981 !important; {get_bg_style('img7', '#10b981')}; background-size: 130% 130%; background-position: center; background-repeat: no-repeat;">
+            <div class="hero-metric" style="border: none !important; box-shadow: none !important; isolation: isolate !important; background-color: #10b981 !important; {get_bg_style('img7', '#10b981')}; background-size: 130% 130%; background-position: center; background-repeat: no-repeat;">
                 <div class="hero-metric-content">
                     <div class="hero-metric-icon" style="background: none !important; border: none !important;">
                         {f'<img src="data:image/png;base64,{images["img6"]}" style="width: 45px; height: 45px; object-fit: contain;">' if images.get("img6") else '📈'}
