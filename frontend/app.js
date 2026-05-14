@@ -1041,7 +1041,7 @@ function renderHeroMetrics(score) {
         </div>
 
         <!-- Card 2: Streak -->
-        <div class="hero-metric" style="background-image: url('${img5}'); background-size: 130% 130%; background-position: center; background-repeat: no-repeat; background-color: #f97316 !important; isolation: isolate !important;">
+        <div class="hero-metric" style="background-image: url('${img5}'); background-size: 130% 130%; background-position: center; background-repeat: no-repeat; background-color: #f59e0b !important; isolation: isolate !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img4}">

@@ -92,7 +92,7 @@ def hero_metrics(score_value: str, score_label: str,
             </div>
 
             <!-- Card 2: Streak -->
-            <div class="hero-metric" style="border: none !important; box-shadow: none !important; isolation: isolate !important; background-color: #f97316 !important; {get_bg_style('img5', '#f97316')}; background-size: 130% 130%; background-position: center; background-repeat: no-repeat;">
+            <div class="hero-metric" style="border: none !important; box-shadow: none !important; isolation: isolate !important; background-color: #f59e0b !important; {get_bg_style('img5', '#f59e0b')}; background-size: 130% 130%; background-position: center; background-repeat: no-repeat;">
                 <div class="hero-metric-content">
                     <div class="hero-metric-icon" style="background: none !important; border: none !important;">
                         {f'<img src="data:image/png;base64,{images["img4"]}" style="width: 45px; height: 45px; object-fit: contain;">' if images.get("img4") else '🔥'}
