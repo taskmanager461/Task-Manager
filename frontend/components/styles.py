@@ -142,7 +142,6 @@ def get_theme_css(dark_mode: bool) -> str:
 
     .hero-metric-content {{
         position: relative;
-        z-index: 1;
         display: flex;
         flex-direction: column;
         height: 100%;

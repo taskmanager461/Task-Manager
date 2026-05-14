@@ -738,7 +738,6 @@ body.sidebar-open #content {
 
 .hero-metric-content {
     position: relative;
-    z-index: 1;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -804,20 +803,15 @@ body.sidebar-open #content {
      width: 150px;
      height: 86px;
      border-radius: 12px;
-     background-size: 200% 200%;
+     background-size: 320px 185px;
      transition: all 0.3s ease;
      background-color: transparent !important;
      box-shadow: none !important;
      border: none !important;
-     mix-blend-mode: screen !important; /* Removes black background from the PNG badge */
+     mix-blend-mode: screen !important;
  }
-
- .status-badge-container.low { }
- .status-badge-container.average { }
- .status-badge-container.good { }
- .status-badge-container.excellent { }
-
-/* Suggestions & Insights */
+ 
+ /* Suggestions & Insights */
 .suggestion-box {
     background: rgba(10, 132, 255, 0.08);
     border: 1px solid rgba(10, 132, 255, 0.22);

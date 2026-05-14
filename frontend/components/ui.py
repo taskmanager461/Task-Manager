@@ -65,8 +65,8 @@ def hero_metrics(score_value: str, score_label: str,
 
     def get_bg_style(key, color_fallback):
         if images.get(key):
-            # Using 130% size to fully zoom in and eliminate any remaining edge lines or imperfections
-            return f"background-image: url('data:image/png;base64,{images[key]}'); background-size: 130% 130%; background-position: center; background-repeat: no-repeat; background-color: transparent !important;"
+            # Keep the background color even when image is present for blending to work
+            return f"background-image: url('data:image/png;base64,{images[key]}'); background-size: 130% 130%; background-position: center; background-repeat: no-repeat; background-color: {color_fallback} !important;"
         return f"background: {color_fallback};"
 
     # Card 3 Success Value extraction for progress bar
