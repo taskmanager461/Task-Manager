@@ -1028,7 +1028,7 @@ function renderHeroMetrics(score) {
 
     container.innerHTML = `
         <!-- Card 1: Trust Score -->
-        <div class="hero-metric" style="background-image: url('${img2}'); background-size: 130% 130%; background-position: center; background-repeat: no-repeat; background-color: #0099ff !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.2) !important; filter: saturate(1.2) brightness(1.1) !important;">
+        <div class="hero-metric" style="background: linear-gradient(135deg, #0099ff, #0055ff) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.2) !important; box-shadow: 0 10px 30px rgba(0, 153, 255, 0.3) !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img1}">
@@ -1041,7 +1041,7 @@ function renderHeroMetrics(score) {
         </div>
 
         <!-- Card 2: Streak -->
-        <div class="hero-metric" style="background-image: url('${img5}'); background-size: 130% 130%; background-position: center; background-repeat: no-repeat; background-color: #ff6600 !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.2) !important; filter: saturate(1.2) brightness(1.1) !important;">
+        <div class="hero-metric" style="background: linear-gradient(135deg, #ff6600, #ff3300) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.2) !important; box-shadow: 0 10px 30px rgba(255, 102, 0, 0.3) !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img4}">
@@ -1052,7 +1052,7 @@ function renderHeroMetrics(score) {
         </div>
 
         <!-- Card 3: Success -->
-        <div class="hero-metric" style="background-image: url('${img7}'); background-size: 130% 130%; background-position: center; background-repeat: no-repeat; background-color: #00ff88 !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.2) !important; filter: saturate(1.2) brightness(1.1) !important;">
+        <div class="hero-metric" style="background: linear-gradient(135deg, #00ff88, #00cc66) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.2) !important; box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3) !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img6}">
