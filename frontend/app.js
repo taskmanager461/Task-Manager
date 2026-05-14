@@ -1028,20 +1028,20 @@ function renderHeroMetrics(score) {
 
     container.innerHTML = `
         <!-- Card 1: Trust Score -->
-        <div class="hero-metric" style="background: radial-gradient(circle at bottom right, #0099ff 0%, #001a33 70%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
+        <div class="hero-metric" style="background: radial-gradient(circle at bottom right, rgba(0, 153, 255, 0.8) 0%, rgba(0, 26, 51, 1) 50%, rgba(0, 0, 0, 1) 100%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img1}">
                 </div>
                 <div class="hero-metric-label">Self Trust Score</div>
                 <div class="hero-metric-value">${scoreVal}</div>
-                <div class="status-badge-container ${label.class}" style="background-image: url('${img3}'); background-size: 320px 185px; background-position: ${statusPos}; width: 150px; height: ${badgeHeight}; margin-top: ${badgeMarginTop}; margin-left: ${badgeMarginLeft}; margin-right: auto; mix-blend-mode: screen !important; background-color: transparent !important; border: none !important; box-shadow: none !important;">
+                <div class="status-badge-container ${label.class}" style="background-image: url('${img3}'); background-size: 320px 185px; background-position: ${statusPos}; width: 150px; height: ${badgeHeight}; margin-top: ${badgeMarginTop}; margin-left: ${badgeMarginLeft}; margin-right: auto; mix-blend-mode: screen !important; background-color: transparent !important; border: none !important; box-shadow: none !important; filter: brightness(1.4) saturate(1.3) !important;">
                 </div>
             </div>
         </div>
 
         <!-- Card 2: Streak -->
-        <div class="hero-metric" style="background: radial-gradient(circle at bottom right, #ff6600 0%, #331400 70%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
+        <div class="hero-metric" style="background: radial-gradient(circle at bottom right, rgba(255, 102, 0, 0.8) 0%, rgba(51, 20, 0, 1) 50%, rgba(0, 0, 0, 1) 100%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img4}">
@@ -1052,7 +1052,7 @@ function renderHeroMetrics(score) {
         </div>
 
         <!-- Card 3: Success -->
-        <div class="hero-metric" style="background: radial-gradient(circle at bottom right, #00ff88 0%, #00331b 70%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
+        <div class="hero-metric" style="background: radial-gradient(circle at bottom right, rgba(0, 255, 136, 0.8) 0%, rgba(0, 51, 27, 1) 50%, rgba(0, 0, 0, 1) 100%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img6}">
