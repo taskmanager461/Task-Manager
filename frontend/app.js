@@ -1028,7 +1028,7 @@ function renderHeroMetrics(score) {
 
     container.innerHTML = `
         <!-- Card 1: Trust Score -->
-        <div class="hero-metric" style="background: linear-gradient(135deg, #0099ff, #0055ff) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.2) !important; box-shadow: 0 10px 30px rgba(0, 153, 255, 0.3) !important;">
+        <div class="hero-metric" style="background: radial-gradient(circle at bottom right, #0099ff 0%, #001a33 70%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img1}">
@@ -1041,7 +1041,7 @@ function renderHeroMetrics(score) {
         </div>
 
         <!-- Card 2: Streak -->
-        <div class="hero-metric" style="background: linear-gradient(135deg, #ff6600, #ff3300) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.2) !important; box-shadow: 0 10px 30px rgba(255, 102, 0, 0.3) !important;">
+        <div class="hero-metric" style="background: radial-gradient(circle at bottom right, #ff6600 0%, #331400 70%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img4}">
@@ -1052,7 +1052,7 @@ function renderHeroMetrics(score) {
         </div>
 
         <!-- Card 3: Success -->
-        <div class="hero-metric" style="background: linear-gradient(135deg, #00ff88, #00cc66) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.2) !important; box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3) !important;">
+        <div class="hero-metric" style="background: radial-gradient(circle at bottom right, #00ff88 0%, #00331b 70%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img6}">
