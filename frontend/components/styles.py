@@ -165,12 +165,12 @@ def get_theme_css(dark_mode: bool) -> str:
         margin-top: 5px;
         margin-left: -15px;
         margin-right: auto;
-        width: 160px;
-        height: 85px;
+        width: 130px;
+        height: 100px;
         display: flex;
         align-items: center;
         justify-content: center;
-        background-size: 320px 170px;
+        background-size: 260px 200px;
         background-repeat: no-repeat;
         mix-blend-mode: screen !important;
         background-color: transparent !important;
@@ -189,18 +189,18 @@ def get_theme_css(dark_mode: bool) -> str:
     }}
 
     .status-badge-container.average {{
-        background-position: -160px 0px;
+        background-position: -130px 0px;
         margin-left: -10px;
     }}
 
     .status-badge-container.good {{
-        background-position: 0px -85px;
+        background-position: 0px -100px;
         margin-top: 10px;
         margin-left: -20px;
     }}
 
     .status-badge-container.excellent {{
-        background-position: -160px -85px;
+        background-position: -130px -100px;
         margin-top: 15px;
         margin-left: -5px;
     }}
