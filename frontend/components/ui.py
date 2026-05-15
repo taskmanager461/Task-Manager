@@ -36,6 +36,9 @@ def hero_metrics(score_value: str, score_label: str,
     images = {}
     for key, filename in filenames.items():
         images[key] = get_base64_image(filename)
+    
+    # Add img3 for badges
+    images["img3"] = get_base64_image("ChatGPT_Image_3.png")
 
     label_lower = score_label.lower()
     
@@ -65,7 +68,7 @@ def hero_metrics(score_value: str, score_label: str,
                     </div>
                     <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
                     <div class="hero-metric-value" style="color: white !important;">{score_value}</div>
-                    <div class="status-badge-container {label_lower}">
+                    <div class="status-badge-container {label_lower}" style="background-image: url('data:image/png;base64,{images['img3']}') !important;">
                         <span class="status-badge-icon">{badge_icon}</span>
                         <span class="status-badge-text">{score_label}</span>
                     </div>

@@ -162,18 +162,53 @@ def get_theme_css(dark_mode: bool) -> str:
     }}
 
     .status-badge-container {{
-        transition: all 0.3s ease;
-        mix-blend-mode: screen !important; /* CRITICAL: Blends badge image black background away */
-        z-index: 2;
+        margin-top: 5px;
+        margin-left: -15px;
+        margin-right: auto;
+        width: 160px;
+        height: 85px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-size: 320px 170px;
+        background-repeat: no-repeat;
+        mix-blend-mode: screen !important;
         background-color: transparent !important;
         border: none !important;
         box-shadow: none !important;
+        filter: brightness(1.1) contrast(1.2) saturate(1.4) blur(0.2px);
+        image-rendering: auto;
+        transform: translateZ(0);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: visible;
     }}
 
-    .status-badge-container.low {{ }}
-    .status-badge-container.average {{ }}
-    .status-badge-container.good {{ }}
-    .status-badge-container.excellent {{ }}
+    .status-badge-container.low {{
+        background-position: 0px 0px;
+    }}
+
+    .status-badge-container.average {{
+        background-position: -160px 0px;
+        margin-left: -10px;
+    }}
+
+    .status-badge-container.good {{
+        background-position: 0px -85px;
+        margin-top: 10px;
+        margin-left: -20px;
+    }}
+
+    .status-badge-container.excellent {{
+        background-position: -160px -85px;
+        margin-top: 15px;
+        margin-left: -5px;
+    }}
+
+    /* Hide text/icon in Streamlit as well */
+    .status-badge-text, .status-badge-icon {{
+        display: none !important;
+    }}
 
     .hero-metric-label {{
         font-size: 0.85rem;

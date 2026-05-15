@@ -797,71 +797,53 @@ body.sidebar-open #content {
 }
 
 .status-badge-container {
-    margin-top: 15px;
-    margin-left: 0;
+    margin-top: 5px;
+    margin-left: -15px;
     margin-right: auto;
-    width: fit-content;
-    height: auto;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 14px;
-    border-radius: 100px;
-    font-weight: 800;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1.5px solid transparent;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-    position: relative;
-    overflow: hidden;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-}
-
-.status-badge-container.low {
-    background: rgba(45, 0, 0, 0.95) !important;
-    color: #ff4d4d !important;
-    border-color: rgba(255, 77, 77, 0.4) !important;
-    box-shadow: 0 4px 20px rgba(255, 0, 0, 0.2), inset 0 0 15px rgba(255, 0, 0, 0.1);
-}
-
-.status-badge-container.average {
-    background: rgba(45, 15, 0, 0.95) !important;
-    color: #ffb84d !important;
-    border-color: rgba(255, 184, 77, 0.4) !important;
-    box-shadow: 0 4px 20px rgba(255, 165, 0, 0.2), inset 0 0 15px rgba(255, 165, 0, 0.1);
-}
-
-.status-badge-container.good {
-    background: rgba(0, 45, 30, 0.95) !important;
-    color: #4dffb8 !important;
-    border-color: rgba(77, 255, 184, 0.4) !important;
-    box-shadow: 0 4px 20px rgba(0, 255, 127, 0.2), inset 0 0 15px rgba(0, 255, 127, 0.1);
-}
-
-.status-badge-container.excellent {
-    background: rgba(25, 0, 60, 0.95) !important;
-    color: #b894ff !important;
-    border-color: rgba(184, 148, 255, 0.4) !important;
-    box-shadow: 0 4px 25px rgba(138, 43, 226, 0.25), inset 0 0 20px rgba(138, 43, 226, 0.15);
-}
-
-.status-badge-text {
-    position: relative;
-    z-index: 1;
-}
-
-.status-badge-icon {
-    font-size: 1.1rem;
+    width: 160px;
+    height: 85px;
     display: flex;
     align-items: center;
     justify-content: center;
+    background-image: url('ChatGPT_Image_3.png');
+    background-size: 320px 170px;
+    background-repeat: no-repeat;
+    mix-blend-mode: screen !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    filter: brightness(1.1) contrast(1.2) saturate(1.4) blur(0.2px);
+    image-rendering: auto;
+    transform: translateZ(0);
+    transition: all 0.3s ease;
     position: relative;
-    z-index: 1;
+    overflow: visible;
+}
+
+.status-badge-container.low {
+    background-position: 0px 0px;
+}
+
+.status-badge-container.average {
+    background-position: -160px 0px;
+    margin-left: -10px;
+}
+
+.status-badge-container.good {
+    background-position: 0px -85px;
+    margin-top: 10px;
+    margin-left: -20px;
+}
+
+.status-badge-container.excellent {
+    background-position: -160px -85px;
+    margin-top: 15px;
+    margin-left: -5px;
+}
+
+/* Hide the text and icon since they are inside the image */
+.status-badge-text, .status-badge-icon {
+    display: none !important;
 }
  
  /* Suggestions & Insights */

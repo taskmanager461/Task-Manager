@@ -1004,7 +1004,7 @@ function renderHeroMetrics(score) {
                 </div>
                 <div class="hero-metric-label">Self Trust Score</div>
                 <div class="hero-metric-value">${scoreVal}</div>
-                <div class="status-badge-container ${label.class}">
+                <div class="status-badge-container ${label.class}" style="background-image: url('${ASSETS.img3}') !important;">
                     <span class="status-badge-icon">${label.icon}</span>
                     <span class="status-badge-text">${label.text}</span>
                 </div>
