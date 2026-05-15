@@ -162,15 +162,15 @@ def get_theme_css(dark_mode: bool) -> str:
     }}
 
     .status-badge-container {{
-        margin-top: 5px;
+        margin-top: -15px;
         margin-left: -15px;
         margin-right: auto;
-        width: 130px;
+        width: 145px;
         height: 100px;
         display: flex;
         align-items: center;
         justify-content: center;
-        background-size: 260px 200px;
+        background-size: 290px 200px;
         background-repeat: no-repeat;
         mix-blend-mode: screen !important;
         background-color: transparent !important;
@@ -189,19 +189,19 @@ def get_theme_css(dark_mode: bool) -> str:
     }}
 
     .status-badge-container.average {{
-        background-position: -130px 0px;
+        background-position: -145px 0px;
         margin-left: -10px;
     }}
 
     .status-badge-container.good {{
         background-position: 0px -100px;
-        margin-top: 10px;
+        margin-top: -10px;
         margin-left: -20px;
     }}
 
     .status-badge-container.excellent {{
-        background-position: -130px -100px;
-        margin-top: 15px;
+        background-position: -145px -100px;
+        margin-top: -5px;
         margin-left: -5px;
     }}
 
@@ -346,12 +346,15 @@ def get_theme_css(dark_mode: bool) -> str:
     .badge {{
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         border-radius: 9999px;
         padding: 6px 14px;
         font-size: 0.75rem;
         font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 0.08em;
+        width: 145px;
+        transform: translateY(-20px);
     }}
     .badge-difficulty-easy {{
         background: rgba(16, 185, 129, 0.15);
