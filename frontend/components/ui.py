@@ -25,15 +25,11 @@ def hero_metrics(score_value: str, score_label: str,
                   streak_value: str, streak_sub: str,
                   success_value: str, success_sub: str) -> None:
     
-    # Image Filenames (using the simplified ones we created)
+    # Image Filenames
     filenames = {
         "img1": "ChatGPT_Image_1.png",
-        "img2": "ChatGPT_Image_2.png",
-        "img3": "ChatGPT_Image_3.png",
         "img4": "ChatGPT_Image_4.png",
-        "img5": "ChatGPT_Image_5.png",
-        "img6": "ChatGPT_Image_6.png",
-        "img7": "ChatGPT_Image_7.png"
+        "img6": "ChatGPT_Image_6.png"
     }
 
     # Load Base64 strings (cached)
@@ -41,36 +37,18 @@ def hero_metrics(score_value: str, score_label: str,
     for key, filename in filenames.items():
         images[key] = get_base64_image(filename)
 
-    # Determine status badge position and offsets
-    # [Low] [Average]
-    # [Good] [Excellent]
-    status_pos = "0px 0px" # Default Low
-    badge_margin_top = "-25px"
-    badge_margin_left = "-20px"
-    badge_height = "86px"
-    
     label_lower = score_label.lower()
-    if label_lower == "average":
-        status_pos = "-160px 0px" # Shifted more left for better crop
-        badge_margin_left = "-15px" # Moved 10px left from -5px
-    elif label_lower == "good":
-        status_pos = "0px -86px"
-        badge_margin_top = "-5px" # Moved 15px up from 10px
-        badge_margin_left = "-25px" # Moved 5px left from -20px
-        badge_height = "80px" # Increased height on bottom side
-    elif label_lower == "excellent":
-        status_pos = "-160px -86px" # Shifted more left for better crop
-        badge_margin_left = "-10px" # Moved 10px left from 0px
-        badge_margin_top = "0px"
-        badge_height = "60px"
+    
+    # Map label to icon
+    icon_map = {
+        "excellent": "🏆",
+        "good": "✨",
+        "average": "⚡",
+        "low": "⚠️"
+    }
+    badge_icon = icon_map.get(label_lower, "⚠️")
 
-    def get_bg_style(key, color_fallback):
-        if images.get(key):
-            # Keep the background color even when image is present for blending to work
-            return f"background-image: url('data:image/png;base64,{images[key]}'); background-size: 130% 130%; background-position: center; background-repeat: no-repeat; background-color: {color_fallback} !important;"
-        return f"background: {color_fallback};"
-
-    # Card 3 Success Value extraction for progress bar
+    # Success Value extraction for progress bar
     try:
         success_pct = float(success_value.replace('%', ''))
     except Exception:
@@ -87,7 +65,9 @@ def hero_metrics(score_value: str, score_label: str,
                     </div>
                     <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
                     <div class="hero-metric-value" style="color: white !important;">{score_value}</div>
-                    <div class="status-badge-container {label_lower}" style="margin-top: {badge_margin_top}; margin-left: {badge_margin_left}; margin-right: auto; width: 150px; height: {badge_height}; {f"background-image: url('data:image/png;base64,{images['img3']}'); background-size: 320px 185px; background-position: {status_pos};" if images.get('img3') else ''}; mix-blend-mode: screen !important; border-radius: 12px; background-color: transparent !important; border: none !important; filter: brightness(0.6) saturate(3.0) contrast(1.5) blur(0.7px); image-rendering: auto; transform: translateZ(0);">
+                    <div class="status-badge-container {label_lower}">
+                        <span class="status-badge-icon">{badge_icon}</span>
+                        <span class="status-badge-text">{score_label}</span>
                     </div>
                 </div>
             </div>

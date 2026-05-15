@@ -797,19 +797,72 @@ body.sidebar-open #content {
 }
 
 .status-badge-container {
-     margin-top: -25px;
-     margin-left: -20px;
-     margin-right: auto;
-     width: 150px;
-     height: 86px;
-     border-radius: 12px;
-     background-size: 320px 185px;
-     transition: all 0.3s ease;
-     background-color: transparent !important;
-     box-shadow: none !important;
-     border: none !important;
-     mix-blend-mode: screen !important;
- }
+    margin-top: 15px;
+    margin-left: 0;
+    margin-right: auto;
+    width: fit-content;
+    height: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-weight: 800;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1.5px solid transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.status-badge-container.low {
+    background: rgba(45, 0, 0, 0.95) !important;
+    color: #ff4d4d !important;
+    border-color: rgba(255, 77, 77, 0.4) !important;
+    box-shadow: 0 4px 20px rgba(255, 0, 0, 0.2), inset 0 0 15px rgba(255, 0, 0, 0.1);
+}
+
+.status-badge-container.average {
+    background: rgba(45, 15, 0, 0.95) !important;
+    color: #ffb84d !important;
+    border-color: rgba(255, 184, 77, 0.4) !important;
+    box-shadow: 0 4px 20px rgba(255, 165, 0, 0.2), inset 0 0 15px rgba(255, 165, 0, 0.1);
+}
+
+.status-badge-container.good {
+    background: rgba(0, 45, 30, 0.95) !important;
+    color: #4dffb8 !important;
+    border-color: rgba(77, 255, 184, 0.4) !important;
+    box-shadow: 0 4px 20px rgba(0, 255, 127, 0.2), inset 0 0 15px rgba(0, 255, 127, 0.1);
+}
+
+.status-badge-container.excellent {
+    background: rgba(25, 0, 60, 0.95) !important;
+    color: #b894ff !important;
+    border-color: rgba(184, 148, 255, 0.4) !important;
+    box-shadow: 0 4px 25px rgba(138, 43, 226, 0.25), inset 0 0 20px rgba(138, 43, 226, 0.15);
+}
+
+.status-badge-text {
+    position: relative;
+    z-index: 1;
+}
+
+.status-badge-icon {
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+}
  
  /* Suggestions & Insights */
 .suggestion-box {

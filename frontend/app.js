@@ -928,10 +928,10 @@ function logout() {
 }
 
 function getScoreLabel(score) {
-    if (score >= 80) return { text: '🏆 Excellent', class: 'excellent' };
-    if (score >= 60) return { text: '✨ Good', class: 'good' };
-    if (score >= 40) return { text: '⚡ Average', class: 'average' };
-    return { text: '⚠️ Low', class: 'low' };
+    if (score >= 80) return { text: 'Excellent', icon: '🏆', class: 'excellent' };
+    if (score >= 60) return { text: 'Good', icon: '✨', class: 'good' };
+    if (score >= 40) return { text: 'Average', icon: '⚡', class: 'average' };
+    return { text: 'Low', icon: '⚠️', class: 'low' };
 }
 
 // --- Dashboard Logic ---
@@ -989,43 +989,11 @@ function renderHeroMetrics(score) {
 
     const label = getScoreLabel(score.score);
     const scoreVal = score.score.toFixed(1);
-    const streakVal = score.streak;
-    const successVal = `${(score.success_rate * 100).toFixed(0)}%`;
     
-    // Simple placeholder replacement
-    const streakSub = t('multiplier').replace('{value}', score.multiplier.toFixed(1));
-    const successSub = t('tasks_count').replace('{count}', score.total_tasks);
-
-    // Use pre-loaded Base64 assets for instant loading
+    // Use pre-loaded Base64 assets
     const img1 = ASSETS.img1;
-    const img2 = ASSETS.img2;
-    const img3 = ASSETS.img3;
     const img4 = ASSETS.img4;
-    const img5 = ASSETS.img5;
     const img6 = ASSETS.img6;
-    const img7 = ASSETS.img7;
-
-    let statusPos = "0px 0px"; // Default Low
-    let badgeMarginTop = "-25px";
-    let badgeMarginLeft = "-20px";
-    let badgeHeight = "86px";
-
-    if (label.class === "average") {
-        statusPos = "-160px 0px"; // Shifted more left for better crop
-        badgeMarginLeft = "-15px"; // Moved 10px left from -5px
-    } else if (label.class === "good") {
-        statusPos = "0px -86px";
-        badgeMarginTop = "-5px"; // Moved 15px up from 10px
-        badgeMarginLeft = "-25px"; // Moved 5px left from -20px
-        badgeHeight = "80px"; // Increased height on bottom side
-    } else if (label.class === "excellent") {
-        statusPos = "-160px -86px"; // Shifted more left for better crop
-        badgeMarginLeft = "-10px"; // Moved 10px left from 0px
-        badgeMarginTop = "0px";
-        badgeHeight = "60px";
-    }
-
-    const successPct = score.success_rate * 100;
 
     container.innerHTML = `
         <!-- Card 1: Trust Score -->
@@ -1036,7 +1004,9 @@ function renderHeroMetrics(score) {
                 </div>
                 <div class="hero-metric-label">Self Trust Score</div>
                 <div class="hero-metric-value">${scoreVal}</div>
-                <div class="status-badge-container ${label.class}" style="background-image: url('${img3}'); background-size: 320px 185px; background-position: ${statusPos}; width: 150px; height: ${badgeHeight}; margin-top: ${badgeMarginTop}; margin-left: ${badgeMarginLeft}; margin-right: auto; mix-blend-mode: screen !important; background-color: transparent !important; border: none !important; box-shadow: none !important; filter: brightness(0.8) saturate(1.3) contrast(1.7) blur(0.35px) !important; image-rendering: auto !important; transform: translateZ(0); backface-visibility: hidden;">
+                <div class="status-badge-container ${label.class}">
+                    <span class="status-badge-icon">${label.icon}</span>
+                    <span class="status-badge-text">${label.text}</span>
                 </div>
             </div>
         </div>
@@ -1048,7 +1018,7 @@ function renderHeroMetrics(score) {
                     <img src="${img4}">
                 </div>
                 <div class="hero-metric-label">Current Streak</div>
-                <div class="hero-metric-value">${streakVal}</div>
+                <div class="hero-metric-value">${score.streak}</div>
             </div>
         </div>
 
@@ -1059,9 +1029,9 @@ function renderHeroMetrics(score) {
                     <img src="${img6}">
                 </div>
                 <div class="hero-metric-label">Success Rate</div>
-                <div class="hero-metric-value">${successVal}</div>
+                <div class="hero-metric-value">${(score.success_rate * 100).toFixed(0)}%</div>
                 <div style="margin-top: 40px; width: 100%; background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
-                    <div style="width: ${successPct}%; height: 100%; background: #4ade80; box-shadow: 0 0 10px #4ade80; border-radius: 10px;"></div>
+                    <div style="width: ${score.success_rate * 100}%; height: 100%; background: #4ade80; box-shadow: 0 0 10px #4ade80; border-radius: 10px;"></div>
                 </div>
             </div>
         </div>
