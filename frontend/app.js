@@ -1015,7 +1015,9 @@ function renderHeroMetrics(score) {
                 </div>
                 <div class="hero-metric-label">Self Trust Score</div>
                 <div class="hero-metric-value">${scoreVal}</div>
-                <img class="trust-score-badge" src="${getBadgeImageSrc(label.class)}" alt="${label.text}">
+                <div class="trust-score-badge-wrap" aria-label="${label.text}">
+                    <img class="trust-score-badge" src="${getBadgeImageSrc(label.class)}" alt="${label.text}">
+                </div>
             </div>
         </div>
 
