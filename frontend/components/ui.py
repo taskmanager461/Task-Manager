@@ -40,7 +40,7 @@ def hero_metrics(score_value: str, score_label: str,
     
     label_lower = score_label.lower()
     
-    # Add img3 for badges - map to new specific images based on label
+    # Map to new specific images based on label
     badge_images = {
         "low": "xrostao™ - 3.png",
         "average": "xrostao™ - 4.png",
@@ -48,24 +48,8 @@ def hero_metrics(score_value: str, score_label: str,
         "excellent": "xrostao™ - 6.png"
     }
     
-    # Clear any old reference to img3/sprite sheet
-    if "img3" in images:
-        del images["img3"]
-    
     current_badge_filename = badge_images.get(label_lower, "xrostao™ - 3.png")
     images["current_badge"] = get_base64_image(current_badge_filename)
-
-    # Force the style to be clean
-    badge_style = f"background-image: url('data:image/png;base64,{images['current_badge']}') !important; background-size: contain !important; background-position: center !important; background-repeat: no-repeat !important;"
-
-    # Map label to icon
-    icon_map = {
-        "excellent": "🏆",
-        "good": "✨",
-        "average": "⚡",
-        "low": "⚠️"
-    }
-    badge_icon = icon_map.get(label_lower, "⚠️")
 
     # Success Value extraction for progress bar
     try:

@@ -691,24 +691,6 @@ body.sidebar-open #content {
 .filters-bar { display: flex; gap: 0.75rem; }
 .filters-bar select { width: auto; min-height: 40px; padding: 0 1rem; }
 
-/* Badges */
-.priority-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.25rem 1rem;
-    border-radius: 12px;
-    font-size: 0.9rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    width: 160px;
-    transform: translateY(-20px);
-}
-
-.priority-high { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); padding: 0.5rem 1.5rem; }
-.priority-medium { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); }
-.priority-low { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
-
 /* === HERO METRIC GRID === */
 .hero-metric-grid {
     display: grid;
@@ -808,7 +790,7 @@ body.sidebar-open #content {
 
 /* === NEW CLEAN BADGE IMPLEMENTATION === */
 .status-badge-container {
-    margin-top: 0px;
+    margin-top: 0px; 
     margin-left: -20px;
     width: 150px;
     height: 90px;
@@ -825,6 +807,7 @@ body.sidebar-open #content {
     transform: translateZ(0);
     transition: all 0.3s ease;
     position: relative;
+    overflow: visible;
 }
 
 /* Suggestions & Insights */

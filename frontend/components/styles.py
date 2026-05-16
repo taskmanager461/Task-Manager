@@ -180,6 +180,7 @@ def get_theme_css(dark_mode: bool) -> str:
         transform: translateZ(0);
         transition: all 0.3s ease;
         position: relative;
+        overflow: visible;
     }}
 
     .hero-metric-label {{
@@ -292,53 +293,6 @@ def get_theme_css(dark_mode: bool) -> str:
     }}
     .nav-item i {{
         font-size: 1.4rem;
-    }}
-
-    /* Install Button */
-    .install-btn {{
-        background: linear-gradient(135deg, {c["accent"]}, {c["accent_2"]});
-        color: white !important;
-        padding: 16px 32px;
-        border-radius: 16px;
-        font-weight: 800;
-        text-align: center;
-        cursor: pointer;
-        box-shadow: 0 12px 30px rgba(139, 92, 246, 0.35);
-        transition: all 0.3s;
-        border: none;
-        width: 100%;
-        font-size: 1rem;
-    }}
-    .install-btn:hover {{
-        transform: translateY(-3px);
-        box-shadow: 0 20px 40px rgba(139, 92, 246, 0.45);
-    }}
-
-    /* Badges */
-    .badge {{
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 9999px;
-        padding: 6px 14px;
-        font-size: 0.75rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        width: 160px;
-        transform: translateY(-20px);
-    }}
-    .badge-difficulty-easy {{
-        background: rgba(16, 185, 129, 0.15);
-        color: #10b981;
-    }}
-    .badge-difficulty-medium {{
-        background: rgba(245, 158, 11, 0.15);
-        color: #f59e0b;
-    }}
-    .badge-difficulty-hard {{
-        background: rgba(239, 68, 68, 0.15);
-        color: #ef4444;
     }}
 
     /* Scrollbar */
