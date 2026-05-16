@@ -775,12 +775,13 @@ body.sidebar-open #content {
 
 .trust-score-badge-wrap {
     margin-top: 14px;
-    width: 170px;
-    max-width: 80%;
-    height: 48px;
+    width: 210px;
+    max-width: 85%;
+    height: 62px;
     overflow: hidden;
     border-radius: 16px;
     position: relative;
+    background: transparent;
 }
 
 .trust-score-badge {
@@ -789,9 +790,11 @@ body.sidebar-open #content {
     display: block;
     object-fit: cover;
     object-position: center;
-    transform: scale(3);
+    transform: scale(1.85);
     transform-origin: center;
-    filter: drop-shadow(0 0 12px rgba(0,0,0,0.45)) saturate(1.25) contrast(1.15);
+    mix-blend-mode: screen;
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.35)) saturate(1.1) contrast(1.05);
+    image-rendering: auto;
     pointer-events: none;
 }
 
