@@ -3,11 +3,11 @@ import base64
 import os
 from pathlib import Path
 
-def get_base64_image(file_path):
+def get_base64_image(image_path):
     try:
-        if os.path.exists(file_path):
-            with open(file_path, "rb") as f:
-                return base64.b64encode(f.read()).decode()
+        if os.path.exists(image_path):
+            with open(image_path, "rb") as img_file:
+                return base64.b64encode(img_file.read()).decode()
         return ""
     except:
         return ""
@@ -16,48 +16,58 @@ def hero_metrics(score_value: str, score_label: str,
                   streak_value: str, streak_sub: str,
                   success_value: str, success_sub: str) -> None:
     
-    base_dir = r"c:\Users\my-pc\.vscode\task manager"
+    # Path setup
+    current_file = Path(__file__).resolve()
+    project_root = current_file.parent.parent.parent
     
-    # Base Icons
-    img1 = get_base64_image(os.path.join(base_dir, "ChatGPT_Image_1.png"))
-    img4 = get_base64_image(os.path.join(base_dir, "ChatGPT_Image_4.png"))
-    img6 = get_base64_image(os.path.join(base_dir, "ChatGPT_Image_6.png"))
-    
-    # Badge Selection
+    # Find the badge file dynamically to avoid encoding issues with ™
     lbl = str(score_label).lower()
     if "excellent" in lbl:
-        fname = "xrostao™ - 6.png"
+        target_num = "6"
     elif "good" in lbl:
-        fname = "xrostao™ - 5.png"
+        target_num = "5"
     elif "average" in lbl:
-        fname = "xrostao™ - 4.png"
+        target_num = "4"
     else:
-        fname = "xrostao™ - 3.png"
+        target_num = "3"
         
-    badge_b64 = get_base64_image(os.path.join(base_dir, fname))
-    
-    # If TM character fails, try direct search
-    if not badge_b64:
-        import glob
-        pattern = os.path.join(base_dir, "xrostao* - " + fname.split("-")[-1].strip())
-        matches = glob.glob(pattern)
-        if matches:
-            badge_b64 = get_base64_image(matches[0])
+    badge_b64 = ""
+    found_filename = ""
+    try:
+        for f in os.listdir(project_root):
+            if f.startswith("xrostao") and f.endswith(f"{target_num}.png"):
+                found_filename = f
+                badge_path = project_root / f
+                badge_b64 = get_base64_image(str(badge_path))
+                break
+    except:
+        pass
 
-    # Badge HTML - Absolute Positioning
+    # Other icons - using wildcards to find them since names are complex
+    def find_icon(pattern):
+        try:
+            for f in os.listdir(project_root):
+                if f.startswith("ChatGPT Image") and pattern in f:
+                    return get_base64_image(str(project_root / f))
+        except:
+            pass
+        return ""
+
+    img1 = find_icon("06_42_45") # img1
+    img4 = find_icon("01_28_01") # img4
+    img6 = find_icon("01_40_08") # img6
+
+    # Badge HTML
     badge_html = ""
     if badge_b64:
         badge_html = f"""
-        <img src="data:image/png;base64,{badge_b64}" 
-             style="position: absolute !important; 
-                    top: -15px !important; 
-                    left: -20px !important; 
-                    width: 150px !important; 
-                    height: 90px !important; 
-                    object-fit: contain !important; 
-                    z-index: 9999 !important;
-                    pointer-events: none !important;">
+        <div style="position: absolute; top: -15px; left: -20px; width: 150px; height: 90px; z-index: 9999; pointer-events: none;">
+            <img src="data:image/png;base64,{badge_b64}" style="width: 100%; height: 100%; object-fit: contain;">
+        </div>
         """
+    else:
+        # Debug info if not found
+        badge_html = f'<div style="color:red; font-size:10px;">Missing: xrostao...{target_num}.png</div>'
 
     try:
         success_pct = float(success_value.replace('%', ''))
@@ -67,33 +77,36 @@ def hero_metrics(score_value: str, score_label: str,
     st.markdown(
         f"""
         <div class="hero-metric-grid">
-            <div class="hero-metric" style="position: relative; border: 1px solid rgba(255,255,255,0.1) !important; background: radial-gradient(circle at bottom right, #005c99 0%, #004a7a 20%, #003761 40%, #002542 60%, #001221 80%, #000000 100%) !important;">
+            <!-- Card 1: Trust Score -->
+            <div class="hero-metric" style="position: relative; border: 1px solid rgba(255,255,255,0.1) !important; isolation: isolate !important; background: radial-gradient(circle at bottom right, #005c99 0%, #004a7a 20%, #003761 40%, #002542 60%, #001221 80%, #000000 100%) !important;">
                 <div class="hero-metric-content">
-                    <div class="hero-metric-icon">
+                    <div class="hero-metric-icon" style="background: none !important; border: none !important;">
                         {f'<img src="data:image/png;base64,{img1}" style="width: 45px; height: 45px; object-fit: contain;">' if img1 else '🎯'}
                     </div>
-                    <div class="hero-metric-label" style="color: white !important;">Self Trust Score</div>
+                    <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
                     <div class="hero-metric-value" style="color: white !important;">{score_value}</div>
                     {badge_html}
                 </div>
             </div>
 
-            <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; background: radial-gradient(circle at bottom right, #993d00 0%, #7a3100 20%, #5c2700 40%, #3d1a00 60%, #1f0d00 80%, #000000 100%) !important;">
+            <!-- Card 2: Streak -->
+            <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; isolation: isolate !important; background: radial-gradient(circle at bottom right, #993d00 0%, #7a3100 20%, #5c2700 40%, #3d1a00 60%, #1f0d00 80%, #000000 100%) !important;">
                 <div class="hero-metric-content">
-                    <div class="hero-metric-icon">
+                    <div class="hero-metric-icon" style="background: none !important; border: none !important;">
                         {f'<img src="data:image/png;base64,{img4}" style="width: 45px; height: 45px; object-fit: contain;">' if img4 else '🔥'}
                     </div>
-                    <div class="hero-metric-label" style="color: white !important;">Current Streak</div>
+                    <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Current Streak</div>
                     <div class="hero-metric-value" style="color: white !important;">{streak_value}</div>
                 </div>
             </div>
 
-            <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; background: radial-gradient(circle at bottom right, #009952 0%, #007a42 20%, #005c34 40%, #003d27 60%, #001f1a 80%, #000000 100%) !important;">
+            <!-- Card 3: Success -->
+            <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; isolation: isolate !important; background: radial-gradient(circle at bottom right, #009952 0%, #007a42 20%, #005c34 40%, #003d27 60%, #001f1a 80%, #000000 100%) !important;">
                 <div class="hero-metric-content">
-                    <div class="hero-metric-icon">
+                    <div class="hero-metric-icon" style="background: none !important; border: none !important;">
                         {f'<img src="data:image/png;base64,{img6}" style="width: 45px; height: 45px; object-fit: contain;">' if img6 else '📈'}
                     </div>
-                    <div class="hero-metric-label" style="color: white !important;">Success Rate</div>
+                    <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Success Rate</div>
                     <div class="hero-metric-value" style="color: white !important;">{success_value}</div>
                     <div style="margin-top: 40px; width: 100%; background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
                         <div style="width: {success_pct}%; height: 100%; background: #4ade80; box-shadow: 0 0 10px #4ade80; border-radius: 10px;"></div>
