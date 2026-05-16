@@ -161,51 +161,10 @@ def get_theme_css(dark_mode: bool) -> str:
         justify-content: center;
     }}
 
-    /* === HERO METRIC BADGES === */
-    .status-badge-container {{
-        margin-top: 15px;
-        margin-left: -10px;
-        margin-right: auto;
-        width: 155px;
-        height: 75px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-repeat: no-repeat;
-        background-size: contain !important;
-        background-position: center !important;
-        mix-blend-mode: screen !important;
-        background-color: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-        filter: brightness(1.1) contrast(1.2) saturate(1.4) blur(0.2px);
-        image-rendering: auto;
-        transform: translateZ(0);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: visible;
-    }}
-
-    .status-badge-container.low {{
-        background-image: url('data:image/png;base64,{get_base64_image("xrostao™ - 3.png")}') !important;
-    }}
-
-    .status-badge-container.average {{
-        background-image: url('data:image/png;base64,{get_base64_image("xrostao™ - 4.png")}') !important;
-    }}
-
-    .status-badge-container.good {{
-        background-image: url('data:image/png;base64,{get_base64_image("xrostao™ - 5.png")}') !important;
-    }}
-
-    .status-badge-container.excellent {{
-        background-image: url('data:image/png;base64,{get_base64_image("xrostao™ - 6.png")}') !important;
-    }}
-
-    /* Hide text/icon as they are inside the images */
-    .status-badge-text, .status-badge-icon {{
+    /* === HERO METRIC BADGES REMOVED === */
+    .status-badge-container {
         display: none !important;
-    }}
+    }
 
     .hero-metric-label {{
         font-size: 0.85rem;
