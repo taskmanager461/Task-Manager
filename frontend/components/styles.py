@@ -161,9 +161,9 @@ def get_theme_css(dark_mode: bool) -> str:
         justify-content: center;
     }}
 
-    /* === NEW CLEAN BADGE IMPLEMENTATION === */
+    /* === BRAND NEW BADGE IMPLEMENTATION (FROM SCRATCH) === */
     .status-badge-container {{
-        margin-top: 0px; 
+        margin-top: -15px; 
         margin-left: -20px;
         width: 150px;
         height: 90px;
@@ -176,11 +176,8 @@ def get_theme_css(dark_mode: bool) -> str:
         border: none !important;
         box-shadow: none !important;
         filter: brightness(1.1) contrast(1.2) saturate(1.4) blur(0.2px);
-        image-rendering: auto;
-        transform: translateZ(0);
-        transition: all 0.3s ease;
         position: relative;
-        overflow: visible;
+        z-index: 1;
     }}
 
     .hero-metric-label {{

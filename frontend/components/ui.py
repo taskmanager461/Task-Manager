@@ -4,20 +4,11 @@ import os
 from pathlib import Path
 
 @st.cache_data
-def get_base64_image(image_name):
+def get_base64_image(image_path):
     try:
-        # Try multiple path variants to be absolutely sure
-        paths_to_try = [
-            Path(r"c:\Users\my-pc\.vscode\task manager") / image_name,
-            Path(r"c:\Users\my-pc\.vscode\task manager\frontend") / image_name,
-            Path(__file__).parent.parent.parent / image_name,
-            Path(__file__).parent.parent / image_name
-        ]
-        
-        for p in paths_to_try:
-            if p.exists():
-                with open(p, "rb") as img_file:
-                    return base64.b64encode(img_file.read()).decode()
+        if os.path.exists(image_path):
+            with open(image_path, "rb") as img_file:
+                return base64.b64encode(img_file.read()).decode()
         return ""
     except Exception:
         return ""
@@ -33,23 +24,28 @@ def hero_metrics(score_value: str, score_label: str,
         "img6": "ChatGPT_Image_6.png"
     }
 
+    # Base paths to search for images
+    base_path = r"c:\Users\my-pc\.vscode\task manager"
+    
     # Load Base64 strings (cached)
     images = {}
     for key, filename in filenames.items():
-        images[key] = get_base64_image(filename)
+        full_path = os.path.join(base_path, filename)
+        images[key] = get_base64_image(full_path)
     
+    # === BADGE LOGIC ===
     label_lower = score_label.lower()
-    
-    # Map to new specific images based on label
-    badge_images = {
+    badge_map = {
         "low": "xrostao™ - 3.png",
         "average": "xrostao™ - 4.png",
         "good": "xrostao™ - 5.png",
         "excellent": "xrostao™ - 6.png"
     }
     
-    current_badge_filename = badge_images.get(label_lower, "xrostao™ - 3.png")
-    images["current_badge"] = get_base64_image(current_badge_filename)
+    target_file = badge_map.get(label_lower, "xrostao™ - 3.png")
+    full_badge_path = os.path.join(base_path, target_file)
+    base64_badge = get_base64_image(full_badge_path)
+    badge_style = f"background-image: url('data:image/png;base64,{base64_badge}');" if base64_badge else ""
 
     # Success Value extraction for progress bar
     try:
@@ -68,8 +64,7 @@ def hero_metrics(score_value: str, score_label: str,
                     </div>
                     <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
                     <div class="hero-metric-value" style="color: white !important;">{score_value}</div>
-                    <div class="status-badge-container {label_lower}" style="background-image: url('data:image/png;base64,{images['current_badge']}') !important;">
-                    </div>
+                    <div class="status-badge-container" style="{badge_style}"></div>
                 </div>
             </div>
 
