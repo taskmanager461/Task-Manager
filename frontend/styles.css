@@ -816,7 +816,8 @@ body.sidebar-open #content {
     align-items: center;
     justify-content: center;
     background-repeat: no-repeat;
-    background-size: 300px 180px !important;
+    background-size: contain !important;
+    background-position: center !important;
     mix-blend-mode: screen !important;
     background-color: transparent !important;
     border: none !important;
@@ -826,24 +827,13 @@ body.sidebar-open #content {
     transform: translateZ(0);
     transition: all 0.3s ease;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
-.status-badge-container.low {
-    background-position: 0px 0px !important;
-}
-
-.status-badge-container.average {
-    background-position: -150px 0px !important;
-}
-
-.status-badge-container.good {
-    background-position: 0px -90px !important;
-}
-
-.status-badge-container.excellent {
-    background-position: -150px -90px !important;
-}
+.status-badge-container.low { }
+.status-badge-container.average { }
+.status-badge-container.good { }
+.status-badge-container.excellent { }
 
 /* Hide the text and icon since they are inside the image */
 .status-badge-text, .status-badge-icon {

@@ -161,18 +161,19 @@ def get_theme_css(dark_mode: bool) -> str:
         justify-content: center;
     }}
 
-    /* === HERO METRIC BADGES (CROP LOGIC FIXED) === */
+    /* === HERO METRIC BADGES (CLEAN & SIMPLE) === */
     .status-badge-container {{
-        margin-top: 0px; /* Was 15px, moved 15px up -> 0px */
-        margin-left: -20px; /* Was -10px, moved 10px left -> -20px */
+        margin-top: 0px; 
+        margin-left: -20px;
         margin-right: auto;
-        width: 150px; /* Was 155px, -5px -> 150px */
-        height: 90px; /* Was 75px, +15px -> 90px */
+        width: 150px;
+        height: 90px;
         display: flex;
         align-items: center;
         justify-content: center;
         background-repeat: no-repeat;
-        background-size: 300px 180px !important; /* Double of 150x90 */
+        background-size: contain !important;
+        background-position: center !important;
         mix-blend-mode: screen !important;
         background-color: transparent !important;
         border: none !important;
@@ -182,24 +183,13 @@ def get_theme_css(dark_mode: bool) -> str:
         transform: translateZ(0);
         transition: all 0.3s ease;
         position: relative;
-        overflow: hidden;
+        overflow: visible;
     }}
 
-    .status-badge-container.low {{
-        background-position: 0px 0px !important;
-    }}
-
-    .status-badge-container.average {{
-        background-position: -150px 0px !important;
-    }}
-
-    .status-badge-container.good {{
-        background-position: 0px -90px !important;
-    }}
-
-    .status-badge-container.excellent {{
-        background-position: -150px -90px !important;
-    }}
+    .status-badge-container.low {{ }}
+    .status-badge-container.average {{ }}
+    .status-badge-container.good {{ }}
+    .status-badge-container.excellent {{ }}
 
     /* Hide text/icon as they are inside the images */
     .status-badge-text, .status-badge-icon {{
