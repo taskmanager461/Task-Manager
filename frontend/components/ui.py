@@ -22,40 +22,37 @@ def hero_metrics(score_value: str, score_label: str,
     
     # Find the badge file dynamically
     lbl = str(score_label).lower()
-    if "excellent" in lbl:
-        target_name = "badge_excellent.png"
-    elif "good" in lbl:
-        target_name = "badge_good.png"
-    elif "average" in lbl:
-        target_name = "badge_average.png"
-    else:
-        target_name = "badge_low.png"
+    target_name = f"badge_{lbl}.png"
+    if "excellent" in lbl: target_name = "badge_excellent.png"
+    elif "good" in lbl: target_name = "badge_good.png"
+    elif "average" in lbl: target_name = "badge_average.png"
+    elif "low" in lbl: target_name = "badge_low.png"
         
     badge_b64 = ""
-    # Try multiple paths for robustness
-    possible_paths = [
-        project_root / target_name,
-        Path.cwd() / target_name,
-        Path(__file__).resolve().parent.parent.parent / target_name
+    # Try multiple paths for robustness (Server-safe)
+    search_roots = [
+        project_root, 
+        Path.cwd(), 
+        Path(__file__).resolve().parent.parent.parent,
+        project_root / "frontend" / "static"
     ]
-    
-    for bp in possible_paths:
+    for root in search_roots:
+        bp = root / target_name
         if bp.exists():
             badge_b64 = get_base64_image(str(bp))
             if badge_b64:
                 break
 
-    # Other icons - using wildcards to find them since names are complex
+    # Other icons
     def find_icon(pattern):
-        try:
-            # Check project root and current working directory
-            for root_path in [project_root, Path.cwd()]:
-                if root_path.exists():
-                    for f in os.listdir(root_path):
+        for root in search_roots:
+            try:
+                if root.exists():
+                    for f in os.listdir(root):
                         if f.startswith("ChatGPT Image") and pattern in f:
-                            return get_base64_image(str(root_path / f))
-        except:
-            pass
+                            return get_base64_image(str(root / f))
+            except:
+                pass
         return ""
 
     img1 = find_icon("06_42_45") # img1
@@ -63,23 +60,26 @@ def hero_metrics(score_value: str, score_label: str,
     img6 = find_icon("01_40_08") # img6
 
     # Badge HTML
-    badge_html = ""
     if badge_b64:
+        # If we have the PNG, we use it. We position it below the value as a banner.
         badge_html = f"""
-        <div class="status-badge-container" style="position: absolute; top: -10px; left: -15px; width: 140px; height: 85px; z-index: 9999; pointer-events: none;">
-            <img src="data:image/png;base64,{badge_b64}" style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));">
+        <div style="margin-top: 15px; width: 140px; height: auto; z-index: 100; position: relative;">
+            <img src="data:image/png;base64,{badge_b64}" style="width: 100%; height: auto; object-fit: contain; filter: drop-shadow(0 0 12px rgba(0,0,0,0.5)); display: block;">
         </div>
         """
     else:
-        # Fallback text badge if image missing
-        color = "#ef4444" # low
-        if "excellent" in lbl: color = "#10b981"
-        elif "good" in lbl: color = "#3b82f6"
-        elif "average" in lbl: color = "#f59e0b"
-        
+        # Fallback CSS banner matching the user's example style
+        styles = {
+            "excellent": {"color": "#10b981", "icon": "fa-solid fa-trophy", "bg": "rgba(16, 185, 129, 0.15)"},
+            "good": {"color": "#3b82f6", "icon": "fa-solid fa-circle-check", "bg": "rgba(59, 130, 246, 0.15)"},
+            "average": {"color": "#f59e0b", "icon": "fa-solid fa-bolt", "bg": "rgba(245, 158, 11, 0.15)"},
+            "low": {"color": "#ef4444", "icon": "fa-solid fa-arrow-trend-down", "bg": "rgba(239, 68, 68, 0.15)"}
+        }
+        s = styles.get(lbl, styles["low"])
         badge_html = f"""
-        <div style="position: absolute; top: 10px; right: 10px; background: {color}; color: white; padding: 4px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
-            {score_label}
+        <div style="display: inline-flex; align-items: center; gap: 10px; background: {s['bg']}; border: 1px solid {s['color']}44; padding: 8px 18px; border-radius: 14px; margin-top: 15px; z-index: 100; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+            <i class="{s['icon']}" style="color: {s['color']}; font-size: 1rem;"></i>
+            <span style="color: {s['color']}; font-size: 1rem; font-weight: 800; text-transform: capitalize; white-space: nowrap;">{score_label}</span>
         </div>
         """
 
