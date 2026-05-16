@@ -54,6 +54,8 @@ def ensure_schema_compatibility() -> None:
 
         if "users" in table_names:
             user_columns = {col["name"] for col in inspector.get_columns("users")}
+            if "supabase_id" not in user_columns:
+                connection.execute(text("ALTER TABLE users ADD COLUMN supabase_id VARCHAR(64)"))
             if "total_xp" not in user_columns:
                 connection.execute(text("ALTER TABLE users ADD COLUMN total_xp INTEGER NOT NULL DEFAULT 0"))
             if "level" not in user_columns:

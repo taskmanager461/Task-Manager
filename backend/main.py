@@ -142,6 +142,28 @@ async def get_js():
     path = FRONTEND_DIR / "app.js"
     return FileResponse(path) if path.exists() else {"error": "app.js not found"}
 
+def _serve_root_badge(filename: str) -> FileResponse:
+    path = PROJECT_ROOT / filename
+    if not path.exists():
+        raise HTTPException(status_code=404, detail=f"{filename} not found")
+    return FileResponse(path)
+
+@app.get("/badge_low.png")
+async def get_badge_low():
+    return _serve_root_badge("badge_low.png")
+
+@app.get("/badge_good.png")
+async def get_badge_good():
+    return _serve_root_badge("badge_good.png")
+
+@app.get("/badge_average.png")
+async def get_badge_average():
+    return _serve_root_badge("badge_average.png")
+
+@app.get("/badge_excellent.png")
+async def get_badge_excellent():
+    return _serve_root_badge("badge_excellent.png")
+
 # Mount frontend static directory
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")

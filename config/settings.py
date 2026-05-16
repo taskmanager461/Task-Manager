@@ -29,6 +29,16 @@ class Settings(BaseSettings):
 
     cors_origins: str = "*"
     frontend_base_url: str = "http://localhost:8501"
+    supabase_url: str = "https://hngljslkwyzzlcugiiqz.supabase.co"
+    supabase_anon_key: str = "sb_publishable_YTyCF9SfOoh-5TaFLUVxmw_NYk3_jiO"
+
+    @property
+    def supabase_project_url(self) -> str:
+        raw = (self.supabase_url or "").strip().strip('"').strip("'").rstrip("/")
+        lowered = raw.lower()
+        if lowered.endswith("/rest/v1"):
+            raw = raw[: -len("/rest/v1")]
+        return raw.rstrip("/")
 
     @property
     def pg_url(self) -> str:

@@ -1,60 +1,20 @@
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
-from sqlalchemy import or_
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends, HTTPException
 
-from backend.database import get_db
 from backend.models.user import User
 from backend.schemas import AuthResponse, LoginRequest, SignupRequest
-from backend.services.auth_service import create_access_token, get_current_user, hash_password, verify_password
-from backend.services.email_service import send_login_notification, send_signup_confirmation
+from backend.services.auth_service import get_current_user
 
 router = APIRouter(tags=["auth"])
 
 
 @router.post("/signup", response_model=AuthResponse)
-def signup(payload: SignupRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
-    # Normalize input
-    username = payload.username.strip().lower()
-    email = payload.email.strip().lower()
-
-    existing_user = db.query(User).filter(User.username == username).first()
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Username already exists")
-
-    existing_email = db.query(User).filter(User.email == email).first()
-    if existing_email:
-        raise HTTPException(status_code=400, detail="Email already exists")
-
-    try:
-        user = User(
-            username=username,
-            email=email,
-            password=hash_password(payload.password),
-            name=payload.name.strip(),
-        )
-        db.add(user)
-        db.commit()
-        db.refresh(user)
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=500, detail="Could not create user. Please try again.")
-
-    access_token = create_access_token(user_id=user.id, username=user.username)
-    background_tasks.add_task(send_signup_confirmation, user.email, user.name)
-
-    return AuthResponse(user_id=user.id, username=user.username, name=user.name, access_token=access_token)
+def signup(payload: SignupRequest):
+    raise HTTPException(status_code=410, detail="Use Supabase Auth for signup")
 
 
 @router.post("/login", response_model=AuthResponse)
-def login(payload: LoginRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
-    identifier = payload.username.strip().lower()
-    user = db.query(User).filter(or_(User.username == identifier, User.email == identifier)).first()
-    if not user or not verify_password(payload.password, user.password):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-
-    access_token = create_access_token(user_id=user.id, username=user.username)
-    background_tasks.add_task(send_login_notification, user.email, user.name)
-    return AuthResponse(user_id=user.id, username=user.username, name=user.name, access_token=access_token)
+def login(payload: LoginRequest):
+    raise HTTPException(status_code=410, detail="Use Supabase Auth for login")
 
 
 @router.get("/me")
