@@ -5,9 +5,19 @@ from pathlib import Path
 
 def get_base64_image(image_path):
     try:
-        if os.path.exists(image_path):
-            with open(image_path, "rb") as img_file:
-                return base64.b64encode(img_file.read()).decode()
+        p = Path(image_path)
+        # If it doesn't exist, try searching for any file that starts with "xrostao" and has the same number
+        if not p.exists():
+            parent = p.parent
+            search_pattern = "xrostao* - " + p.name.split("-")[-1].strip()
+            matches = list(parent.glob(search_pattern))
+            if matches:
+                p = matches[0]
+        
+        if p.exists():
+            with open(p, "rb") as img_file:
+                data = img_file.read()
+                return base64.b64encode(data).decode()
         return ""
     except Exception:
         return ""
@@ -16,37 +26,36 @@ def hero_metrics(score_value: str, score_label: str,
                   streak_value: str, streak_sub: str,
                   success_value: str, success_sub: str) -> None:
     
-    # Image Filenames for other icons
-    filenames = {
-        "img1": "ChatGPT_Image_1.png",
-        "img4": "ChatGPT_Image_4.png",
-        "img6": "ChatGPT_Image_6.png"
-    }
-
-    base_dir = r"c:\Users\my-pc\.vscode\task manager"
+    # Base icons
+    base_dir = Path(r"c:\Users\my-pc\.vscode\task manager")
     
-    # Load icons
-    images = {}
-    for key, filename in filenames.items():
-        images[key] = get_base64_image(os.path.join(base_dir, filename))
+    img1 = get_base64_image(str(base_dir / "ChatGPT_Image_1.png"))
+    img4 = get_base64_image(str(base_dir / "ChatGPT_Image_4.png"))
+    img6 = get_base64_image(str(base_dir / "ChatGPT_Image_6.png"))
     
     # === BADGE LOGIC ===
     label_lower = str(score_label).lower().strip()
     
-    # Explicit mapping
     if "excellent" in label_lower:
-        target_file = "xrostao™ - 6.png"
+        num = "6"
     elif "good" in label_lower:
-        target_file = "xrostao™ - 5.png"
+        num = "5"
     elif "average" in label_lower:
-        target_file = "xrostao™ - 4.png"
+        num = "4"
     else:
-        target_file = "xrostao™ - 3.png"
+        num = "3"
     
-    full_path = os.path.join(base_dir, target_file)
-    base64_badge = get_base64_image(full_path)
+    target_filename = f"xrostao™ - {num}.png"
+    base64_badge = get_base64_image(str(base_dir / target_filename))
     
-    badge_style = f"background-image: url('data:image/png;base64,{base64_badge}');" if base64_badge else ""
+    # Diagnostic: If still empty, try to find ANY file starting with xrostao and ending with the number
+    if not base64_badge:
+        matches = list(base_dir.glob(f"xrostao* - {num}.png"))
+        if matches:
+            base64_badge = get_base64_image(str(matches[0]))
+
+    # If we have the badge, use it as an IMG tag for better compatibility
+    badge_html = f'<img src="data:image/png;base64,{base64_badge}" class="status-badge-container">' if base64_badge else f'<div class="status-badge-container" style="border: 2px dashed red; background: rgba(255,0,0,0.1); display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">MISSING: {target_filename}</div>'
 
     # Success Value extraction for progress bar
     try:
@@ -61,11 +70,11 @@ def hero_metrics(score_value: str, score_label: str,
             <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important; isolation: isolate !important; background: radial-gradient(circle at bottom right, #005c99 0%, #004a7a 20%, #003761 40%, #002542 60%, #001221 80%, #000000 100%) !important;">
                 <div class="hero-metric-content">
                     <div class="hero-metric-icon" style="background: none !important; border: none !important;">
-                        {f'<img src="data:image/png;base64,{images["img1"]}" style="width: 45px; height: 45px; object-fit: contain;">' if images.get("img1") else '🎯'}
+                        {f'<img src="data:image/png;base64,{img1}" style="width: 45px; height: 45px; object-fit: contain;">' if img1 else '🎯'}
                     </div>
                     <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
                     <div class="hero-metric-value" style="color: white !important;">{score_value}</div>
-                    <div class="status-badge-container" style="{badge_style}"></div>
+                    {badge_html}
                 </div>
             </div>
 
@@ -73,7 +82,7 @@ def hero_metrics(score_value: str, score_label: str,
             <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important; isolation: isolate !important; background: radial-gradient(circle at bottom right, #993d00 0%, #7a3100 20%, #5c2700 40%, #3d1a00 60%, #1f0d00 80%, #000000 100%) !important;">
                 <div class="hero-metric-content">
                     <div class="hero-metric-icon" style="background: none !important; border: none !important;">
-                        {f'<img src="data:image/png;base64,{images["img4"]}" style="width: 45px; height: 45px; object-fit: contain;">' if images.get("img4") else '🔥'}
+                        {f'<img src="data:image/png;base64,{img4}" style="width: 45px; height: 45px; object-fit: contain;">' if img4 else '🔥'}
                     </div>
                     <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Current Streak</div>
                     <div class="hero-metric-value" style="color: white !important;">{streak_value}</div>
@@ -84,7 +93,7 @@ def hero_metrics(score_value: str, score_label: str,
             <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important; isolation: isolate !important; background: radial-gradient(circle at bottom right, #009952 0%, #007a42 20%, #005c34 40%, #003d27 60%, #001f1a 80%, #000000 100%) !important;">
                 <div class="hero-metric-content">
                     <div class="hero-metric-icon" style="background: none !important; border: none !important;">
-                        {f'<img src="data:image/png;base64,{images["img6"]}" style="width: 45px; height: 45px; object-fit: contain;">' if images.get("img6") else '📈'}
+                        {f'<img src="data:image/png;base64,{img6}" style="width: 45px; height: 45px; object-fit: contain;">' if img6 else '📈'}
                     </div>
                     <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Success Rate</div>
                     <div class="hero-metric-value" style="color: white !important;">{success_value}</div>
