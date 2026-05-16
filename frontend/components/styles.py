@@ -171,8 +171,7 @@ def get_theme_css(dark_mode: bool) -> str:
         align-items: center;
         justify-content: center;
         background-repeat: no-repeat;
-        background-size: contain;
-        background-position: left center;
+        background-size: 320px 120px;
         mix-blend-mode: screen !important;
         background-color: transparent !important;
         border: none !important;
@@ -186,15 +185,19 @@ def get_theme_css(dark_mode: bool) -> str:
     }}
 
     .status-badge-container.low {{
+        background-position: 0px 0px;
     }}
 
     .status-badge-container.average {{
+        background-position: -160px 0px;
     }}
 
     .status-badge-container.good {{
+        background-position: 0px -60px;
     }}
 
     .status-badge-container.excellent {{
+        background-position: -160px -60px;
     }}
 
     /* Hide text/icon in Streamlit as well */
