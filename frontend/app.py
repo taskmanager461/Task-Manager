@@ -547,11 +547,11 @@ def plot_category_success(category_stats: pd.DataFrame, dark_mode: bool) -> go.F
 
 
 def get_score_label(score: float) -> str:
-    if score >= 80:
+    if score >= 110.1:
         return "Excellent"
-    elif score >= 60:
+    elif score >= 75.1:
         return "Good"
-    elif score >= 40:
+    elif score >= 40.1:
         return "Average"
     else:
         return "Low"

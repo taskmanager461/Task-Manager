@@ -161,6 +161,7 @@ def get_theme_css(dark_mode: bool) -> str:
         justify-content: center;
     }}
 
+    /* === HERO METRIC BADGES === */
     .status-badge-container {{
         margin-top: 15px;
         margin-left: -10px;
@@ -185,19 +186,13 @@ def get_theme_css(dark_mode: bool) -> str:
         overflow: visible;
     }}
 
-    .status-badge-container.low {{
-    }}
+    /* Individual Badge Positioning (Clean) */
+    .status-badge-container.low {{ }}
+    .status-badge-container.average {{ }}
+    .status-badge-container.good {{ }}
+    .status-badge-container.excellent {{ }}
 
-    .status-badge-container.average {{
-    }}
-
-    .status-badge-container.good {{
-    }}
-
-    .status-badge-container.excellent {{
-    }}
-
-    /* Hide text/icon in Streamlit as well */
+    /* Hide text/icon as they are inside the images */
     .status-badge-text, .status-badge-icon {{
         display: none !important;
     }}
