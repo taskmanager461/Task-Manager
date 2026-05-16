@@ -3,99 +3,97 @@ import base64
 import os
 from pathlib import Path
 
-def get_base64_image(image_path):
+def get_base64_image(file_path):
     try:
-        p = Path(image_path)
-        # If it doesn't exist, try searching for any file that starts with "xrostao" and has the same number
-        if not p.exists():
-            parent = p.parent
-            search_pattern = "xrostao* - " + p.name.split("-")[-1].strip()
-            matches = list(parent.glob(search_pattern))
-            if matches:
-                p = matches[0]
-        
-        if p.exists():
-            with open(p, "rb") as img_file:
-                data = img_file.read()
-                return base64.b64encode(data).decode()
+        if os.path.exists(file_path):
+            with open(file_path, "rb") as f:
+                return base64.b64encode(f.read()).decode()
         return ""
-    except Exception:
+    except:
         return ""
 
 def hero_metrics(score_value: str, score_label: str,
                   streak_value: str, streak_sub: str,
                   success_value: str, success_sub: str) -> None:
     
-    # Base icons
-    base_dir = Path(r"c:\Users\my-pc\.vscode\task manager")
+    base_dir = r"c:\Users\my-pc\.vscode\task manager"
     
-    img1 = get_base64_image(str(base_dir / "ChatGPT_Image_1.png"))
-    img4 = get_base64_image(str(base_dir / "ChatGPT_Image_4.png"))
-    img6 = get_base64_image(str(base_dir / "ChatGPT_Image_6.png"))
+    # Base Icons
+    img1 = get_base64_image(os.path.join(base_dir, "ChatGPT_Image_1.png"))
+    img4 = get_base64_image(os.path.join(base_dir, "ChatGPT_Image_4.png"))
+    img6 = get_base64_image(os.path.join(base_dir, "ChatGPT_Image_6.png"))
     
-    # === BADGE LOGIC ===
-    label_lower = str(score_label).lower().strip()
-    
-    if "excellent" in label_lower:
-        num = "6"
-    elif "good" in label_lower:
-        num = "5"
-    elif "average" in label_lower:
-        num = "4"
+    # Badge Selection
+    lbl = str(score_label).lower()
+    if "excellent" in lbl:
+        fname = "xrostao™ - 6.png"
+    elif "good" in lbl:
+        fname = "xrostao™ - 5.png"
+    elif "average" in lbl:
+        fname = "xrostao™ - 4.png"
     else:
-        num = "3"
+        fname = "xrostao™ - 3.png"
+        
+    badge_b64 = get_base64_image(os.path.join(base_dir, fname))
     
-    target_filename = f"xrostao™ - {num}.png"
-    base64_badge = get_base64_image(str(base_dir / target_filename))
-    
-    # Diagnostic: If still empty, try to find ANY file starting with xrostao and ending with the number
-    if not base64_badge:
-        matches = list(base_dir.glob(f"xrostao* - {num}.png"))
+    # If TM character fails, try direct search
+    if not badge_b64:
+        import glob
+        pattern = os.path.join(base_dir, "xrostao* - " + fname.split("-")[-1].strip())
+        matches = glob.glob(pattern)
         if matches:
-            base64_badge = get_base64_image(str(matches[0]))
+            badge_b64 = get_base64_image(matches[0])
 
-    # If we have the badge, use it as an IMG tag for better compatibility
-    badge_html = f'<img src="data:image/png;base64,{base64_badge}" class="status-badge-container">' if base64_badge else f'<div class="status-badge-container" style="border: 2px dashed red; background: rgba(255,0,0,0.1); display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">MISSING: {target_filename}</div>'
+    # Badge HTML - Absolute Positioning
+    badge_html = ""
+    if badge_b64:
+        badge_html = f"""
+        <img src="data:image/png;base64,{badge_b64}" 
+             style="position: absolute !important; 
+                    top: -15px !important; 
+                    left: -20px !important; 
+                    width: 150px !important; 
+                    height: 90px !important; 
+                    object-fit: contain !important; 
+                    z-index: 9999 !important;
+                    pointer-events: none !important;">
+        """
 
-    # Success Value extraction for progress bar
     try:
         success_pct = float(success_value.replace('%', ''))
-    except Exception:
+    except:
         success_pct = 0.0
 
     st.markdown(
         f"""
         <div class="hero-metric-grid">
-            <!-- Card 1: Trust Score -->
-            <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important; isolation: isolate !important; background: radial-gradient(circle at bottom right, #005c99 0%, #004a7a 20%, #003761 40%, #002542 60%, #001221 80%, #000000 100%) !important;">
+            <div class="hero-metric" style="position: relative; border: 1px solid rgba(255,255,255,0.1) !important; background: radial-gradient(circle at bottom right, #005c99 0%, #004a7a 20%, #003761 40%, #002542 60%, #001221 80%, #000000 100%) !important;">
                 <div class="hero-metric-content">
-                    <div class="hero-metric-icon" style="background: none !important; border: none !important;">
+                    <div class="hero-metric-icon">
                         {f'<img src="data:image/png;base64,{img1}" style="width: 45px; height: 45px; object-fit: contain;">' if img1 else '🎯'}
                     </div>
-                    <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
+                    <div class="hero-metric-label" style="color: white !important;">Self Trust Score</div>
                     <div class="hero-metric-value" style="color: white !important;">{score_value}</div>
                     {badge_html}
                 </div>
             </div>
 
-            <!-- Card 2: Streak -->
-            <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important; isolation: isolate !important; background: radial-gradient(circle at bottom right, #993d00 0%, #7a3100 20%, #5c2700 40%, #3d1a00 60%, #1f0d00 80%, #000000 100%) !important;">
+            <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; background: radial-gradient(circle at bottom right, #993d00 0%, #7a3100 20%, #5c2700 40%, #3d1a00 60%, #1f0d00 80%, #000000 100%) !important;">
                 <div class="hero-metric-content">
-                    <div class="hero-metric-icon" style="background: none !important; border: none !important;">
+                    <div class="hero-metric-icon">
                         {f'<img src="data:image/png;base64,{img4}" style="width: 45px; height: 45px; object-fit: contain;">' if img4 else '🔥'}
                     </div>
-                    <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Current Streak</div>
+                    <div class="hero-metric-label" style="color: white !important;">Current Streak</div>
                     <div class="hero-metric-value" style="color: white !important;">{streak_value}</div>
                 </div>
             </div>
 
-            <!-- Card 3: Success -->
-            <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important; isolation: isolate !important; background: radial-gradient(circle at bottom right, #009952 0%, #007a42 20%, #005c34 40%, #003d27 60%, #001f1a 80%, #000000 100%) !important;">
+            <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; background: radial-gradient(circle at bottom right, #009952 0%, #007a42 20%, #005c34 40%, #003d27 60%, #001f1a 80%, #000000 100%) !important;">
                 <div class="hero-metric-content">
-                    <div class="hero-metric-icon" style="background: none !important; border: none !important;">
+                    <div class="hero-metric-icon">
                         {f'<img src="data:image/png;base64,{img6}" style="width: 45px; height: 45px; object-fit: contain;">' if img6 else '📈'}
                     </div>
-                    <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Success Rate</div>
+                    <div class="hero-metric-label" style="color: white !important;">Success Rate</div>
                     <div class="hero-metric-value" style="color: white !important;">{success_value}</div>
                     <div style="margin-top: 40px; width: 100%; background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
                         <div style="width: {success_pct}%; height: 100%; background: #4ade80; box-shadow: 0 0 10px #4ade80; border-radius: 10px;"></div>
