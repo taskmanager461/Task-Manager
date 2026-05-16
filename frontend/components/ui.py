@@ -59,27 +59,11 @@ def hero_metrics(score_value: str, score_label: str,
     img4 = find_icon("01_28_01") # img4
     img6 = find_icon("01_40_08") # img6
 
-    # Badge HTML
+    badge_html = ""
     if badge_b64:
-        # If we have the PNG, we use it. We position it below the value as a banner.
         badge_html = f"""
         <div style="margin-top: 15px; width: 140px; height: auto; z-index: 100; position: relative;">
             <img src="data:image/png;base64,{badge_b64}" style="width: 100%; height: auto; object-fit: contain; filter: drop-shadow(0 0 12px rgba(0,0,0,0.5)); display: block;">
-        </div>
-        """
-    else:
-        # Fallback CSS banner matching the user's example style
-        styles = {
-            "excellent": {"color": "#10b981", "icon": "fa-solid fa-trophy", "bg": "rgba(16, 185, 129, 0.15)"},
-            "good": {"color": "#3b82f6", "icon": "fa-solid fa-circle-check", "bg": "rgba(59, 130, 246, 0.15)"},
-            "average": {"color": "#f59e0b", "icon": "fa-solid fa-bolt", "bg": "rgba(245, 158, 11, 0.15)"},
-            "low": {"color": "#ef4444", "icon": "fa-solid fa-arrow-trend-down", "bg": "rgba(239, 68, 68, 0.15)"}
-        }
-        s = styles.get(lbl, styles["low"])
-        badge_html = f"""
-        <div style="display: inline-flex; align-items: center; gap: 10px; background: {s['bg']}; border: 1px solid {s['color']}44; padding: 8px 18px; border-radius: 14px; margin-top: 15px; z-index: 100; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
-            <i class="{s['icon']}" style="color: {s['color']}; font-size: 1rem;"></i>
-            <span style="color: {s['color']}; font-size: 1rem; font-weight: 800; text-transform: capitalize; white-space: nowrap;">{score_label}</span>
         </div>
         """
 

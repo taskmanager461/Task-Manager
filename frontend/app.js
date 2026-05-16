@@ -931,7 +931,18 @@ function getScoreLabel(score) {
     if (score >= 80) return { text: 'Excellent', icon: '🏆', class: 'excellent' };
     if (score >= 60) return { text: 'Good', icon: '✨', class: 'good' };
     if (score >= 40) return { text: 'Average', icon: '⚡', class: 'average' };
-    return { text: 'Low', icon: '📉', class: 'low' };
+    return { text: 'Low', icon: '⚠️', class: 'low' };
+}
+
+function getBadgeImageSrc(scoreClass) {
+    const map = {
+        excellent: 'badge_excellent.png',
+        good: 'badge_good.png',
+        average: 'badge_average.png',
+        low: 'badge_low.png',
+    };
+    const name = map[scoreClass] || map.low;
+    return `/${name}`;
 }
 
 // --- Dashboard Logic ---
@@ -1004,7 +1015,7 @@ function renderHeroMetrics(score) {
                 </div>
                 <div class="hero-metric-label">Self Trust Score</div>
                 <div class="hero-metric-value">${scoreVal}</div>
-                <div class="score-label ${label.class}">${label.icon} ${label.text}</div>
+                <img class="trust-score-badge" src="${getBadgeImageSrc(label.class)}" alt="${label.text}">
             </div>
         </div>
 

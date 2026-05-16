@@ -773,6 +773,16 @@ body.sidebar-open #content {
     color: white !important;
 }
 
+.trust-score-badge {
+    margin-top: 14px;
+    width: 180px;
+    max-width: 75%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 0 12px rgba(0,0,0,0.45));
+    pointer-events: none;
+}
+
 .hero-metric-sub {
     font-size: 0.9rem;
     font-weight: 800;
