@@ -162,16 +162,17 @@ def get_theme_css(dark_mode: bool) -> str:
     }}
 
     .status-badge-container {{
-        margin-top: -15px;
-        margin-left: -15px;
+        margin-top: 15px;
+        margin-left: 0;
         margin-right: auto;
         width: 160px;
-        height: 100px;
+        height: 60px;
         display: flex;
         align-items: center;
         justify-content: center;
         background-repeat: no-repeat;
-        background-size: 160px 100px;
+        background-size: contain;
+        background-position: left center;
         mix-blend-mode: screen !important;
         background-color: transparent !important;
         border: none !important;
@@ -185,27 +186,15 @@ def get_theme_css(dark_mode: bool) -> str:
     }}
 
     .status-badge-container.low {{
-        margin-top: -15px;
-        margin-left: -15px;
     }}
 
     .status-badge-container.average {{
-        margin-top: -15px;
-        margin-left: -10px;
     }}
 
     .status-badge-container.good {{
-        margin-top: -10px;
-        margin-left: -20px;
-        background-position: -10px 0px;
-        background-size: 170px 100px;
     }}
 
     .status-badge-container.excellent {{
-        margin-top: -5px;
-        margin-left: -5px;
-        background-position: -10px 0px;
-        background-size: 170px 100px;
     }}
 
     /* Hide text/icon in Streamlit as well */
