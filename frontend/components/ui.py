@@ -48,8 +48,15 @@ def hero_metrics(score_value: str, score_label: str,
         "excellent": "xrostao™ - 6.png"
     }
     
+    # Clear any old reference to img3/sprite sheet
+    if "img3" in images:
+        del images["img3"]
+    
     current_badge_filename = badge_images.get(label_lower, "xrostao™ - 3.png")
     images["current_badge"] = get_base64_image(current_badge_filename)
+
+    # Force the style to be clean
+    badge_style = f"background-image: url('data:image/png;base64,{images['current_badge']}') !important; background-size: contain !important; background-position: center !important; background-repeat: no-repeat !important;"
 
     # Map label to icon
     icon_map = {
@@ -77,7 +84,7 @@ def hero_metrics(score_value: str, score_label: str,
                     </div>
                     <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
                     <div class="hero-metric-value" style="color: white !important;">{score_value}</div>
-                    <div class="status-badge-container {label_lower}" style="background-image: url('data:image/png;base64,{images['current_badge']}') !important;">
+                    <div class="status-badge-container {label_lower}" style="{badge_style}">
                         <span class="status-badge-icon">{badge_icon}</span>
                         <span class="status-badge-text">{score_label}</span>
                     </div>
