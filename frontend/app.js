@@ -588,8 +588,8 @@ function setAuthView(view) {
     const divider = document.querySelector('.auth-divider');
     const showPrimary = view === 'login' || view === 'signup';
     if (tabs) tabs.style.display = showPrimary ? '' : 'none';
-    if (googleBtn) googleBtn.style.display = showPrimary ? '' : 'none';
-    if (divider) divider.style.display = showPrimary ? '' : 'none';
+    if (googleBtn) googleBtn.style.display = view === 'login' ? '' : 'none';
+    if (divider) divider.style.display = view === 'login' ? '' : 'none';
 
     if (showPrimary) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -600,6 +600,7 @@ function setAuthView(view) {
 }
 
 async function handleAuthSessionChange(event, session) {
+    clearUrlTokens();
     if (event === 'PASSWORD_RECOVERY') {
         renderLogin();
         setAuthView('reset');
@@ -1094,7 +1095,10 @@ async function signInWithGoogle() {
     try {
         const { error } = await supabaseClient.auth.signInWithOAuth({
             provider: 'google',
-            options: { redirectTo: window.location.origin }
+            options: {
+                redirectTo: window.location.origin,
+                queryParams: { prompt: 'select_account' }
+            }
         });
         if (error) throw error;
     } catch (err) {
@@ -1163,6 +1167,36 @@ async function updatePassword(newPassword, confirmPassword) {
     }
 }
 
+function resetUiToDefaults() {
+    currentView = 'dashboard';
+    currentTasksGoalsTab = 'tasks';
+    calendarDate = new Date();
+    dashboardCalendarDate = new Date();
+    cachedTasks = [];
+    cachedGoals = [];
+    cachedHabits = [];
+    calendarTasks = [];
+    notifiedTasks = new Set();
+    notifiedHabits = new Set();
+    currentGoalForReflection = null;
+    identityInitialized = false;
+    identitySnapshot = { level: 1, unlockedBadgeIds: [] };
+    smartPersonalizationCache = { timestamp: 0, data: null };
+
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    if (sidebar) sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('active');
+    document.querySelectorAll('.hamburger').forEach(h => h.classList.remove('active'));
+    document.body.classList.remove('sidebar-open');
+}
+
+function clearUrlTokens() {
+    if (window.location.hash) {
+        window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+    }
+}
+
 function logout() {
     (async () => {
         showLoading(true);
@@ -1173,6 +1207,8 @@ function logout() {
             supabaseSession = null;
             supabaseAccessToken = null;
             pendingVerificationEmail = null;
+            resetUiToDefaults();
+            clearUrlTokens();
             renderLogin();
             setAuthView('login');
             showLoading(false);
