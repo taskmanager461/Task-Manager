@@ -6,6 +6,15 @@ from pathlib import Path
 def get_base64_image(image_path):
     try:
         p = Path(image_path)
+        if not p.exists():
+            # Try to find the file by matching the start of the name to avoid encoding issues
+            parent = p.parent
+            base_name = p.name.split('™')[0] if '™' in p.name else p.name
+            for f in parent.glob("xrostao* - *.png"):
+                if base_name in f.name:
+                    p = f
+                    break
+        
         if p.exists():
             with open(p, "rb") as img_file:
                 return base64.b64encode(img_file.read()).decode()
@@ -55,7 +64,7 @@ def hero_metrics(score_value: str, score_label: str,
         alt_path = Path(__file__).parent.parent / target_file
         base64_badge = get_base64_image(str(alt_path))
     
-    badge_style = f"background-image: url('data:image/png;base64,{base64_badge}');" if base64_badge else "background-color: rgba(255,0,0,0.1); border: 1px dashed red;"
+    badge_style = f"background-image: url('data:image/png;base64,{base64_badge}');" if base64_badge else "background-color: rgba(255,0,0,0.3); border: 2px dashed red;"
 
     # Success Value extraction for progress bar
     try:

@@ -791,8 +791,8 @@ body.sidebar-open #content {
 /* === BRAND NEW BADGE IMPLEMENTATION (FROM SCRATCH) === */
 .status-badge-container {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
+    top: -15px; 
+    left: -20px;
     width: 150px;
     height: 90px;
     display: block;
@@ -800,7 +800,6 @@ body.sidebar-open #content {
     background-size: contain !important;
     background-position: center !important;
     background-color: transparent !important;
-    border: 2px solid yellow !important;
     box-shadow: none !important;
     filter: brightness(1.1) contrast(1.2) saturate(1.4) blur(0.2px);
     z-index: 100;
