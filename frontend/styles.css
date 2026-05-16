@@ -816,8 +816,7 @@ body.sidebar-open #content {
     align-items: center;
     justify-content: center;
     background-repeat: no-repeat;
-    background-size: contain !important;
-    background-position: center !important;
+    background-size: 310px 150px !important;
     mix-blend-mode: screen !important;
     background-color: transparent !important;
     border: none !important;
@@ -827,23 +826,23 @@ body.sidebar-open #content {
     transform: translateZ(0);
     transition: all 0.3s ease;
     position: relative;
-    overflow: visible;
+    overflow: hidden;
 }
 
 .status-badge-container.low {
-    background-image: url('xrostao™ - 3.png') !important;
+    background-position: 0px 0px !important;
 }
 
 .status-badge-container.average {
-    background-image: url('xrostao™ - 4.png') !important;
+    background-position: -155px 0px !important;
 }
 
 .status-badge-container.good {
-    background-image: url('xrostao™ - 5.png') !important;
+    background-position: 0px -75px !important;
 }
 
 .status-badge-container.excellent {
-    background-image: url('xrostao™ - 6.png') !important;
+    background-position: -155px -75px !important;
 }
 
 /* Hide the text and icon since they are inside the image */

@@ -161,7 +161,7 @@ def get_theme_css(dark_mode: bool) -> str:
         justify-content: center;
     }}
 
-    /* === HERO METRIC BADGES === */
+    /* === HERO METRIC BADGES (CROP LOGIC FIXED) === */
     .status-badge-container {{
         margin-top: 15px;
         margin-left: -10px;
@@ -172,8 +172,7 @@ def get_theme_css(dark_mode: bool) -> str:
         align-items: center;
         justify-content: center;
         background-repeat: no-repeat;
-        background-size: contain !important;
-        background-position: center !important;
+        background-size: 310px 150px !important; /* Double the width/height to show only 1/4 of the sprite */
         mix-blend-mode: screen !important;
         background-color: transparent !important;
         border: none !important;
@@ -183,23 +182,23 @@ def get_theme_css(dark_mode: bool) -> str:
         transform: translateZ(0);
         transition: all 0.3s ease;
         position: relative;
-        overflow: visible;
+        overflow: hidden;
     }}
 
     .status-badge-container.low {{
-        background-image: url('data:image/png;base64,{get_base64_image("xrostao™ - 3.png")}') !important;
+        background-position: 0px 0px !important;
     }}
 
     .status-badge-container.average {{
-        background-image: url('data:image/png;base64,{get_base64_image("xrostao™ - 4.png")}') !important;
+        background-position: -155px 0px !important;
     }}
 
     .status-badge-container.good {{
-        background-image: url('data:image/png;base64,{get_base64_image("xrostao™ - 5.png")}') !important;
+        background-position: 0px -75px !important;
     }}
 
     .status-badge-container.excellent {{
-        background-image: url('data:image/png;base64,{get_base64_image("xrostao™ - 6.png")}') !important;
+        background-position: -155px -75px !important;
     }}
 
     /* Hide text/icon as they are inside the images */
