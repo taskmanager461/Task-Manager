@@ -928,9 +928,9 @@ function logout() {
 }
 
 function getScoreLabel(score) {
-    if (score >= 80) return { text: 'Excellent', icon: '🏆', class: 'excellent' };
+    if (score >= 100) return { text: 'Excellent', icon: '🏆', class: 'excellent' };
     if (score >= 60) return { text: 'Good', icon: '✨', class: 'good' };
-    if (score >= 40) return { text: 'Average', icon: '⚡', class: 'average' };
+    if (score >= 30) return { text: 'Average', icon: '⚡', class: 'average' };
     return { text: 'Low', icon: '⚠️', class: 'low' };
 }
 
