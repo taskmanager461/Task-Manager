@@ -1,9 +1,9 @@
-const CACHE_NAME = "task-manager-v3.6.2";
+const CACHE_NAME = "task-manager-v3.7.8";
 const ASSETS_TO_CACHE = [
   "/",
   "/index.html",
-  "/styles.css?v=3.6.0",
-  "/app.js?v=3.6.0",
+  "/styles.css?v=3.7.8",
+  "/app.js?v=3.7.8",
   "/manifest.json",
   "/static/icon-home-192-v7.png",
   "/static/icon-home-512-v7.png"
@@ -41,6 +41,13 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   // Only cache GET requests for static assets
   if (event.request.method !== "GET") return;
+
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match("/"))
+    );
+    return;
+  }
 
   // Don't cache API calls
   if (event.request.url.includes("/api/") || event.request.url.includes("/login") || event.request.url.includes("/signup") || event.request.url.includes("/tasks") || event.request.url.includes("/score") || event.request.url.includes("/me")) {
@@ -90,4 +97,3 @@ self.addEventListener("notificationclick", (event) => {
     clients.openWindow(url)
   );
 });
-

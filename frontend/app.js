@@ -530,6 +530,14 @@ function isEmailVerified(user) {
     return Boolean(user && (user.email_confirmed_at || user.confirmed_at));
 }
 
+function withTimeout(promise, ms, message) {
+    let timeoutId;
+    const timeoutPromise = new Promise((_, reject) => {
+        timeoutId = setTimeout(() => reject(new Error(message || 'Timeout')), ms);
+    });
+    return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timeoutId));
+}
+
 async function syncCurrentUserFromApi() {
     if (!supabaseAccessToken) {
         throw new Error('Missing session');
@@ -622,7 +630,7 @@ async function handleAuthSessionChange(event, session) {
 
     showLoading(true);
     try {
-        await syncCurrentUserFromApi();
+        await withTimeout(syncCurrentUserFromApi(), 8000, 'API timeout');
         renderApp();
     } catch (err) {
         await supabaseClient?.auth?.signOut();
@@ -645,7 +653,7 @@ async function checkAuth() {
             return;
         }
 
-        const { data } = await supabaseClient.auth.getSession();
+        const { data } = await withTimeout(supabaseClient.auth.getSession(), 8000, 'Auth timeout');
         supabaseSession = data.session;
         supabaseAccessToken = data.session?.access_token || null;
         await handleAuthSessionChange('INITIAL', data.session);
@@ -657,6 +665,7 @@ async function checkAuth() {
         console.error('Auth check failed', err);
         renderLogin();
         setAuthView('login');
+        showAuthError('Auth unavailable. Check Supabase URL/keys and Redirect URLs.');
     } finally {
         showLoading(false);
     }
