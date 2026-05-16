@@ -77,6 +77,10 @@ def hero_metrics(score_value: str, score_label: str,
                     </div>
                     <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
                     <div class="hero-metric-value" style="color: white !important;">{score_value}</div>
+                    <div class="status-badge-container {label_lower}" style="background-image: url('data:image/png;base64,{images['current_badge']}') !important;">
+                        <span class="status-badge-icon">{badge_icon}</span>
+                        <span class="status-badge-text">{score_label}</span>
+                    </div>
                 </div>
             </div>
 
