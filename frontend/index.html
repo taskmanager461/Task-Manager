@@ -50,19 +50,48 @@
                 <button id="tab-login" class="tab active" onclick="switchAuthTab('login')" data-i18n="login">Login</button>
                 <button id="tab-signup" class="tab" onclick="switchAuthTab('signup')" data-i18n="signup">Sign Up</button>
             </div>
+
+            <button id="google-signin-btn" type="button" class="btn oauth-btn full-width" data-i18n="continue_with_google">Continue with Google</button>
+            <div class="auth-divider"><span data-i18n="or">or</span></div>
             
             <form id="login-form" class="auth-form active">
-                <input type="text" id="login-username" data-i18n="username_email" placeholder="Username or Email" required autocomplete="username">
+                <input type="email" id="login-email" data-i18n="email" placeholder="Email" required autocomplete="email">
                 <input type="password" id="login-password" data-i18n="password" placeholder="Password" required autocomplete="current-password">
                 <button type="submit" class="btn primary" data-i18n="login">Login</button>
+                <button type="button" id="forgot-password-link" class="btn link-btn" data-i18n="forgot_password">Forgot password?</button>
             </form>
 
             <form id="signup-form" class="auth-form">
                 <input type="text" id="signup-name" data-i18n="full_name" placeholder="Full Name" required autocomplete="name">
-                <input type="text" id="signup-username" data-i18n="username_email" placeholder="Username" required autocomplete="username">
+                <input type="text" id="signup-username" data-i18n="username" placeholder="Username" required autocomplete="username">
                 <input type="email" id="signup-email" data-i18n="email" placeholder="Email" required autocomplete="email">
                 <input type="password" id="signup-password" data-i18n="password" placeholder="Password" required autocomplete="new-password">
                 <button type="submit" class="btn primary" data-i18n="create_account">Create Account</button>
+            </form>
+
+            <form id="forgot-form" class="auth-form">
+                <div class="auth-note" data-i18n="forgot_password_note">Enter your email and we’ll send you a reset link.</div>
+                <input type="email" id="forgot-email" data-i18n="email" placeholder="Email" required autocomplete="email">
+                <button type="submit" class="btn primary" data-i18n="send_reset_link">Send reset link</button>
+                <button type="button" id="forgot-back-link" class="btn link-btn" data-i18n="back_to_login">Back to login</button>
+            </form>
+
+            <div id="verify-form" class="auth-form">
+                <div class="auth-note">
+                    <div class="auth-note-title" data-i18n="verify_email_title">Verify your email</div>
+                    <div id="verify-email-text" class="auth-note-body" data-i18n="verify_email_body">Check your inbox and click the verification link to continue.</div>
+                </div>
+                <button type="button" id="resend-verification-btn" class="btn secondary" data-i18n="resend_verification">Resend verification email</button>
+                <button type="button" id="verify-back-link" class="btn link-btn" data-i18n="back_to_login">Back to login</button>
+            </div>
+
+            <form id="reset-form" class="auth-form">
+                <div class="auth-note">
+                    <div class="auth-note-title" data-i18n="reset_password_title">Set a new password</div>
+                </div>
+                <input type="password" id="reset-password" data-i18n="new_password" placeholder="New password" required autocomplete="new-password">
+                <input type="password" id="reset-password-confirm" data-i18n="confirm_password" placeholder="Confirm password" required autocomplete="new-password">
+                <button type="submit" class="btn primary" data-i18n="update_password">Update password</button>
             </form>
             <div id="auth-error" class="error-msg"></div>
         </div>
@@ -628,6 +657,7 @@
     </div>
 
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
     <script src="app.js?v=3.7.8"></script>
 </body>
 </html>

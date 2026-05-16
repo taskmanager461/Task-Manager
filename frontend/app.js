@@ -1,9 +1,24 @@
 // Configuration
 const API_BASE_URL = window.location.origin;
+const SUPABASE_URL = 'https://hngljslkwyzzlcugiiqz.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_YTyCF9SfOoh-5TaFLUVxmw_NYk3_jiO';
+const supabaseClient = window.supabase?.createClient
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+            storage: window.localStorage
+        }
+    })
+    : null;
 
 // State Management
 let currentUser = null;
-let currentToken = localStorage.getItem('tm_access_token');
+let supabaseSession = null;
+let supabaseAccessToken = null;
+let pendingVerificationEmail = null;
+let authBusy = false;
 let isDarkMode = localStorage.getItem('tm_dark_mode') === '1';
 let currentLang = localStorage.getItem('tm_lang') || 'en';
 let taskChart = null;
@@ -29,8 +44,22 @@ const translations = {
         app_title: "Tobedone",
         login: "Login",
         signup: "Sign Up",
+        continue_with_google: "Continue with Google",
+        or: "or",
         username_email: "Username or Email",
+        username: "Username",
         password: "Password",
+        forgot_password: "Forgot password?",
+        forgot_password_note: "Enter your email and we’ll send you a reset link.",
+        send_reset_link: "Send reset link",
+        back_to_login: "Back to login",
+        verify_email_title: "Verify your email",
+        verify_email_body: "Check your inbox and click the verification link to continue.",
+        resend_verification: "Resend verification email",
+        reset_password_title: "Set a new password",
+        new_password: "New password",
+        confirm_password: "Confirm password",
+        update_password: "Update password",
         full_name: "Full Name",
         email: "Email",
         create_account: "Create Account",
@@ -497,27 +526,139 @@ function showToast(message, type = 'info') {
     }, 4000);
 }
 
-async function checkAuth() {
-    if (currentToken) {
-        showLoading(true);
-        try {
-            const response = await fetch(`${API_BASE_URL}/api/me`, {
-                headers: { 'Authorization': `Bearer ${currentToken}` }
-            });
-            if (response.ok) {
-                currentUser = await response.json();
-                renderApp();
-            } else {
-                logout();
-            }
-        } catch (err) {
-            console.error('Auth check failed', err);
-            renderLogin();
-        } finally {
-            showLoading(false);
-        }
-    } else {
+function isEmailVerified(user) {
+    return Boolean(user && (user.email_confirmed_at || user.confirmed_at));
+}
+
+async function syncCurrentUserFromApi() {
+    if (!supabaseAccessToken) {
+        throw new Error('Missing session');
+    }
+    const response = await fetch(`${API_BASE_URL}/api/me`, {
+        headers: { 'Authorization': `Bearer ${supabaseAccessToken}` }
+    });
+    if (!response.ok) {
+        throw new Error('Session expired');
+    }
+    currentUser = await response.json();
+}
+
+function setAuthBusy(isBusy) {
+    authBusy = isBusy;
+    const ids = [
+        'google-signin-btn',
+        'login-email',
+        'login-password',
+        'signup-name',
+        'signup-username',
+        'signup-email',
+        'signup-password',
+        'forgot-email',
+        'reset-password',
+        'reset-password-confirm',
+        'resend-verification-btn'
+    ];
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = isBusy;
+    });
+    document.querySelectorAll('#auth-page button[type="submit"]').forEach(btn => {
+        btn.disabled = isBusy;
+    });
+}
+
+function setAuthView(view) {
+    const formIds = ['login-form', 'signup-form', 'forgot-form', 'reset-form', 'verify-form'];
+    formIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.toggle('active', id === `${view}-form`);
+    });
+
+    const tabs = document.querySelector('.tabs');
+    const googleBtn = document.getElementById('google-signin-btn');
+    const divider = document.querySelector('.auth-divider');
+    const showPrimary = view === 'login' || view === 'signup';
+    if (tabs) tabs.style.display = showPrimary ? '' : 'none';
+    if (googleBtn) googleBtn.style.display = showPrimary ? '' : 'none';
+    if (divider) divider.style.display = showPrimary ? '' : 'none';
+
+    if (showPrimary) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        const activeTab = document.getElementById(`tab-${view}`);
+        if (activeTab) activeTab.classList.add('active');
+    }
+    showAuthError('');
+}
+
+async function handleAuthSessionChange(event, session) {
+    if (event === 'PASSWORD_RECOVERY') {
         renderLogin();
+        setAuthView('reset');
+        return;
+    }
+
+    if (!session) {
+        currentUser = null;
+        supabaseAccessToken = null;
+        renderLogin();
+        setAuthView('login');
+        return;
+    }
+
+    supabaseSession = session;
+    supabaseAccessToken = session.access_token;
+
+    if (!isEmailVerified(session.user)) {
+        pendingVerificationEmail = pendingVerificationEmail || session.user.email || null;
+        renderLogin();
+        setAuthView('verify');
+        const verifyText = document.getElementById('verify-email-text');
+        if (verifyText && pendingVerificationEmail) {
+            verifyText.textContent = `Check ${pendingVerificationEmail} and click the verification link to continue.`;
+        }
+        return;
+    }
+
+    showLoading(true);
+    try {
+        await syncCurrentUserFromApi();
+        renderApp();
+    } catch (err) {
+        await supabaseClient?.auth?.signOut();
+        currentUser = null;
+        supabaseSession = null;
+        supabaseAccessToken = null;
+        renderLogin();
+        setAuthView('login');
+    } finally {
+        showLoading(false);
+    }
+}
+
+async function checkAuth() {
+    showLoading(true);
+    try {
+        if (!supabaseClient) {
+            renderLogin();
+            showAuthError('Supabase SDK not loaded');
+            return;
+        }
+
+        const { data } = await supabaseClient.auth.getSession();
+        supabaseSession = data.session;
+        supabaseAccessToken = data.session?.access_token || null;
+        await handleAuthSessionChange('INITIAL', data.session);
+
+        supabaseClient.auth.onAuthStateChange(async (event, session) => {
+            await handleAuthSessionChange(event, session);
+        });
+    } catch (err) {
+        console.error('Auth check failed', err);
+        renderLogin();
+        setAuthView('login');
+    } finally {
+        showLoading(false);
     }
 }
 
@@ -847,14 +988,13 @@ async function apiFetch(endpoint, options = {}) {
         'Content-Type': 'application/json'
     };
     
-    // Performance: Don't send token for login/signup
-    if (currentToken && !endpoint.includes('/login') && !endpoint.includes('/signup')) {
-        options.headers['Authorization'] = `Bearer ${currentToken}`;
+    if (supabaseAccessToken) {
+        options.headers['Authorization'] = `Bearer ${supabaseAccessToken}`;
     }
     
     try {
         const response = await fetch(`${API_BASE_URL}${apiEndpoint}`, options);
-        if (response.status === 401 && !endpoint.includes('/login')) {
+        if (response.status === 401) {
             logout();
             showToast(t('session_expired'), 'error');
             throw new Error('Session expired');
@@ -880,51 +1020,155 @@ async function apiFetch(endpoint, options = {}) {
 }
 
 // --- Auth Actions ---
-async function login(username, password) {
-    showLoading(true);
-    showAuthError(''); // Clear previous errors
+function normalizeSupabaseError(err) {
+    if (!err) return t('error_occurred');
+    if (typeof err === 'string') return err;
+    return err.message || err.error_description || err.description || t('error_occurred');
+}
+
+async function login(email, password) {
+    if (!supabaseClient) return;
+    setAuthBusy(true);
+    showAuthError('');
     try {
-        const data = await apiFetch('/login', {
-            method: 'POST',
-            body: JSON.stringify({ username, password })
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email: (email || '').trim(),
+            password: password || ''
         });
-        saveAuth(data);
-        renderApp();
+        if (error) throw error;
+        await handleAuthSessionChange('SIGNED_IN', data.session);
     } catch (err) {
-        showAuthError(err.message);
+        showAuthError(normalizeSupabaseError(err));
     } finally {
-        showLoading(false);
+        setAuthBusy(false);
     }
 }
 
 async function signup(name, username, email, password) {
-    showLoading(true);
-    showAuthError(''); // Clear previous errors
+    if (!supabaseClient) return;
+    setAuthBusy(true);
+    showAuthError('');
     try {
-        const data = await apiFetch('/signup', {
-            method: 'POST',
-            body: JSON.stringify({ name, username, email, password })
+        const { data, error } = await supabaseClient.auth.signUp({
+            email: (email || '').trim(),
+            password: password || '',
+            options: {
+                data: {
+                    name: (name || '').trim(),
+                    username: (username || '').trim()
+                },
+                emailRedirectTo: window.location.origin
+            }
         });
-        saveAuth(data);
-        renderApp();
+        if (error) throw error;
+
+        pendingVerificationEmail = (email || '').trim();
+        if (data.session) {
+            await handleAuthSessionChange('SIGNED_IN', data.session);
+            return;
+        }
+
+        renderLogin();
+        setAuthView('verify');
+        showToast(t('verify_email_title'), 'success');
     } catch (err) {
-        showAuthError(err.message);
+        showAuthError(normalizeSupabaseError(err));
     } finally {
-        showLoading(false);
+        setAuthBusy(false);
     }
 }
 
-function saveAuth(data) {
-    currentToken = data.access_token;
-    currentUser = { user_id: data.user_id, username: data.username, name: data.name };
-    localStorage.setItem('tm_access_token', currentToken);
+async function signInWithGoogle() {
+    if (!supabaseClient) return;
+    setAuthBusy(true);
+    showAuthError('');
+    try {
+        const { error } = await supabaseClient.auth.signInWithOAuth({
+            provider: 'google',
+            options: { redirectTo: window.location.origin }
+        });
+        if (error) throw error;
+    } catch (err) {
+        setAuthBusy(false);
+        showAuthError(normalizeSupabaseError(err));
+    }
+}
+
+async function sendPasswordReset(email) {
+    if (!supabaseClient) return;
+    setAuthBusy(true);
+    showAuthError('');
+    try {
+        const { error } = await supabaseClient.auth.resetPasswordForEmail((email || '').trim(), {
+            redirectTo: window.location.origin
+        });
+        if (error) throw error;
+        showToast(t('send_reset_link'), 'success');
+        setAuthView('login');
+    } catch (err) {
+        showAuthError(normalizeSupabaseError(err));
+    } finally {
+        setAuthBusy(false);
+    }
+}
+
+async function resendVerificationEmail() {
+    if (!supabaseClient) return;
+    const email = pendingVerificationEmail || document.getElementById('signup-email')?.value?.trim() || '';
+    if (!email) return;
+    setAuthBusy(true);
+    showAuthError('');
+    try {
+        const { error } = await supabaseClient.auth.resend({ type: 'signup', email });
+        if (error) throw error;
+        showToast(t('resend_verification'), 'success');
+    } catch (err) {
+        showAuthError(normalizeSupabaseError(err));
+    } finally {
+        setAuthBusy(false);
+    }
+}
+
+async function updatePassword(newPassword, confirmPassword) {
+    if (!supabaseClient) return;
+    showAuthError('');
+    if (!newPassword || newPassword.length < 8) {
+        showAuthError('Password must be at least 8 characters');
+        return;
+    }
+    if (newPassword !== confirmPassword) {
+        showAuthError('Passwords do not match');
+        return;
+    }
+    setAuthBusy(true);
+    try {
+        const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+        if (error) throw error;
+        const { data } = await supabaseClient.auth.getSession();
+        await handleAuthSessionChange('USER_UPDATED', data.session);
+        showToast(t('update_password'), 'success');
+    } catch (err) {
+        showAuthError(normalizeSupabaseError(err));
+    } finally {
+        setAuthBusy(false);
+    }
 }
 
 function logout() {
-    currentToken = null;
-    currentUser = null;
-    localStorage.removeItem('tm_access_token');
-    renderLogin();
+    (async () => {
+        showLoading(true);
+        try {
+            await supabaseClient?.auth?.signOut();
+        } finally {
+            currentUser = null;
+            supabaseSession = null;
+            supabaseAccessToken = null;
+            pendingVerificationEmail = null;
+            renderLogin();
+            setAuthView('login');
+            showLoading(false);
+        }
+    })();
 }
 
 function getScoreLabel(score) {
@@ -2328,7 +2572,7 @@ function setupEventListeners() {
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            login(document.getElementById('login-username').value, document.getElementById('login-password').value);
+            login(document.getElementById('login-email').value, document.getElementById('login-password').value);
         });
     }
 
@@ -2341,6 +2585,44 @@ function setupEventListeners() {
                 document.getElementById('signup-username').value,
                 document.getElementById('signup-email').value,
                 document.getElementById('signup-password').value
+            );
+        });
+    }
+
+    const googleBtn = document.getElementById('google-signin-btn');
+    if (googleBtn) {
+        googleBtn.addEventListener('click', async () => {
+            await signInWithGoogle();
+        });
+    }
+
+    const forgotLink = document.getElementById('forgot-password-link');
+    if (forgotLink) forgotLink.addEventListener('click', () => setAuthView('forgot'));
+
+    const forgotBack = document.getElementById('forgot-back-link');
+    if (forgotBack) forgotBack.addEventListener('click', () => setAuthView('login'));
+
+    const verifyBack = document.getElementById('verify-back-link');
+    if (verifyBack) verifyBack.addEventListener('click', () => setAuthView('login'));
+
+    const resendBtn = document.getElementById('resend-verification-btn');
+    if (resendBtn) resendBtn.addEventListener('click', async () => await resendVerificationEmail());
+
+    const forgotForm = document.getElementById('forgot-form');
+    if (forgotForm) {
+        forgotForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            sendPasswordReset(document.getElementById('forgot-email').value);
+        });
+    }
+
+    const resetForm = document.getElementById('reset-form');
+    if (resetForm) {
+        resetForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            updatePassword(
+                document.getElementById('reset-password').value,
+                document.getElementById('reset-password-confirm').value
             );
         });
     }
@@ -2411,16 +2693,12 @@ function setupEventListeners() {
 }
 
 function switchAuthTab(tab) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-    
-    document.getElementById(`tab-${tab}`).classList.add('active');
-    document.getElementById(`${tab}-form`).classList.add('active');
-    document.getElementById('auth-error').textContent = '';
+    setAuthView(tab);
 }
 
 function showAuthError(msg) {
-    document.getElementById('auth-error').textContent = msg;
+    const el = document.getElementById('auth-error');
+    if (el) el.textContent = msg;
 }
 
 function toggleDarkMode() {
