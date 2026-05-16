@@ -37,6 +37,8 @@ def hero_metrics(score_value: str, score_label: str,
     for key, filename in filenames.items():
         images[key] = get_base64_image(filename)
     
+    label_lower = score_label.lower()
+    
     # Add img3 for badges - map to new specific images based on label
     badge_images = {
         "low": "xrostao™ - 3.png",
