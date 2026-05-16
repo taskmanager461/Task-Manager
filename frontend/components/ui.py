@@ -20,35 +20,40 @@ def hero_metrics(score_value: str, score_label: str,
     current_file = Path(__file__).resolve()
     project_root = current_file.parent.parent.parent
     
-    # Find the badge file dynamically to avoid encoding issues with ™
+    # Find the badge file dynamically
     lbl = str(score_label).lower()
     if "excellent" in lbl:
-        target_num = "6"
+        target_name = "badge_excellent.png"
     elif "good" in lbl:
-        target_num = "5"
+        target_name = "badge_good.png"
     elif "average" in lbl:
-        target_num = "4"
+        target_name = "badge_average.png"
     else:
-        target_num = "3"
+        target_name = "badge_low.png"
         
     badge_b64 = ""
-    found_filename = ""
-    try:
-        for f in os.listdir(project_root):
-            if f.startswith("xrostao") and f.endswith(f"{target_num}.png"):
-                found_filename = f
-                badge_path = project_root / f
-                badge_b64 = get_base64_image(str(badge_path))
+    # Try multiple paths for robustness
+    possible_paths = [
+        project_root / target_name,
+        Path.cwd() / target_name,
+        Path(__file__).resolve().parent.parent.parent / target_name
+    ]
+    
+    for bp in possible_paths:
+        if bp.exists():
+            badge_b64 = get_base64_image(str(bp))
+            if badge_b64:
                 break
-    except:
-        pass
 
     # Other icons - using wildcards to find them since names are complex
     def find_icon(pattern):
         try:
-            for f in os.listdir(project_root):
-                if f.startswith("ChatGPT Image") and pattern in f:
-                    return get_base64_image(str(project_root / f))
+            # Check project root and current working directory
+            for root_path in [project_root, Path.cwd()]:
+                if root_path.exists():
+                    for f in os.listdir(root_path):
+                        if f.startswith("ChatGPT Image") and pattern in f:
+                            return get_base64_image(str(root_path / f))
         except:
             pass
         return ""
@@ -61,13 +66,22 @@ def hero_metrics(score_value: str, score_label: str,
     badge_html = ""
     if badge_b64:
         badge_html = f"""
-        <div style="position: absolute; top: -15px; left: -20px; width: 150px; height: 90px; z-index: 9999; pointer-events: none;">
-            <img src="data:image/png;base64,{badge_b64}" style="width: 100%; height: 100%; object-fit: contain;">
+        <div class="status-badge-container" style="position: absolute; top: -10px; left: -15px; width: 140px; height: 85px; z-index: 9999; pointer-events: none;">
+            <img src="data:image/png;base64,{badge_b64}" style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));">
         </div>
         """
     else:
-        # Debug info if not found
-        badge_html = f'<div style="color:red; font-size:10px;">Missing: xrostao...{target_num}.png</div>'
+        # Fallback text badge if image missing
+        color = "#ef4444" # low
+        if "excellent" in lbl: color = "#10b981"
+        elif "good" in lbl: color = "#3b82f6"
+        elif "average" in lbl: color = "#f59e0b"
+        
+        badge_html = f"""
+        <div style="position: absolute; top: 10px; right: 10px; background: {color}; color: white; padding: 4px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+            {score_label}
+        </div>
+        """
 
     try:
         success_pct = float(success_value.replace('%', ''))
