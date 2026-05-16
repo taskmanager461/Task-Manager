@@ -186,11 +186,21 @@ def get_theme_css(dark_mode: bool) -> str:
         overflow: visible;
     }}
 
-    /* Individual Badge Positioning (Clean) */
-    .status-badge-container.low {{ }}
-    .status-badge-container.average {{ }}
-    .status-badge-container.good {{ }}
-    .status-badge-container.excellent {{ }}
+    .status-badge-container.low {{
+        background-image: url('data:image/png;base64,{get_base64_image("xrostao™ - 3.png")}') !important;
+    }}
+
+    .status-badge-container.average {{
+        background-image: url('data:image/png;base64,{get_base64_image("xrostao™ - 4.png")}') !important;
+    }}
+
+    .status-badge-container.good {{
+        background-image: url('data:image/png;base64,{get_base64_image("xrostao™ - 5.png")}') !important;
+    }}
+
+    .status-badge-container.excellent {{
+        background-image: url('data:image/png;base64,{get_base64_image("xrostao™ - 6.png")}') !important;
+    }}
 
     /* Hide text/icon as they are inside the images */
     .status-badge-text, .status-badge-icon {{
