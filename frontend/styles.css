@@ -1,7 +1,7 @@
 /* Global Design System - Professional Production Polish */
 :root {
     --primary: #0a86ff;
-    --primary-glow: rgba(10, 134, 255, 0.3);
+    --primary-glow: rgba(12, 88, 252, 0.3);
     --background: #050507;
     --background-rgb: 5, 5, 7;
     --surface: rgba(12, 12, 16, 0.95);
@@ -830,10 +830,10 @@ body.sidebar-open #content {
     overflow: visible;
 }
 
-.status-badge-container.low { }
-.status-badge-container.average { }
-.status-badge-container.good { }
-.status-badge-container.excellent { }
+.status-badge-container.low { background-image: url('xrostao™ - 3.png') !important; }
+.status-badge-container.average { background-image: url('xrostao™ - 4.png') !important; }
+.status-badge-container.good { background-image: url('xrostao™ - 5.png') !important; }
+.status-badge-container.excellent { background-image: url('xrostao™ - 6.png') !important; }
 
 /* Hide the text and icon since they are inside the image */
 .status-badge-text, .status-badge-icon {
