@@ -942,7 +942,7 @@ function getBadgeImageSrc(scoreClass) {
         low: 'badge_low.png',
     };
     const name = map[scoreClass] || map.low;
-    return `/${name}`;
+    return `/static/${name}?v=1`;
 }
 
 // --- Dashboard Logic ---
