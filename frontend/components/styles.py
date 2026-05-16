@@ -162,19 +162,20 @@ def get_theme_css(dark_mode: bool) -> str:
 
     /* === BRAND NEW BADGE IMPLEMENTATION (FROM SCRATCH) === */
     .status-badge-container {{
-        position: absolute;
-        top: -15px; 
-        left: -20px;
         width: 150px;
         height: 90px;
+        margin-top: -15px; 
+        margin-left: -20px;
         display: block;
         background-repeat: no-repeat;
         background-size: contain !important;
         background-position: center !important;
         background-color: transparent !important;
+        border: none !important;
         box-shadow: none !important;
         filter: brightness(1.1) contrast(1.2) saturate(1.4) blur(0.2px);
-        z-index: 100;
+        position: relative;
+        z-index: 1000;
     }}
 
     .hero-metric-label {{

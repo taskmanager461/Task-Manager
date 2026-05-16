@@ -5,18 +5,8 @@ from pathlib import Path
 
 def get_base64_image(image_path):
     try:
-        p = Path(image_path)
-        if not p.exists():
-            # Try to find the file by matching the start of the name to avoid encoding issues
-            parent = p.parent
-            base_name = p.name.split('™')[0] if '™' in p.name else p.name
-            for f in parent.glob("xrostao* - *.png"):
-                if base_name in f.name:
-                    p = f
-                    break
-        
-        if p.exists():
-            with open(p, "rb") as img_file:
+        if os.path.exists(image_path):
+            with open(image_path, "rb") as img_file:
                 return base64.b64encode(img_file.read()).decode()
         return ""
     except Exception:
@@ -26,45 +16,37 @@ def hero_metrics(score_value: str, score_label: str,
                   streak_value: str, streak_sub: str,
                   success_value: str, success_sub: str) -> None:
     
-    # Image Filenames
+    # Image Filenames for other icons
     filenames = {
         "img1": "ChatGPT_Image_1.png",
         "img4": "ChatGPT_Image_4.png",
         "img6": "ChatGPT_Image_6.png"
     }
 
-    # Base paths to search for images
-    base_dir = Path(r"c:\Users\my-pc\.vscode\task manager")
+    base_dir = r"c:\Users\my-pc\.vscode\task manager"
     
-    # Load Base64 strings (cached)
+    # Load icons
     images = {}
     for key, filename in filenames.items():
-        full_path = base_dir / filename
-        images[key] = get_base64_image(str(full_path))
+        images[key] = get_base64_image(os.path.join(base_dir, filename))
     
     # === BADGE LOGIC ===
-    # Map labels to files
-    label_map = {
-        "low": "xrostao™ - 3.png",
-        "average": "xrostao™ - 4.png",
-        "good": "xrostao™ - 5.png",
-        "excellent": "xrostao™ - 6.png"
-    }
+    label_lower = str(score_label).lower().strip()
     
-    # Clean up score label
-    current_label = str(score_label).lower().strip()
-    target_file = label_map.get(current_label, "xrostao™ - 3.png")
+    # Explicit mapping
+    if "excellent" in label_lower:
+        target_file = "xrostao™ - 6.png"
+    elif "good" in label_lower:
+        target_file = "xrostao™ - 5.png"
+    elif "average" in label_lower:
+        target_file = "xrostao™ - 4.png"
+    else:
+        target_file = "xrostao™ - 3.png"
     
-    # Try absolute path first
-    badge_path = base_dir / target_file
-    base64_badge = get_base64_image(str(badge_path))
+    full_path = os.path.join(base_dir, target_file)
+    base64_badge = get_base64_image(full_path)
     
-    # Fallback to local frontend dir if not found
-    if not base64_badge:
-        alt_path = Path(__file__).parent.parent / target_file
-        base64_badge = get_base64_image(str(alt_path))
-    
-    badge_style = f"background-image: url('data:image/png;base64,{base64_badge}');" if base64_badge else "background-color: rgba(255,0,0,0.3); border: 2px dashed red;"
+    badge_style = f"background-image: url('data:image/png;base64,{base64_badge}');" if base64_badge else ""
 
     # Success Value extraction for progress bar
     try:
