@@ -171,8 +171,8 @@ def get_theme_css(dark_mode: bool) -> str:
         align-items: center;
         justify-content: center;
         background-repeat: no-repeat;
-        background-size: contain;
-        background-position: center;
+        background-size: contain !important;
+        background-position: center !important;
         mix-blend-mode: screen !important;
         background-color: transparent !important;
         border: none !important;
