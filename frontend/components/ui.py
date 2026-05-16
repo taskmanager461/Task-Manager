@@ -37,11 +37,17 @@ def hero_metrics(score_value: str, score_label: str,
     for key, filename in filenames.items():
         images[key] = get_base64_image(filename)
     
-    # Add img3 for badges
-    images["img3"] = get_base64_image("ChatGPT_Image_3.png")
-
-    label_lower = score_label.lower()
+    # Add img3 for badges - map to new specific images based on label
+    badge_images = {
+        "low": "xrostao™ - 3.png",
+        "average": "xrostao™ - 4.png",
+        "good": "xrostao™ - 5.png",
+        "excellent": "xrostao™ - 6.png"
+    }
     
+    current_badge_filename = badge_images.get(label_lower, "xrostao™ - 3.png")
+    images["current_badge"] = get_base64_image(current_badge_filename)
+
     # Map label to icon
     icon_map = {
         "excellent": "🏆",
@@ -68,7 +74,7 @@ def hero_metrics(score_value: str, score_label: str,
                     </div>
                     <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
                     <div class="hero-metric-value" style="color: white !important;">{score_value}</div>
-                    <div class="status-badge-container {label_lower}" style="background-image: url('data:image/png;base64,{images['img3']}') !important;">
+                    <div class="status-badge-container {label_lower}" style="background-image: url('data:image/png;base64,{images['current_badge']}') !important; background-size: contain !important; background-position: center !important;">
                         <span class="status-badge-icon">{badge_icon}</span>
                         <span class="status-badge-text">{score_label}</span>
                     </div>

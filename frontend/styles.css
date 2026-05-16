@@ -815,8 +815,6 @@ body.sidebar-open #content {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-image: url('ChatGPT_Image_3.png');
-    background-size: 320px 200px;
     background-repeat: no-repeat;
     mix-blend-mode: screen !important;
     background-color: transparent !important;
@@ -831,23 +829,29 @@ body.sidebar-open #content {
 }
 
 .status-badge-container.low {
-    background-position: 0px 0px;
+    background-image: url('xrostao™ - 3.png');
+    background-size: contain;
+    background-position: center;
 }
 
 .status-badge-container.average {
-    background-position: -160px 0px;
+    background-image: url('xrostao™ - 4.png');
+    background-size: contain;
+    background-position: center;
     margin-left: -10px;
 }
 
 .status-badge-container.good {
-    background-position: 10px -100px;
-    margin-top: -20px;
+    background-image: url('xrostao™ - 5.png');
+    background-size: contain;
+    background-position: center;
     margin-left: -20px;
 }
 
 .status-badge-container.excellent {
-    background-position: -150px -100px;
-    margin-top: -15px;
+    background-image: url('xrostao™ - 6.png');
+    background-size: contain;
+    background-position: center;
     margin-left: -5px;
 }
 

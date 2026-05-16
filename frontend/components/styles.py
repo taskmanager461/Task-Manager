@@ -170,7 +170,6 @@ def get_theme_css(dark_mode: bool) -> str:
         display: flex;
         align-items: center;
         justify-content: center;
-        background-size: 320px 200px;
         background-repeat: no-repeat;
         mix-blend-mode: screen !important;
         background-color: transparent !important;
@@ -185,22 +184,20 @@ def get_theme_css(dark_mode: bool) -> str:
     }}
 
     .status-badge-container.low {{
-        background-position: 0px 0px;
+        margin-top: -15px;
     }}
 
     .status-badge-container.average {{
-        background-position: -160px 0px;
         margin-left: -10px;
+        margin-top: -15px;
     }}
 
     .status-badge-container.good {{
-        background-position: 10px -100px;
-        margin-top: -20px;
+        margin-top: -15px;
         margin-left: -20px;
     }}
 
     .status-badge-container.excellent {{
-        background-position: -150px -100px;
         margin-top: -15px;
         margin-left: -5px;
     }}
