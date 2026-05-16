@@ -771,7 +771,7 @@ body.sidebar-open #content {
     width: 45px;
     height: 45px;
     object-fit: contain;
-    mix-blend-mode: screen; /* Removes black from icons */
+    mix-blend-mode: screen;
 }
 
 .hero-metric-label {
@@ -806,15 +806,13 @@ body.sidebar-open #content {
     width: fit-content;
 }
 
+/* === NEW CLEAN BADGE IMPLEMENTATION === */
 .status-badge-container {
     margin-top: 0px;
     margin-left: -20px;
-    margin-right: auto;
     width: 150px;
     height: 90px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
     background-repeat: no-repeat;
     background-size: contain !important;
     background-position: center !important;
@@ -827,20 +825,9 @@ body.sidebar-open #content {
     transform: translateZ(0);
     transition: all 0.3s ease;
     position: relative;
-    overflow: visible;
 }
 
-.status-badge-container.low { background-image: url('xrostao™ - 3.png') !important; }
-.status-badge-container.average { background-image: url('xrostao™ - 4.png') !important; }
-.status-badge-container.good { background-image: url('xrostao™ - 5.png') !important; }
-.status-badge-container.excellent { background-image: url('xrostao™ - 6.png') !important; }
-
-/* Hide the text and icon since they are inside the image */
-.status-badge-text, .status-badge-icon {
-    display: none !important;
-}
- 
- /* Suggestions & Insights */
+/* Suggestions & Insights */
 .suggestion-box {
     background: rgba(10, 132, 255, 0.08);
     border: 1px solid rgba(10, 132, 255, 0.22);
