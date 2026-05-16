@@ -115,7 +115,6 @@ def get_theme_css(dark_mode: bool) -> str:
 
     .hero-metric {{
         position: relative;
-        overflow: hidden;
         border-radius: 28px;
         padding: 1.75rem 1.5rem;
         transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -163,21 +162,20 @@ def get_theme_css(dark_mode: bool) -> str:
 
     /* === BRAND NEW BADGE IMPLEMENTATION (FROM SCRATCH) === */
     .status-badge-container {{
-        margin-top: -15px; 
-        margin-left: -20px;
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
         width: 150px;
         height: 90px;
         display: block;
         background-repeat: no-repeat;
         background-size: contain !important;
         background-position: center !important;
-        mix-blend-mode: screen !important;
         background-color: transparent !important;
-        border: none !important;
+        border: 2px solid yellow !important;
         box-shadow: none !important;
         filter: brightness(1.1) contrast(1.2) saturate(1.4) blur(0.2px);
-        position: relative;
-        z-index: 1;
+        z-index: 100;
     }}
 
     .hero-metric-label {{

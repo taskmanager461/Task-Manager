@@ -3,11 +3,11 @@ import base64
 import os
 from pathlib import Path
 
-@st.cache_data
 def get_base64_image(image_path):
     try:
-        if os.path.exists(image_path):
-            with open(image_path, "rb") as img_file:
+        p = Path(image_path)
+        if p.exists():
+            with open(p, "rb") as img_file:
                 return base64.b64encode(img_file.read()).decode()
         return ""
     except Exception:
@@ -25,27 +25,37 @@ def hero_metrics(score_value: str, score_label: str,
     }
 
     # Base paths to search for images
-    base_path = r"c:\Users\my-pc\.vscode\task manager"
+    base_dir = Path(r"c:\Users\my-pc\.vscode\task manager")
     
     # Load Base64 strings (cached)
     images = {}
     for key, filename in filenames.items():
-        full_path = os.path.join(base_path, filename)
-        images[key] = get_base64_image(full_path)
+        full_path = base_dir / filename
+        images[key] = get_base64_image(str(full_path))
     
     # === BADGE LOGIC ===
-    label_lower = score_label.lower()
-    badge_map = {
+    # Map labels to files
+    label_map = {
         "low": "xrostao™ - 3.png",
         "average": "xrostao™ - 4.png",
         "good": "xrostao™ - 5.png",
         "excellent": "xrostao™ - 6.png"
     }
     
-    target_file = badge_map.get(label_lower, "xrostao™ - 3.png")
-    full_badge_path = os.path.join(base_path, target_file)
-    base64_badge = get_base64_image(full_badge_path)
-    badge_style = f"background-image: url('data:image/png;base64,{base64_badge}');" if base64_badge else ""
+    # Clean up score label
+    current_label = str(score_label).lower().strip()
+    target_file = label_map.get(current_label, "xrostao™ - 3.png")
+    
+    # Try absolute path first
+    badge_path = base_dir / target_file
+    base64_badge = get_base64_image(str(badge_path))
+    
+    # Fallback to local frontend dir if not found
+    if not base64_badge:
+        alt_path = Path(__file__).parent.parent / target_file
+        base64_badge = get_base64_image(str(alt_path))
+    
+    badge_style = f"background-image: url('data:image/png;base64,{base64_badge}');" if base64_badge else "background-color: rgba(255,0,0,0.1); border: 1px dashed red;"
 
     # Success Value extraction for progress bar
     try:
