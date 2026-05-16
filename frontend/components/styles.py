@@ -163,16 +163,16 @@ def get_theme_css(dark_mode: bool) -> str:
 
     /* === HERO METRIC BADGES (CROP LOGIC FIXED) === */
     .status-badge-container {{
-        margin-top: 15px;
-        margin-left: -10px;
+        margin-top: 0px; /* Was 15px, moved 15px up -> 0px */
+        margin-left: -20px; /* Was -10px, moved 10px left -> -20px */
         margin-right: auto;
-        width: 155px;
-        height: 75px;
+        width: 150px; /* Was 155px, -5px -> 150px */
+        height: 90px; /* Was 75px, +15px -> 90px */
         display: flex;
         align-items: center;
         justify-content: center;
         background-repeat: no-repeat;
-        background-size: 310px 150px !important; /* Double the width/height to show only 1/4 of the sprite */
+        background-size: 300px 180px !important; /* Double of 150x90 */
         mix-blend-mode: screen !important;
         background-color: transparent !important;
         border: none !important;
@@ -190,15 +190,15 @@ def get_theme_css(dark_mode: bool) -> str:
     }}
 
     .status-badge-container.average {{
-        background-position: -155px 0px !important;
+        background-position: -150px 0px !important;
     }}
 
     .status-badge-container.good {{
-        background-position: 0px -75px !important;
+        background-position: 0px -90px !important;
     }}
 
     .status-badge-container.excellent {{
-        background-position: -155px -75px !important;
+        background-position: -150px -90px !important;
     }}
 
     /* Hide text/icon as they are inside the images */

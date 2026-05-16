@@ -807,16 +807,16 @@ body.sidebar-open #content {
 }
 
 .status-badge-container {
-    margin-top: 15px;
-    margin-left: -10px;
+    margin-top: 0px;
+    margin-left: -20px;
     margin-right: auto;
-    width: 155px;
-    height: 75px;
+    width: 150px;
+    height: 90px;
     display: flex;
     align-items: center;
     justify-content: center;
     background-repeat: no-repeat;
-    background-size: 310px 150px !important;
+    background-size: 300px 180px !important;
     mix-blend-mode: screen !important;
     background-color: transparent !important;
     border: none !important;
@@ -834,15 +834,15 @@ body.sidebar-open #content {
 }
 
 .status-badge-container.average {
-    background-position: -155px 0px !important;
+    background-position: -150px 0px !important;
 }
 
 .status-badge-container.good {
-    background-position: 0px -75px !important;
+    background-position: 0px -90px !important;
 }
 
 .status-badge-container.excellent {
-    background-position: -155px -75px !important;
+    background-position: -150px -90px !important;
 }
 
 /* Hide the text and icon since they are inside the image */
