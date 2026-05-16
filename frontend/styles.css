@@ -830,17 +830,10 @@ body.sidebar-open #content {
     overflow: visible;
 }
 
-.status-badge-container.low {
-}
-
-.status-badge-container.average {
-}
-
-.status-badge-container.good {
-}
-
-.status-badge-container.excellent {
-}
+.status-badge-container.low { }
+.status-badge-container.average { }
+.status-badge-container.good { }
+.status-badge-container.excellent { }
 
 /* Hide the text and icon since they are inside the image */
 .status-badge-text, .status-badge-icon {

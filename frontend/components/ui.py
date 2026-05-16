@@ -8,8 +8,9 @@ def get_base64_image(image_name):
     try:
         # Try multiple path variants to be absolutely sure
         paths_to_try = [
-            Path(r"c:\Users\my-pc\.vscode\task manager\frontend") / image_name,
             Path(r"c:\Users\my-pc\.vscode\task manager") / image_name,
+            Path(r"c:\Users\my-pc\.vscode\task manager\frontend") / image_name,
+            Path(__file__).parent.parent.parent / image_name,
             Path(__file__).parent.parent / image_name
         ]
         
