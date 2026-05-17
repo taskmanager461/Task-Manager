@@ -1430,9 +1430,9 @@ function renderDashboardPersonalization(smartData) {
     if (!listEl || !pressureEl) return;
 
     const messages = (smartData.for_you || []).slice(0, 4);
-    listEl.innerHTML = messages.map(m => `<div class="for-you-item">• ${m}</div>`).join('');
+    listEl.innerHTML = messages.map(m => `<div class="for-you-item">${m}</div>`).join('');
     if (messages.length === 0) {
-        listEl.innerHTML = `<div class="for-you-item">• Keep completing tasks to unlock personalized guidance</div>`;
+        listEl.innerHTML = `<div class="for-you-item">Keep completing tasks to unlock personalized guidance</div>`;
     }
 
     const pressure = smartData.pressure_level || 'normal';
@@ -1830,7 +1830,7 @@ function renderTodayHabits(habits) {
     list.innerHTML = dueHabits.map(habit => `
         <div class="for-you-item">
             <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem;">
-                <span>${habit.title} • 🔥 ${habit.streak}</span>
+                <span>${habit.title} 🔥 ${habit.streak}</span>
                 <span>${habit.consistency_score.toFixed(0)}%</span>
             </div>
             <div style="display:flex; gap:0.45rem; margin-top:0.45rem;">
@@ -2671,7 +2671,7 @@ function renderIdentity(identity) {
 
     levelEl.textContent = `Level ${identity.level}`;
     xpFillEl.style.width = `${identity.level_progress_percent || 0}%`;
-    xpTextEl.textContent = `XP ${identity.xp_into_current_level}/${identity.xp_for_next_level} • Total ${identity.total_xp}`;
+    xpTextEl.textContent = `XP ${identity.xp_into_current_level}/${identity.xp_for_next_level} Total ${identity.total_xp}`;
     trustEl.textContent = `${(identity.trust_score || 0).toFixed(1)}`;
     statsEl.innerHTML = `
         <div class="identity-stat-item"><span class="label">Completed Tasks</span><span class="value">${identity.completed_tasks}</span></div>

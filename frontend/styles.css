@@ -1008,14 +1008,49 @@ input:checked + .slider:before {
     max-width: 420px;
     margin: auto;
     text-align: center;
-    padding: 2.5rem;
+    padding: 2.2rem;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 24px;
+    border-radius: 28px;
     box-shadow: var(--card-shadow);
-    min-height: 520px;
+    min-height: 580px;
+    max-height: 600px;
     display: flex;
     flex-direction: column;
+    overflow: hidden !important;
+}
+
+/* Global Reset for ANY potential bullets - specifically targeting text content bullets */
+.auth-container ul, .auth-container li {
+    list-style: none !important;
+    list-style-type: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.auth-container *::before, .auth-container *::after {
+    /* Only remove content if it's a bullet-like string */
+    content: none !important;
+    display: none !important;
+}
+
+/* Re-allow FontAwesome icons and other essential pseudo-elements */
+.auth-container .fas::before, 
+.auth-container .far::before, 
+.auth-container .fab::before,
+.auth-container i::before,
+.auth-container .oauth-icon,
+.auth-divider::before, 
+.auth-divider::after {
+    display: inline-block !important;
+    content: "" !important; /* Will be overridden by FontAwesome CSS unless we are careful */
+}
+
+/* Let FontAwesome work by NOT overriding its content if it has the fa class */
+.auth-container [class^="fa-"]::before, 
+.auth-container [class*=" fa-"]::before {
+    display: inline-block !important;
+    content: inherit !important;
 }
 
 body.light-mode .auth-container {
