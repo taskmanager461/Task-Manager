@@ -24,7 +24,7 @@ let currentLang = localStorage.getItem('tm_lang') || 'en';
 let taskChart = null;
 let trendChart = null;
 let insightsChart = null;
-let currentView = 'dashboard';
+let currentView = 'reports';
 let cachedTasks = []; // Performance: Cache tasks locally
 let cachedGoals = [];
 let cachedHabits = [];
@@ -68,6 +68,8 @@ const translations = {
         email: "Email",
         create_account: "Create Account",
         dashboard: "Dashboard",
+        reports: "Reports",
+        me: "Me",
         tasks: "Tasks",
         settings: "Settings",
         logout: "Logout",
@@ -168,6 +170,8 @@ const translations = {
         email: "Email",
         create_account: "Δημιουργία Λογαριασμού",
         dashboard: "Ταμπλό",
+        reports: "Αναφορές",
+        me: "Εγώ",
         tasks: "Εργασίες",
         settings: "Ρυθμίσεις",
         logout: "Αποσύνδεση",
@@ -244,6 +248,8 @@ const translations = {
         app_title: "Tobedone",
         login: "Iniciar Sesión",
         signup: "Registrarse",
+        reports: "Reportes",
+        me: "Yo",
         username_email: "Usuario o Email",
         password: "Contraseña",
         full_name: "Nombre Completo",
@@ -287,6 +293,8 @@ const translations = {
         app_title: "Tobedone",
         login: "Connexion",
         signup: "S'inscrire",
+        reports: "Rapports",
+        me: "Moi",
         username_email: "Nom d'utilisateur ou Email",
         password: "Mot de passe",
         full_name: "Nom complet",
@@ -330,6 +338,8 @@ const translations = {
         app_title: "Tobedone",
         login: "Anmelden",
         signup: "Registrieren",
+        reports: "Berichte",
+        me: "Ich",
         username_email: "Benutzername oder Email",
         password: "Passwort",
         full_name: "Vollständiger Name",
@@ -373,6 +383,8 @@ const translations = {
         app_title: "Tobedone",
         login: "Accedi",
         signup: "Registrati",
+        reports: "Report",
+        me: "Io",
         username_email: "Username o Email",
         password: "Password",
         full_name: "Nome Completo",
@@ -416,6 +428,8 @@ const translations = {
         app_title: "Tobedone",
         login: "Entrar",
         signup: "Cadastrar",
+        reports: "Relatórios",
+        me: "Eu",
         username_email: "Usuário ou Email",
         password: "Senha",
         full_name: "Nome Completo",
@@ -514,9 +528,8 @@ function applyTheme() {
         switchEl.checked = isDarkMode;
     }
     // Refresh charts to match theme
-    if (currentUser && currentView === 'dashboard') {
-        loadDashboard();
-    }
+    if (currentUser && currentView === 'reports') loadReports();
+    if (currentUser && currentView === 'me') loadMe();
 }
 
 function initLanguage() {
@@ -529,7 +542,8 @@ function changeLanguage(lang) {
     currentLang = lang;
     localStorage.setItem('tm_lang', lang);
     updateUILanguage();
-    if (currentUser) loadDashboard(); // Refresh charts to update labels
+    if (currentUser && currentView === 'reports') loadReports();
+    if (currentUser && currentView === 'me') loadMe();
     showToast(t('task_updated'), 'success');
 }
 
@@ -704,6 +718,7 @@ async function checkAuth() {
 function renderLogin() {
     document.getElementById('auth-page').classList.add('active');
     document.getElementById('main-app').classList.remove('active');
+    document.body.style.overflow = 'hidden';
     const mobileHeader = document.querySelector('.mobile-header');
     if (mobileHeader) mobileHeader.style.display = 'none';
 }
@@ -711,6 +726,7 @@ function renderLogin() {
 function renderApp() {
     document.getElementById('auth-page').classList.remove('active');
     document.getElementById('main-app').classList.add('active');
+    document.body.style.overflow = '';
     document.getElementById('user-display-name').textContent = currentUser.name || currentUser.username;
     identityInitialized = false;
     identitySnapshot = { level: 1, unlockedBadgeIds: [] };
@@ -720,8 +736,7 @@ function renderApp() {
     
     // Initial view
     updateUILanguage();
-    loadGoals();
-    showView('dashboard');
+    showView('reports');
 }
 
 function showView(viewId) {
@@ -752,7 +767,8 @@ function showView(viewId) {
     if (content) content.scrollTop = 0;
 
     // Load Data
-    if (viewId === 'dashboard') loadDashboard();
+    if (viewId === 'reports') loadReports();
+    if (viewId === 'me') loadMe();
     if (viewId === 'tasks') {
         if (currentTasksGoalsTab === 'habits') loadHabits();
         else if (currentTasksGoalsTab === 'goals') loadGoals();
@@ -1245,7 +1261,7 @@ async function updatePassword(newPassword, confirmPassword) {
 }
 
 function resetUiToDefaults() {
-    currentView = 'dashboard';
+    currentView = 'reports';
     currentTasksGoalsTab = 'tasks';
     calendarDate = new Date();
     dashboardCalendarDate = new Date();
@@ -1311,26 +1327,26 @@ function getBadgeImageSrc(scoreClass) {
     return `/static/${name}?v=1`;
 }
 
-// --- Dashboard Logic ---
-async function loadDashboard() {
+// --- Reports & Me Logic ---
+async function loadReports() {
     try {
         const today = new Date().toISOString().split('T')[0];
-        const score = await apiFetch('/score/daily', {
+
+        const scorePromise = apiFetch('/score/daily', {
             method: 'POST',
             body: JSON.stringify({ user_id: currentUser.user_id, day: today })
         });
-        
-        // Render dashboard calendar
-        renderDashboardCalendar();
-        
-        // Render Hero Metrics
+
+        const calendarPromise = renderDashboardCalendar();
+
+        const score = await scorePromise;
+        await calendarPromise;
+
         renderHeroMetrics(score);
 
-        // Update Daily Progress Bar
         const progressFill = document.getElementById('daily-progress-fill');
         if (progressFill) progressFill.style.width = `${score.success_rate * 100}%`;
 
-        // Update Multiplier Badge
         const multBadge = document.getElementById('multiplier-badge');
         if (multBadge) {
             if (score.multiplier > 1.0) {
@@ -1341,23 +1357,39 @@ async function loadDashboard() {
             }
         }
 
-        // Load all additional data
-        loadScoreComparison();
-        loadMissedTasks();
-        loadWeeklySummary();
-        loadIdentityProfile();
-        loadDashboardPersonalization();
-        loadTodayHabits();
-
-        // Fetch tasks to update pie chart
-        const tasks = await apiFetch(`/tasks?user_id=${currentUser.user_id}&day=${today}`);
-        updateTaskChart(tasks);
-        
-        // Load Weekly Trend
-        loadWeeklyTrend();
+        await Promise.all([loadWeeklySummary(), loadTodayHabits()]);
     } catch (err) {
-        console.error('Dashboard load failed', err);
+        console.error('Reports load failed', err);
     }
+}
+
+async function loadMe() {
+    try {
+        await Promise.all([
+            loadIdentityProfile(),
+            loadDashboardPersonalization(),
+            loadScoreComparison(),
+            loadMissedTasks(),
+        ]);
+
+        const today = new Date().toISOString().split('T')[0];
+        const pieEl = document.getElementById('task-pie-chart');
+        if (pieEl) {
+            const tasks = await apiFetch(`/tasks?user_id=${currentUser.user_id}&day=${today}`);
+            updateTaskChart(tasks);
+        }
+
+        const trendEl = document.getElementById('weekly-trend-chart');
+        if (trendEl) {
+            await loadWeeklyTrend();
+        }
+    } catch (err) {
+        console.error('Me load failed', err);
+    }
+}
+
+async function loadDashboard() {
+    await Promise.all([loadReports(), loadMe()]);
 }
 
 function renderHeroMetrics(score) {
@@ -1580,8 +1612,11 @@ async function loadInsights() {
         if (achievedFailed) achievedFailed.textContent = `${smartData.goals_achieved || 0} / ${smartData.goals_failed || 0}`;
         if (averageTime) averageTime.textContent = `${smartData.average_completion_time || 0}d`;
 
-        // Load baseline insights from task history
-        renderRealInsights(await apiFetch('/tasks/range?start_date=2000-01-01&end_date=2100-12-31'));
+        const end = new Date();
+        const start = new Date(Date.now() - 120 * 86400000);
+        const startStr = start.toISOString().split('T')[0];
+        const endStr = end.toISOString().split('T')[0];
+        renderRealInsights(await apiFetch(`/tasks/range?start_date=${startStr}&end_date=${endStr}`));
         loadIdentityProfile();
     } catch (err) {
         console.error('Insights load failed', err);
@@ -1812,7 +1847,7 @@ async function loadHabits() {
         const habits = await apiFetch('/habits');
         cachedHabits = habits;
         renderHabits(habits);
-        if (currentView === 'dashboard') renderTodayHabits(habits);
+        if (currentView === 'reports') renderTodayHabits(habits);
     } catch (err) {
         const list = document.getElementById('habits-list');
         if (list) list.innerHTML = `<div class="empty-state"><p class="error-msg">${err.message}</p></div>`;
@@ -1869,7 +1904,7 @@ async function trackHabit(habitId, status) {
             body: JSON.stringify({ status })
         });
         smartPersonalizationCache = { timestamp: 0, data: null };
-        await Promise.all([loadHabits(), loadDashboard()]);
+        await Promise.all([loadHabits(), loadReports()]);
     } catch (err) {
         cachedHabits = previous;
         renderHabits(cachedHabits);
@@ -1924,7 +1959,7 @@ async function addHabit() {
     });
     smartPersonalizationCache = { timestamp: 0, data: null };
     toggleHabitForm();
-    await Promise.all([loadHabits(), loadDashboard()]);
+    await loadHabits();
     showToast('Habit created', 'success');
 }
 
@@ -2114,7 +2149,8 @@ async function handleTaskUpdate(taskId, status, btnEl) {
 
         // If in dashboard, refresh stats silently
         smartPersonalizationCache = { timestamp: 0, data: null };
-        if (currentView === 'dashboard') loadDashboard();
+        if (currentView === 'reports') loadReports();
+        if (currentView === 'me') loadMe();
         loadGoals();
     } catch (err) {
         // Rollback on error
@@ -2516,7 +2552,8 @@ async function handleGoalComplete(goalId) {
         smartPersonalizationCache = { timestamp: 0, data: null };
         document.getElementById('goal-reflection-modal').classList.add('active');
         loadGoals();
-        loadDashboard();
+        if (currentView === 'reports') loadReports();
+        if (currentView === 'me') loadMe();
     } catch (err) {
         console.error('Failed to complete goal:', err);
     }
@@ -2530,7 +2567,8 @@ async function handleGoalFail(goalId) {
         });
         smartPersonalizationCache = { timestamp: 0, data: null };
         loadGoals();
-        loadDashboard();
+        if (currentView === 'reports') loadReports();
+        if (currentView === 'me') loadMe();
         showToast('Goal marked as failed', 'error');
     } catch (err) {
         console.error('Failed to update goal:', err);
@@ -2850,7 +2888,8 @@ function toggleDarkMode() {
     localStorage.setItem('tm_dark_mode', isDarkMode ? '1' : '0');
     applyTheme();
     if (currentUser) {
-        if (currentView === 'dashboard') loadDashboard();
+        if (currentView === 'reports') loadReports();
+        if (currentView === 'me') loadMe();
         if (currentView === 'tasks') renderTasks(cachedTasks);
     }
     showToast(t('task_updated'), 'success');
