@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tobedone</title>
-    <link rel="stylesheet" href="styles.css?v=3.7.9">
+    <link rel="stylesheet" href="styles.css?v=3.8.0">
     <link rel="stylesheet" href="/src/styles/logo.css?v=4.5">
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/png" href="/assets/app-logo-20260501.png?v=4">
@@ -104,7 +104,10 @@
 
             <form id="forgot-form" class="auth-form">
                 <div class="auth-note" data-i18n="forgot_password_note">Enter your email and we’ll send you a reset link.</div>
-                <input type="email" id="forgot-email" data-i18n="email" placeholder="Email" required autocomplete="email">
+                <div class="input-group">
+                    <i class="fas fa-envelope input-icon" aria-hidden="true"></i>
+                    <input type="email" id="forgot-email" data-i18n="email" placeholder="Email" required autocomplete="email">
+                </div>
                 <button type="submit" class="btn primary" data-i18n="send_reset_link">Send reset link</button>
                 <div class="auth-divider"><span data-i18n="or">or</span></div>
                 <input type="text" id="recovery-otp" data-i18n="reset_code" placeholder="Reset code" inputmode="numeric" autocomplete="one-time-code">
@@ -117,7 +120,10 @@
                     <div class="auth-note-title" data-i18n="verify_email_title">Verify your email</div>
                     <div id="verify-email-text" class="auth-note-body" data-i18n="verify_email_body">Check your inbox and click the verification link to continue.</div>
                 </div>
-                <input type="text" id="verify-otp" data-i18n="verification_code" placeholder="Verification code" inputmode="numeric" autocomplete="one-time-code">
+                <div class="input-group">
+                    <i class="fas fa-key input-icon" aria-hidden="true"></i>
+                    <input type="text" id="verify-otp" data-i18n="verification_code" placeholder="Verification code" inputmode="numeric" autocomplete="one-time-code">
+                </div>
                 <button type="button" id="verify-otp-btn" class="btn primary" data-i18n="verify_code">Verify code</button>
                 <button type="button" id="resend-verification-btn" class="btn secondary" data-i18n="resend_verification">Resend verification email</button>
                 <button type="button" id="verify-back-link" class="btn link-btn" data-i18n="back_to_login">Back to login</button>
@@ -127,8 +133,20 @@
                 <div class="auth-note">
                     <div class="auth-note-title" data-i18n="reset_password_title">Set a new password</div>
                 </div>
-                <input type="password" id="reset-password" data-i18n="new_password" placeholder="New password" required autocomplete="new-password">
-                <input type="password" id="reset-password-confirm" data-i18n="confirm_password" placeholder="Confirm password" required autocomplete="new-password">
+                <div class="input-group">
+                    <i class="fas fa-lock input-icon" aria-hidden="true"></i>
+                    <input type="password" id="reset-password" data-i18n="new_password" placeholder="New password" required autocomplete="new-password">
+                    <button type="button" class="password-toggle" data-target="reset-password" aria-label="Toggle password visibility">
+                        <i class="fas fa-eye" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock input-icon" aria-hidden="true"></i>
+                    <input type="password" id="reset-password-confirm" data-i18n="confirm_password" placeholder="Confirm password" required autocomplete="new-password">
+                    <button type="button" class="password-toggle" data-target="reset-password-confirm" aria-label="Toggle password visibility">
+                        <i class="fas fa-eye" aria-hidden="true"></i>
+                    </button>
+                </div>
                 <button type="submit" class="btn primary" data-i18n="update_password">Update password</button>
             </form>
             <div id="auth-error" class="error-msg"></div>
@@ -696,6 +714,6 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
-    <script src="app.js?v=3.7.9"></script>
+    <script src="app.js?v=3.8.0"></script>
 </body>
 </html>
