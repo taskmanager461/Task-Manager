@@ -50,20 +50,20 @@ def get_theme_css(dark_mode: bool) -> str:
     [data-testid="stHeader"] {{background: transparent; height: 0;}}
     .stAppDeployButton {{display: none !important;}}
     
-    .stApp {
+    .stApp {{
         background: {c["bg"]};
         color: {c["text"]};
         font-family: "Inter", "SF Pro Display", -apple-system, sans-serif;
-    }
+    }}
 
     /* Global List Style Reset to remove dots/bullets */
-    ul, li, li::before, ul::before, [data-testid="stForm"] ul, [data-testid="stForm"] li {
+    ul, li, li::before, ul::before, [data-testid="stForm"] ul, [data-testid="stForm"] li {{
         list-style-type: none !important;
         list-style: none !important;
         margin-left: 0 !important;
         padding-left: 0 !important;
         content: none !important;
-    }
+    }}
 
     /* Main Container */
     .block-container {{
@@ -258,7 +258,7 @@ def get_theme_css(dark_mode: bool) -> str:
     }}
 
     /* Auth Styling */
-    .auth-card {
+    .auth-card {{
         max-width: 450px;
         margin: 0 auto;
         padding: 2rem;
@@ -270,19 +270,19 @@ def get_theme_css(dark_mode: bool) -> str:
         display: flex;
         flex-direction: column;
         overflow: hidden !important;
-    }
+    }}
 
     /* Tighten up form spacing to prevent scrolling */
-    [data-testid="stForm"] {
+    [data-testid="stForm"] {{
         border: none !important;
         padding: 0 !important;
-    }
-    [data-testid="stForm"] > div {
+    }}
+    [data-testid="stForm"] > div {{
         gap: 0.5rem !important;
-    }
-    div[data-testid="stTextInput"] {
+    }}
+    div[data-testid="stTextInput"] {{
         margin-bottom: -0.5rem !important;
-    }
+    }}
 
     /* Target Streamlit Tabs */
     .stTabs [data-baseweb="tab-list"] {{
@@ -365,7 +365,7 @@ def get_theme_css(dark_mode: bool) -> str:
     .auth-separator:not(:empty)::after {{ margin-left: 1rem; }}
 
     /* Google Button */
-    .google-btn {
+    .google-btn {{
         display: flex;
         align-items: center;
         justify-content: center;
@@ -381,13 +381,13 @@ def get_theme_css(dark_mode: bool) -> str:
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
         margin-top: 0.5rem;
-    }
-    .google-btn:hover {
+    }}
+    .google-btn:hover {{
         background: #f8fafc !important;
         transform: translateY(-2px);
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
         border-color: #cbd5e1 !important;
-    }
+    }}
 
     /* Bottom Nav */
     .bottom-nav {{
