@@ -15,14 +15,14 @@ try:
     from frontend.components.api_client import APIClient
     from frontend.components.styles import get_theme_css, get_theme_tokens
     from frontend.components.translations import LANGUAGES, translate
-    from frontend.components.ui import metric_card, modern_progress, task_card, goal_card, hero_metrics
+    from frontend.components.ui import metric_card, modern_progress, task_card, goal_card, hero_metrics, render_logo
     from frontend.services.insights import build_weekly_insight
     from frontend.services.notifications import build_time_notifications
 except ModuleNotFoundError:
     from components.api_client import APIClient
     from components.styles import get_theme_css, get_theme_tokens
     from components.translations import LANGUAGES, translate
-    from components.ui import metric_card, modern_progress, task_card, goal_card, hero_metrics
+    from components.ui import metric_card, modern_progress, task_card, goal_card, hero_metrics, render_logo
     from services.insights import build_weekly_insight
     from services.notifications import build_time_notifications
 
@@ -402,14 +402,15 @@ def render_sidebar() -> None:
 
 
 def render_auth(client: APIClient) -> None:
-    render_top_header()
-    c1, c2 = st.columns(2)
+    render_logo(st.session_state.dark_mode)
+    
+    st.markdown("<div class='auth-container'>", unsafe_allow_html=True)
+    tab_login, tab_signup = st.tabs([f"  {t('sign_in')}  ", f"  {t('create_account')}  "])
 
-    with c1:
-        st.markdown(f"<div class='section-title'>{t('welcome_back')}</div>", unsafe_allow_html=True)
+    with tab_login:
         with st.form("login_form", clear_on_submit=False):
-            identifier = st.text_input(t("username_or_email"))
-            password = st.text_input(t("password"), type="password")
+            identifier = st.text_input(t("username_or_email"), placeholder=t("username_or_email"), label_visibility="collapsed")
+            password = st.text_input(t("password"), type="password", placeholder=t("password"), label_visibility="collapsed")
             submitted = st.form_submit_button(t("sign_in"), type="primary")
             if submitted:
                 data, err = call_api(
@@ -428,14 +429,13 @@ def render_auth(client: APIClient) -> None:
                     st.toast(t("logged_in_success"))
                     st.rerun()
 
-    with c2:
-        st.markdown(f"<div class='section-title'>{t('create_account')}</div>", unsafe_allow_html=True)
+    with tab_signup:
         with st.form("signup_form", clear_on_submit=False):
-            name = st.text_input(t("full_name"))
-            username = st.text_input(t("username"), key="signup_username")
-            email = st.text_input(t("email"))
-            password = st.text_input(t("password"), type="password", key="signup_password")
-            submitted = st.form_submit_button(t("create_account"))
+            name = st.text_input(t("full_name"), placeholder=t("full_name"), label_visibility="collapsed")
+            username = st.text_input(t("username"), key="signup_username", placeholder=t("username"), label_visibility="collapsed")
+            email = st.text_input(t("email"), placeholder=t("email"), label_visibility="collapsed")
+            password = st.text_input(t("password"), type="password", key="signup_password", placeholder=t("password"), label_visibility="collapsed")
+            submitted = st.form_submit_button(t("create_account"), type="primary")
             if submitted:
                 data, err = call_api(
                     client.signup,
@@ -454,6 +454,18 @@ def render_auth(client: APIClient) -> None:
                     st.session_state.access_token = data.get("access_token", "")
                     st.toast(t("account_created"))
                     st.rerun()
+
+    st.markdown("<div class='auth-separator'>or continue with</div>", unsafe_allow_html=True)
+    st.markdown(
+        """
+        <div class="google-btn">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" height="18">
+            Google
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
 
 
 def load_day_bundle(

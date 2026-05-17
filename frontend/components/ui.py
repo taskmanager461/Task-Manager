@@ -12,6 +12,31 @@ def get_base64_image(image_path):
     except:
         return ""
 
+def render_logo(dark_mode: bool) -> None:
+    primary_color = "#0a86ff"
+    text_color = "#000000" if not dark_mode else "#ffffff"
+    glow_style = f"filter: drop-shadow(0 0 8px {primary_color});" if dark_mode else ""
+    
+    st.markdown(
+        f"""
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="{glow_style}">
+                <path d="M30 30 C 30 20, 70 20, 70 30 C 70 35, 55 35, 50 40 L 50 70 C 50 80, 40 80, 40 70 L 40 50 C 40 45, 30 45, 30 40 Z" 
+                    stroke="{primary_color}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M45 45 Q 55 45, 55 55 L 55 70 Q 55 80, 45 80 Q 35 80, 35 70 L 35 60" 
+                    stroke="{primary_color}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+            </svg>
+            <div style="font-size: 2.5rem; font-weight: 800; margin-top: -10px;">
+                <span style="color: {primary_color};">To</span><span style="color: {text_color};">bedone</span>
+            </div>
+            <div style="color: #64748b; font-size: 1rem; font-weight: 500; margin-top: 0.2rem;">
+                Plan it. Do it. Done.
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
 def hero_metrics(score_value: str, score_label: str,
                   streak_value: str, streak_sub: str,
                   success_value: str, success_sub: str) -> None:

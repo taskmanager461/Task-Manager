@@ -73,6 +73,9 @@
                 <div class="auth-note" data-i18n="forgot_password_note">Enter your email and we’ll send you a reset link.</div>
                 <input type="email" id="forgot-email" data-i18n="email" placeholder="Email" required autocomplete="email">
                 <button type="submit" class="btn primary" data-i18n="send_reset_link">Send reset link</button>
+                <div class="auth-divider"><span data-i18n="or">or</span></div>
+                <input type="text" id="recovery-otp" data-i18n="reset_code" placeholder="Reset code" inputmode="numeric" autocomplete="one-time-code">
+                <button type="button" id="recovery-otp-btn" class="btn secondary" data-i18n="use_code">Use code</button>
                 <button type="button" id="forgot-back-link" class="btn link-btn" data-i18n="back_to_login">Back to login</button>
             </form>
 
@@ -81,6 +84,8 @@
                     <div class="auth-note-title" data-i18n="verify_email_title">Verify your email</div>
                     <div id="verify-email-text" class="auth-note-body" data-i18n="verify_email_body">Check your inbox and click the verification link to continue.</div>
                 </div>
+                <input type="text" id="verify-otp" data-i18n="verification_code" placeholder="Verification code" inputmode="numeric" autocomplete="one-time-code">
+                <button type="button" id="verify-otp-btn" class="btn primary" data-i18n="verify_code">Verify code</button>
                 <button type="button" id="resend-verification-btn" class="btn secondary" data-i18n="resend_verification">Resend verification email</button>
                 <button type="button" id="verify-back-link" class="btn link-btn" data-i18n="back_to_login">Back to login</button>
             </div>

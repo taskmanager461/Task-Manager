@@ -13,8 +13,8 @@ LANGUAGES: dict[str, str] = {
 
 TRANSLATIONS: dict[str, dict[str, str]] = {
     "en": {
-        "app_title": "Task Manager",
-        "app_subtitle": "A consistency engine for the promises you make to yourself.",
+        "app_title": "Tobedone",
+        "app_subtitle": "Plan it. Do it. Done.",
         "nav": "Navigation",
         "profile": "Profile",
         "theme_mode": "Theme: {mode}",
@@ -139,8 +139,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "theme_dark": "Dark",
     },
     "gr": {
-        "app_title": "Task Manager",
-        "app_subtitle": "Συστημα συνεπειας για τις υποσχεσεις που δινεις στον εαυτο σου.",
+        "app_title": "Tobedone",
+        "app_subtitle": "Plan it. Do it. Done.",
         "nav": "Πλοηγηση",
         "profile": "Προφιλ",
         "theme_mode": "Θεμα: {mode}",

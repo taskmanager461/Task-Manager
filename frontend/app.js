@@ -55,6 +55,10 @@ const translations = {
         back_to_login: "Back to login",
         verify_email_title: "Verify your email",
         verify_email_body: "Check your inbox and click the verification link to continue.",
+        verification_code: "Verification code",
+        verify_code: "Verify code",
+        reset_code: "Reset code",
+        use_code: "Use code",
         resend_verification: "Resend verification email",
         reset_password_title: "Set a new password",
         new_password: "New password",
@@ -140,8 +144,26 @@ const translations = {
         app_title: "Tobedone",
         login: "Σύνδεση",
         signup: "Εγγραφή",
+        continue_with_google: "Σύνδεση με Google",
+        or: "ή",
         username_email: "Όνομα χρήστη ή Email",
+        username: "Όνομα χρήστη",
         password: "Κωδικός",
+        forgot_password: "Ξέχασες τον κωδικό;",
+        forgot_password_note: "Βάλε το email σου και θα σου στείλουμε link ή κωδικό επαναφοράς.",
+        send_reset_link: "Αποστολή επαναφοράς",
+        back_to_login: "Πίσω στη σύνδεση",
+        verify_email_title: "Επιβεβαίωση email",
+        verify_email_body: "Έλεγξε το inbox και πάτα το link επιβεβαίωσης για να συνεχίσεις.",
+        verification_code: "Κωδικός επιβεβαίωσης",
+        verify_code: "Επιβεβαίωση κωδικού",
+        reset_password_title: "Νέος κωδικός",
+        new_password: "Νέος κωδικός",
+        confirm_password: "Επιβεβαίωση κωδικού",
+        update_password: "Αλλαγή κωδικού",
+        reset_code: "Κωδικός επαναφοράς",
+        use_code: "Χρήση κωδικού",
+        resend_verification: "Επανάληψη email",
         full_name: "Ονοματεπώνυμο",
         email: "Email",
         create_account: "Δημιουργία Λογαριασμού",
@@ -562,8 +584,12 @@ function setAuthBusy(isBusy) {
         'signup-email',
         'signup-password',
         'forgot-email',
+        'recovery-otp',
+        'recovery-otp-btn',
         'reset-password',
         'reset-password-confirm',
+        'verify-otp',
+        'verify-otp-btn',
         'resend-verification-btn'
     ];
     ids.forEach(id => {
@@ -1117,7 +1143,7 @@ async function sendPasswordReset(email) {
         });
         if (error) throw error;
         showToast(t('send_reset_link'), 'success');
-        setAuthView('login');
+        setAuthView('forgot');
     } catch (err) {
         showAuthError(normalizeSupabaseError(err));
     } finally {
@@ -1135,6 +1161,55 @@ async function resendVerificationEmail() {
         const { error } = await supabaseClient.auth.resend({ type: 'signup', email });
         if (error) throw error;
         showToast(t('resend_verification'), 'success');
+    } catch (err) {
+        showAuthError(normalizeSupabaseError(err));
+    } finally {
+        setAuthBusy(false);
+    }
+}
+
+async function verifyEmailCode() {
+    if (!supabaseClient) return;
+    const email =
+        pendingVerificationEmail ||
+        document.getElementById('signup-email')?.value?.trim() ||
+        document.getElementById('login-email')?.value?.trim() ||
+        '';
+    const code = document.getElementById('verify-otp')?.value?.trim() || '';
+    if (!email || !code) return;
+    setAuthBusy(true);
+    showAuthError('');
+    try {
+        const { data, error } = await supabaseClient.auth.verifyOtp({
+            email,
+            token: code,
+            type: 'email'
+        });
+        if (error) throw error;
+        pendingVerificationEmail = null;
+        await handleAuthSessionChange('VERIFY_OTP', data.session);
+    } catch (err) {
+        showAuthError(normalizeSupabaseError(err));
+    } finally {
+        setAuthBusy(false);
+    }
+}
+
+async function verifyRecoveryCode() {
+    if (!supabaseClient) return;
+    const email = document.getElementById('forgot-email')?.value?.trim() || '';
+    const code = document.getElementById('recovery-otp')?.value?.trim() || '';
+    if (!email || !code) return;
+    setAuthBusy(true);
+    showAuthError('');
+    try {
+        const { data, error } = await supabaseClient.auth.verifyOtp({
+            email,
+            token: code,
+            type: 'recovery'
+        });
+        if (error) throw error;
+        await handleAuthSessionChange('PASSWORD_RECOVERY', data.session);
     } catch (err) {
         showAuthError(normalizeSupabaseError(err));
     } finally {
@@ -2653,6 +2728,9 @@ function setupEventListeners() {
     const resendBtn = document.getElementById('resend-verification-btn');
     if (resendBtn) resendBtn.addEventListener('click', async () => await resendVerificationEmail());
 
+    const verifyOtpBtn = document.getElementById('verify-otp-btn');
+    if (verifyOtpBtn) verifyOtpBtn.addEventListener('click', async () => await verifyEmailCode());
+
     const forgotForm = document.getElementById('forgot-form');
     if (forgotForm) {
         forgotForm.addEventListener('submit', (e) => {
@@ -2660,6 +2738,9 @@ function setupEventListeners() {
             sendPasswordReset(document.getElementById('forgot-email').value);
         });
     }
+
+    const recoveryOtpBtn = document.getElementById('recovery-otp-btn');
+    if (recoveryOtpBtn) recoveryOtpBtn.addEventListener('click', async () => await verifyRecoveryCode());
 
     const resetForm = document.getElementById('reset-form');
     if (resetForm) {

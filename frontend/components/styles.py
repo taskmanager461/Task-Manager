@@ -4,16 +4,16 @@ from __future__ import annotations
 def get_theme_tokens(dark_mode: bool) -> dict[str, str]:
     if dark_mode:
         return {
-            "bg": "#050505",
-            "surface": "#0f0f17",
-            "surface_soft": "#171722",
-            "sidebar": "#0a0a0f",
+            "bg": "#00040a",
+            "surface": "#0a0f1a",
+            "surface_soft": "#141b2d",
+            "sidebar": "#050810",
             "text": "#f8fafc",
             "muted": "#94a3b8",
-            "accent": "#8b5cf6",
-            "accent_2": "#a855f7",
-            "accent_3": "#ec4899",
-            "border": "#1f2933",
+            "accent": "#0a86ff",
+            "accent_2": "#00d2ff",
+            "accent_3": "#0a86ff",
+            "border": "#1e293b",
             "success": "#10b981",
             "warning": "#f59e0b",
             "danger": "#ef4444",
@@ -21,15 +21,15 @@ def get_theme_tokens(dark_mode: bool) -> dict[str, str]:
         }
 
     return {
-        "bg": "#fafafa",
+        "bg": "#ffffff",
         "surface": "#ffffff",
         "surface_soft": "#f8fafc",
         "sidebar": "#f1f5f9",
         "text": "#0f172a",
         "muted": "#64748b",
-        "accent": "#7c3aed",
-        "accent_2": "#8b5cf6",
-        "accent_3": "#ec4899",
+        "accent": "#0a86ff",
+        "accent_2": "#00d2ff",
+        "accent_3": "#0a86ff",
         "border": "#e2e8f0",
         "success": "#10b981",
         "warning": "#f59e0b",
@@ -246,6 +246,118 @@ def get_theme_css(dark_mode: bool) -> str:
         height: 100%;
         border-radius: 9999px;
         transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }}
+
+    /* Auth Styling */
+    .auth-card {{
+        max-width: 450px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: {c["surface"]};
+        border-radius: 24px;
+        border: 1px solid {c["border"]};
+        box-shadow: {c["shadow"]};
+    }}
+
+    /* Target Streamlit Tabs */
+    .stTabs [data-baseweb="tab-list"] {{
+        background-color: {c["surface_soft"]};
+        border-radius: 16px;
+        padding: 4px;
+        gap: 4px;
+        border: 1px solid {c["border"]};
+        margin-bottom: 2rem;
+    }}
+    .stTabs [data-baseweb="tab"] {{
+        height: 44px;
+        white-space: pre;
+        background-color: transparent;
+        border-radius: 12px;
+        color: {c["muted"]};
+        font-weight: 600;
+        flex: 1;
+        transition: all 0.3s ease;
+        border: none;
+    }}
+    .stTabs [aria-selected="true"] {{
+        background-color: {c["accent"]} !important;
+        color: white !important;
+        box-shadow: 0 4px 12px {c["accent"]}40;
+    }}
+    .stTabs [data-baseweb="tab-highlight"] {{
+        display: none;
+    }}
+
+    /* Input Fields */
+    div[data-testid="stTextInput"] input {{
+        background-color: {c["surface_soft"]} !important;
+        border: 1px solid {c["border"]} !important;
+        border-radius: 14px !important;
+        padding: 12px 16px !important;
+        color: {c["text"]} !important;
+        font-size: 1rem !important;
+        transition: all 0.3s ease !important;
+    }}
+    div[data-testid="stTextInput"] input:focus {{
+        border-color: {c["accent"]} !important;
+        box-shadow: 0 0 0 2px {c["accent"]}20 !important;
+    }}
+
+    /* Buttons */
+    button[kind="primary"] {{
+        background: linear-gradient(135deg, {c["accent"]}, {c["accent_2"]}) !important;
+        border: none !important;
+        border-radius: 14px !important;
+        padding: 12px 24px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.02em !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        color: white !important;
+        width: 100% !important;
+        height: 50px !important;
+        box-shadow: 0 8px 20px {c["accent"]}40 !important;
+    }}
+    button[kind="primary"]:hover {{
+        transform: translateY(-2px) !important;
+        box-shadow: 0 12px 28px {c["accent"]}60 !important;
+    }}
+
+    /* Separator */
+    .auth-separator {{
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 2rem 0;
+        color: {c["muted"]};
+        font-size: 0.85rem;
+    }}
+    .auth-separator::before, .auth-separator::after {{
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid {c["border"]};
+    }}
+    .auth-separator:not(:empty)::before {{ margin-right: 1rem; }}
+    .auth-separator:not(:empty)::after {{ margin-left: 1rem; }}
+
+    /* Google Button */
+    .google-btn {{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        width: 100%;
+        background: {c["surface"]} !important;
+        border: 1px solid {c["border"]} !important;
+        border-radius: 14px !important;
+        padding: 12px !important;
+        font-weight: 600 !important;
+        color: {c["text"]} !important;
+        cursor: pointer;
+        transition: all 0.3s ease !important;
+    }}
+    .google-btn:hover {{
+        background: {c["surface_soft"]} !important;
+        border-color: {c["muted"]} !important;
     }}
 
     /* Bottom Nav */
