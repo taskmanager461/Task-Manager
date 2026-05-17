@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tobedone</title>
-    <link rel="stylesheet" href="styles.css?v=3.8.1">
+    <link rel="stylesheet" href="styles.css?v=3.8.3">
     <link rel="stylesheet" href="/src/styles/logo.css?v=4.5">
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/png" href="/assets/app-logo-20260501.png?v=4">
@@ -49,12 +49,20 @@
             <div class="tabs">
                 <button id="tab-login" class="tab active" onclick="switchAuthTab('login')">
                     <i class="fas fa-user"></i>
-                    <span data-i18n="login">Login</span>
+                    <span data-i18n="login">Sign In</span>
                 </button>
                 <button id="tab-signup" class="tab" onclick="switchAuthTab('signup')">
                     <i class="fas fa-user-plus"></i>
                     <span data-i18n="signup">Sign Up</span>
                 </button>
+            </div>
+
+            <div class="auth-oauth">
+                <button id="google-signin-btn" type="button" class="btn oauth-btn full-width">
+                    <span class="oauth-icon" aria-hidden="true"></span>
+                    <span data-i18n="continue_with_google">Continue with Google</span>
+                </button>
+                <div class="auth-divider"><span>or continue with</span></div>
             </div>
 
             <form id="login-form" class="auth-form active">
@@ -143,13 +151,6 @@
                 </div>
                 <button type="submit" class="btn primary" data-i18n="update_password">Update password</button>
             </form>
-            <div class="auth-bottom">
-                <div class="auth-divider"><span>or continue with</span></div>
-                <button id="google-signin-btn" type="button" class="btn oauth-btn full-width">
-                    <span class="oauth-icon" aria-hidden="true"></span>
-                    <span data-i18n="continue_with_google">Continue with Google</span>
-                </button>
-            </div>
             <div id="auth-error" class="error-msg"></div>
         </div>
     </div>
@@ -715,6 +716,6 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
-    <script src="app.js?v=3.8.1"></script>
+    <script src="app.js?v=3.8.3"></script>
 </body>
 </html>

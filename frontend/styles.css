@@ -1015,7 +1015,7 @@ input:checked + .slider:before {
     box-shadow: none;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    padding-bottom: 5.25rem;
+    padding-bottom: 0;
 }
 
 body.light-mode .auth-container {
@@ -1213,26 +1213,22 @@ body.light-mode .main-title-rest {
     background: url("https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg") center / contain no-repeat;
 }
 
-.auth-bottom {
-    position: fixed;
-    left: 50%;
-    bottom: 14px;
-    transform: translateX(-50%);
-    width: min(420px, calc(100% - 2rem));
+.auth-oauth {
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
 }
 
-.auth-bottom .auth-divider::before,
-.auth-bottom .auth-divider::after {
+.auth-oauth .auth-divider::before,
+.auth-oauth .auth-divider::after {
     content: "";
     flex: 1;
     height: 1px;
     background: var(--border);
 }
 
-.auth-bottom .auth-divider {
+.auth-oauth .auth-divider {
     display: flex;
     align-items: center;
     gap: 0.75rem;

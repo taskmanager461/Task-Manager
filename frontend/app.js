@@ -42,7 +42,7 @@ let smartPersonalizationCache = { timestamp: 0, data: null };
 const translations = {
     en: {
         app_title: "Tobedone",
-        login: "Login",
+        login: "Sign In",
         signup: "Sign Up",
         continue_with_google: "Continue with Google",
         or: "or",
@@ -52,7 +52,7 @@ const translations = {
         forgot_password: "Forgot password?",
         forgot_password_note: "Enter your email and we’ll send you a reset link.",
         send_reset_link: "Send reset link",
-        back_to_login: "Back to login",
+        back_to_login: "Back to sign in",
         verify_email_title: "Verify your email",
         verify_email_body: "Check your inbox and click the verification link to continue.",
         verification_code: "Verification code",
@@ -610,10 +610,12 @@ function setAuthView(view) {
     });
 
     const tabs = document.querySelector('.tabs');
+    const oauthWrap = document.querySelector('.auth-oauth');
     const googleBtn = document.getElementById('google-signin-btn');
     const divider = document.querySelector('.auth-divider');
     const showPrimary = view === 'login' || view === 'signup';
     if (tabs) tabs.style.display = showPrimary ? '' : 'none';
+    if (oauthWrap) oauthWrap.style.display = view === 'login' ? '' : 'none';
     if (googleBtn) googleBtn.style.display = view === 'login' ? '' : 'none';
     if (divider) divider.style.display = view === 'login' ? '' : 'none';
 
