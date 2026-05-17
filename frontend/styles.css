@@ -1009,10 +1009,9 @@ input:checked + .slider:before {
     margin: auto;
     text-align: center;
     padding: 2.2rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 28px;
-    box-shadow: var(--card-shadow);
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
     min-height: 580px;
     max-height: 600px;
     display: flex;
@@ -1218,21 +1217,21 @@ body.light-mode .main-title-rest {
 }
 
 .btn.oauth-btn {
-    background: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
-    color: #1f2937 !important;
+    background: #000000 !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    color: #ffffff !important;
     justify-content: center;
     gap: 0.75rem;
     height: 44px;
     border-radius: 14px;
     font-weight: 700;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 .btn.oauth-btn:hover {
-    background: #f8fafc !important;
-    border-color: #cbd5e1 !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    background: #1a1a1a !important;
+    border-color: rgba(255,255,255,0.2) !important;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
     transform: translateY(-1px);
 }
 
