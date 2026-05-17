@@ -249,7 +249,7 @@ def get_theme_css(dark_mode: bool) -> str:
     }}
 
     /* Auth Styling */
-    .auth-card {{
+    .auth-card {
         max-width: 450px;
         margin: 0 auto;
         padding: 2rem;
@@ -257,7 +257,23 @@ def get_theme_css(dark_mode: bool) -> str:
         border-radius: 24px;
         border: 1px solid {c["border"]};
         box-shadow: {c["shadow"]};
-    }}
+        min-height: 580px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden !important;
+    }
+
+    /* Tighten up form spacing to prevent scrolling */
+    [data-testid="stForm"] {
+        border: none !important;
+        padding: 0 !important;
+    }
+    [data-testid="stForm"] > div {
+        gap: 0.5rem !important;
+    }
+    div[data-testid="stTextInput"] {
+        margin-bottom: -0.5rem !important;
+    }
 
     /* Target Streamlit Tabs */
     .stTabs [data-baseweb="tab-list"] {{

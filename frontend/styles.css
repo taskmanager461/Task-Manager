@@ -1015,7 +1015,7 @@ input:checked + .slider:before {
     box-shadow: none;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    padding-bottom: 5.25rem;
+    padding-bottom: 0;
 }
 
 body.light-mode .auth-container {
@@ -1216,53 +1216,8 @@ body.light-mode .main-title-rest {
     background: url("https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg") center / contain no-repeat;
 }
 
-.auth-bottom {
-    position: fixed;
-    left: 50%;
-    bottom: 14px;
-    transform: translateX(-50%);
-    width: min(420px, calc(100% - 2rem));
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    padding: 0.9rem 0.9rem;
-    border-radius: 18px;
-    background: rgba(10, 15, 26, 0.72);
-    border: 1px solid rgba(51, 65, 85, 0.55);
-    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.55);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-}
-
-body.light-mode .auth-bottom {
-    background: rgba(255, 255, 255, 0.82);
-    border: 1px solid rgba(148, 163, 184, 0.35);
-    box-shadow: 0 18px 55px rgba(15, 23, 42, 0.12);
-}
-
-.auth-bottom .auth-divider::before,
-.auth-bottom .auth-divider::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-}
-
-.auth-bottom .auth-divider {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0 0.25rem;
-}
-
-.auth-bottom .btn.oauth-btn {
-    background: linear-gradient(135deg, rgba(10, 134, 255, 0.16) 0%, rgba(0, 210, 255, 0.10) 100%);
-    border-color: rgba(10, 134, 255, 0.35);
-}
-
-.auth-bottom .btn.oauth-btn:hover {
-    border-color: rgba(10, 134, 255, 0.6);
-    background: linear-gradient(135deg, rgba(10, 134, 255, 0.22) 0%, rgba(0, 210, 255, 0.14) 100%);
+.auth-oauth {
+    margin-bottom: 0.75rem;
 }
 
 @media (max-width: 480px) {

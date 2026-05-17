@@ -353,7 +353,7 @@ def render_achievements(score: dict[str, Any]) -> None:
     if badges:
         st.markdown(f"**{t('achievements')}**")
         for badge in badges:
-            st.markdown(f"- {badge}")
+            st.markdown(f"{badge}")
 
 
 def render_sidebar() -> None:
@@ -684,13 +684,13 @@ def weekly_report_page(client: APIClient, user_id: int) -> None:
                 if failure_analysis["top_failure_categories"]:
                     st.markdown("**Categories with Highest Failure Rate**")
                     for item in failure_analysis["top_failure_categories"][:3]:
-                        st.markdown(f"- **{item['category']}**: {item['rate']}% failure rate")
+                        st.markdown(f"**{item['category']}**: {item['rate']}% failure rate")
             
             with col2:
                 if failure_analysis["failure_hours"]:
                     st.markdown("**Most Common Failure Hours**")
                     for hour, count in failure_analysis["failure_hours"][:3]:
-                        st.markdown(f"- {hour:02d}:00 - {count} failed tasks")
+                        st.markdown(f"{hour:02d}:00 - {count} failed tasks")
             
             st.info("💡 Understanding when and where you fail helps you adjust your schedule and expectations!")
             
@@ -709,13 +709,13 @@ def weekly_report_page(client: APIClient, user_id: int) -> None:
                 if success_analysis["top_success_categories"]:
                     st.markdown("**Your Strongest Categories**")
                     for item in success_analysis["top_success_categories"][:3]:
-                        st.markdown(f"- **{item['category']}**: {item['rate']}% success rate")
+                        st.markdown(f"**{item['category']}**: {item['rate']}% success rate")
             
             with col2:
                 if success_analysis["success_hours"]:
                     st.markdown("**Most Productive Hours**")
                     for hour, count in success_analysis["success_hours"][:3]:
-                        st.markdown(f"- {hour:02d}:00 - {count} completed tasks")
+                        st.markdown(f"{hour:02d}:00 - {count} completed tasks")
             
             st.info("💡 Build on your strengths! Schedule important tasks during your productive hours!")
             
@@ -756,13 +756,13 @@ def weekly_report_page(client: APIClient, user_id: int) -> None:
             if smart_insights["best_habits"]:
                 st.markdown("**Your Best Habits**")
                 for habit in smart_insights["best_habits"][:3]:
-                    st.markdown(f"- ✨ {habit['title']} ({habit['consistency']:.0f}% consistent)")
+                    st.markdown(f"✨ {habit['title']} ({habit['consistency']:.0f}% consistent)")
         
         with col2:
             if smart_insights["worst_habits"]:
                 st.markdown("**Habits Needing Attention**")
                 for habit in smart_insights["worst_habits"][:3]:
-                    st.markdown(f"- ⚠️ {habit['title']} ({habit['consistency']:.0f}% consistent)")
+                    st.markdown(f"⚠️ {habit['title']} ({habit['consistency']:.0f}% consistent)")
         
         if smart_insights["habit_insights"]:
             for insight in smart_insights["habit_insights"]:

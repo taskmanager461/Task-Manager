@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tobedone</title>
-    <link rel="stylesheet" href="styles.css?v=3.8.4">
+    <link rel="stylesheet" href="styles.css?v=3.8.5">
     <link rel="stylesheet" href="/src/styles/logo.css?v=4.5">
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/png" href="/assets/app-logo-20260501.png?v=4">
@@ -57,6 +57,13 @@
                 </button>
             </div>
 
+            <div class="auth-oauth">
+                <button id="google-signin-btn" type="button" class="btn oauth-btn full-width">
+                    <span class="oauth-icon" aria-hidden="true"></span>
+                    <span data-i18n="continue_with_google">Continue with Google</span>
+                </button>
+            </div>
+
             <form id="login-form" class="auth-form active">
                 <div class="input-group">
                     <input type="email" id="login-email" data-i18n="email" placeholder="Email" required autocomplete="email">
@@ -67,7 +74,7 @@
                         <i class="fas fa-eye" aria-hidden="true"></i>
                     </button>
                 </div>
-                <button type="submit" class="btn primary" data-i18n="login">Login</button>
+                <button type="submit" class="btn primary" data-i18n="login">Sign In</button>
                 <button type="button" id="forgot-password-link" class="btn link-btn" data-i18n="forgot_password">Forgot password?</button>
             </form>
 
@@ -133,13 +140,6 @@
                 </div>
                 <button type="submit" class="btn primary" data-i18n="update_password">Update password</button>
             </form>
-            <div class="auth-bottom">
-                <div class="auth-divider"><span>or continue with</span></div>
-                <button id="google-signin-btn" type="button" class="btn oauth-btn full-width">
-                    <span class="oauth-icon" aria-hidden="true"></span>
-                    <span data-i18n="continue_with_google">Continue with Google</span>
-                </button>
-            </div>
             <div id="auth-error" class="error-msg"></div>
         </div>
     </div>
@@ -705,6 +705,6 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
-    <script src="app.js?v=3.8.4"></script>
+    <script src="app.js?v=3.8.5"></script>
 </body>
 </html>
