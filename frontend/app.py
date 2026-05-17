@@ -405,7 +405,7 @@ def render_auth(client: APIClient) -> None:
     render_logo(st.session_state.dark_mode)
     
     st.markdown("<div class='auth-card'>", unsafe_allow_html=True)
-    tab_login, tab_signup = st.tabs([f"  {t('sign_in')}  ", f"  {t('create_account')}  "])
+    tab_login, tab_signup = st.tabs([t('sign_in'), t('create_account')])
 
     with tab_login:
         with st.form("login_form", clear_on_submit=False):
@@ -455,12 +455,12 @@ def render_auth(client: APIClient) -> None:
                     st.toast(t("account_created"))
                     st.rerun()
 
-    st.markdown("<div class='auth-separator'>or continue with</div>", unsafe_allow_html=True)
+    st.markdown("<div class='auth-separator'>or</div>", unsafe_allow_html=True)
     st.markdown(
         """
         <div class="google-btn">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" height="18">
-            Google
+            Continue with Google
         </div>
         """,
         unsafe_allow_html=True

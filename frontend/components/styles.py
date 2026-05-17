@@ -50,11 +50,20 @@ def get_theme_css(dark_mode: bool) -> str:
     [data-testid="stHeader"] {{background: transparent; height: 0;}}
     .stAppDeployButton {{display: none !important;}}
     
-    .stApp {{
+    .stApp {
         background: {c["bg"]};
         color: {c["text"]};
         font-family: "Inter", "SF Pro Display", -apple-system, sans-serif;
-    }}
+    }
+
+    /* Global List Style Reset to remove dots/bullets */
+    ul, li, li::before, ul::before, [data-testid="stForm"] ul, [data-testid="stForm"] li {
+        list-style-type: none !important;
+        list-style: none !important;
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+        content: none !important;
+    }
 
     /* Main Container */
     .block-container {{
@@ -356,25 +365,29 @@ def get_theme_css(dark_mode: bool) -> str:
     .auth-separator:not(:empty)::after {{ margin-left: 1rem; }}
 
     /* Google Button */
-    .google-btn {{
+    .google-btn {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 12px;
         width: 100%;
-        background: {c["surface"]} !important;
-        border: 1px solid {c["border"]} !important;
+        background: white !important;
+        border: 1px solid #e2e8f0 !important;
         border-radius: 14px !important;
         padding: 12px !important;
-        font-weight: 600 !important;
-        color: {c["text"]} !important;
+        font-weight: 700 !important;
+        color: #1f2937 !important;
         cursor: pointer;
-        transition: all 0.3s ease !important;
-    }}
-    .google-btn:hover {{
-        background: {c["surface_soft"]} !important;
-        border-color: {c["muted"]} !important;
-    }}
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+        margin-top: 0.5rem;
+    }
+    .google-btn:hover {
+        background: #f8fafc !important;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+        border-color: #cbd5e1 !important;
+    }
 
     /* Bottom Nav */
     .bottom-nav {{
