@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tobedone</title>
-    <link rel="stylesheet" href="styles.css?v=3.8.3">
+    <link rel="stylesheet" href="styles.css?v=3.8.4">
     <link rel="stylesheet" href="/src/styles/logo.css?v=4.5">
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/png" href="/assets/app-logo-20260501.png?v=4">
@@ -57,21 +57,11 @@
                 </button>
             </div>
 
-            <div class="auth-oauth">
-                <button id="google-signin-btn" type="button" class="btn oauth-btn full-width">
-                    <span class="oauth-icon" aria-hidden="true"></span>
-                    <span data-i18n="continue_with_google">Continue with Google</span>
-                </button>
-                <div class="auth-divider"><span>or continue with</span></div>
-            </div>
-
             <form id="login-form" class="auth-form active">
                 <div class="input-group">
-                    <i class="fas fa-envelope input-icon" aria-hidden="true"></i>
                     <input type="email" id="login-email" data-i18n="email" placeholder="Email" required autocomplete="email">
                 </div>
                 <div class="input-group">
-                    <i class="fas fa-lock input-icon" aria-hidden="true"></i>
                     <input type="password" id="login-password" data-i18n="password" placeholder="Password" required autocomplete="current-password">
                     <button type="button" class="password-toggle" data-target="login-password" aria-label="Toggle password visibility">
                         <i class="fas fa-eye" aria-hidden="true"></i>
@@ -83,19 +73,15 @@
 
             <form id="signup-form" class="auth-form">
                 <div class="input-group">
-                    <i class="fas fa-id-card input-icon" aria-hidden="true"></i>
                     <input type="text" id="signup-name" data-i18n="full_name" placeholder="Full Name" required autocomplete="name">
                 </div>
                 <div class="input-group">
-                    <i class="fas fa-at input-icon" aria-hidden="true"></i>
                     <input type="text" id="signup-username" data-i18n="username" placeholder="Username" required autocomplete="username">
                 </div>
                 <div class="input-group">
-                    <i class="fas fa-envelope input-icon" aria-hidden="true"></i>
                     <input type="email" id="signup-email" data-i18n="email" placeholder="Email" required autocomplete="email">
                 </div>
                 <div class="input-group">
-                    <i class="fas fa-lock input-icon" aria-hidden="true"></i>
                     <input type="password" id="signup-password" data-i18n="password" placeholder="Password" required autocomplete="new-password">
                     <button type="button" class="password-toggle" data-target="signup-password" aria-label="Toggle password visibility">
                         <i class="fas fa-eye" aria-hidden="true"></i>
@@ -107,7 +93,6 @@
             <form id="forgot-form" class="auth-form">
                 <div class="auth-note" data-i18n="forgot_password_note">Enter your email and we’ll send you a reset link.</div>
                 <div class="input-group">
-                    <i class="fas fa-envelope input-icon" aria-hidden="true"></i>
                     <input type="email" id="forgot-email" data-i18n="email" placeholder="Email" required autocomplete="email">
                 </div>
                 <button type="submit" class="btn primary" data-i18n="send_reset_link">Send reset link</button>
@@ -123,7 +108,6 @@
                     <div id="verify-email-text" class="auth-note-body" data-i18n="verify_email_body">Check your inbox and click the verification link to continue.</div>
                 </div>
                 <div class="input-group">
-                    <i class="fas fa-key input-icon" aria-hidden="true"></i>
                     <input type="text" id="verify-otp" data-i18n="verification_code" placeholder="Verification code" inputmode="numeric" autocomplete="one-time-code">
                 </div>
                 <button type="button" id="verify-otp-btn" class="btn primary" data-i18n="verify_code">Verify code</button>
@@ -136,14 +120,12 @@
                     <div class="auth-note-title" data-i18n="reset_password_title">Set a new password</div>
                 </div>
                 <div class="input-group">
-                    <i class="fas fa-lock input-icon" aria-hidden="true"></i>
                     <input type="password" id="reset-password" data-i18n="new_password" placeholder="New password" required autocomplete="new-password">
                     <button type="button" class="password-toggle" data-target="reset-password" aria-label="Toggle password visibility">
                         <i class="fas fa-eye" aria-hidden="true"></i>
                     </button>
                 </div>
                 <div class="input-group">
-                    <i class="fas fa-lock input-icon" aria-hidden="true"></i>
                     <input type="password" id="reset-password-confirm" data-i18n="confirm_password" placeholder="Confirm password" required autocomplete="new-password">
                     <button type="button" class="password-toggle" data-target="reset-password-confirm" aria-label="Toggle password visibility">
                         <i class="fas fa-eye" aria-hidden="true"></i>
@@ -151,6 +133,13 @@
                 </div>
                 <button type="submit" class="btn primary" data-i18n="update_password">Update password</button>
             </form>
+            <div class="auth-bottom">
+                <div class="auth-divider"><span>or continue with</span></div>
+                <button id="google-signin-btn" type="button" class="btn oauth-btn full-width">
+                    <span class="oauth-icon" aria-hidden="true"></span>
+                    <span data-i18n="continue_with_google">Continue with Google</span>
+                </button>
+            </div>
             <div id="auth-error" class="error-msg"></div>
         </div>
     </div>
@@ -716,6 +705,6 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
-    <script src="app.js?v=3.8.3"></script>
+    <script src="app.js?v=3.8.4"></script>
 </body>
 </html>

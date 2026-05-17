@@ -610,7 +610,7 @@ function setAuthView(view) {
     });
 
     const tabs = document.querySelector('.tabs');
-    const oauthWrap = document.querySelector('.auth-oauth');
+    const oauthWrap = document.querySelector('.auth-bottom');
     const googleBtn = document.getElementById('google-signin-btn');
     const divider = document.querySelector('.auth-divider');
     const showPrimary = view === 'login' || view === 'signup';
