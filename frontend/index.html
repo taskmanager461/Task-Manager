@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tobedone</title>
-    <link rel="stylesheet" href="styles.css?v=3.7.8">
+    <link rel="stylesheet" href="styles.css?v=3.7.9">
     <link rel="stylesheet" href="/src/styles/logo.css?v=4.5">
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/png" href="/assets/app-logo-20260501.png?v=4">
@@ -47,25 +47,58 @@
             </h1>
             <p class="brand-tagline">Plan it. Do it. Done.</p>
             <div class="tabs">
-                <button id="tab-login" class="tab active" onclick="switchAuthTab('login')" data-i18n="login">Login</button>
-                <button id="tab-signup" class="tab" onclick="switchAuthTab('signup')" data-i18n="signup">Sign Up</button>
+                <button id="tab-login" class="tab active" onclick="switchAuthTab('login')">
+                    <i class="fas fa-user"></i>
+                    <span data-i18n="login">Login</span>
+                </button>
+                <button id="tab-signup" class="tab" onclick="switchAuthTab('signup')">
+                    <i class="fas fa-user-plus"></i>
+                    <span data-i18n="signup">Sign Up</span>
+                </button>
             </div>
 
-            <button id="google-signin-btn" type="button" class="btn oauth-btn full-width" data-i18n="continue_with_google">Continue with Google</button>
-            <div class="auth-divider"><span data-i18n="or">or</span></div>
+            <button id="google-signin-btn" type="button" class="btn oauth-btn full-width">
+                <span class="oauth-icon" aria-hidden="true"></span>
+                <span data-i18n="continue_with_google">Continue with Google</span>
+            </button>
+            <div class="auth-divider"><span>or continue with</span></div>
             
             <form id="login-form" class="auth-form active">
-                <input type="email" id="login-email" data-i18n="email" placeholder="Email" required autocomplete="email">
-                <input type="password" id="login-password" data-i18n="password" placeholder="Password" required autocomplete="current-password">
+                <div class="input-group">
+                    <i class="fas fa-envelope input-icon" aria-hidden="true"></i>
+                    <input type="email" id="login-email" data-i18n="email" placeholder="Email" required autocomplete="email">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock input-icon" aria-hidden="true"></i>
+                    <input type="password" id="login-password" data-i18n="password" placeholder="Password" required autocomplete="current-password">
+                    <button type="button" class="password-toggle" data-target="login-password" aria-label="Toggle password visibility">
+                        <i class="fas fa-eye" aria-hidden="true"></i>
+                    </button>
+                </div>
                 <button type="submit" class="btn primary" data-i18n="login">Login</button>
                 <button type="button" id="forgot-password-link" class="btn link-btn" data-i18n="forgot_password">Forgot password?</button>
             </form>
 
             <form id="signup-form" class="auth-form">
-                <input type="text" id="signup-name" data-i18n="full_name" placeholder="Full Name" required autocomplete="name">
-                <input type="text" id="signup-username" data-i18n="username" placeholder="Username" required autocomplete="username">
-                <input type="email" id="signup-email" data-i18n="email" placeholder="Email" required autocomplete="email">
-                <input type="password" id="signup-password" data-i18n="password" placeholder="Password" required autocomplete="new-password">
+                <div class="input-group">
+                    <i class="fas fa-id-card input-icon" aria-hidden="true"></i>
+                    <input type="text" id="signup-name" data-i18n="full_name" placeholder="Full Name" required autocomplete="name">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-at input-icon" aria-hidden="true"></i>
+                    <input type="text" id="signup-username" data-i18n="username" placeholder="Username" required autocomplete="username">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-envelope input-icon" aria-hidden="true"></i>
+                    <input type="email" id="signup-email" data-i18n="email" placeholder="Email" required autocomplete="email">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock input-icon" aria-hidden="true"></i>
+                    <input type="password" id="signup-password" data-i18n="password" placeholder="Password" required autocomplete="new-password">
+                    <button type="button" class="password-toggle" data-target="signup-password" aria-label="Toggle password visibility">
+                        <i class="fas fa-eye" aria-hidden="true"></i>
+                    </button>
+                </div>
                 <button type="submit" class="btn primary" data-i18n="create_account">Create Account</button>
             </form>
 
@@ -663,6 +696,6 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
-    <script src="app.js?v=3.7.8"></script>
+    <script src="app.js?v=3.7.9"></script>
 </body>
 </html>

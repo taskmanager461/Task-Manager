@@ -404,7 +404,7 @@ def render_sidebar() -> None:
 def render_auth(client: APIClient) -> None:
     render_logo(st.session_state.dark_mode)
     
-    st.markdown("<div class='auth-container'>", unsafe_allow_html=True)
+    st.markdown("<div class='auth-card'>", unsafe_allow_html=True)
     tab_login, tab_signup = st.tabs([f"  {t('sign_in')}  ", f"  {t('create_account')}  "])
 
     with tab_login:

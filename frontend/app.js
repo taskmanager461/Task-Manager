@@ -2716,6 +2716,22 @@ function setupEventListeners() {
         });
     }
 
+    document.querySelectorAll('.password-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-target');
+            if (!targetId) return;
+            const input = document.getElementById(targetId);
+            if (!input) return;
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            const icon = btn.querySelector('i');
+            if (icon) {
+                icon.classList.toggle('fa-eye', !isPassword);
+                icon.classList.toggle('fa-eye-slash', isPassword);
+            }
+        });
+    });
+
     const forgotLink = document.getElementById('forgot-password-link');
     if (forgotLink) forgotLink.addEventListener('click', () => setAuthView('forgot'));
 
