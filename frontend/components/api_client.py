@@ -220,3 +220,34 @@ class APIClient:
         )
         response.raise_for_status()
         return response.json()
+
+    def update_profile(self, **kwargs) -> dict[str, Any]:
+        response = requests.patch(
+            self._url("/identity/profile"),
+            json=kwargs,
+            headers=self._auth_headers(),
+            timeout=15,
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def get_habits(self, day: date | None = None) -> list[dict[str, Any]]:
+        params = {"day": day.isoformat()} if day else {}
+        response = requests.get(
+            self._url("/habits"),
+            params=params,
+            headers=self._auth_headers(),
+            timeout=15,
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def track_habit(self, habit_id: int, status: str, day: date | None = None) -> dict[str, Any]:
+        response = requests.patch(
+            self._url(f"/habits/{habit_id}/track"),
+            json={"status": status, "day": day.isoformat() if day else None},
+            headers=self._auth_headers(),
+            timeout=15,
+        )
+        response.raise_for_status()
+        return response.json()

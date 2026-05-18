@@ -3,6 +3,7 @@ import base64
 import os
 from pathlib import Path
 
+@st.cache_data
 def get_base64_image(image_path):
     try:
         if os.path.exists(image_path):
@@ -15,24 +16,30 @@ def get_base64_image(image_path):
 def render_logo(dark_mode: bool) -> None:
     primary_color = "#0a86ff"
     text_color = "#000000" if not dark_mode else "#ffffff"
-    glow_style = f"filter: drop-shadow(0 0 8px {primary_color});" if dark_mode else ""
+    glow_style = f"filter: drop-shadow(0 0 12px {primary_color});" if dark_mode else ""
     
     st.markdown(
         f"""
-        <div style="text-align: center; margin-bottom: 2rem;">
-            <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="{glow_style}">
+        <div style="text-align: center; margin-bottom: 2.5rem; animation: fadeIn 0.8s ease-out;">
+            <svg width="140" height="140" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="{glow_style}">
                 <path d="M30 30 C 30 20, 70 20, 70 30 C 70 35, 55 35, 50 40 L 50 70 C 50 80, 40 80, 40 70 L 40 50 C 40 45, 30 45, 30 40 Z" 
-                    stroke="{primary_color}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                    stroke="{primary_color}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M45 45 Q 55 45, 55 55 L 55 70 Q 55 80, 45 80 Q 35 80, 35 70 L 35 60" 
-                    stroke="{primary_color}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+                    stroke="{primary_color}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
             </svg>
-            <div style="font-size: 2.5rem; font-weight: 800; margin-top: -10px;">
+            <div style="font-size: 3.5rem; font-weight: 900; margin-top: -15px; letter-spacing: -0.05em;">
                 <span style="color: {primary_color};">To</span><span style="color: {text_color};">bedone</span>
             </div>
-            <div style="color: #64748b; font-size: 1rem; font-weight: 500; margin-top: 0.2rem;">
+            <div style="color: #64748b; font-size: 1.2rem; font-weight: 600; margin-top: 0.3rem; letter-spacing: 0.05em;">
                 Plan it. Do it. Done.
             </div>
         </div>
+        <style>
+            @keyframes fadeIn {{
+                from {{ opacity: 0; transform: translateY(-10px); }}
+                to {{ opacity: 1; transform: translateY(0); }}
+            }}
+        </style>
         """,
         unsafe_allow_html=True
     )
@@ -241,6 +248,52 @@ def task_card(task: dict, labels: dict[str, str]) -> None:
         unsafe_allow_html=True,
     )
 
+
+def habit_card(habit: dict) -> None:
+    status = habit.get("today_status")
+    streak = habit.get("streak", 0)
+    consistency = habit.get("consistency_score", 0.0)
+    title = habit.get("title", "Untitled Habit")
+    category = habit.get("category", "general")
+    
+    status_icon = {
+        "completed": "fa-solid fa-check-circle",
+        "skipped": "fa-solid fa-forward",
+        None: "fa-solid fa-circle-dot"
+    }.get(status, "fa-solid fa-circle-dot")
+    
+    status_color = {
+        "completed": "#10b981",
+        "skipped": "#f59e0b",
+        None: "#64748b"
+    }.get(status, "#64748b")
+
+    st.markdown(
+        f"""
+        <div class='surface-card' style='border-left: 5px solid #8b5cf6;'>
+            <div style='display: flex; justify-content: space-between; align-items: center;'>
+                <div>
+                    <div style='font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem;'>{title}</div>
+                    <div style='display: flex; gap: 0.5rem; align-items: center;'>
+                        <span class='badge' style='background: rgba(139, 92, 246, 0.1); color: #8b5cf6;'>
+                            🔥 {streak}
+                        </span>
+                        <span class='badge' style='background: rgba(16, 185, 129, 0.1); color: #10b981;'>
+                            {consistency:.0f}% consistency
+                        </span>
+                        <span class='badge' style='background: rgba(100, 116, 139, 0.1); color: #64748b;'>
+                            {category}
+                        </span>
+                    </div>
+                </div>
+                <div style='color: {status_color}; font-size: 1.5rem;'>
+                    <i class="{status_icon}"></i>
+                </div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 def goal_card(goal: dict) -> None:
     goal_status = goal.get("status", "active")
