@@ -1140,71 +1140,6 @@ function checkReminders() {
             }
         });
     }
-
-    const profileForm = document.getElementById('profile-edit-form');
-    if (profileForm) {
-        profileForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            try {
-                showLoading(true);
-                const name = document.getElementById('profile-name-input')?.value || '';
-                const username = document.getElementById('profile-username-input')?.value || '';
-                await updateProfile(name, username);
-                showToast('Profile updated', 'success');
-            } catch (err) {
-                showToast(err.message || 'Failed to update profile', 'error');
-            } finally {
-                showLoading(false);
-            }
-        });
-    }
-
-    const cancelBtn = document.getElementById('profile-cancel-btn');
-    if (cancelBtn) {
-        cancelBtn.addEventListener('click', () => {
-            cancelProfileChanges();
-            showToast('Changes discarded', 'info');
-        });
-    }
-
-    const nameInput = document.getElementById('profile-name-input');
-    if (nameInput) {
-        nameInput.addEventListener('input', () => {
-            profileDraft.name = nameInput.value;
-            updateProfileSaveState();
-        });
-    }
-
-    const usernameInput = document.getElementById('profile-username-input');
-    if (usernameInput) {
-        usernameInput.addEventListener('input', () => {
-            profileDraft.username = usernameInput.value;
-            updateProfileSaveState();
-        });
-    }
-
-    const avatarBtn = document.getElementById('profile-avatar-edit');
-    const avatarInput = document.getElementById('profile-avatar-input');
-    if (avatarBtn && avatarInput) {
-        avatarBtn.addEventListener('click', () => avatarInput.click());
-        avatarInput.addEventListener('change', async () => {
-            const file = avatarInput.files && avatarInput.files[0];
-            if (!file) return;
-            try {
-                showLoading(true);
-                const dataUrl = await compressImageToDataUrl(file, 256, 0.85);
-                profileDraft.avatar_url = dataUrl;
-                const avatarEl = document.getElementById('profile-avatar');
-                if (avatarEl) avatarEl.src = dataUrl;
-                updateProfileSaveState();
-                showToast('Photo updated (pending save)', 'info');
-            } catch (err) {
-                showToast(err.message || 'Failed to process image', 'error');
-            } finally {
-                showLoading(false);
-            }
-        });
-    }
 }
 
 function showNotification(task) {
@@ -3107,6 +3042,72 @@ function setupEventListeners() {
     const customDeadlineInput = document.getElementById('goal-custom-deadline');
     if (customDeadlineInput) {
         customDeadlineInput.addEventListener('change', restrictCustomDeadline);
+    }
+
+    // Profile Form
+    const profileForm = document.getElementById('profile-edit-form');
+    if (profileForm) {
+        profileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                showLoading(true);
+                const name = document.getElementById('profile-name-input')?.value || '';
+                const username = document.getElementById('profile-username-input')?.value || '';
+                await updateProfile(name, username);
+                showToast('Profile updated', 'success');
+            } catch (err) {
+                showToast(err.message || 'Failed to update profile', 'error');
+            } finally {
+                showLoading(false);
+            }
+        });
+    }
+
+    const cancelBtn = document.getElementById('profile-cancel-btn');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => {
+            cancelProfileChanges();
+            showToast('Changes discarded', 'info');
+        });
+    }
+
+    const nameInput = document.getElementById('profile-name-input');
+    if (nameInput) {
+        nameInput.addEventListener('input', () => {
+            profileDraft.name = nameInput.value;
+            updateProfileSaveState();
+        });
+    }
+
+    const usernameInput = document.getElementById('profile-username-input');
+    if (usernameInput) {
+        usernameInput.addEventListener('input', () => {
+            profileDraft.username = usernameInput.value;
+            updateProfileSaveState();
+        });
+    }
+
+    const avatarBtn = document.getElementById('profile-avatar-edit');
+    const avatarInput = document.getElementById('profile-avatar-input');
+    if (avatarBtn && avatarInput) {
+        avatarBtn.addEventListener('click', () => avatarInput.click());
+        avatarInput.addEventListener('change', async () => {
+            const file = avatarInput.files && avatarInput.files[0];
+            if (!file) return;
+            try {
+                showLoading(true);
+                const dataUrl = await compressImageToDataUrl(file, 256, 0.85);
+                profileDraft.avatar_url = dataUrl;
+                const avatarEl = document.getElementById('profile-avatar');
+                if (avatarEl) avatarEl.src = dataUrl;
+                updateProfileSaveState();
+                showToast('Photo updated (pending save)', 'info');
+            } catch (err) {
+                showToast(err.message || 'Failed to process image', 'error');
+            } finally {
+                showLoading(false);
+            }
+        });
     }
 
     // Set default date/time in form

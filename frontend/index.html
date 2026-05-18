@@ -246,20 +246,20 @@
                         <div class="profile-avatar-wrap">
                             <img id="profile-avatar" src="https://ui-avatars.com/api/?name=User&background=0a86ff&color=fff&size=128&bold=true" alt="Profile avatar" class="profile-avatar-img">
                             <button id="profile-avatar-edit" type="button" class="profile-avatar-edit" aria-label="Edit profile photo">
-                                <img src="/assets/pencil-edit.png" alt="Edit" style="width: 16px; height: 16px;">
+                                <img src="/assets/pencil-edit.png" alt="Edit">
                             </button>
                             <input id="profile-avatar-input" type="file" accept="image/*" style="display:none;">
                         </div>
-                        <div style="flex: 1; display: flex; flex-direction: column; gap: 0.75rem;">
-                            <div class="profile-field-row">
+                        <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem;">
+                            <div class="profile-field-row-horizontal">
                                 <div id="profile-name" class="profile-display-name">User</div>
-                                <button type="button" class="btn primary-link-btn" onclick="enableEdit('profile-name-input')">
+                                <button type="button" class="btn primary-link-btn-small" onclick="enableEdit('profile-name-input')">
                                     <span data-i18n="change_name">Change Name</span>
                                 </button>
                             </div>
-                            <div class="profile-field-row">
+                            <div class="profile-field-row-horizontal">
                                 <div id="profile-username" class="profile-display-username">@user</div>
-                                <button type="button" class="btn primary-link-btn" onclick="enableEdit('profile-username-input')">
+                                <button type="button" class="btn primary-link-btn-small" onclick="enableEdit('profile-username-input')">
                                     <span data-i18n="change_username">Change Username</span>
                                 </button>
                             </div>
