@@ -2112,28 +2112,39 @@ canvas {
     height: 32px;
     border: none !important;
     background: transparent !important;
-    display: grid;
-    place-items: center;
-    cursor: pointer;
-    z-index: 10;
     padding: 0;
-    transition: transform 0.3s ease;
+    margin: 0;
+    cursor: pointer;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+    box-shadow: none !important;
+    outline: none !important;
+    -webkit-appearance: none;
 }
 
 .profile-avatar-edit img {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     object-fit: contain;
-    /* Force absolute removal of any background through multiple filters */
-    background: transparent !important;
-    mix-blend-mode: screen !important;
-    filter: brightness(2) contrast(1.5) !important;
-    pointer-events: none;
+    /* Use mask to force only the pencil shape to show, ignoring any background */
+    -webkit-mask: url('/assets/pencil-edit.png') no-repeat center;
+    mask: url('/assets/pencil-edit.png') no-repeat center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: white !important; /* This is the pencil color */
+    mix-blend-mode: normal !important;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)) !important;
 }
-
 
 .profile-avatar-edit:hover {
     transform: scale(1.2) rotate(10deg);
+}
+
+.profile-avatar-edit:hover img {
+    background-color: var(--primary) !important;
 }
 
 
