@@ -250,16 +250,16 @@
                             </button>
                             <input id="profile-avatar-input" type="file" accept="image/*" style="display:none;">
                         </div>
-                        <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem;">
-                            <div class="profile-field-row-horizontal">
-                                <div id="profile-name" class="profile-display-name">User</div>
-                                <button type="button" class="btn primary-link-btn-small" onclick="enableEdit('profile-name-input')">
+                        <div style="flex: 1; display: flex; flex-direction: column; gap: 1rem; justify-content: center;">
+                            <div style="display: flex; align-items: center; gap: 1rem; width: 100%;">
+                                <div id="profile-name" class="profile-display-name" style="margin: 0;">User</div>
+                                <button type="button" class="btn primary-link-btn-small" onclick="enableEdit('profile-name-input')" style="margin-left: auto;">
                                     <span data-i18n="change_name">Change Name</span>
                                 </button>
                             </div>
-                            <div class="profile-field-row-horizontal">
-                                <div id="profile-username" class="profile-display-username">@user</div>
-                                <button type="button" class="btn primary-link-btn-small" onclick="enableEdit('profile-username-input')">
+                            <div style="display: flex; align-items: center; gap: 1rem; width: 100%;">
+                                <div id="profile-username" class="profile-display-username" style="margin: 0;">@user</div>
+                                <button type="button" class="btn primary-link-btn-small" onclick="enableEdit('profile-username-input')" style="margin-left: auto;">
                                     <span data-i18n="change_username">Change Username</span>
                                 </button>
                             </div>
