@@ -98,6 +98,11 @@ class GoalUpdate(BaseModel):
     reflection_didnt_go_well: Optional[str] = None
 
 
+class ProfileUpdate(BaseModel):
+    name: Optional[str] = Field(None, min_length=2, max_length=100)
+    username: Optional[str] = Field(None, min_length=3, max_length=50)
+
+
 class GoalResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

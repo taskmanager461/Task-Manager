@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from backend.database import get_db
 from backend.models.user import User
-from backend.schemas import IdentityProfileResponse
+from backend.schemas import IdentityProfileResponse, ProfileUpdate
 from backend.services.auth_service import get_current_user
 from backend.services.identity_service import get_identity_profile
 
@@ -16,3 +16,26 @@ def identity_profile(
     db: Session = Depends(get_db),
 ):
     return get_identity_profile(db, current_user)
+
+
+@router.patch("/identity/profile")
+def update_profile(
+    payload: ProfileUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if payload.name is not None:
+        current_user.name = payload.name.strip()
+    if payload.username is not None:
+        # Check if username is taken
+        new_username = payload.username.strip().lower()
+        if new_username != current_user.username:
+            existing = db.query(User).filter(User.username == new_username).first()
+            if existing:
+                from fastapi import HTTPException
+                raise HTTPException(status_code=400, detail="Username already taken")
+            current_user.username = new_username
+    
+    db.commit()
+    db.refresh(current_user)
+    return {"message": "Profile updated", "name": current_user.name, "username": current_user.username}
