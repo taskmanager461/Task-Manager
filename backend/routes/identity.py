@@ -27,7 +27,6 @@ def update_profile(
     if payload.name is not None:
         current_user.name = payload.name.strip()
     if payload.username is not None:
-        # Check if username is taken
         new_username = payload.username.strip().lower()
         if new_username != current_user.username:
             existing = db.query(User).filter(User.username == new_username).first()
