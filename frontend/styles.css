@@ -2120,23 +2120,17 @@ canvas {
     align-items: center;
     justify-content: center;
     transition: transform 0.2s ease;
-    box-shadow: none !important;
-    outline: none !important;
-    -webkit-appearance: none;
 }
 
 .profile-avatar-edit img {
     width: 24px;
     height: 24px;
     object-fit: contain;
-    /* Use mask to force only the pencil shape to show, ignoring any background */
-    -webkit-mask: url('/assets/pencil-edit.png') no-repeat center;
-    mask: url('/assets/pencil-edit.png') no-repeat center;
-    -webkit-mask-size: contain;
-    mask-size: contain;
-    background-color: white !important; /* This is the pencil color */
-    mix-blend-mode: normal !important;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)) !important;
+    /* Absolute removal of black background using SVG masking if needed, 
+       but for now using the most aggressive mix-blend mode possible */
+    mix-blend-mode: screen !important;
+    filter: brightness(2.5) contrast(1.2) !important;
+    background: transparent !important;
 }
 
 .profile-avatar-edit:hover {
@@ -2144,7 +2138,7 @@ canvas {
 }
 
 .profile-avatar-edit:hover img {
-    background-color: var(--primary) !important;
+    filter: brightness(3) !important;
 }
 
 

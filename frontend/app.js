@@ -24,7 +24,7 @@ let currentLang = localStorage.getItem('tm_lang') || 'en';
 let taskChart = null;
 let trendChart = null;
 let insightsChart = null;
-let currentView = 'tasks';
+let currentView = localStorage.getItem('tm_last_view') || 'tasks';
 let cachedTasks = []; // Performance: Cache tasks locally
 let cachedGoals = [];
 let cachedHabits = [];
@@ -766,10 +766,13 @@ function renderApp() {
     updateUILanguage();
     renderProfileCard();
     
-    // Defer non-critical UI rendering to next frame
-    requestAnimationFrame(() => {
+    // BUG FIX: Only redirect to tasks if we don't have a current view set
+    // or if we're coming from the login screen
+    if (!currentView || currentView === 'tasks') {
         showView('tasks');
-    });
+    } else {
+        showView(currentView);
+    }
 }
 
 function renderProfileCard() {
@@ -904,6 +907,7 @@ async function updateProfile(name, username) {
 
 function showView(viewId) {
     currentView = viewId;
+    localStorage.setItem('tm_last_view', viewId);
     
     // UI Update
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
