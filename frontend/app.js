@@ -66,6 +66,8 @@ const translations = {
         update_password: "Update password",
         full_name: "Full Name",
         email: "Email",
+        change_name: "Change Name",
+        change_username: "Change Username",
         create_account: "Create Account",
         dashboard: "Dashboard",
         reports: "Reports",
@@ -163,6 +165,8 @@ const translations = {
         new_password: "Νέος κωδικός",
         confirm_password: "Επιβεβαίωση κωδικού",
         update_password: "Αλλαγή κωδικού",
+        change_name: "Αλλαγή ονόματος",
+        change_username: "Αλλαγή ονόματος χρήστη",
         reset_code: "Κωδικός επαναφοράς",
         use_code: "Χρήση κωδικού",
         resend_verification: "Επανάληψη email",
@@ -783,9 +787,9 @@ function updateProfileSaveState() {
     const cancelBtn = document.getElementById('profile-cancel-btn');
     if (!btn || !cancelBtn) return;
     const changed = hasProfileChanges();
-    btn.style.display = changed ? '' : 'none';
+    btn.style.display = 'block'; // Always show
     btn.disabled = !changed;
-    cancelBtn.style.display = changed ? '' : 'none';
+    cancelBtn.style.display = 'block'; // Always show
     cancelBtn.disabled = !changed;
 }
 
@@ -901,6 +905,14 @@ function showView(viewId) {
     if (viewId === 'goals') loadGoals();
     if (viewId === 'insights') loadInsights();
     if (viewId === 'settings') applyTheme(); // Sync theme switch state
+}
+
+function focusInput(id) {
+    const el = document.getElementById(id);
+    if (el) {
+        el.focus();
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 }
 
 

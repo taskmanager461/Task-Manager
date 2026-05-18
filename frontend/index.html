@@ -246,13 +246,23 @@
                         <div class="profile-avatar-wrap">
                             <img id="profile-avatar" src="https://ui-avatars.com/api/?name=User&background=0a86ff&color=fff&size=128&bold=true" alt="Profile avatar" class="profile-avatar-img">
                             <button id="profile-avatar-edit" type="button" class="profile-avatar-edit" aria-label="Edit profile photo">
-                                <i class="fas fa-pen"></i>
+                                <img src="/assets/pencil-edit.png" alt="Edit" style="width: 16px; height: 16px;">
                             </button>
                             <input id="profile-avatar-input" type="file" accept="image/*" style="display:none;">
                         </div>
                         <div style="flex: 1;">
-                            <div id="profile-name" style="font-size: 1.35rem; font-weight: 800; margin-bottom: 0.15rem;">User</div>
-                            <div id="profile-username" style="color: var(--text-secondary); font-weight: 600;">@user</div>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.15rem;">
+                                <div id="profile-name" style="font-size: 1.35rem; font-weight: 800;">User</div>
+                                <button type="button" class="btn link-btn edit-trigger-btn" onclick="focusInput('profile-name-input')">
+                                    <span data-i18n="change_name">Change Name</span>
+                                </button>
+                            </div>
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <div id="profile-username" style="color: var(--text-secondary); font-weight: 600;">@user</div>
+                                <button type="button" class="btn link-btn edit-trigger-btn" onclick="focusInput('profile-username-input')">
+                                    <span data-i18n="change_username">Change Username</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -269,8 +279,8 @@
                         </div>
                         <div class="form-actions">
                             <div style="display:flex; gap: 0.75rem;">
-                                <button id="profile-cancel-btn" type="button" class="btn secondary" style="flex: 1; display:none;" disabled>Cancel</button>
-                                <button id="profile-save-btn" type="submit" class="btn primary" style="flex: 1; display:none;" disabled>Save Changes</button>
+                                <button id="profile-cancel-btn" type="button" class="btn secondary" style="flex: 1;" disabled>Cancel</button>
+                                <button id="profile-save-btn" type="submit" class="btn primary" style="flex: 1;" disabled>Save Changes</button>
                             </div>
                         </div>
                     </form>

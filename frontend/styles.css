@@ -1205,6 +1205,20 @@ body.light-mode .main-title-rest {
     transform: none;
 }
 
+.edit-trigger-btn {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+    text-decoration: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.edit-trigger-btn:hover {
+    opacity: 1;
+    background: rgba(10, 134, 255, 0.1);
+}
+
 .auth-divider {
     display: flex;
     align-items: center;
