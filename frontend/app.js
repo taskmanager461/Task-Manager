@@ -676,19 +676,36 @@ async function handleAuthSessionChange(event, session) {
         return;
     }
 
-    showLoading(true);
+    // Performance: Optimistic UI - pre-fill currentUser from session metadata
+    const meta = session.user.user_metadata || {};
+    currentUser = {
+        user_id: session.user.id,
+        email: session.user.email,
+        name: meta.name || meta.full_name || session.user.email.split('@')[0],
+        username: meta.username || session.user.email.split('@')[0],
+        avatar_url: meta.avatar_url || null
+    };
+
+    // Immediately show app with what we have
+    renderApp();
+
+    // Then sync in background to get full profile
     try {
-        await withTimeout(syncCurrentUserFromApi(), 8000, 'API timeout');
-        renderApp();
+        await syncCurrentUserFromApi();
+        // Update UI if anything changed after sync
+        document.getElementById('user-display-name').textContent = currentUser.name || currentUser.username;
+        renderProfileCard();
     } catch (err) {
-        await supabaseClient?.auth?.signOut();
-        currentUser = null;
-        supabaseSession = null;
-        supabaseAccessToken = null;
-        renderLogin();
-        setAuthView('login');
-    } finally {
-        showLoading(false);
+        console.error('Background sync failed', err);
+        // If it failed because session is invalid, then logout
+        if (err.message === 'Session expired') {
+            await supabaseClient?.auth?.signOut();
+            currentUser = null;
+            supabaseSession = null;
+            supabaseAccessToken = null;
+            renderLogin();
+            setAuthView('login');
+        }
     }
 }
 
@@ -732,17 +749,25 @@ function renderApp() {
     document.getElementById('auth-page').classList.remove('active');
     document.getElementById('main-app').classList.add('active');
     document.body.style.overflow = '';
-    document.getElementById('user-display-name').textContent = currentUser.name || currentUser.username;
+    
+    // Perceived speed: render identity from currentUser first
+    const displayName = currentUser.name || currentUser.username;
+    const nameEl = document.getElementById('user-display-name');
+    if (nameEl) nameEl.textContent = displayName;
+    
     identityInitialized = false;
     identitySnapshot = { level: 1, unlockedBadgeIds: [] };
     smartPersonalizationCache = { timestamp: 0, data: null };
     cachedHabits = [];
     notifiedHabits = new Set();
     
-    // Initial view
     updateUILanguage();
     renderProfileCard();
-    showView('tasks');
+    
+    // Defer non-critical UI rendering to next frame
+    requestAnimationFrame(() => {
+        showView('tasks');
+    });
 }
 
 function renderProfileCard() {
@@ -762,10 +787,18 @@ function renderProfileCard() {
     if (usernameEl) usernameEl.textContent = `@${username}`;
 
     const nameInput = document.getElementById('profile-name-input');
-    if (nameInput) nameInput.value = name;
+    if (nameInput) {
+        nameInput.value = name;
+        nameInput.setAttribute('readonly', true);
+        nameInput.classList.remove('editable');
+    }
 
     const usernameInput = document.getElementById('profile-username-input');
-    if (usernameInput) usernameInput.value = username;
+    if (usernameInput) {
+        usernameInput.value = username;
+        usernameInput.setAttribute('readonly', true);
+        usernameInput.classList.remove('editable');
+    }
 
     updateProfileSaveState();
 }
@@ -912,6 +945,17 @@ function focusInput(id) {
     if (el) {
         el.focus();
         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+}
+
+function enableEdit(id) {
+    const el = document.getElementById(id);
+    if (el) {
+        el.removeAttribute('readonly');
+        el.focus();
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Optional: add a class to show it's editable
+        el.classList.add('editable');
     }
 }
 
@@ -1567,24 +1611,28 @@ async function loadReports() {
 async function loadMe() {
     try {
         renderProfileCard();
-        await Promise.all([
+        
+        const today = new Date().toISOString().split('T')[0];
+        
+        // Parallelize everything
+        const promises = [
             loadIdentityProfile(),
             loadDashboardPersonalization(),
             loadScoreComparison(),
-            loadMissedTasks(),
-        ]);
+            loadMissedTasks()
+        ];
 
-        const today = new Date().toISOString().split('T')[0];
         const pieEl = document.getElementById('task-pie-chart');
         if (pieEl) {
-            const tasks = await apiFetch(`/tasks?user_id=${currentUser.user_id}&day=${today}`);
-            updateTaskChart(tasks);
+            promises.push(apiFetch(`/tasks?user_id=${currentUser.user_id}&day=${today}`).then(tasks => updateTaskChart(tasks)));
         }
 
         const trendEl = document.getElementById('weekly-trend-chart');
         if (trendEl) {
-            await loadWeeklyTrend();
+            promises.push(loadWeeklyTrend());
         }
+
+        await Promise.all(promises);
     } catch (err) {
         console.error('Me load failed', err);
     }
