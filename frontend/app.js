@@ -501,17 +501,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
 });
 
-function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebar-overlay');
-    const hamburgers = document.querySelectorAll('.hamburger');
-    
-    sidebar.classList.toggle('open');
-    if (overlay) overlay.classList.toggle('active');
-    hamburgers.forEach(h => h.classList.toggle('active'));
-    document.body.classList.toggle('sidebar-open');
-}
-
 function initTheme() {
     // Pro Tech Style: Always dark mode unless explicitly changed
     if (localStorage.getItem('tm_dark_mode') === null) {
@@ -778,10 +767,11 @@ function renderApp() {
 function renderProfileCard() {
     const name = (currentUser?.name || currentUser?.username || 'User').trim();
     const username = (currentUser?.username || 'user').trim();
+    const avatarUrl = (currentUser?.avatar_url || '').trim();
 
     const avatarEl = document.getElementById('profile-avatar');
     if (avatarEl) {
-        const avatarUrl = (currentUser?.avatar_url || '').trim();
+        // Only use fallback if avatarUrl is truly empty
         avatarEl.src = avatarUrl ? avatarUrl : `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0a86ff&color=fff&size=128&bold=true`;
     }
 
@@ -879,9 +869,14 @@ async function updateProfile(name, username) {
         throw new Error('Name and username cannot be empty');
     }
 
+    // Always include values in payload if they are changed or if we want to force update
     if (newName !== (currentUser?.name || '').trim()) payload.name = newName;
     if (newUsername !== (currentUser?.username || '').trim()) payload.username = newUsername;
-    if (profileDraft.avatar_url !== null && newAvatar !== (currentUser?.avatar_url || '').trim()) payload.avatar_url = newAvatar;
+    
+    // CRITICAL: Handle avatar_url specifically
+    if (profileDraft.avatar_url !== null) {
+        payload.avatar_url = newAvatar; // This is the Base64 from the cropper
+    }
 
     if (Object.keys(payload).length === 0) {
         return { name: currentUser?.name, username: currentUser?.username, avatar_url: currentUser?.avatar_url };
@@ -892,16 +887,31 @@ async function updateProfile(name, username) {
         body: JSON.stringify(payload)
     });
 
+    // Update LOCAL state immediately
     currentUser.name = result.name;
     currentUser.username = result.username;
     currentUser.avatar_url = result.avatar_url || null;
 
+    // Force update UI elements
     const headerName = document.getElementById('user-display-name');
     if (headerName) headerName.textContent = currentUser.name || currentUser.username;
 
+    // Reset draft and re-render
     profileDraft = { name: null, username: null, avatar_url: null };
     renderProfileCard();
     updateProfileSaveState();
+    
+    // Update Supabase metadata as well so it persists across sessions
+    if (supabaseClient) {
+        await supabaseClient.auth.updateUser({
+            data: { 
+                name: currentUser.name,
+                username: currentUser.username,
+                avatar_url: currentUser.avatar_url 
+            }
+        });
+    }
+
     return result;
 }
 
@@ -922,12 +932,6 @@ function showView(viewId) {
             item.classList.remove('active');
         }
     });
-
-    // Close mobile sidebar if open
-    const sidebar = document.getElementById('sidebar');
-    if (sidebar && sidebar.classList.contains('open')) {
-        toggleSidebar();
-    }
 
     // Scroll content to top
     const content = document.getElementById('content');
