@@ -2104,15 +2104,6 @@ canvas {
     padding: 0;
 }
 
-.profile-avatar-edit img {
-    width: 28px;
-    height: 28px;
-    object-fit: contain;
-    mix-blend-mode: screen; /* Removes black background */
-    filter: brightness(2) contrast(1.2); /* Makes the pencil pop */
-    pointer-events: none;
-}
-
 .profile-avatar-edit {
     position: absolute;
     right: 0;
@@ -2128,6 +2119,18 @@ canvas {
     padding: 0;
     transition: transform 0.3s ease;
 }
+
+.profile-avatar-edit img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    /* Force absolute removal of any background through multiple filters */
+    background: transparent !important;
+    mix-blend-mode: screen !important;
+    filter: brightness(2) contrast(1.5) !important;
+    pointer-events: none;
+}
+
 
 .profile-avatar-edit:hover {
     transform: scale(1.2) rotate(10deg);
