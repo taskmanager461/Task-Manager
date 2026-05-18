@@ -2073,48 +2073,64 @@ canvas {
 
 .profile-avatar-wrap {
     position: relative;
-    width: 72px;
-    height: 72px;
-    flex: 0 0 72px;
+    width: 100px;
+    height: 100px;
+    flex: 0 0 100px;
 }
 
 .profile-avatar-img {
-    width: 72px;
-    height: 72px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     border: 3px solid var(--primary);
     object-fit: cover;
     display: block;
+    background: var(--bg-secondary);
 }
 
 .profile-avatar-edit {
     position: absolute;
-    right: -6px;
-    bottom: -6px;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
+    right: 0;
+    bottom: 0;
+    width: 32px;
+    height: 32px;
     border: none;
-    background: transparent !important; /* Force no background */
+    background: transparent !important;
     display: grid;
     place-items: center;
     cursor: pointer;
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 5;
-    box-shadow: none !important; /* Remove any shadow that might look like background */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+    padding: 0;
 }
 
 .profile-avatar-edit img {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     object-fit: contain;
+    /* Remove any background/blending and just use the image with a brightness filter if needed */
     background: transparent !important;
-    mix-blend-mode: screen; /* Effectively removes black background in dark mode */
-    filter: brightness(1.5) contrast(1.2) drop-shadow(0 0 5px rgba(10, 134, 255, 0.5));
+    mix-blend-mode: screen; 
+    filter: brightness(1.5) contrast(1.2);
+    display: block;
 }
 
-.profile-avatar-edit:hover {
-    transform: scale(1.2) rotate(10deg);
+/* Ensure the button itself has zero styling */
+.profile-avatar-edit {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 32px;
+    height: 32px;
+    border: none !important;
+    background: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    z-index: 10;
+    padding: 0;
 }
 
 .profile-field-row-horizontal {
@@ -2147,25 +2163,66 @@ canvas {
 }
 
 .primary-link-btn-small {
-    background: linear-gradient(135deg, var(--primary), #00d2ff);
-    color: #ffffff;
-    border: none;
-    padding: 6px 14px;
-    border-radius: 100px;
+    background: rgba(10, 134, 255, 0.1);
+    color: var(--primary);
+    border: 1px solid rgba(10, 134, 255, 0.3);
+    padding: 8px 16px;
+    border-radius: 12px;
     font-size: 0.75rem;
-    font-weight: 900;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(10, 134, 255, 0.3);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     flex-shrink: 0;
 }
 
 .primary-link-btn-small:hover {
+    background: var(--primary);
+    color: #ffffff;
     transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(10, 134, 255, 0.5);
+    box-shadow: 0 8px 20px rgba(10, 134, 255, 0.4);
+    border-color: transparent;
+}
+
+.primary-link-btn-small:active {
+    transform: scale(0.95);
+}
+
+.btn.primary {
+    background: linear-gradient(135deg, var(--primary), #00d2ff);
+    color: #ffffff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 100px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(10, 134, 255, 0.4);
+}
+
+.btn.primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(10, 134, 255, 0.6);
     filter: brightness(1.1);
+}
+
+.btn.secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 12px 24px;
+    border-radius: 100px;
+    font-weight: 700;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--text-secondary);
 }
 
 input.editable {

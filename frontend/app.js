@@ -68,8 +68,8 @@ const translations = {
         update_password: "Update password",
         full_name: "Full Name",
         email: "Email",
-        change_name: "Change",
-        change_username: "Change",
+        change_name: "Change Name",
+        change_username: "Change Username",
         create_account: "Create Account",
         dashboard: "Dashboard",
         reports: "Reports",
@@ -167,8 +167,8 @@ const translations = {
         new_password: "Νέος κωδικός",
         confirm_password: "Επιβεβαίωση κωδικού",
         update_password: "Αλλαγή κωδικού",
-        change_name: "Αλλαγή",
-        change_username: "Αλλαγή",
+        change_name: "Αλλαγή Ονόματος",
+        change_username: "Αλλαγή Username",
         reset_code: "Κωδικός επαναφοράς",
         use_code: "Χρήση κωδικού",
         resend_verification: "Επανάληψη email",
@@ -3111,14 +3111,23 @@ function setupEventListeners() {
     const avatarBtn = document.getElementById('profile-avatar-edit');
     const avatarInput = document.getElementById('profile-avatar-input');
     if (avatarBtn && avatarInput) {
-        avatarBtn.addEventListener('click', () => avatarInput.click());
-        avatarInput.addEventListener('change', async () => {
-            const file = avatarInput.files && avatarInput.files[0];
-            if (!file) return;
+        avatarBtn.addEventListener('click', () => {
+            console.log("Avatar edit button clicked");
+            avatarInput.click();
+        });
+        avatarInput.addEventListener('change', (event) => {
+            console.log("Avatar input changed");
+            const file = event.target.files && event.target.files[0];
+            if (!file) {
+                console.log("No file selected");
+                return;
+            }
             
+            console.log("File selected:", file.name);
             currentCropFile = file;
             const reader = new FileReader();
             reader.onload = (e) => {
+                console.log("File read complete, opening crop modal");
                 const cropImg = document.getElementById('crop-image');
                 cropImg.src = e.target.result;
                 document.getElementById('crop-modal').classList.add('active');
