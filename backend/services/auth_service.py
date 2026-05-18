@@ -84,9 +84,20 @@ def _get_or_create_local_user(db: Session, sb_user: dict) -> User:
             name=raw_name or username,
         )
         db.add(user)
-        db.commit()
-        db.refresh(user)
-        return user
+        try:
+            db.commit()
+            db.refresh(user)
+            return user
+        except Exception:
+            db.rollback()
+            # Fallback: maybe another request created the user meanwhile
+            user = db.query(User).filter(User.supabase_id == sb_id).first()
+            if not user and email:
+                user = db.query(User).filter(User.email == email).first()
+            
+            if not user:
+                # If still not found, it might be a genuine conflict we can't auto-resolve here
+                raise
 
     changed = False
     if not user.supabase_id:
