@@ -679,7 +679,7 @@ async function handleAuthSessionChange(event, session) {
     // Performance: Optimistic UI - pre-fill currentUser from session metadata
     const meta = session.user.user_metadata || {};
     currentUser = {
-        user_id: session.user.id,
+        user_id: null, // Don't use UUID here, wait for backend sync
         email: session.user.email,
         name: meta.name || meta.full_name || session.user.email.split('@')[0],
         username: meta.username || session.user.email.split('@')[0],
@@ -962,7 +962,11 @@ function enableEdit(id) {
 
 async function loadInsights() {
     try {
-        const history = await apiFetch(`/score/history?user_id=${currentUser.user_id}&days=30`);
+        let url = `/score/history?days=30`;
+        if (currentUser.user_id && Number.isInteger(currentUser.user_id)) {
+            url += `&user_id=${currentUser.user_id}`;
+        }
+        const history = await apiFetch(url);
         renderInsights(history);
     } catch (err) {
         console.error('Insights load failed', err);
@@ -1559,7 +1563,11 @@ async function loadMe() {
 
         const pieEl = document.getElementById('task-pie-chart');
         if (pieEl) {
-            promises.push(apiFetch(`/tasks?user_id=${currentUser.user_id}&day=${today}`).then(tasks => updateTaskChart(tasks)));
+            let tasksUrl = `/tasks?day=${today}`;
+            if (currentUser.user_id && Number.isInteger(currentUser.user_id)) {
+                tasksUrl += `&user_id=${currentUser.user_id}`;
+            }
+            promises.push(apiFetch(tasksUrl).then(tasks => updateTaskChart(tasks)));
         }
 
         const trendEl = document.getElementById('weekly-trend-chart');
@@ -1711,7 +1719,11 @@ async function loadMissedTasks() {
             let message = `You missed ${data.count} task${data.count > 1 ? 's' : ''}`;
             
             const today = new Date().toISOString().split('T')[0];
-            const todayTasks = await apiFetch(`/tasks?user_id=${currentUser.user_id}&day=${today}`);
+            let url = `/tasks?day=${today}`;
+            if (currentUser.user_id && Number.isInteger(currentUser.user_id)) {
+                url += `&user_id=${currentUser.user_id}`;
+            }
+            const todayTasks = await apiFetch(url);
             const hasCompletedToday = todayTasks.some(t => t.status === 'completed');
             const streakValue = parseInt(document.getElementById('streak-value').textContent) || 0;
             
@@ -1810,7 +1822,11 @@ async function loadInsights() {
 
 async function loadWeeklyTrend() {
     try {
-        const scores = await apiFetch(`/score/history?user_id=${currentUser.user_id}&days=7`);
+        let url = `/score/history?days=7`;
+        if (currentUser.user_id && Number.isInteger(currentUser.user_id)) {
+            url += `&user_id=${currentUser.user_id}`;
+        }
+        const scores = await apiFetch(url);
         updateTrendChart(scores);
     } catch (err) {
         console.error('Trend load failed', err);
@@ -1961,7 +1977,10 @@ async function loadTasks() {
         const priority = document.getElementById('filter-priority').value;
         const status = document.getElementById('filter-status').value;
         
-        let url = `/tasks?user_id=${currentUser.user_id}&day=${today}`;
+        let url = `/tasks?day=${today}`;
+        if (currentUser.user_id && Number.isInteger(currentUser.user_id)) {
+            url += `&user_id=${currentUser.user_id}`;
+        }
         if (priority) url += `&priority=${priority}`;
         if (status) url += `&status=${status}`;
 
