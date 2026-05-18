@@ -2057,6 +2057,42 @@ canvas {
     margin-top: 0.5rem;
 }
 
+.profile-avatar-wrap {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    flex: 0 0 72px;
+}
+
+.profile-avatar-img {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 3px solid var(--primary);
+    object-fit: cover;
+    display: block;
+}
+
+.profile-avatar-edit {
+    position: absolute;
+    right: -6px;
+    bottom: -6px;
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-primary);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+}
+
+.profile-avatar-edit:hover {
+    transform: translateY(-1px);
+}
+
 /* Dashboard Calendar Container */
 .calendar-container {
     padding: 0.75rem 1rem !important;

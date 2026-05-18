@@ -68,11 +68,11 @@ const translations = {
         email: "Email",
         create_account: "Create Account",
         dashboard: "Dashboard",
-        reports: "REPORTS",
-        me: "ME",
-        tasks: "TASKS",
-        insights: "INSIGHTS",
-        settings: "SETTINGS",
+        reports: "Reports",
+        me: "Me",
+        tasks: "Tasks",
+        insights: "Insights",
+        settings: "Settings",
         logout: "Logout",
         trust_score: "Trust Score",
         streak: "Streak",
@@ -170,11 +170,11 @@ const translations = {
         email: "Email",
         create_account: "Δημιουργία Λογαριασμού",
         dashboard: "Πίνακας",
-        reports: "REPORTS",
-        me: "ME",
-        tasks: "TASKS",
-        insights: "INSIGHTS",
-        settings: "SETTINGS",
+        reports: "Αναφορές",
+        me: "Εγώ",
+        tasks: "Εργασίες",
+        insights: "Insights",
+        settings: "Ρυθμίσεις",
         logout: "Αποσύνδεση",
         trust_score: "Σκορ Εμπιστοσύνης",
         streak: "Σερί",
@@ -747,7 +747,8 @@ function renderProfileCard() {
 
     const avatarEl = document.getElementById('profile-avatar');
     if (avatarEl) {
-        avatarEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0a86ff&color=fff&size=128&bold=true`;
+        const avatarUrl = (currentUser?.avatar_url || '').trim();
+        avatarEl.src = avatarUrl ? avatarUrl : `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0a86ff&color=fff&size=128&bold=true`;
     }
 
     const nameEl = document.getElementById('profile-name');
@@ -761,15 +762,87 @@ function renderProfileCard() {
 
     const usernameInput = document.getElementById('profile-username-input');
     if (usernameInput) usernameInput.value = username;
+
+    updateProfileSaveState();
+}
+
+let profileDraft = { name: null, username: null, avatar_url: null };
+
+function hasProfileChanges() {
+    const currentName = (currentUser?.name || '').trim();
+    const currentUsername = (currentUser?.username || '').trim();
+    const currentAvatar = (currentUser?.avatar_url || '').trim();
+    const draftName = (profileDraft.name ?? currentName).trim();
+    const draftUsername = (profileDraft.username ?? currentUsername).trim();
+    const draftAvatar = (profileDraft.avatar_url ?? currentAvatar).trim();
+    return draftName !== currentName || draftUsername !== currentUsername || draftAvatar !== currentAvatar;
+}
+
+function updateProfileSaveState() {
+    const btn = document.getElementById('profile-save-btn');
+    const cancelBtn = document.getElementById('profile-cancel-btn');
+    if (!btn || !cancelBtn) return;
+    const changed = hasProfileChanges();
+    btn.style.display = changed ? '' : 'none';
+    btn.disabled = !changed;
+    cancelBtn.style.display = changed ? '' : 'none';
+    cancelBtn.disabled = !changed;
+}
+
+async function compressImageToDataUrl(file, size = 256, quality = 0.85) {
+    const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('Failed to read image'));
+        reader.readAsDataURL(file);
+    });
+
+    const img = await new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = () => reject(new Error('Invalid image'));
+        image.src = dataUrl;
+    });
+
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#0a86ff';
+    ctx.fillRect(0, 0, size, size);
+
+    const minSide = Math.min(img.width, img.height);
+    const sx = Math.floor((img.width - minSide) / 2);
+    const sy = Math.floor((img.height - minSide) / 2);
+    ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+
+    return canvas.toDataURL('image/jpeg', quality);
+}
+
+function cancelProfileChanges() {
+    profileDraft = { name: null, username: null, avatar_url: null };
+    renderProfileCard();
+    const fileInput = document.getElementById('profile-avatar-input');
+    if (fileInput) fileInput.value = '';
+    updateProfileSaveState();
 }
 
 async function updateProfile(name, username) {
-    const payload = {
-        name: (name || '').trim(),
-        username: (username || '').trim()
-    };
-    if (!payload.name || !payload.username) {
+    const payload = {};
+    const newName = (name || '').trim();
+    const newUsername = (username || '').trim();
+    const newAvatar = (profileDraft.avatar_url || '').trim();
+
+    if (!newName || !newUsername) {
         throw new Error('Name and username cannot be empty');
+    }
+
+    if (newName !== (currentUser?.name || '').trim()) payload.name = newName;
+    if (newUsername !== (currentUser?.username || '').trim()) payload.username = newUsername;
+    if (profileDraft.avatar_url !== null && newAvatar !== (currentUser?.avatar_url || '').trim()) payload.avatar_url = newAvatar;
+
+    if (Object.keys(payload).length === 0) {
+        return { name: currentUser?.name, username: currentUser?.username, avatar_url: currentUser?.avatar_url };
     }
 
     const result = await apiFetch('/identity/profile', {
@@ -779,11 +852,14 @@ async function updateProfile(name, username) {
 
     currentUser.name = result.name;
     currentUser.username = result.username;
+    currentUser.avatar_url = result.avatar_url || null;
 
     const headerName = document.getElementById('user-display-name');
     if (headerName) headerName.textContent = currentUser.name || currentUser.username;
 
+    profileDraft = { name: null, username: null, avatar_url: null };
     renderProfileCard();
+    updateProfileSaveState();
     return result;
 }
 
@@ -1021,6 +1097,53 @@ function checkReminders() {
                 showToast('Profile updated', 'success');
             } catch (err) {
                 showToast(err.message || 'Failed to update profile', 'error');
+            } finally {
+                showLoading(false);
+            }
+        });
+    }
+
+    const cancelBtn = document.getElementById('profile-cancel-btn');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => {
+            cancelProfileChanges();
+            showToast('Changes discarded', 'info');
+        });
+    }
+
+    const nameInput = document.getElementById('profile-name-input');
+    if (nameInput) {
+        nameInput.addEventListener('input', () => {
+            profileDraft.name = nameInput.value;
+            updateProfileSaveState();
+        });
+    }
+
+    const usernameInput = document.getElementById('profile-username-input');
+    if (usernameInput) {
+        usernameInput.addEventListener('input', () => {
+            profileDraft.username = usernameInput.value;
+            updateProfileSaveState();
+        });
+    }
+
+    const avatarBtn = document.getElementById('profile-avatar-edit');
+    const avatarInput = document.getElementById('profile-avatar-input');
+    if (avatarBtn && avatarInput) {
+        avatarBtn.addEventListener('click', () => avatarInput.click());
+        avatarInput.addEventListener('change', async () => {
+            const file = avatarInput.files && avatarInput.files[0];
+            if (!file) return;
+            try {
+                showLoading(true);
+                const dataUrl = await compressImageToDataUrl(file, 256, 0.85);
+                profileDraft.avatar_url = dataUrl;
+                const avatarEl = document.getElementById('profile-avatar');
+                if (avatarEl) avatarEl.src = dataUrl;
+                updateProfileSaveState();
+                showToast('Photo updated (pending save)', 'info');
+            } catch (err) {
+                showToast(err.message || 'Failed to process image', 'error');
             } finally {
                 showLoading(false);
             }
