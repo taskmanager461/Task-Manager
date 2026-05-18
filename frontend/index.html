@@ -6,6 +6,8 @@
     <title>Tobedone</title>
     <link rel="stylesheet" href="styles.css?v=3.9.2">
     <link rel="stylesheet" href="/src/styles/logo.css?v=4.5">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/png" href="/assets/app-logo-20260501.png?v=5">
     <meta name="theme-color" content="#000000">
@@ -750,6 +752,22 @@
         </div>
     </div>
 
+    <!-- Crop Image Modal -->
+    <div id="crop-modal" class="modal">
+        <div class="modal-content glass-card" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Adjust Profile Photo</h3>
+            </div>
+            <div class="crop-container" style="max-height: 400px; overflow: hidden; margin: 1rem 0; border-radius: 12px;">
+                <img id="crop-image" src="" style="max-width: 100%; display: block;">
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button type="button" id="crop-cancel-btn" class="btn secondary" style="flex: 1;">Cancel</button>
+                <button type="button" id="crop-save-btn" class="btn primary" style="flex: 1;">Crop & Save</button>
+            </div>
+        </div>
+    </div>
+
     <div id="loading-overlay" class="loading-overlay">
         <div class="loading-content">
             <img class="loading-logo logo" src="/assets/app-logo-20260501.png?v=3" alt="Tobedone logo">
@@ -760,6 +778,7 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script src="app.js?v=3.9.2"></script>
 </body>
 </html>

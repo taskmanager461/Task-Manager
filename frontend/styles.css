@@ -2133,6 +2133,7 @@ canvas {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: block;
 }
 
 .profile-display-username {
@@ -2142,6 +2143,7 @@ canvas {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: block;
 }
 
 .primary-link-btn-small {

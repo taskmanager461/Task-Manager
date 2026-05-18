@@ -38,6 +38,8 @@ let currentGoalForReflection = null;
 let identityInitialized = false;
 let identitySnapshot = { level: 1, unlockedBadgeIds: [] };
 let smartPersonalizationCache = { timestamp: 0, data: null };
+let cropper = null;
+let currentCropFile = null;
 
 const translations = {
     en: {
@@ -3113,19 +3115,63 @@ function setupEventListeners() {
         avatarInput.addEventListener('change', async () => {
             const file = avatarInput.files && avatarInput.files[0];
             if (!file) return;
-            try {
-                showLoading(true);
-                const dataUrl = await compressImageToDataUrl(file, 256, 0.85);
-                profileDraft.avatar_url = dataUrl;
-                const avatarEl = document.getElementById('profile-avatar');
-                if (avatarEl) avatarEl.src = dataUrl;
-                updateProfileSaveState();
-                showToast('Photo updated (pending save)', 'info');
-            } catch (err) {
-                showToast(err.message || 'Failed to process image', 'error');
-            } finally {
-                showLoading(false);
-            }
+            
+            currentCropFile = file;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const cropImg = document.getElementById('crop-image');
+                cropImg.src = e.target.result;
+                document.getElementById('crop-modal').classList.add('active');
+                
+                if (cropper) cropper.destroy();
+                cropper = new Cropper(cropImg, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    dragMode: 'move',
+                    autoCropArea: 1,
+                    restore: false,
+                    guides: false,
+                    center: true,
+                    highlight: false,
+                    cropBoxMovable: true,
+                    cropBoxResizable: true,
+                    toggleDragModeOnDblclick: false,
+                });
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    const cropCancelBtn = document.getElementById('crop-cancel-btn');
+    if (cropCancelBtn) {
+        cropCancelBtn.addEventListener('click', () => {
+            document.getElementById('crop-modal').classList.remove('active');
+            if (cropper) cropper.destroy();
+            cropper = null;
+        });
+    }
+
+    const cropSaveBtn = document.getElementById('crop-save-btn');
+    if (cropSaveBtn) {
+        cropSaveBtn.addEventListener('click', () => {
+            if (!cropper) return;
+            
+            const canvas = cropper.getCroppedCanvas({
+                width: 256,
+                height: 256,
+            });
+            
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+            profileDraft.avatar_url = dataUrl;
+            const avatarEl = document.getElementById('profile-avatar');
+            if (avatarEl) avatarEl.src = dataUrl;
+            
+            updateProfileSaveState();
+            showToast('Photo adjusted (pending save)', 'info');
+            
+            document.getElementById('crop-modal').classList.remove('active');
+            cropper.destroy();
+            cropper = null;
         });
     }
 
