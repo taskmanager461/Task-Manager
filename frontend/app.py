@@ -37,8 +37,6 @@ MENU = {
 }
 T = TypeVar("T")
 
-
-# --- CACHING HELPERS FOR PERFORMANCE ---
 @st.cache_data(ttl=60)
 def cached_score_history(user_id: int, _client: APIClient):
     return _client.score_history(user_id)
@@ -787,9 +785,6 @@ def me_page(client: APIClient, user_id: int) -> None:
     render_me_achievements(score, tasks)
 
 
-# End of Pages logic
-
-
 @st.fragment
 def render_weekly_insights(client: APIClient, theme):
     # --- Load Smart Insights (Cached) ---
@@ -1245,14 +1240,12 @@ def main() -> None:
         render_auth(client)
         return
 
-    # Logged in - Render App
     render_sidebar()
     render_bottom_nav()
     render_top_header()
     
     user_id = int(st.session_state.user_id)
     
-    # Page Routing
     with st.spinner("🚀 Optimizing..."):
         if st.session_state.menu == "tasks":
             tasks_analytics_page(client, user_id)

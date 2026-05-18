@@ -24,7 +24,7 @@ let currentLang = localStorage.getItem('tm_lang') || 'en';
 let taskChart = null;
 let trendChart = null;
 let insightsChart = null;
-let currentView = 'reports';
+let currentView = 'tasks';
 let cachedTasks = []; // Performance: Cache tasks locally
 let cachedGoals = [];
 let cachedHabits = [];
@@ -68,10 +68,11 @@ const translations = {
         email: "Email",
         create_account: "Create Account",
         dashboard: "Dashboard",
-        reports: "Reports",
-        me: "Me",
-        tasks: "Tasks",
-        settings: "Settings",
+        reports: "REPORTS",
+        me: "ME",
+        tasks: "TASKS",
+        insights: "INSIGHTS",
+        settings: "SETTINGS",
         logout: "Logout",
         trust_score: "Trust Score",
         streak: "Streak",
@@ -101,7 +102,6 @@ const translations = {
         overdue: "Overdue",
         all: "All",
         filter_by: "Filter by",
-        insights: "Insights",
         productive_day: "Most Productive Day",
         productive_hour: "Most Productive Hour",
         trends: "Completion Trends",
@@ -169,11 +169,12 @@ const translations = {
         full_name: "Ονοματεπώνυμο",
         email: "Email",
         create_account: "Δημιουργία Λογαριασμού",
-        dashboard: "Ταμπλό",
-        reports: "Αναφορές",
-        me: "Εγώ",
-        tasks: "Εργασίες",
-        settings: "Ρυθμίσεις",
+        dashboard: "Πίνακας",
+        reports: "REPORTS",
+        me: "ME",
+        tasks: "TASKS",
+        insights: "INSIGHTS",
+        settings: "SETTINGS",
         logout: "Αποσύνδεση",
         trust_score: "Σκορ Εμπιστοσύνης",
         streak: "Σερί",
@@ -736,7 +737,54 @@ function renderApp() {
     
     // Initial view
     updateUILanguage();
-    showView('reports');
+    renderProfileCard();
+    showView('tasks');
+}
+
+function renderProfileCard() {
+    const name = (currentUser?.name || currentUser?.username || 'User').trim();
+    const username = (currentUser?.username || 'user').trim();
+
+    const avatarEl = document.getElementById('profile-avatar');
+    if (avatarEl) {
+        avatarEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0a86ff&color=fff&size=128&bold=true`;
+    }
+
+    const nameEl = document.getElementById('profile-name');
+    if (nameEl) nameEl.textContent = name;
+
+    const usernameEl = document.getElementById('profile-username');
+    if (usernameEl) usernameEl.textContent = `@${username}`;
+
+    const nameInput = document.getElementById('profile-name-input');
+    if (nameInput) nameInput.value = name;
+
+    const usernameInput = document.getElementById('profile-username-input');
+    if (usernameInput) usernameInput.value = username;
+}
+
+async function updateProfile(name, username) {
+    const payload = {
+        name: (name || '').trim(),
+        username: (username || '').trim()
+    };
+    if (!payload.name || !payload.username) {
+        throw new Error('Name and username cannot be empty');
+    }
+
+    const result = await apiFetch('/identity/profile', {
+        method: 'PATCH',
+        body: JSON.stringify(payload)
+    });
+
+    currentUser.name = result.name;
+    currentUser.username = result.username;
+
+    const headerName = document.getElementById('user-display-name');
+    if (headerName) headerName.textContent = currentUser.name || currentUser.username;
+
+    renderProfileCard();
+    return result;
 }
 
 function showView(viewId) {
@@ -957,6 +1005,24 @@ function checkReminders() {
             } else if (diffMinutes < -90 && !notifiedHabits.has(`nudge-${habit.id}`)) {
                 showToast(`Gentle nudge: keep "${habit.title}" on track today`, 'info');
                 notifiedHabits.add(`nudge-${habit.id}`);
+            }
+        });
+    }
+
+    const profileForm = document.getElementById('profile-edit-form');
+    if (profileForm) {
+        profileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                showLoading(true);
+                const name = document.getElementById('profile-name-input')?.value || '';
+                const username = document.getElementById('profile-username-input')?.value || '';
+                await updateProfile(name, username);
+                showToast('Profile updated', 'success');
+            } catch (err) {
+                showToast(err.message || 'Failed to update profile', 'error');
+            } finally {
+                showLoading(false);
             }
         });
     }
@@ -1261,7 +1327,7 @@ async function updatePassword(newPassword, confirmPassword) {
 }
 
 function resetUiToDefaults() {
-    currentView = 'reports';
+    currentView = 'tasks';
     currentTasksGoalsTab = 'tasks';
     calendarDate = new Date();
     dashboardCalendarDate = new Date();
@@ -1365,6 +1431,7 @@ async function loadReports() {
 
 async function loadMe() {
     try {
+        renderProfileCard();
         await Promise.all([
             loadIdentityProfile(),
             loadDashboardPersonalization(),
