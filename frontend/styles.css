@@ -451,6 +451,11 @@ p { color: var(--text-secondary); font-size: 0.9375rem; }
     justify-content: space-between;
     padding: 0 1.5rem;
     z-index: 1000;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.top-bar.hidden {
+    transform: translateY(-100%);
 }
 
 .top-bar-left {
@@ -489,11 +494,29 @@ p { color: var(--text-secondary); font-size: 0.9375rem; }
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.settings-trigger {
-    font-size: 1.2rem;
+.top-bar-right {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
 }
 
-/* Bottom Navigation */
+.settings-trigger i {
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.settings-trigger:hover i {
+    transform: rotate(90deg);
+}
+
+.nav-item.active .settings-trigger i {
+    animation: spin 4s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
 .bottom-nav {
     position: fixed;
     bottom: 2rem;
@@ -517,17 +540,23 @@ p { color: var(--text-secondary); font-size: 0.9375rem; }
 
 .bottom-nav-glow {
     position: absolute;
-    bottom: -20px;
-    left: 20%;
-    right: 20%;
-    height: 40px;
+    bottom: -15px;
+    left: 10%;
+    right: 10%;
+    height: 25px;
     background: var(--primary);
-    filter: blur(50px);
-    opacity: 0.35;
+    filter: blur(45px);
+    opacity: 0.6; /* Increased opacity for better lighting */
     z-index: -1;
     pointer-events: none;
     transition: all 0.5s ease;
+    border-radius: 50%;
 }
+
+.nav-item.active ~ .bottom-nav-glow {
+    /* Optional: move glow with active item */
+}
+
 
 .nav-item {
     display: flex;

@@ -728,6 +728,27 @@ async function checkAuth() {
 }
 
 // --- UI Navigation ---
+let lastScrollTop = 0;
+const scrollThreshold = 10;
+
+function handleContentScroll(e) {
+    const topBar = document.querySelector('.top-bar');
+    if (!topBar) return;
+
+    const scrollTop = e.target.scrollTop;
+    
+    if (Math.abs(lastScrollTop - scrollTop) <= scrollThreshold) return;
+
+    if (scrollTop > lastScrollTop && scrollTop > 70) {
+        // Scroll Down - Hide
+        topBar.classList.add('hidden');
+    } else {
+        // Scroll Up - Show
+        topBar.classList.remove('hidden');
+    }
+    lastScrollTop = scrollTop;
+}
+
 function renderLogin() {
     document.getElementById('auth-page').classList.add('active');
     document.getElementById('main-app').classList.remove('active');
@@ -935,7 +956,14 @@ function showView(viewId) {
 
     // Scroll content to top
     const content = document.getElementById('content');
-    if (content) content.scrollTop = 0;
+    if (content) {
+        content.scrollTop = 0;
+        // Attach scroll listener once
+        if (!content.dataset.scrollBound) {
+            content.addEventListener('scroll', handleContentScroll);
+            content.dataset.scrollBound = "true";
+        }
+    }
 
     // Load Data
     if (viewId === 'reports') loadReports();
@@ -3306,19 +3334,32 @@ let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    document.getElementById('install-btn').style.display = 'block';
+    const installBtn = document.getElementById('install-btn');
+    const topInstallBtn = document.getElementById('top-install-btn');
+    if (installBtn) installBtn.style.display = 'block';
+    if (topInstallBtn) topInstallBtn.style.display = 'grid'; // matches .icon-btn display
 });
 
-document.getElementById('install-btn').addEventListener('click', async () => {
+async function handleInstallClick() {
     if (deferredPrompt) {
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
         if (outcome === 'accepted') {
             deferredPrompt = null;
-            document.getElementById('install-btn').style.display = 'none';
+            const installBtn = document.getElementById('install-btn');
+            const topInstallBtn = document.getElementById('top-install-btn');
+            if (installBtn) installBtn.style.display = 'none';
+            if (topInstallBtn) topInstallBtn.style.display = 'none';
         }
     }
-});
+}
+
+const installBtn = document.getElementById('install-btn');
+if (installBtn) installBtn.addEventListener('click', handleInstallClick);
+
+const topInstallBtn = document.getElementById('top-install-btn');
+if (topInstallBtn) topInstallBtn.addEventListener('click', handleInstallClick);
+
 
 // --- Share Functions ---
 let shareData = {
