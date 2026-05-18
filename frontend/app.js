@@ -789,14 +789,14 @@ function renderProfileCard() {
     if (usernameEl) usernameEl.textContent = `@${username}`;
 
     const nameInput = document.getElementById('profile-name-input');
-    if (nameInput) {
+    if (nameInput && document.activeElement !== nameInput) {
         nameInput.value = name;
         nameInput.setAttribute('readonly', true);
         nameInput.classList.remove('editable');
     }
 
     const usernameInput = document.getElementById('profile-username-input');
-    if (usernameInput) {
+    if (usernameInput && document.activeElement !== usernameInput) {
         usernameInput.value = username;
         usernameInput.setAttribute('readonly', true);
         usernameInput.classList.remove('editable');
