@@ -62,3 +62,5 @@ def ensure_schema_compatibility() -> None:
                 connection.execute(text("ALTER TABLE users ADD COLUMN level INTEGER NOT NULL DEFAULT 1"))
             if "trust_score" not in user_columns:
                 connection.execute(text("ALTER TABLE users ADD COLUMN trust_score FLOAT NOT NULL DEFAULT 0"))
+            if "avatar_url" not in user_columns:
+                connection.execute(text("ALTER TABLE users ADD COLUMN avatar_url TEXT"))

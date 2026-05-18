@@ -34,7 +34,9 @@ def update_profile(
                 from fastapi import HTTPException
                 raise HTTPException(status_code=400, detail="Username already taken")
             current_user.username = new_username
+    if payload.avatar_url is not None:
+        current_user.avatar_url = payload.avatar_url.strip() if payload.avatar_url.strip() else None
     
     db.commit()
     db.refresh(current_user)
-    return {"message": "Profile updated", "name": current_user.name, "username": current_user.username}
+    return {"message": "Profile updated", "name": current_user.name, "username": current_user.username, "avatar_url": current_user.avatar_url}

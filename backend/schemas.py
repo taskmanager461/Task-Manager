@@ -101,6 +101,7 @@ class GoalUpdate(BaseModel):
 class ProfileUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=2, max_length=100)
     username: Optional[str] = Field(None, min_length=3, max_length=50)
+    avatar_url: Optional[str] = Field(None, max_length=200000)
 
 
 class GoalResponse(BaseModel):

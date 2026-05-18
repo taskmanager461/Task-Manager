@@ -23,4 +23,5 @@ def me(current_user: User = Depends(get_current_user)):
         "user_id": current_user.id,
         "username": current_user.username,
         "name": current_user.name,
+        "avatar_url": getattr(current_user, "avatar_url", None),
     }
