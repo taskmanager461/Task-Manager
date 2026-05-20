@@ -667,24 +667,49 @@ async function handleAuthSessionChange(event, session) {
         return;
     }
 
-    // Performance: Optimistic UI - pre-fill currentUser from session metadata
-    const meta = session.user.user_metadata || {};
-    currentUser = {
-        user_id: null, // Don't use UUID here, wait for backend sync
-        email: session.user.email,
-        name: meta.name || meta.full_name || session.user.email.split('@')[0],
-        username: meta.username || session.user.email.split('@')[0],
-        avatar_url: meta.avatar_url || null
-    };
+    // Only call renderApp() if we're not already in the app
+    // This prevents resetting the view on token refreshes
+    const mainApp = document.getElementById('main-app');
+    const isAlreadyInApp = mainApp && mainApp.classList.contains('active');
 
-    // Immediately show app with what we have
-    renderApp();
+    if (!isAlreadyInApp) {
+        // Performance: Optimistic UI - pre-fill currentUser from session metadata
+        const meta = session.user.user_metadata || {};
+        currentUser = {
+            user_id: null, // Don't use UUID here, wait for backend sync
+            email: session.user.email,
+            name: meta.name || meta.full_name || session.user.email.split('@')[0],
+            username: meta.username || session.user.email.split('@')[0],
+            avatar_url: meta.avatar_url || null
+        };
+
+        // Immediately show app with what we have
+        renderApp();
+    } else {
+        // Just update the currentUser data without re-rendering the whole app
+        const meta = session.user.user_metadata || {};
+        if (!currentUser) {
+            currentUser = {
+                user_id: null,
+                email: session.user.email,
+                name: meta.name || meta.full_name || session.user.email.split('@')[0],
+                username: meta.username || session.user.email.split('@')[0],
+                avatar_url: meta.avatar_url || null
+            };
+        } else {
+            currentUser.email = session.user.email;
+            currentUser.name = meta.name || meta.full_name || session.user.email.split('@')[0];
+            currentUser.username = meta.username || session.user.email.split('@')[0];
+            currentUser.avatar_url = meta.avatar_url || null;
+        }
+    }
 
     // Then sync in background to get full profile
     try {
         await syncCurrentUserFromApi();
         // Update UI if anything changed after sync
-        document.getElementById('user-display-name').textContent = currentUser.name || currentUser.username;
+        const userNameEl = document.getElementById('user-display-name');
+        if (userNameEl) userNameEl.textContent = currentUser.name || currentUser.username;
         renderProfileCard();
     } catch (err) {
         console.error('Background sync failed', err);
@@ -731,11 +756,21 @@ async function checkAuth() {
 let lastScrollTop = 0;
 const scrollThreshold = 10;
 
+function updateScrollProgress(scrollEl) {
+    const fill = document.getElementById('scroll-progress-fill');
+    if (!fill || !scrollEl) return;
+    const maxScroll = scrollEl.scrollHeight - scrollEl.clientHeight;
+    const ratio = maxScroll > 0 ? (scrollEl.scrollTop / maxScroll) : 0;
+    const clamped = Math.max(0, Math.min(1, ratio));
+    fill.style.transform = `scaleX(${clamped})`;
+}
+
 function handleContentScroll(e) {
     const topBar = document.querySelector('.top-bar');
     if (!topBar) return;
 
     const scrollTop = e.target.scrollTop;
+    updateScrollProgress(e.target);
     
     if (Math.abs(lastScrollTop - scrollTop) <= scrollThreshold) return;
 
@@ -958,6 +993,7 @@ function showView(viewId) {
     const content = document.getElementById('content');
     if (content) {
         content.scrollTop = 0;
+        updateScrollProgress(content);
         // Attach scroll listener once
         if (!content.dataset.scrollBound) {
             content.addEventListener('scroll', handleContentScroll);
