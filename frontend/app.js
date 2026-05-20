@@ -753,65 +753,6 @@ async function checkAuth() {
 }
 
 // --- UI Navigation ---
-let lastScrollTop = 0;
-const scrollThreshold = 3;
-let scrollRafId = 0;
-let pendingScrollTop = 0;
-let pendingMaxScroll = 0;
-
-function updateScrollProgressFromMetrics(scrollTop, maxScroll) {
-    const fill = document.getElementById('scroll-progress-fill');
-    if (!fill) return;
-    const ratio = maxScroll > 0 ? (scrollTop / maxScroll) : 0;
-    const clamped = Math.max(0, Math.min(1, ratio));
-    fill.style.transform = `scaleX(${clamped})`;
-}
-
-function updateScrollProgress(scrollEl) {
-    if (!scrollEl) return;
-    const maxScroll = scrollEl.scrollHeight - scrollEl.clientHeight;
-    updateScrollProgressFromMetrics(scrollEl.scrollTop, maxScroll);
-}
-
-function getWindowScrollMetrics() {
-    const doc = document.documentElement;
-    const scrollTop = window.scrollY || doc.scrollTop || document.body.scrollTop || 0;
-    const maxScroll = Math.max(0, doc.scrollHeight - doc.clientHeight);
-    return { scrollTop, maxScroll };
-}
-
-function applyScrollUI(scrollTop, maxScroll) {
-    const topBar = document.querySelector('.top-bar');
-    if (!topBar) return;
-    updateScrollProgressFromMetrics(scrollTop, maxScroll);
-
-    if (Math.abs(lastScrollTop - scrollTop) <= scrollThreshold) return;
-    if (scrollTop > lastScrollTop && scrollTop > 40) topBar.classList.add('hidden');
-    else topBar.classList.remove('hidden');
-    lastScrollTop = scrollTop;
-}
-
-function scheduleScrollUI(scrollTop, maxScroll) {
-    pendingScrollTop = scrollTop;
-    pendingMaxScroll = maxScroll;
-    if (scrollRafId) return;
-    scrollRafId = requestAnimationFrame(() => {
-        scrollRafId = 0;
-        applyScrollUI(pendingScrollTop, pendingMaxScroll);
-    });
-}
-
-function handleWindowScroll() {
-    const { scrollTop, maxScroll } = getWindowScrollMetrics();
-    scheduleScrollUI(scrollTop, maxScroll);
-}
-
-function handleContentScroll(e) {
-    const el = e.target;
-    const scrollTop = el.scrollTop;
-    const maxScroll = el.scrollHeight - el.clientHeight;
-    scheduleScrollUI(scrollTop, maxScroll);
-}
 
 function renderLogin() {
     document.getElementById('auth-page').classList.add('active');
@@ -1023,20 +964,6 @@ function showView(viewId) {
     if (content) {
         content.scrollTop = 0;
         window.scrollTo(0, 0);
-        lastScrollTop = 0;
-        const topBar = document.querySelector('.top-bar');
-        if (topBar) topBar.classList.remove('hidden');
-        updateScrollProgress(content);
-        // Attach scroll listener once
-        if (!content.dataset.scrollBound) {
-            content.addEventListener('scroll', handleContentScroll);
-            content.dataset.scrollBound = "true";
-        }
-    }
-
-    if (!document.body.dataset.windowScrollBound) {
-        window.addEventListener('scroll', handleWindowScroll, { passive: true });
-        document.body.dataset.windowScrollBound = "true";
     }
 
     // Load Data
