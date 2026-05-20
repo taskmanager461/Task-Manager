@@ -3231,6 +3231,34 @@ function setupEventListeners() {
         });
     }
 
+    const contentEl = document.getElementById('content');
+    const bottomNav = document.querySelector('.bottom-nav');
+    if (contentEl && bottomNav) {
+        bottomNav.addEventListener('wheel', (e) => {
+            contentEl.scrollTop += e.deltaY;
+        }, { passive: true });
+
+        let navTouchY = null;
+        bottomNav.addEventListener('touchstart', (e) => {
+            if (!e.touches || e.touches.length !== 1) return;
+            navTouchY = e.touches[0].clientY;
+        }, { passive: true });
+        bottomNav.addEventListener('touchmove', (e) => {
+            if (navTouchY === null) return;
+            if (!e.touches || e.touches.length !== 1) return;
+            const nextY = e.touches[0].clientY;
+            const delta = navTouchY - nextY;
+            navTouchY = nextY;
+            contentEl.scrollTop += delta;
+        }, { passive: true });
+        bottomNav.addEventListener('touchend', () => {
+            navTouchY = null;
+        }, { passive: true });
+        bottomNav.addEventListener('touchcancel', () => {
+            navTouchY = null;
+        }, { passive: true });
+    }
+
     // Set default date/time in form
     const taskDateInput = document.getElementById('task-date');
     const taskTimeInput = document.getElementById('task-time');

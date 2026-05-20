@@ -142,12 +142,17 @@ body.light-mode .bg-line {
     -webkit-tap-highlight-color: transparent;
 }
 
+html {
+    height: 100%;
+}
+
 body {
     background-color: var(--background);
     color: var(--text-primary);
     line-height: 1.5;
     overflow: hidden;
     min-height: 100vh;
+    height: 100%;
     width: 100vw;
     position: relative;
 }
@@ -163,6 +168,14 @@ body::before {
         radial-gradient(120% 90% at 84% 14%, rgba(124, 58, 237, 0.18), transparent 60%),
         radial-gradient(140% 110% at 50% 120%, rgba(26, 168, 255, 0.10), transparent 62%),
         radial-gradient(100% 80% at 50% 120%, rgba(4, 8, 20, 0.70), rgba(4, 8, 20, 0.96));
+}
+
+body.light-mode::before {
+    background:
+        radial-gradient(120% 90% at 18% 10%, rgba(11, 191, 168, 0.16), transparent 58%),
+        radial-gradient(120% 90% at 84% 14%, rgba(192, 38, 211, 0.12), transparent 60%),
+        radial-gradient(140% 110% at 50% 120%, rgba(37, 99, 235, 0.10), transparent 62%),
+        radial-gradient(110% 90% at 50% 120%, rgba(246, 248, 255, 0.82), rgba(246, 248, 255, 0.98));
 }
 
 /* Chaotic Futuristic Background Lines */
@@ -488,7 +501,10 @@ body.dark-mode .auth-container {
     border: 1px solid rgba(255, 255, 255, 0.10);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
+    pointer-events: none;
 }
+
+.top-actions-float .icon-btn { pointer-events: auto; }
 
 body.light-mode .top-actions-float {
     background: rgba(255, 255, 255, 0.56);
@@ -585,7 +601,10 @@ body.light-mode .corner-logo {
     padding: 0 1rem;
     z-index: 1000;
     box-shadow: 0 30px 70px -14px rgba(0, 0, 0, 0.72);
+    pointer-events: none;
 }
+
+.bottom-nav .nav-item { pointer-events: auto; }
 
 .bottom-nav::before {
     content: "";
@@ -701,6 +720,8 @@ body.light-mode .corner-logo {
     display: flex;
     flex-direction: column;
     position: relative;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
 }
 
 @media (max-width: 600px) {
@@ -867,6 +888,18 @@ body.dark-mode .view-header {
     border: 1px solid rgba(255, 255, 255, 0.12);
     background: rgba(16, 18, 28, 0.45);
     box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+}
+
+body.light-mode .hero-metric {
+    background: rgba(255, 255, 255, 0.70);
+    border-color: rgba(7, 10, 18, 0.10);
+    box-shadow: 0 18px 60px rgba(2, 6, 23, 0.12);
+}
+
+body.light-mode .hero-metric::before {
+    background: radial-gradient(120% 120% at 10% 0%, rgba(7, 10, 18, 0.05), transparent 55%),
+                radial-gradient(120% 120% at 90% 20%, rgba(37, 99, 235, 0.08), transparent 60%);
+    opacity: 1;
 }
 
 .hero-metric::before {
@@ -1927,6 +1960,10 @@ canvas {
     overflow: hidden;
 }
 
+body.light-mode .identity-stat-item {
+    background: rgba(7, 10, 18, 0.03);
+}
+
 .identity-stat-item::before {
     content: '';
     position: absolute;
@@ -2006,6 +2043,10 @@ canvas {
     background: rgba(255, 255, 255, 0.03);
     color: var(--text-primary);
     font-size: 0.84rem;
+}
+
+body.light-mode .for-you-item {
+    background: rgba(7, 10, 18, 0.03);
 }
 
 .habit-list {
@@ -2223,6 +2264,11 @@ canvas {
     object-fit: cover;
     display: block;
     background: var(--bg-secondary);
+    box-shadow: 0 0 0 5px rgba(47, 107, 255, 0.10), 0 18px 44px rgba(0, 0, 0, 0.45), 0 0 22px rgba(47, 107, 255, 0.18);
+}
+
+body.light-mode .profile-avatar-img {
+    box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.10), 0 18px 44px rgba(2, 6, 23, 0.16), 0 0 18px rgba(37, 99, 235, 0.12);
 }
 
 .profile-avatar-edit {
@@ -2308,9 +2354,11 @@ canvas {
 }
 
 .primary-link-btn-small {
-    background: rgba(47, 107, 255, 0.12);
+    border: 1px solid transparent;
+    background:
+        linear-gradient(rgba(16, 18, 28, 0.32), rgba(16, 18, 28, 0.24)) padding-box,
+        linear-gradient(135deg, rgba(47, 107, 255, 0.70), rgba(26, 168, 255, 0.55), rgba(124, 58, 237, 0.55)) border-box;
     color: var(--text-primary);
-    border: 1px solid rgba(255, 255, 255, 0.12);
     padding: 10px 18px;
     border-radius: 100px;
     font-size: 0.7rem;
@@ -2322,20 +2370,83 @@ canvas {
     cursor: pointer;
     flex-shrink: 0;
     white-space: nowrap;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.30), 0 0 18px rgba(47, 107, 255, 0.12);
 }
 
 .primary-link-btn-small:hover {
-    background: rgba(47, 107, 255, 0.18);
-    border-color: rgba(47, 107, 255, 0.32);
-    color: var(--text-primary);
-    transform: scale(1.05);
-    box-shadow: 0 10px 28px rgba(47, 107, 255, 0.14);
+    transform: translateY(-1px) scale(1.03);
+    filter: brightness(1.05) saturate(1.05);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.36), 0 0 26px rgba(47, 107, 255, 0.18);
 }
 
 .primary-link-btn-small:active {
     transform: scale(0.95);
 }
 
+body.light-mode .primary-link-btn-small {
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.60)) padding-box,
+        linear-gradient(135deg, rgba(37, 99, 235, 0.60), rgba(14, 165, 255, 0.45), rgba(124, 58, 237, 0.45)) border-box;
+    box-shadow: 0 12px 28px rgba(2, 6, 23, 0.12), 0 0 18px rgba(37, 99, 235, 0.10);
+}
+
+body.light-mode .primary-link-btn-small:hover {
+    box-shadow: 0 16px 34px rgba(2, 6, 23, 0.14), 0 0 22px rgba(37, 99, 235, 0.14);
+}
+
+body.dark-mode #view-me #profile-edit-form .form-group > div {
+    position: relative;
+    overflow: hidden;
+    background: rgba(16, 18, 28, 0.38) !important;
+    border: 1px solid rgba(255, 255, 255, 0.10) !important;
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.35);
+}
+
+body.dark-mode #view-me #profile-edit-form .form-group > div::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(140% 140% at 18% 0%, rgba(47, 107, 255, 0.16), transparent 55%),
+                radial-gradient(140% 140% at 82% 0%, rgba(124, 58, 237, 0.12), transparent 58%);
+    opacity: 0.95;
+}
+
+body.dark-mode #view-me #profile-edit-form .form-group > div > * { position: relative; z-index: 1; }
+
+body.dark-mode #view-me #profile-edit-form .form-group > div:focus-within {
+    border-color: rgba(47, 107, 255, 0.55) !important;
+    box-shadow: 0 0 0 4px rgba(47, 107, 255, 0.12), 0 22px 70px rgba(0, 0, 0, 0.45);
+}
+
+body.light-mode #view-me #profile-edit-form .form-group > div {
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.78) !important;
+    border: 1px solid rgba(7, 10, 18, 0.12) !important;
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    box-shadow: 0 18px 55px rgba(2, 6, 23, 0.12);
+}
+
+body.light-mode #view-me #profile-edit-form .form-group > div::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(140% 140% at 18% 0%, rgba(37, 99, 235, 0.10), transparent 55%),
+                radial-gradient(140% 140% at 82% 0%, rgba(192, 38, 211, 0.07), transparent 58%);
+    opacity: 1;
+}
+
+body.light-mode #view-me #profile-edit-form .form-group > div > * { position: relative; z-index: 1; }
+
+body.light-mode #view-me #profile-edit-form .form-group > div:focus-within {
+    border-color: rgba(37, 99, 235, 0.45) !important;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10), 0 22px 70px rgba(2, 6, 23, 0.14);
+}
 .btn.primary {
     background: linear-gradient(135deg, rgba(47, 107, 255, 0.98) 0%, rgba(26, 168, 255, 0.92) 45%, rgba(124, 58, 237, 0.92) 100%);
     color: #ffffff;
