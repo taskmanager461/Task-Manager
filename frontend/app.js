@@ -3260,42 +3260,51 @@ function setupEventListeners() {
     }
 
     if (contentEl) {
-        window.addEventListener('wheel', (e) => {
+        const isModalActive = () => {
+            return Boolean(
+                document.querySelector('.task-form-modal.active') ||
+                document.querySelector('.modal.active')
+            );
+        };
+
+        document.addEventListener('wheel', (e) => {
+            if (e.ctrlKey) return;
+            if (isModalActive()) return;
             const target = e.target && e.target.closest ? e.target : null;
             if (target && target.closest('#content')) return;
-            if (document.querySelector('.task-form-modal.active')) return;
-            if (document.querySelector('.modal.active')) return;
             contentEl.scrollTop += e.deltaY;
-        }, { passive: true });
+            e.preventDefault();
+        }, { capture: true, passive: false });
 
         let globalTouchY = null;
-        window.addEventListener('touchstart', (e) => {
-            if (document.querySelector('.task-form-modal.active')) return;
-            if (document.querySelector('.modal.active')) return;
+        document.addEventListener('touchstart', (e) => {
+            if (isModalActive()) return;
             if (!e.touches || e.touches.length !== 1) return;
             const target = e.target && e.target.closest ? e.target : null;
             if (target && target.closest('#content')) return;
             globalTouchY = e.touches[0].clientY;
-        }, { passive: true });
+        }, { capture: true, passive: true });
 
-        window.addEventListener('touchmove', (e) => {
+        document.addEventListener('touchmove', (e) => {
             if (globalTouchY === null) return;
-            if (document.querySelector('.task-form-modal.active')) return;
-            if (document.querySelector('.modal.active')) return;
+            if (isModalActive()) return;
             if (!e.touches || e.touches.length !== 1) return;
+            const target = e.target && e.target.closest ? e.target : null;
+            if (target && target.closest('#content')) return;
             const nextY = e.touches[0].clientY;
             const delta = globalTouchY - nextY;
             globalTouchY = nextY;
             contentEl.scrollTop += delta;
-        }, { passive: true });
+            e.preventDefault();
+        }, { capture: true, passive: false });
 
-        window.addEventListener('touchend', () => {
+        document.addEventListener('touchend', () => {
             globalTouchY = null;
-        }, { passive: true });
+        }, { capture: true, passive: true });
 
-        window.addEventListener('touchcancel', () => {
+        document.addEventListener('touchcancel', () => {
             globalTouchY = null;
-        }, { passive: true });
+        }, { capture: true, passive: true });
     }
 
     // Set default date/time in form
