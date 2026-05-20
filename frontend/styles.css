@@ -110,14 +110,16 @@ body.light-mode .main-title-rest {
 
 body.light-mode {
     --primary: #0a86ff;
-    --background: #f8fafc;
+    --primary-2: #06b6d4;
+    --primary-3: #8b5cf6;
+    --background: #f7fbff;
     --background-rgb: 248, 250, 252;
     --surface: rgba(255, 255, 255, 0.95);
     --surface-hover: rgba(248, 250, 252, 1);
     --text-primary: #0f172a;
     --text-secondary: #64748b;
     --border: rgba(148, 163, 184, 0.3);
-    --line-color: rgba(10, 134, 255, 0.5);
+    --line-color: rgba(10, 134, 255, 0.25);
     --primary-glow: rgba(10, 134, 255, 0.15);
     --glass-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
@@ -127,8 +129,8 @@ body.light-mode .bg-lines-container {
 }
 
 body.light-mode .bg-line {
-    background: rgba(0, 102, 255, 0.4);
-    box-shadow: 0 0 12px rgba(0, 102, 255, 0.15);
+    background: rgba(10, 134, 255, 0.18);
+    box-shadow: 0 0 18px rgba(10, 134, 255, 0.12);
 }
 
 * {
@@ -156,6 +158,63 @@ body {
     z-index: -1;
     overflow: hidden;
     pointer-events: none;
+}
+
+.bg-lines-container::before {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    background:
+        radial-gradient(45% 55% at 12% 18%, rgba(34, 211, 238, 0.20), transparent 60%),
+        radial-gradient(55% 65% at 82% 22%, rgba(10, 134, 255, 0.22), transparent 62%),
+        radial-gradient(45% 60% at 52% 88%, rgba(167, 139, 250, 0.16), transparent 60%),
+        radial-gradient(40% 50% at 30% 70%, rgba(10, 134, 255, 0.12), transparent 60%);
+    filter: blur(38px) saturate(1.25);
+    opacity: 0.85;
+    transform: translate3d(0, 0, 0);
+    animation: auroraShift 18s ease-in-out infinite alternate;
+    mix-blend-mode: screen;
+}
+
+.bg-lines-container::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.045) 0px, rgba(255, 255, 255, 0.045) 1px, transparent 1px, transparent 28px),
+        repeating-linear-gradient(25deg, rgba(10, 134, 255, 0.05) 0px, rgba(10, 134, 255, 0.05) 1px, transparent 1px, transparent 42px);
+    opacity: 0.26;
+    transform: translate3d(0, 0, 0);
+    animation: gridDrift 22s linear infinite;
+}
+
+@keyframes auroraShift {
+    0% { transform: translate3d(-2%, -1%, 0) scale(1.02) rotate(-2deg); }
+    50% { transform: translate3d(2%, 1%, 0) scale(1.05) rotate(1deg); }
+    100% { transform: translate3d(3%, -1%, 0) scale(1.06) rotate(3deg); }
+}
+
+@keyframes gridDrift {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-120px, 80px, 0); }
+}
+
+body.light-mode .bg-lines-container::before {
+    background:
+        radial-gradient(55% 70% at 12% 20%, rgba(6, 182, 212, 0.22), transparent 62%),
+        radial-gradient(65% 80% at 84% 18%, rgba(10, 134, 255, 0.22), transparent 62%),
+        radial-gradient(55% 70% at 52% 92%, rgba(139, 92, 246, 0.16), transparent 64%),
+        radial-gradient(55% 70% at 28% 78%, rgba(10, 134, 255, 0.10), transparent 64%);
+    filter: blur(44px) saturate(1.2);
+    opacity: 0.95;
+    mix-blend-mode: normal;
+}
+
+body.light-mode .bg-lines-container::after {
+    background:
+        repeating-linear-gradient(115deg, rgba(2, 6, 23, 0.04) 0px, rgba(2, 6, 23, 0.04) 1px, transparent 1px, transparent 32px),
+        repeating-linear-gradient(25deg, rgba(10, 134, 255, 0.05) 0px, rgba(10, 134, 255, 0.05) 1px, transparent 1px, transparent 48px);
+    opacity: 0.20;
 }
 
 .bg-line {
@@ -493,6 +552,16 @@ body.dark-mode .auth-container {
     transition: transform 140ms ease-out;
 }
 
+body.light-mode .top-bar {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(247, 251, 255, 0.50));
+    border-bottom: 1px solid rgba(10, 134, 255, 0.14);
+}
+
+body.light-mode .scroll-progress-track {
+    background: rgba(2, 6, 23, 0.06);
+    border: 1px solid rgba(10, 134, 255, 0.14);
+}
+
 .top-bar-left {
     display: flex;
     align-items: center;
@@ -707,6 +776,26 @@ body.dark-mode .auth-container {
 
 .nav-item.active .nav-icon { 
     color: var(--primary);
+}
+
+body.light-mode .bottom-nav {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(247, 251, 255, 0.62));
+    border: 1px solid rgba(10, 134, 255, 0.18);
+    box-shadow: 0 28px 60px -18px rgba(2, 6, 23, 0.22);
+}
+
+body.light-mode .bottom-nav::before {
+    background: radial-gradient(120% 120% at 18% 10%, rgba(6, 182, 212, 0.20), transparent 55%),
+                radial-gradient(120% 120% at 82% 20%, rgba(139, 92, 246, 0.14), transparent 60%),
+                radial-gradient(140% 140% at 50% 120%, rgba(10, 134, 255, 0.10), transparent 60%);
+}
+
+body.light-mode .bottom-nav-glow { opacity: 0.28; filter: blur(60px); }
+
+body.light-mode .nav-item { color: rgba(15, 23, 42, 0.62); }
+
+body.light-mode .nav-item::before {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.18), rgba(10, 134, 255, 0.14), rgba(139, 92, 246, 0.14));
 }
 
 .logout-btn {
