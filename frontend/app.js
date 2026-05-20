@@ -754,7 +754,10 @@ async function checkAuth() {
 
 // --- UI Navigation ---
 let lastScrollTop = 0;
-const scrollThreshold = 10;
+const scrollThreshold = 3;
+let scrollRafId = 0;
+let pendingScrollTop = 0;
+let pendingMaxScroll = 0;
 
 function updateScrollProgressFromMetrics(scrollTop, maxScroll) {
     const fill = document.getElementById('scroll-progress-fill');
@@ -777,35 +780,37 @@ function getWindowScrollMetrics() {
     return { scrollTop, maxScroll };
 }
 
-function handleWindowScroll() {
+function applyScrollUI(scrollTop, maxScroll) {
     const topBar = document.querySelector('.top-bar');
     if (!topBar) return;
-    const { scrollTop, maxScroll } = getWindowScrollMetrics();
     updateScrollProgressFromMetrics(scrollTop, maxScroll);
 
     if (Math.abs(lastScrollTop - scrollTop) <= scrollThreshold) return;
-    if (scrollTop > lastScrollTop && scrollTop > 70) topBar.classList.add('hidden');
+    if (scrollTop > lastScrollTop && scrollTop > 40) topBar.classList.add('hidden');
     else topBar.classList.remove('hidden');
     lastScrollTop = scrollTop;
 }
 
+function scheduleScrollUI(scrollTop, maxScroll) {
+    pendingScrollTop = scrollTop;
+    pendingMaxScroll = maxScroll;
+    if (scrollRafId) return;
+    scrollRafId = requestAnimationFrame(() => {
+        scrollRafId = 0;
+        applyScrollUI(pendingScrollTop, pendingMaxScroll);
+    });
+}
+
+function handleWindowScroll() {
+    const { scrollTop, maxScroll } = getWindowScrollMetrics();
+    scheduleScrollUI(scrollTop, maxScroll);
+}
+
 function handleContentScroll(e) {
-    const topBar = document.querySelector('.top-bar');
-    if (!topBar) return;
-
-    const scrollTop = e.target.scrollTop;
-    updateScrollProgress(e.target);
-    
-    if (Math.abs(lastScrollTop - scrollTop) <= scrollThreshold) return;
-
-    if (scrollTop > lastScrollTop && scrollTop > 70) {
-        // Scroll Down - Hide
-        topBar.classList.add('hidden');
-    } else {
-        // Scroll Up - Show
-        topBar.classList.remove('hidden');
-    }
-    lastScrollTop = scrollTop;
+    const el = e.target;
+    const scrollTop = el.scrollTop;
+    const maxScroll = el.scrollHeight - el.clientHeight;
+    scheduleScrollUI(scrollTop, maxScroll);
 }
 
 function renderLogin() {

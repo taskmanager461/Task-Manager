@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tobedone</title>
-    <link rel="stylesheet" href="styles.css?v=6.0.1">
-    <link rel="stylesheet" href="/src/styles/logo.css?v=6.0.1">
+    <link rel="stylesheet" href="styles.css?v=6.0.3">
+    <link rel="stylesheet" href="/src/styles/logo.css?v=6.0.3">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <link rel="manifest" href="manifest.json">
@@ -14,7 +14,7 @@
     <link rel="apple-touch-icon" href="/static/icon-home-192-v7.png">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="assets.js?v=6.0.1"></script>
+    <script src="assets.js?v=6.0.3"></script>
 </head>
 <body class="dark-mode"> <!-- Default to dark mode for pro feel -->
     <div class="bg-lines-container">
@@ -140,18 +140,18 @@
                 <img class="app-logo-small" src="/assets/app-logo-20260501.png?v=3" alt="Logo">
                 <h2 class="app-title-small"><span style="color: var(--primary);">T</span>obedone</h2>
             </div>
-            <div class="top-bar-right">
-                <button id="top-install-btn" class="icon-btn install-trigger" style="display: none;" aria-label="Install App">
-                    <i class="fas fa-download"></i>
-                </button>
-                <button class="icon-btn settings-trigger" onclick="showView('settings')" aria-label="Settings">
-                    <i class="fas fa-cog"></i>
-                </button>
-            </div>
             <div class="scroll-progress-track" aria-hidden="true">
                 <div id="scroll-progress-fill" class="scroll-progress-fill"></div>
             </div>
         </header>
+        <div class="top-actions-float">
+            <button id="top-install-btn" class="icon-btn install-trigger" style="display: none;" aria-label="Install App">
+                <i class="fas fa-download"></i>
+            </button>
+            <button class="icon-btn settings-trigger" onclick="showView('settings')" aria-label="Settings">
+                <i class="fas fa-cog"></i>
+            </button>
+        </div>
 
         <main id="content">
             <!-- Reports View -->
@@ -768,6 +768,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-    <script src="app.js?v=6.0.2"></script>
+    <script src="app.js?v=6.0.3"></script>
 </body>
 </html>
