@@ -1037,15 +1037,15 @@ function renderInsights(history) {
     // 2. Achievements
     const streak = parseInt(document.getElementById('streak-value').textContent) || 0;
     const achievements = [
-        { id: 'early_bird', name: 'Early Bird', icon: '🌅', unlocked: true },
-        { id: 'streak_3', name: '3 Day Streak', icon: '🔥', unlocked: streak >= 3 },
-        { id: 'master', name: 'Task Master', icon: '🏆', unlocked: streak >= 7 }
+        { id: 'early_bird', name: 'Early Bird', iconHtml: '<i class="fas fa-sun" aria-hidden="true"></i>', unlocked: true },
+        { id: 'streak_3', name: '3 Day Streak', iconHtml: '<i class="fas fa-fire" aria-hidden="true"></i>', unlocked: streak >= 3 },
+        { id: 'master', name: 'Task Master', iconHtml: '<i class="fas fa-trophy" aria-hidden="true"></i>', unlocked: streak >= 7 }
     ];
     
     const list = document.getElementById('achievements-list');
     list.innerHTML = achievements.map(a => `
         <div class="achievement-badge ${a.unlocked ? 'unlocked' : ''}">
-            <span class="icon">${a.icon}</span>
+            <span class="icon">${a.iconHtml}</span>
             <span class="name">${a.name}</span>
         </div>
     `).join('');
@@ -1533,10 +1533,10 @@ function logout() {
 }
 
 function getScoreLabel(score) {
-    if (score >= 100) return { text: 'Excellent', icon: '🏆', class: 'excellent' };
-    if (score >= 60) return { text: 'Good', icon: '✨', class: 'good' };
-    if (score >= 30) return { text: 'Average', icon: '⚡', class: 'average' };
-    return { text: 'Low', icon: '⚠️', class: 'low' };
+    if (score >= 100) return { text: 'Excellent', class: 'excellent' };
+    if (score >= 60) return { text: 'Good', class: 'good' };
+    if (score >= 30) return { text: 'Average', class: 'average' };
+    return { text: 'Low', class: 'low' };
 }
 
 function getBadgeImageSrc(scoreClass) {
@@ -1637,11 +1637,10 @@ function renderHeroMetrics(score) {
     const img6 = ASSETS.img6;
 
     container.innerHTML = `
-        <!-- Card 1: Trust Score -->
-        <div class="hero-metric" style="background: radial-gradient(circle at bottom right, #005c99 0%, #004a7a 20%, #003761 40%, #002542 60%, #001221 80%, #000000 100%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
+        <div class="hero-metric hero-metric--trust">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
-                    <img src="${img1}">
+                    <img src="${img1}" alt="">
                 </div>
                 <div class="hero-metric-label">Self Trust Score</div>
                 <div class="hero-metric-value">${scoreVal}</div>
@@ -1651,27 +1650,25 @@ function renderHeroMetrics(score) {
             </div>
         </div>
 
-        <!-- Card 2: Streak -->
-        <div class="hero-metric" style="background: radial-gradient(circle at bottom right, #993d00 0%, #7a3100 20%, #5c2700 40%, #3d1a00 60%, #1f0d00 80%, #000000 100%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
+        <div class="hero-metric hero-metric--streak">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
-                    <img src="${img4}">
+                    <img src="${img4}" alt="">
                 </div>
                 <div class="hero-metric-label">Current Streak</div>
                 <div class="hero-metric-value">${score.streak}</div>
             </div>
         </div>
 
-        <!-- Card 3: Success -->
-        <div class="hero-metric" style="background: radial-gradient(circle at bottom right, #009952 0%, #007a42 20%, #005c34 40%, #003d27 60%, #001f1a 80%, #000000 100%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
+        <div class="hero-metric hero-metric--success">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
-                    <img src="${img6}">
+                    <img src="${img6}" alt="">
                 </div>
                 <div class="hero-metric-label">Success Rate</div>
                 <div class="hero-metric-value">${(score.success_rate * 100).toFixed(0)}%</div>
-                <div style="margin-top: 40px; width: 100%; background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
-                    <div style="width: ${score.success_rate * 100}%; height: 100%; background: #4ade80; box-shadow: 0 0 10px #4ade80; border-radius: 10px;"></div>
+                <div class="hero-mini-progress" aria-hidden="true">
+                    <div class="hero-mini-progress-fill" style="width: ${score.success_rate * 100}%;"></div>
                 </div>
             </div>
         </div>
@@ -1731,7 +1728,7 @@ async function loadScoreComparison() {
             
             if (diff > 0) {
                 comparisonEl.className = 'card score-comparison improved';
-                comparisonText.textContent = `You improved by ${diff.toFixed(1)} points compared to yesterday! 🎉`;
+                comparisonText.textContent = `You improved by ${diff.toFixed(1)} points compared to yesterday!`;
             } else if (diff < 0) {
                 comparisonEl.className = 'card score-comparison dropped';
                 comparisonText.textContent = `You dropped by ${Math.abs(diff).toFixed(1)} points compared to yesterday`;
@@ -1767,7 +1764,7 @@ async function loadMissedTasks() {
             const streakValue = parseInt(document.getElementById('streak-value').textContent) || 0;
             
             if (streakValue > 0 && !hasCompletedToday) {
-                message += ` — You are at risk of losing your streak! ⚠️`;
+                message += ` — You are at risk of losing your streak.`;
             }
             
             textEl.textContent = message;
@@ -1831,7 +1828,7 @@ async function loadInsights() {
         if (smartMessages.length > 0) {
             container.innerHTML = smartMessages.map(insight => `
                 <div class="insight-card">
-                    <span class="icon">✨</span>
+                    <span class="icon" aria-hidden="true"><i class="fas fa-star"></i></span>
                     <div class="insight-content">
                         <p style="font-weight: 600; color: var(--text-primary);">${insight}</p>
                     </div>
@@ -2059,7 +2056,7 @@ function renderHabits(habits) {
     if (!habits || habits.length === 0) {
         list.innerHTML = `
             <div class="empty-state">
-                <span class="empty-state-icon">🧠</span>
+                <span class="empty-state-icon" aria-hidden="true"><i class="fas fa-brain"></i></span>
                 <h3 class="empty-state-title">No habits yet</h3>
                 <p class="empty-state-text">Build consistency with your first recurring habit.</p>
                 <button onclick="toggleHabitForm()" class="btn primary">Create Habit</button>
@@ -2073,18 +2070,18 @@ function renderHabits(habits) {
                 <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
                     <h3>${habit.title}</h3>
                     <span class="priority-badge priority-medium">${habit.category}</span>
-                    <span class="priority-badge priority-low">🔥 ${habit.streak}</span>
+                    <span class="priority-badge priority-low"><i class="fas fa-fire" aria-hidden="true"></i> ${habit.streak}</span>
                     <span class="priority-badge priority-low">${habit.consistency_score.toFixed(0)}% consistency</span>
                 </div>
                 <div class="habit-meta">
                     <span>${formatHabitDays(habit)}</span>
-                    ${habit.preferred_time ? `<span>⏰ ${habit.preferred_time}</span>` : ''}
+                    ${habit.preferred_time ? `<span><i class="fas fa-clock" aria-hidden="true"></i> ${habit.preferred_time}</span>` : ''}
                     <span>Best streak ${habit.best_streak}</span>
                 </div>
             </div>
             <div class="task-actions">
                 ${habit.today_status === 'completed' ? `
-                    <div class="status-badge completed"><span>Completed ✔</span></div>
+                    <div class="status-badge completed"><span><i class="fas fa-check" aria-hidden="true"></i> Completed</span></div>
                 ` : habit.today_status === 'skipped' ? `
                     <div class="status-badge failed"><span>Skipped</span></div>
                 ` : habit.is_due_today ? `
@@ -2121,7 +2118,7 @@ function renderTodayHabits(habits) {
     list.innerHTML = dueHabits.map(habit => `
         <div class="for-you-item">
             <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem;">
-                <span>${habit.title} 🔥 ${habit.streak}</span>
+                <span>${habit.title} <i class="fas fa-fire" aria-hidden="true"></i> ${habit.streak}</span>
                 <span>${habit.consistency_score.toFixed(0)}%</span>
             </div>
             <div style="display:flex; gap:0.45rem; margin-top:0.45rem;">
@@ -2237,7 +2234,7 @@ function showSmartSuggestion() {
     if (suggestion) {
         container.innerHTML = `
             <div class="suggestion-box">
-                <span class="icon">✨</span>
+                <span class="icon" aria-hidden="true"><i class="fas fa-bolt"></i></span>
                 <p>${suggestion}</p>
             </div>
         `;
@@ -2253,7 +2250,7 @@ function renderTasks(tasks) {
     if (!tasks || tasks.length === 0) {
         list.innerHTML = `
             <div class="empty-state">
-                <span class="empty-state-icon">📝</span>
+                <span class="empty-state-icon" aria-hidden="true"><i class="fas fa-clipboard-list"></i></span>
                 <h3 class="empty-state-title">${t('no_tasks')}</h3>
                 <p class="empty-state-text">Start by adding your first task for today.</p>
                 <button onclick="toggleTaskForm()" class="btn primary">${t('add_new_task')}</button>
@@ -2276,7 +2273,7 @@ function renderTasks(tasks) {
             const isComplex = task.title.length > 40;
             const isHard = task.difficulty === 'hard';
             if (isComplex || isHard) {
-                riskHtml = `<span class="task-risk-warning">⚠️ ${isComplex ? t('suggest_simpler') : t('high_risk')}</span>`;
+                riskHtml = `<span class="task-risk-warning"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> ${isComplex ? t('suggest_simpler') : t('high_risk')}</span>`;
             }
         }
 
@@ -2285,11 +2282,11 @@ function renderTasks(tasks) {
         if (task.status === 'pending' && task.due_date) {
             const dueDate = new Date(task.due_date);
             if (dueDate < today) {
-                overdueHtml = `<span class="overdue-badge">⚠️ ${t('overdue')}</span>`;
+                overdueHtml = `<span class="overdue-badge"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> ${t('overdue')}</span>`;
             }
         }
 
-        const recurringIcon = task.recurring !== 'none' ? `<span class="recurring-icon" title="${t(task.recurring)}">🔄</span>` : '';
+        const recurringIcon = task.recurring !== 'none' ? `<span class="recurring-icon" title="${t(task.recurring)}" aria-hidden="true"><i class="fas fa-repeat"></i></span>` : '';
 
         card.innerHTML = `
             <div class="task-info">
@@ -2299,9 +2296,9 @@ function renderTasks(tasks) {
                 </div>
                 <div class="task-meta">
                     <p>${task.category} | ${t(task.difficulty)}</p>
-                    ${task.goal_id ? `<p>🎯 Linked Goal</p>` : ''}
+                    ${task.goal_id ? `<p><i class="fas fa-bullseye" aria-hidden="true"></i> Linked Goal</p>` : ''}
                     ${recurringIcon}
-                    ${task.due_date ? `<p>📅 ${task.due_date}</p>` : ''}
+                    ${task.due_date ? `<p><i class="fas fa-calendar" aria-hidden="true"></i> ${task.due_date}</p>` : ''}
                     ${overdueHtml}
                 </div>
                 ${riskHtml}
@@ -2310,15 +2307,15 @@ function renderTasks(tasks) {
                 ${task.status === 'pending' ? `
                     <button class="btn task-btn completed" onclick="handleTaskUpdate(${task.id}, 'completed', this)">
                         <span data-i18n="completed">${t('completed')}</span>
-                        <span class="btn-icon">✔</span>
+                        <span class="btn-icon" aria-hidden="true"><i class="fas fa-check"></i></span>
                     </button>
                     <button class="btn task-btn failed" onclick="handleTaskUpdate(${task.id}, 'failed', this)">
                         <span data-i18n="failed">${t('failed')}</span>
-                        <span class="btn-icon">✖</span>
+                        <span class="btn-icon" aria-hidden="true"><i class="fas fa-xmark"></i></span>
                     </button>
                 ` : `
                     <div class="status-badge ${task.status}">
-                        ${task.status === 'completed' ? `<span>${t('completed')} ✔</span>` : `<span>${t('failed')} ✖</span>`}
+                        ${task.status === 'completed' ? `<span><i class="fas fa-check" aria-hidden="true"></i> ${t('completed')}</span>` : `<span><i class="fas fa-xmark" aria-hidden="true"></i> ${t('failed')}</span>`}
                     </div>
                 `}
             </div>
@@ -2339,7 +2336,7 @@ async function addTask(title, category, difficulty, date, time) {
     const originalText = submitBtn.innerHTML;
     
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span>⏳</span> Processing...';
+    submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i> Processing...';
     
     try {
         const taskDate = date || new Date().toISOString().split('T')[0];
@@ -2376,7 +2373,7 @@ async function handleTaskUpdate(taskId, status, btnEl) {
     
     // Update local state and UI immediately
     card.className = `task-card ${status}`;
-    card.querySelector('.task-actions').innerHTML = `<span>⏳</span>`;
+    card.querySelector('.task-actions').innerHTML = `<i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>`;
     
     // Update cache
     const taskIdx = cachedTasks.findIndex(t => t.id === taskId);
@@ -2391,7 +2388,7 @@ async function handleTaskUpdate(taskId, status, btnEl) {
         // Success: Replace loader with status icon
         card.querySelector('.task-actions').innerHTML = `
             <div class="status-badge ${status}">
-                <span>${status === 'completed' ? t('completed') + ' ✔' : t('failed') + ' ✖'}</span>
+                <span>${status === 'completed' ? `<i class="fas fa-check" aria-hidden="true"></i> ${t('completed')}` : `<i class="fas fa-xmark" aria-hidden="true"></i> ${t('failed')}`}</span>
             </div>
         `;
         showToast(t('task_updated'), 'success');
@@ -2457,7 +2454,7 @@ function renderGoals(goals) {
     if (!goals || goals.length === 0) {
         list.innerHTML = `
             <div class="empty-state">
-                <span class="empty-state-icon">🎯</span>
+                <span class="empty-state-icon" aria-hidden="true"><i class="fas fa-bullseye"></i></span>
                 <h3 class="empty-state-title">No goals yet</h3>
                 <p class="empty-state-text">Create your first goal to track long-term progress.</p>
                 <button onclick="toggleGoalForm()" class="btn primary">Create Goal</button>
@@ -2477,7 +2474,7 @@ function renderGoals(goals) {
                     <p>Tasks: ${goal.completed_tasks_count}/${goal.linked_tasks_count}</p>
                 </div>
                 <div class="progress-bar" style="margin-top:0.75rem;">
-                    <div id="goal-progress-${goal.id}" style="height:100%; width:${goal.progress_percent}%; background:linear-gradient(90deg,#0066FF,#10B981);"></div>
+                    <div id="goal-progress-${goal.id}" class="goal-progress-fill" style="width:${goal.progress_percent}%;"></div>
                 </div>
                 <div class="goal-progress-meta">
                     <span>${goal.progress_percent.toFixed(0)}%</span>
@@ -2862,7 +2859,7 @@ function renderGoals(goals) {
     if (!goals || goals.length === 0) {
         list.innerHTML = `
             <div class="empty-state">
-                <span class="empty-state-icon">🎯</span>
+                <span class="empty-state-icon" aria-hidden="true"><i class="fas fa-bullseye"></i></span>
                 <h3 class="empty-state-title">No goals yet</h3>
                 <p class="empty-state-text">Create your first goal to track long-term progress.</p>
                 <button onclick="toggleGoalForm()" class="btn primary">Create Goal</button>
@@ -2889,7 +2886,7 @@ function renderGoals(goals) {
                     <p>Tasks: ${goal.completed_tasks_count}/${goal.linked_tasks_count}</p>
                 </div>
                 <div class="progress-bar" style="margin-top:0.75rem;">
-                    <div style="height:100%; width:${goal.progress_percent}%; background:linear-gradient(90deg,#0066FF,#10B981);"></div>
+                    <div class="goal-progress-fill" style="width:${goal.progress_percent}%;"></div>
                 </div>
                 <div class="goal-progress-meta">
                     <span>${goal.progress_percent.toFixed(0)}%</span>
@@ -2906,15 +2903,15 @@ function renderGoals(goals) {
                 ${goal.status === 'active' ? `
                     <button class="btn task-btn completed" onclick="handleGoalComplete(${goal.id})">
                         <span>Achieved</span>
-                        <span class="btn-icon">✔</span>
+                        <span class="btn-icon" aria-hidden="true"><i class="fas fa-check"></i></span>
                     </button>
                     <button class="btn task-btn failed" onclick="handleGoalFail(${goal.id})">
                         <span>Failed</span>
-                        <span class="btn-icon">✖</span>
+                        <span class="btn-icon" aria-hidden="true"><i class="fas fa-xmark"></i></span>
                     </button>
                 ` : `
                     <div class="status-badge ${goal.status}">
-                        <span>${goal.status === 'achieved' ? 'Achieved ✔' : 'Failed ✖'}</span>
+                        <span>${goal.status === 'achieved' ? `<i class="fas fa-check" aria-hidden="true"></i> Achieved` : `<i class="fas fa-xmark" aria-hidden="true"></i> Failed`}</span>
                     </div>
                 `}
             </div>
@@ -2944,7 +2941,7 @@ async function loadIdentityProfile() {
         if (achievementList) {
             achievementList.innerHTML = identity.badges.map(b => `
                 <div class="achievement-badge ${b.unlocked ? 'unlocked' : ''}">
-                    <span class="icon">${b.unlocked ? '🏅' : '🔒'}</span>
+                    <span class="icon" aria-hidden="true">${b.unlocked ? '<i class="fas fa-check"></i>' : '<i class="fas fa-lock"></i>'}</span>
                     <span class="name">${b.label}</span>
                 </div>
             `).join('');
@@ -3450,7 +3447,7 @@ async function downloadShareCard() {
 }
 
 function copyShareText() {
-    const text = `Check out my progress on Tobedone! 🎯
+    const text = `Check out my progress on Tobedone!
 Level: ${shareData.level}
 XP: ${shareData.xp}
 Streak: ${shareData.streak} days
