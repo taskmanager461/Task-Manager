@@ -3259,6 +3259,45 @@ function setupEventListeners() {
         }, { passive: true });
     }
 
+    if (contentEl) {
+        window.addEventListener('wheel', (e) => {
+            const target = e.target && e.target.closest ? e.target : null;
+            if (target && target.closest('#content')) return;
+            if (document.querySelector('.task-form-modal.active')) return;
+            if (document.querySelector('.modal.active')) return;
+            contentEl.scrollTop += e.deltaY;
+        }, { passive: true });
+
+        let globalTouchY = null;
+        window.addEventListener('touchstart', (e) => {
+            if (document.querySelector('.task-form-modal.active')) return;
+            if (document.querySelector('.modal.active')) return;
+            if (!e.touches || e.touches.length !== 1) return;
+            const target = e.target && e.target.closest ? e.target : null;
+            if (target && target.closest('#content')) return;
+            globalTouchY = e.touches[0].clientY;
+        }, { passive: true });
+
+        window.addEventListener('touchmove', (e) => {
+            if (globalTouchY === null) return;
+            if (document.querySelector('.task-form-modal.active')) return;
+            if (document.querySelector('.modal.active')) return;
+            if (!e.touches || e.touches.length !== 1) return;
+            const nextY = e.touches[0].clientY;
+            const delta = globalTouchY - nextY;
+            globalTouchY = nextY;
+            contentEl.scrollTop += delta;
+        }, { passive: true });
+
+        window.addEventListener('touchend', () => {
+            globalTouchY = null;
+        }, { passive: true });
+
+        window.addEventListener('touchcancel', () => {
+            globalTouchY = null;
+        }, { passive: true });
+    }
+
     // Set default date/time in form
     const taskDateInput = document.getElementById('task-date');
     const taskTimeInput = document.getElementById('task-time');
