@@ -795,7 +795,7 @@ function renderLogin() {
 function renderApp() {
     document.getElementById('auth-page').classList.remove('active');
     document.getElementById('main-app').classList.add('active');
-    document.body.style.overflow = '';
+    document.body.style.overflow = 'hidden';
     
     // Perceived speed: render identity from currentUser first
     const displayName = currentUser.name || currentUser.username;
@@ -993,6 +993,9 @@ function showView(viewId) {
     const content = document.getElementById('content');
     if (content) {
         content.scrollTop = 0;
+        lastScrollTop = 0;
+        const topBar = document.querySelector('.top-bar');
+        if (topBar) topBar.classList.remove('hidden');
         updateScrollProgress(content);
         // Attach scroll listener once
         if (!content.dataset.scrollBound) {
@@ -1914,11 +1917,23 @@ function updateTrendChart(history) {
     const labels = history.map(s => s.date.split('-').slice(1).reverse().join('/'));
     const data = history.map(s => s.score);
 
+    const rootStyles = getComputedStyle(document.documentElement);
+    const primary = rootStyles.getPropertyValue('--primary').trim() || '#0066FF';
+    const primary2 = rootStyles.getPropertyValue('--primary-2').trim() || primary;
+    const primary3 = rootStyles.getPropertyValue('--primary-3').trim() || primary;
+
     const textColor = isDarkMode ? '#FFFFFF' : '#0F172A';
     const bgColor = isDarkMode ? '#111827' : '#FFFFFF';
     const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
-    const lineColor = '#0066FF';
-    const fillColor = isDarkMode ? 'rgba(0, 102, 255, 0.15)' : 'rgba(0, 102, 255, 0.1)';
+    const stroke = ctx.createLinearGradient(0, 0, 420, 0);
+    stroke.addColorStop(0, primary2);
+    stroke.addColorStop(0.5, primary);
+    stroke.addColorStop(1, primary3);
+    const gradient = ctx.createLinearGradient(0, 0, 0, 280);
+    gradient.addColorStop(0, isDarkMode ? 'rgba(34, 211, 238, 0.22)' : 'rgba(34, 211, 238, 0.16)');
+    gradient.addColorStop(0.45, isDarkMode ? 'rgba(10, 134, 255, 0.16)' : 'rgba(10, 134, 255, 0.12)');
+    gradient.addColorStop(1, isDarkMode ? 'rgba(167, 139, 250, 0.05)' : 'rgba(167, 139, 250, 0.03)');
+    const fillColor = gradient;
 
     trendChart = new Chart(ctx, {
         type: 'line',
@@ -1927,14 +1942,15 @@ function updateTrendChart(history) {
             datasets: [{
                 label: t('trust_score'),
                 data: data,
-                borderColor: lineColor,
+                borderColor: stroke,
                 backgroundColor: fillColor,
                 fill: true,
                 tension: 0.35,
                 pointRadius: 5,
-                pointBackgroundColor: lineColor,
+                pointBackgroundColor: primary2,
                 pointBorderColor: bgColor,
                 pointBorderWidth: 3,
+                pointHoverBackgroundColor: primary3,
                 pointHoverRadius: 7
             }]
         },
@@ -1986,7 +2002,7 @@ function updateTaskChart(tasks) {
     const textColor = isDarkMode ? '#FFFFFF' : '#0F172A';
     const bgColor = isDarkMode ? '#111827' : '#FFFFFF';
     const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
-    const pendingColor = isDarkMode ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.08)';
+    const pendingColor = isDarkMode ? 'rgba(10, 134, 255, 0.14)' : 'rgba(10, 134, 255, 0.10)';
 
     taskChart = new Chart(ctx, {
         type: 'doughnut',
@@ -1994,7 +2010,7 @@ function updateTaskChart(tasks) {
             labels: [t('completed'), t('failed'), t('pending')],
             datasets: [{
                 data: [counts.completed, counts.failed, counts.pending],
-                backgroundColor: ['#10B981', '#EF4444', pendingColor],
+                backgroundColor: ['#22c55e', '#ef4444', pendingColor],
                 borderWidth: 4,
                 borderColor: bgColor,
                 hoverOffset: 10
