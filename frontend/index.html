@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tobedone</title>
-    <link rel="stylesheet" href="styles.css?v=6.0.4">
-    <link rel="stylesheet" href="/src/styles/logo.css?v=6.0.4">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=7.0.0">
+    <link rel="stylesheet" href="/src/styles/logo.css?v=7.0.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <link rel="manifest" href="manifest.json">
@@ -156,9 +159,13 @@
                 <!-- Monthly Calendar -->
                 <div class="card calendar-container" style="margin-bottom: 1.5rem;">
                     <div class="calendar-header">
-                        <button class="btn secondary" onclick="changeDashboardMonth(-1)">❮</button>
+                        <button class="btn secondary" onclick="changeDashboardMonth(-1)" aria-label="Previous month">
+                            <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                        </button>
                         <h2 id="dashboard-calendar-month-year">Month Year</h2>
-                        <button class="btn secondary" onclick="changeDashboardMonth(1)">❯</button>
+                        <button class="btn secondary" onclick="changeDashboardMonth(1)" aria-label="Next month">
+                            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                        </button>
                     </div>
                     <div class="calendar-grid" id="dashboard-calendar-grid">
                         <!-- Calendar injected here -->
@@ -307,9 +314,13 @@
                 
                 <div class="card calendar-container">
                     <div class="calendar-header">
-                        <button class="btn secondary" onclick="changeMonth(-1)">❮</button>
+                        <button class="btn secondary" onclick="changeMonth(-1)" aria-label="Previous month">
+                            <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                        </button>
                         <h2 id="calendar-month-year">Month Year</h2>
-                        <button class="btn secondary" onclick="changeMonth(1)">❯</button>
+                        <button class="btn secondary" onclick="changeMonth(1)" aria-label="Next month">
+                            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                        </button>
                     </div>
                     <div class="calendar-grid" id="calendar-grid">
                         <!-- Calendar injected here -->
@@ -387,7 +398,10 @@
             <section id="view-tasks" class="view active">
                 <div class="view-header">
                     <h1 id="tasks-goals-title" data-i18n="tasks">TASKS</h1>
-                    <button id="tasks-goals-add-btn" onclick="toggleCurrentForm()" class="btn primary" data-i18n="add_new_task">+ Add Task</button>
+                    <button id="tasks-goals-add-btn" onclick="toggleCurrentForm()" class="btn primary">
+                        <i class="fas fa-plus" aria-hidden="true"></i>
+                        <span data-i18n="add_new_task">Add Task</span>
+                    </button>
                 </div>
 
                 <div class="card" style="margin-bottom: 1.5rem;">
