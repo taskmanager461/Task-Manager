@@ -130,8 +130,8 @@ def hero_metrics(score_value: str, score_label: str,
             <!-- Card 1: Trust Score -->
             <div class="hero-metric" style="position: relative; border: {hero_border} !important; isolation: isolate !important; background: {trust_bg} !important;">
                 <div class="hero-metric-content">
-                    <div class="hero-metric-icon" style="background: none !important; border: none !important; border-radius: 50% !important; overflow: hidden !important;">
-                        {f'<img src="data:image/png;base64,{img1}" style="width: 42px; height: 42px; object-fit: cover;">' if img1 else '🎯'}
+                    <div class="hero-metric-icon" style="background: none !important; border: none !important; border-radius: 9999px !important; overflow: hidden !important;">
+                        {f'<img src="data:image/png;base64,{img1}" style="width: 44px; height: 44px; object-fit: contain;">' if img1 else '🎯'}
                     </div>
                     <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
                     <div class="hero-metric-value" style="color: white !important;">{score_value}</div>
@@ -142,7 +142,7 @@ def hero_metrics(score_value: str, score_label: str,
             <!-- Card 2: Streak -->
             <div class="hero-metric" style="border: {hero_border} !important; isolation: isolate !important; background: {streak_bg} !important;">
                 <div class="hero-metric-content">
-                    <div class="hero-metric-icon" style="background: none !important; border: none !important; border-radius: 50% !important; overflow: hidden !important;">
+                    <div class="hero-metric-icon" style="background: none !important; border: none !important; border-radius: 9999px !important; overflow: hidden !important;">
                         {f'<img src="data:image/png;base64,{img4}" style="width: 45px; height: 45px; object-fit: contain;">' if img4 else '🔥'}
                     </div>
                     <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Current Streak</div>
@@ -153,7 +153,7 @@ def hero_metrics(score_value: str, score_label: str,
             <!-- Card 3: Success -->
             <div class="hero-metric" style="border: {hero_border} !important; isolation: isolate !important; background: {success_bg} !important;">
                 <div class="hero-metric-content">
-                    <div class="hero-metric-icon" style="background: none !important; border: none !important; border-radius: 50% !important; overflow: hidden !important;">
+                    <div class="hero-metric-icon" style="background: none !important; border: none !important; border-radius: 9999px !important; overflow: hidden !important;">
                         {f'<img src="data:image/png;base64,{img6}" style="width: 44px; height: 44px; object-fit: contain;">' if img6 else '📈'}
                     </div>
                     <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Success Rate</div>

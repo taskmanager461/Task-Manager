@@ -913,8 +913,8 @@ body.light-mode .nav-item::before {
 }
 
 .hero-metric-icon {
-    width: 52px;
-    height: 52px;
+    width: 56px;
+    height: 56px;
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
@@ -924,8 +924,10 @@ body.light-mode .nav-item::before {
     box-shadow: none !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    border-radius: 50% !important;
+    border-radius: 9999px !important;
     overflow: hidden !important;
+    -webkit-mask-image: radial-gradient(circle, black 100%, transparent 100%);
+    mask-image: radial-gradient(circle, black 100%, transparent 100%);
 }
 
 .hero-metric-icon img {
@@ -937,8 +939,8 @@ body.light-mode .nav-item::before {
 }
 
 body.light-mode .hero-metric-icon img {
-    filter: brightness(0.7) contrast(1.25) saturate(0.9) !important;
-    mix-blend-mode: multiply !important;
+    filter: brightness(1) contrast(1.1) saturate(1.15) !important;
+    mix-blend-mode: screen !important;
 }
 
 .hero-metric-label {
