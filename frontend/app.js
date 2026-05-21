@@ -1722,9 +1722,7 @@ function renderHeroMetrics(score) {
         ? 'linear-gradient(135deg, #dcfce7 0%, #22c55e 40%, #14532d 100%)'
         : 'radial-gradient(circle at bottom right, #009952 0%, #007a42 20%, #005c34 40%, #003d27 60%, #001f1a 80%, #000000 100%)';
 
-    const heroBorder = isLightMode
-        ? '1px solid rgba(30, 64, 175, 0.18)'
-        : '1px solid rgba(255,255,255,0.1)';
+    const heroBorder = 'none';
 
     const progressTrackBg = isLightMode ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.1)';
     const progressTrackBorder = isLightMode ? 'rgba(255,255,255,0.28)' : 'rgba(255,255,255,0.2)';
