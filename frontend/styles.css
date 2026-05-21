@@ -913,10 +913,10 @@ body.light-mode .nav-item::before {
 }
 
 .hero-metric-icon {
-    width: auto;
-    height: auto;
+    width: 50px;
+    height: 50px;
     margin-bottom: 1rem;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     background: transparent !important;
@@ -924,13 +924,13 @@ body.light-mode .nav-item::before {
     box-shadow: none !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    border-radius: 0;
+    border-radius: 50% !important;
+    overflow: hidden !important;
 }
 
 .hero-metric-icon img {
-    width: auto;
-    height: 50px;
-    max-width: 100%;
+    width: 45px;
+    height: 45px;
     object-fit: contain;
     mix-blend-mode: soft-light;
     filter: brightness(1.25) contrast(1.15) saturate(1.3);
