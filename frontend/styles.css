@@ -108,7 +108,9 @@ body.light-mode {
     --text-primary: #000000;
     --text-secondary: #475569;
     --border: rgba(0, 0, 0, 0.2);
-    --line-color: rgba(0, 0, 0, 0.15);
+    --line-color: rgba(30, 64, 175, 0.3);
+    --success: #15803d;
+    --error: #991b1b;
     --primary-glow: rgba(30, 64, 175, 0);
     --glass-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
@@ -744,18 +746,14 @@ body.light-mode .scroll-progress-track {
 }
 
 body.light-mode .bottom-nav {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(247, 251, 255, 0.62));
-    border: 1px solid rgba(10, 134, 255, 0.18);
-    box-shadow: 0 28px 60px -18px rgba(2, 6, 23, 0.22);
+    background: transparent;
+    border: none;
+    box-shadow: none;
 }
 
 body.light-mode .bottom-nav::before {
-    background: radial-gradient(120% 120% at 18% 10%, rgba(6, 182, 212, 0.20), transparent 55%),
-                radial-gradient(120% 120% at 82% 20%, rgba(139, 92, 246, 0.14), transparent 60%),
-                radial-gradient(140% 140% at 50% 120%, rgba(10, 134, 255, 0.10), transparent 60%);
+    background: none;
 }
-
-body.light-mode .bottom-nav-glow { opacity: 0.28; filter: blur(60px); }
 
 body.light-mode .nav-item { color: rgba(15, 23, 42, 0.62); }
 
@@ -853,8 +851,8 @@ body.dark-mode .view-header {
 
 #daily-progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--primary), #0066CC);
-    box-shadow: 0 0 10px var(--primary-glow);
+    background: var(--primary);
+    box-shadow: none;
     transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
