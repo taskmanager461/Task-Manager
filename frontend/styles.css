@@ -103,8 +103,8 @@ body.light-mode {
     --primary-3: #3730a3;
     --background: #ffffff;
     --background-rgb: 255, 255, 255;
-    --surface: rgba(255, 255, 255, 0.98);
-    --surface-hover: rgba(248, 250, 252, 1);
+    --surface: rgba(230, 235, 245, 1);
+    --surface-hover: rgba(220, 225, 235, 1);
     --text-primary: #000000;
     --text-secondary: #475569;
     --border: rgba(30, 64, 175, 0.5);
