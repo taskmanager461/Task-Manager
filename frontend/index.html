@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tobedone</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=7.0.8">
-    <link rel="stylesheet" href="/src/styles/logo.css?v=7.0.8">
+    <link rel="stylesheet" href="styles.css?v=6.0.3">
+    <link rel="stylesheet" href="/src/styles/logo.css?v=6.0.3">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <link rel="manifest" href="manifest.json">
@@ -17,7 +14,7 @@
     <link rel="apple-touch-icon" href="/static/icon-home-192-v7.png">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="assets.js?v=7.0.8"></script>
+    <script src="assets.js?v=6.0.3"></script>
 </head>
 <body class="dark-mode"> <!-- Default to dark mode for pro feel -->
     <div class="bg-lines-container">
@@ -137,9 +134,16 @@
 
     <!-- Main App Layout -->
     <div id="main-app" class="page">
-        <div class="corner-logo" aria-hidden="true">
-            <img class="app-logo-small" src="/assets/app-logo-20260501.png?v=3" alt="Logo">
-        </div>
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <img class="app-logo-small" src="/assets/app-logo-20260501.png?v=3" alt="Logo">
+                <h2 class="app-title-small"><span style="color: var(--primary);">T</span>obedone</h2>
+            </div>
+            <div class="scroll-progress-track" aria-hidden="true">
+                <div id="scroll-progress-fill" class="scroll-progress-fill"></div>
+            </div>
+        </header>
         <div class="top-actions-float">
             <button id="top-install-btn" class="icon-btn install-trigger" style="display: none;" aria-label="Install App">
                 <i class="fas fa-download"></i>
@@ -159,13 +163,9 @@
                 <!-- Monthly Calendar -->
                 <div class="card calendar-container" style="margin-bottom: 1.5rem;">
                     <div class="calendar-header">
-                        <button class="btn secondary" onclick="changeDashboardMonth(-1)" aria-label="Previous month">
-                            <i class="fas fa-chevron-left" aria-hidden="true"></i>
-                        </button>
+                        <button class="btn secondary" onclick="changeDashboardMonth(-1)">❮</button>
                         <h2 id="dashboard-calendar-month-year">Month Year</h2>
-                        <button class="btn secondary" onclick="changeDashboardMonth(1)" aria-label="Next month">
-                            <i class="fas fa-chevron-right" aria-hidden="true"></i>
-                        </button>
+                        <button class="btn secondary" onclick="changeDashboardMonth(1)">❯</button>
                     </div>
                     <div class="calendar-grid" id="dashboard-calendar-grid">
                         <!-- Calendar injected here -->
@@ -314,13 +314,9 @@
                 
                 <div class="card calendar-container">
                     <div class="calendar-header">
-                        <button class="btn secondary" onclick="changeMonth(-1)" aria-label="Previous month">
-                            <i class="fas fa-chevron-left" aria-hidden="true"></i>
-                        </button>
+                        <button class="btn secondary" onclick="changeMonth(-1)">❮</button>
                         <h2 id="calendar-month-year">Month Year</h2>
-                        <button class="btn secondary" onclick="changeMonth(1)" aria-label="Next month">
-                            <i class="fas fa-chevron-right" aria-hidden="true"></i>
-                        </button>
+                        <button class="btn secondary" onclick="changeMonth(1)">❯</button>
                     </div>
                     <div class="calendar-grid" id="calendar-grid">
                         <!-- Calendar injected here -->
@@ -398,10 +394,7 @@
             <section id="view-tasks" class="view active">
                 <div class="view-header">
                     <h1 id="tasks-goals-title" data-i18n="tasks">TASKS</h1>
-                    <button id="tasks-goals-add-btn" onclick="toggleCurrentForm()" class="btn primary">
-                        <i class="fas fa-plus" aria-hidden="true"></i>
-                        <span data-i18n="add_new_task">Add Task</span>
-                    </button>
+                    <button id="tasks-goals-add-btn" onclick="toggleCurrentForm()" class="btn primary" data-i18n="add_new_task">+ Add Task</button>
                 </div>
 
                 <div class="card" style="margin-bottom: 1.5rem;">
@@ -775,6 +768,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-    <script src="app.js?v=7.0.8"></script>
+    <script src="app.js?v=6.0.3"></script>
 </body>
 </html>
