@@ -913,8 +913,8 @@ body.light-mode .nav-item::before {
 }
 
 .hero-metric-icon {
-    width: 50px;
-    height: 50px;
+    width: 52px;
+    height: 52px;
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
@@ -929,11 +929,11 @@ body.light-mode .nav-item::before {
 }
 
 .hero-metric-icon img {
-    width: 42px;
-    height: 42px;
-    object-fit: cover;
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
     mix-blend-mode: screen;
-    filter: brightness(1.25) contrast(1.15) saturate(1.4);
+    filter: brightness(1.15) contrast(1.1) saturate(1.25);
 }
 
 .hero-metric-label {
