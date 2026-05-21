@@ -108,19 +108,19 @@ def hero_metrics(score_value: str, score_label: str,
     trust_bg = (
         "radial-gradient(circle at bottom right, #005c99 0%, #004a7a 20%, #003761 40%, #002542 60%, #001221 80%, #000000 100%)"
         if is_dark
-        else "linear-gradient(135deg, #dbeafe 0%, #3b82f6 40%, #1e3a8a 100%)"
+        else "linear-gradient(135deg, #1e3a8a 0%, #1e40af 40%, #0f172a 100%)"
     )
     streak_bg = (
         "radial-gradient(circle at bottom right, #993d00 0%, #7a3100 20%, #5c2700 40%, #3d1a00 60%, #1f0d00 80%, #000000 100%)"
         if is_dark
-        else "linear-gradient(135deg, #ffedd5 0%, #f97316 40%, #92400e 100%)"
+        else "linear-gradient(135deg, #7c2d12 0%, #9a3412 40%, #1c1917 100%)"
     )
     success_bg = (
         "radial-gradient(circle at bottom right, #009952 0%, #007a42 20%, #005c34 40%, #003d27 60%, #001f1a 80%, #000000 100%)"
         if is_dark
-        else "linear-gradient(135deg, #dcfce7 0%, #22c55e 40%, #14532d 100%)"
+        else "linear-gradient(135deg, #14532d 0%, #166534 40%, #052e16 100%)"
     )
-    hero_border = "1px solid rgba(255,255,255,0.1)" if is_dark else "1px solid rgba(30, 64, 175, 0.18)"
+    hero_border = "none"
     track_bg = "rgba(255,255,255,0.1)" if is_dark else "rgba(255,255,255,0.22)"
     track_border = "rgba(255,255,255,0.2)" if is_dark else "rgba(255,255,255,0.28)"
 

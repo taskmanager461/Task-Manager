@@ -1711,15 +1711,15 @@ function renderHeroMetrics(score) {
     const img6 = ASSETS.img6;
 
     const trustBg = isLightMode
-        ? 'linear-gradient(135deg, #dbeafe 0%, #3b82f6 40%, #1e3a8a 100%)'
+        ? 'linear-gradient(135deg, #bfdbfe 0%, #2563eb 30%, #1e293b 100%)'
         : 'radial-gradient(circle at bottom right, #005c99 0%, #004a7a 20%, #003761 40%, #002542 60%, #001221 80%, #000000 100%)';
 
     const streakBg = isLightMode
-        ? 'linear-gradient(135deg, #ffedd5 0%, #f97316 40%, #92400e 100%)'
+        ? 'linear-gradient(135deg, #fed7aa 0%, #ea580c 30%, #451a03 100%)'
         : 'radial-gradient(circle at bottom right, #993d00 0%, #7a3100 20%, #5c2700 40%, #3d1a00 60%, #1f0d00 80%, #000000 100%)';
 
     const successBg = isLightMode
-        ? 'linear-gradient(135deg, #dcfce7 0%, #22c55e 40%, #14532d 100%)'
+        ? 'linear-gradient(135deg, #bbf7d0 0%, #16a34a 30%, #052e16 100%)'
         : 'radial-gradient(circle at bottom right, #009952 0%, #007a42 20%, #005c34 40%, #003d27 60%, #001f1a 80%, #000000 100%)';
 
     const heroBorder = 'none';

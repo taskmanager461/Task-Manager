@@ -254,16 +254,7 @@ body.light-mode .hero-metric-value {
     text-shadow: 0 1px 1px rgba(0,0,0,0.25);
 }
 
-body.light-mode .hero-metric-icon {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-}
 
-body.light-mode .hero-metric-icon img {
-    mix-blend-mode: normal;
-    filter: brightness(1.1) contrast(1.05);
-}
 
 .card:hover, .task-card:hover, .metric-card:hover {
     background: var(--surface-hover);
@@ -575,8 +566,8 @@ body.light-mode .scroll-progress-track {
     width: 40px;
     height: 40px;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: transparent !important;
+    border: none !important;
     color: var(--text-primary);
     display: grid;
     place-items: center;
@@ -585,9 +576,12 @@ body.light-mode .scroll-progress-track {
 }
 
 .icon-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(30, 64, 175, 0.05);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+body.light-mode .icon-btn:hover {
+    background: rgba(30, 64, 175, 0.08);
 }
 
 .top-bar-right {
@@ -925,13 +919,19 @@ body.light-mode .nav-item::before {
     display: flex;
     align-items: center;
     justify-content: center;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 
 .hero-metric-icon img {
     width: 45px;
     height: 45px;
     object-fit: contain;
-    mix-blend-mode: screen;
+    mix-blend-mode: normal !important;
+    filter: none !important;
 }
 
 .hero-metric-label {
