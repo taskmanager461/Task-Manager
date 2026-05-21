@@ -779,34 +779,15 @@ body.light-mode .nav-item::before {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
-    background: var(--surface);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1rem 1.5rem;
-    z-index: 10;
+    margin-bottom: 1.5rem;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+    z-index: 1;
     position: relative;
-    overflow: hidden;
 }
-
-body.dark-mode .view-header {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.12), rgba(0, 0, 0, 0.52)), var(--surface);
-    border-color: rgba(120, 148, 255, 0.20);
-}
-
-.view-header::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(140% 140% at 18% 0%, rgba(10, 134, 255, 0.20), transparent 55%),
-                radial-gradient(140% 140% at 82% 0%, rgba(167, 139, 250, 0.14), transparent 58%);
-    pointer-events: none;
-    opacity: 0.9;
-}
-
-.view-header > * { position: relative; z-index: 1; }
 
 
 .progress-header {
