@@ -930,8 +930,8 @@ body.light-mode .nav-item::before {
     width: 45px;
     height: 45px;
     object-fit: contain;
-    mix-blend-mode: normal !important;
-    filter: none !important;
+    mix-blend-mode: screen;
+    filter: brightness(1.15) contrast(1.1);
 }
 
 .hero-metric-label {
