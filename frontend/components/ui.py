@@ -131,7 +131,7 @@ def hero_metrics(score_value: str, score_label: str,
             <div class="hero-metric" style="position: relative; border: {hero_border} !important; isolation: isolate !important; background: {trust_bg} !important;">
                 <div class="hero-metric-content">
                     <div class="hero-metric-icon" style="background: none !important; border: none !important; border-radius: 50% !important; overflow: hidden !important;">
-                        {f'<img src="data:image/png;base64,{img1}" style="width: 45px; height: 45px; object-fit: contain;">' if img1 else '🎯'}
+                        {f'<img src="data:image/png;base64,{img1}" style="width: 42px; height: 42px; object-fit: cover;">' if img1 else '🎯'}
                     </div>
                     <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Self Trust Score</div>
                     <div class="hero-metric-value" style="color: white !important;">{score_value}</div>
@@ -154,7 +154,7 @@ def hero_metrics(score_value: str, score_label: str,
             <div class="hero-metric" style="border: {hero_border} !important; isolation: isolate !important; background: {success_bg} !important;">
                 <div class="hero-metric-content">
                     <div class="hero-metric-icon" style="background: none !important; border: none !important; border-radius: 50% !important; overflow: hidden !important;">
-                        {f'<img src="data:image/png;base64,{img6}" style="width: 45px; height: 45px; object-fit: contain;">' if img6 else '📈'}
+                        {f'<img src="data:image/png;base64,{img6}" style="width: 42px; height: 42px; object-fit: cover;">' if img6 else '📈'}
                     </div>
                     <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Success Rate</div>
                     <div class="hero-metric-value" style="color: white !important;">{success_value}</div>
