@@ -6,9 +6,9 @@
     --primary-glow: rgba(47, 107, 255, 0.34);
     --background: #000000;
     --background-rgb: 0, 0, 0;
-    --surface: rgba(10, 16, 34, 0.56);
-    --surface-hover: rgba(14, 22, 48, 0.68);
-    --surface-soft: rgba(8, 12, 22, 0.72);
+    --surface: rgba(10, 10, 14, 0.58);
+    --surface-hover: rgba(16, 16, 22, 0.72);
+    --surface-soft: rgba(10, 10, 14, 0.74);
     --text-primary: rgba(246, 248, 255, 0.96);
     --text-secondary: rgba(246, 248, 255, 0.64);
     --border: rgba(255, 255, 255, 0.10);
@@ -963,6 +963,18 @@ body.light-mode .hero-metric::before {
     background: linear-gradient(180deg, rgba(0, 56, 38, 0.96), rgba(0, 120, 86, 0.90));
 }
 
+body.light-mode .hero-metric--trust {
+    background: linear-gradient(180deg, rgba(6, 50, 86, 0.98), rgba(8, 92, 138, 0.92));
+}
+
+body.light-mode .hero-metric--streak {
+    background: linear-gradient(180deg, rgba(58, 28, 0, 0.96), rgba(122, 58, 0, 0.92));
+}
+
+body.light-mode .hero-metric--success {
+    background: linear-gradient(180deg, rgba(0, 56, 38, 0.96), rgba(0, 120, 86, 0.90));
+}
+
 .hero-metric--trust::after,
 .hero-metric--streak::after,
 .hero-metric--success::after {
@@ -990,19 +1002,32 @@ body.light-mode .hero-metric::before {
 }
 
 .hero-metric-icon {
-    width: 50px;
-    height: 50px;
+    width: 56px;
+    height: 56px;
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.40);
 }
 
 .hero-metric-icon img {
-    width: 45px;
-    height: 45px;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
-    mix-blend-mode: screen;
+    padding: 8px;
+    transform: scale(1.08);
+    mix-blend-mode: normal;
+}
+
+body.light-mode .hero-metric-icon {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.22);
+    box-shadow: 0 14px 38px rgba(2, 6, 23, 0.14);
 }
 
 .hero-metric-label {
