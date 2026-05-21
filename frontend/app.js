@@ -1703,15 +1703,35 @@ function renderHeroMetrics(score) {
 
     const label = getScoreLabel(score.score);
     const scoreVal = score.score.toFixed(1);
+    const isLightMode = document.body.classList.contains('light-mode');
     
     // Use pre-loaded Base64 assets
     const img1 = ASSETS.img1;
     const img4 = ASSETS.img4;
     const img6 = ASSETS.img6;
 
+    const trustBg = isLightMode
+        ? 'linear-gradient(135deg, #f4f8ff 0%, #6fa0ff 42%, #1e40af 100%)'
+        : 'radial-gradient(circle at bottom right, #005c99 0%, #004a7a 20%, #003761 40%, #002542 60%, #001221 80%, #000000 100%)';
+
+    const streakBg = isLightMode
+        ? 'linear-gradient(135deg, #fff6ee 0%, #ffb56e 42%, #d97706 100%)'
+        : 'radial-gradient(circle at bottom right, #993d00 0%, #7a3100 20%, #5c2700 40%, #3d1a00 60%, #1f0d00 80%, #000000 100%)';
+
+    const successBg = isLightMode
+        ? 'linear-gradient(135deg, #effff4 0%, #7de8a0 42%, #16a34a 100%)'
+        : 'radial-gradient(circle at bottom right, #009952 0%, #007a42 20%, #005c34 40%, #003d27 60%, #001f1a 80%, #000000 100%)';
+
+    const heroBorder = isLightMode
+        ? '1px solid rgba(30, 64, 175, 0.18)'
+        : '1px solid rgba(255,255,255,0.1)';
+
+    const progressTrackBg = isLightMode ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.1)';
+    const progressTrackBorder = isLightMode ? 'rgba(255,255,255,0.28)' : 'rgba(255,255,255,0.2)';
+
     container.innerHTML = `
         <!-- Card 1: Trust Score -->
-        <div class="hero-metric" style="background: radial-gradient(circle at bottom right, #005c99 0%, #004a7a 20%, #003761 40%, #002542 60%, #001221 80%, #000000 100%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
+        <div class="hero-metric" style="background: ${trustBg} !important; isolation: isolate !important; border: ${heroBorder} !important; box-shadow: none !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img1}">
@@ -1725,7 +1745,7 @@ function renderHeroMetrics(score) {
         </div>
 
         <!-- Card 2: Streak -->
-        <div class="hero-metric" style="background: radial-gradient(circle at bottom right, #993d00 0%, #7a3100 20%, #5c2700 40%, #3d1a00 60%, #1f0d00 80%, #000000 100%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
+        <div class="hero-metric" style="background: ${streakBg} !important; isolation: isolate !important; border: ${heroBorder} !important; box-shadow: none !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img4}">
@@ -1736,15 +1756,15 @@ function renderHeroMetrics(score) {
         </div>
 
         <!-- Card 3: Success -->
-        <div class="hero-metric" style="background: radial-gradient(circle at bottom right, #009952 0%, #007a42 20%, #005c34 40%, #003d27 60%, #001f1a 80%, #000000 100%) !important; isolation: isolate !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important;">
+        <div class="hero-metric" style="background: ${successBg} !important; isolation: isolate !important; border: ${heroBorder} !important; box-shadow: none !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img6}">
                 </div>
                 <div class="hero-metric-label">Success Rate</div>
                 <div class="hero-metric-value">${(score.success_rate * 100).toFixed(0)}%</div>
-                <div style="margin-top: 40px; width: 100%; background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
-                    <div style="width: ${score.success_rate * 100}%; height: 100%; background: #4ade80; box-shadow: 0 0 10px #4ade80; border-radius: 10px;"></div>
+                <div style="margin-top: 40px; width: 100%; background: ${progressTrackBg}; height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid ${progressTrackBorder};">
+                    <div style="width: ${score.success_rate * 100}%; height: 100%; background: #4ade80; box-shadow: none; border-radius: 10px;"></div>
                 </div>
             </div>
         </div>

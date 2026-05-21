@@ -47,6 +47,7 @@ def render_logo(dark_mode: bool) -> None:
 def hero_metrics(score_value: str, score_label: str,
                   streak_value: str, streak_sub: str,
                   success_value: str, success_sub: str) -> None:
+    is_dark = bool(st.session_state.get("dark_mode", True))
     
     # Path setup
     current_file = Path(__file__).resolve()
@@ -104,11 +105,30 @@ def hero_metrics(score_value: str, score_label: str,
     except:
         success_pct = 0.0
 
+    trust_bg = (
+        "radial-gradient(circle at bottom right, #005c99 0%, #004a7a 20%, #003761 40%, #002542 60%, #001221 80%, #000000 100%)"
+        if is_dark
+        else "linear-gradient(135deg, #f4f8ff 0%, #6fa0ff 42%, #1e40af 100%)"
+    )
+    streak_bg = (
+        "radial-gradient(circle at bottom right, #993d00 0%, #7a3100 20%, #5c2700 40%, #3d1a00 60%, #1f0d00 80%, #000000 100%)"
+        if is_dark
+        else "linear-gradient(135deg, #fff6ee 0%, #ffb56e 42%, #d97706 100%)"
+    )
+    success_bg = (
+        "radial-gradient(circle at bottom right, #009952 0%, #007a42 20%, #005c34 40%, #003d27 60%, #001f1a 80%, #000000 100%)"
+        if is_dark
+        else "linear-gradient(135deg, #effff4 0%, #7de8a0 42%, #16a34a 100%)"
+    )
+    hero_border = "1px solid rgba(255,255,255,0.1)" if is_dark else "1px solid rgba(30, 64, 175, 0.18)"
+    track_bg = "rgba(255,255,255,0.1)" if is_dark else "rgba(255,255,255,0.22)"
+    track_border = "rgba(255,255,255,0.2)" if is_dark else "rgba(255,255,255,0.28)"
+
     st.markdown(
         f"""
         <div class="hero-metric-grid">
             <!-- Card 1: Trust Score -->
-            <div class="hero-metric" style="position: relative; border: 1px solid rgba(255,255,255,0.1) !important; isolation: isolate !important; background: radial-gradient(circle at bottom right, #005c99 0%, #004a7a 20%, #003761 40%, #002542 60%, #001221 80%, #000000 100%) !important;">
+            <div class="hero-metric" style="position: relative; border: {hero_border} !important; isolation: isolate !important; background: {trust_bg} !important;">
                 <div class="hero-metric-content">
                     <div class="hero-metric-icon" style="background: none !important; border: none !important;">
                         {f'<img src="data:image/png;base64,{img1}" style="width: 45px; height: 45px; object-fit: contain;">' if img1 else '🎯'}
@@ -120,7 +140,7 @@ def hero_metrics(score_value: str, score_label: str,
             </div>
 
             <!-- Card 2: Streak -->
-            <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; isolation: isolate !important; background: radial-gradient(circle at bottom right, #993d00 0%, #7a3100 20%, #5c2700 40%, #3d1a00 60%, #1f0d00 80%, #000000 100%) !important;">
+            <div class="hero-metric" style="border: {hero_border} !important; isolation: isolate !important; background: {streak_bg} !important;">
                 <div class="hero-metric-content">
                     <div class="hero-metric-icon" style="background: none !important; border: none !important;">
                         {f'<img src="data:image/png;base64,{img4}" style="width: 45px; height: 45px; object-fit: contain;">' if img4 else '🔥'}
@@ -131,15 +151,15 @@ def hero_metrics(score_value: str, score_label: str,
             </div>
 
             <!-- Card 3: Success -->
-            <div class="hero-metric" style="border: 1px solid rgba(255,255,255,0.1) !important; isolation: isolate !important; background: radial-gradient(circle at bottom right, #009952 0%, #007a42 20%, #005c34 40%, #003d27 60%, #001f1a 80%, #000000 100%) !important;">
+            <div class="hero-metric" style="border: {hero_border} !important; isolation: isolate !important; background: {success_bg} !important;">
                 <div class="hero-metric-content">
                     <div class="hero-metric-icon" style="background: none !important; border: none !important;">
                         {f'<img src="data:image/png;base64,{img6}" style="width: 45px; height: 45px; object-fit: contain;">' if img6 else '📈'}
                     </div>
                     <div class="hero-metric-label" style="color: white !important; font-weight: 700;">Success Rate</div>
                     <div class="hero-metric-value" style="color: white !important;">{success_value}</div>
-                    <div style="margin-top: 40px; width: 100%; background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
-                        <div style="width: {success_pct}%; height: 100%; background: #4ade80; box-shadow: 0 0 10px #4ade80; border-radius: 10px;"></div>
+                    <div style="margin-top: 40px; width: 100%; background: {track_bg}; height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid {track_border};">
+                        <div style="width: {success_pct}%; height: 100%; background: #4ade80; box-shadow: none; border-radius: 10px;"></div>
                     </div>
                 </div>
             </div>
