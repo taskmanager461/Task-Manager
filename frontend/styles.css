@@ -17,7 +17,7 @@
     --error: #ef4444;
     --error-glow: rgba(239, 68, 68, 0);
     --warning: #f59e0b;
-    --line-color: rgba(255, 255, 255, 0.15);
+    --line-color: rgba(30, 64, 175, 0.4);
     
     /* Glassmorphism */
     --glass-blur: blur(40px);
@@ -346,6 +346,11 @@ body.dark-mode .auth-container {
     background: var(--primary);
     color: white;
     box-shadow: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+body.light-mode .btn.primary {
+    border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .btn.primary:hover {
@@ -355,9 +360,14 @@ body.dark-mode .auth-container {
 }
 
 .btn.secondary {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: rgba(100, 100, 100, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     color: var(--text-primary);
+}
+
+body.light-mode .btn.secondary {
+    background: rgba(200, 200, 200, 0.3);
+    border: 1px solid rgba(0, 0, 0, 0.25);
 }
 
 .btn.secondary:hover {
@@ -450,10 +460,10 @@ body.dark-mode .auth-container {
     left: 0;
     right: 0;
     height: 70px;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border-bottom: 1px solid var(--border);
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-bottom: none;
     display: flex;
     align-items: center;
     justify-content: space-between;
