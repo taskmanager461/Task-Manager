@@ -135,23 +135,12 @@ async def get_icon512():
 @app.get("/styles.css")
 async def get_css():
     path = FRONTEND_DIR / "styles.css"
-    if path.exists():
-        return FileResponse(path, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
-    return {"error": "styles.css not found"}
+    return FileResponse(path) if path.exists() else {"error": "styles.css not found"}
 
 @app.get("/app.js")
 async def get_js():
     path = FRONTEND_DIR / "app.js"
-    if path.exists():
-        return FileResponse(path, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
-    return {"error": "app.js not found"}
-
-@app.get("/assets.js")
-async def get_assets_js():
-    path = FRONTEND_DIR / "assets.js"
-    if path.exists():
-        return FileResponse(path, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
-    return {"error": "assets.js not found"}
+    return FileResponse(path) if path.exists() else {"error": "app.js not found"}
 
 def _serve_root_badge(filename: str) -> FileResponse:
     path = PROJECT_ROOT / filename
@@ -205,8 +194,6 @@ async def serve_frontend(full_path: str):
     # Check if the file exists in frontend folder
     file_path = FRONTEND_DIR / full_path
     if file_path.is_file():
-        if file_path.suffix in {".js", ".css", ".html"}:
-            return FileResponse(file_path, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
         return FileResponse(file_path)
         
     index_file = FRONTEND_DIR / "index.html"
