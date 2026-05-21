@@ -228,8 +228,20 @@ body.light-mode .metric-card {
 }
 
 body.light-mode .hero-metric {
-    background: linear-gradient(135deg, rgba(30, 64, 175, 0.05) 0%, rgba(30, 64, 175, 0.25) 100%) !important;
-    border: 1px solid rgba(30,64,175,0.2) !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+body.light-mode .hero-metric-grid .hero-metric:nth-child(1) {
+    background: linear-gradient(135deg, #f4f8ff 0%, #2b5fd6 58%, #173a8a 100%) !important;
+}
+
+body.light-mode .hero-metric-grid .hero-metric:nth-child(2) {
+    background: linear-gradient(135deg, #fff6ee 0%, #d97706 58%, #8a3f00 100%) !important;
+}
+
+body.light-mode .hero-metric-grid .hero-metric:nth-child(3) {
+    background: linear-gradient(135deg, #effff4 0%, #16a34a 58%, #065f46 100%) !important;
 }
 
 body.light-mode .hero-metric-bg {
@@ -238,7 +250,12 @@ body.light-mode .hero-metric-bg {
 
 body.light-mode .hero-metric-label,
 body.light-mode .hero-metric-value {
-    color: #000000 !important;
+    color: #ffffff !important;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.25);
+}
+
+body.light-mode .hero-metric-icon img {
+    mix-blend-mode: normal;
 }
 
 .card:hover, .task-card:hover, .metric-card:hover {
