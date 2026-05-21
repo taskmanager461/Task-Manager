@@ -227,6 +227,20 @@ body.light-mode .metric-card {
     border-color: rgba(30,64,175,0.15);
 }
 
+body.light-mode .hero-metric {
+    background: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(250,250,252,1) 100%) !important;
+    border: 1px solid rgba(30,64,175,0.15) !important;
+}
+
+body.light-mode .hero-metric-bg {
+    display: none !important;
+}
+
+body.light-mode .hero-metric-label,
+body.light-mode .hero-metric-value {
+    color: #000000 !important;
+}
+
 .card:hover, .task-card:hover, .metric-card:hover {
     background: var(--surface-hover);
     border-color: var(--primary);
