@@ -936,6 +936,10 @@ body.light-mode .nav-item::before {
     filter: brightness(1.15) contrast(1.1) saturate(1.25);
 }
 
+body.light-mode .hero-metric-icon img {
+    filter: brightness(1.0) contrast(1.05) saturate(1.15);
+}
+
 .hero-metric-label {
     font-size: 0.85rem;
     font-weight: 700;
