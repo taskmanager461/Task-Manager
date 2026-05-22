@@ -11,7 +11,7 @@
     --surface-soft: rgba(25, 25, 30, 1);
     --text-primary: #f5f5f5;
     --text-secondary: rgba(245, 245, 245, 0.6);
-    --border: rgba(30, 64, 175, 0.6);
+    --border: rgba(30, 64, 175, 1);
     --success: #15803d;
     --success-glow: rgba(21, 128, 61, 0);
     --error: #991b1b;
@@ -107,7 +107,7 @@ body.light-mode {
     --surface-hover: rgba(220, 225, 235, 1);
     --text-primary: #000000;
     --text-secondary: #475569;
-    --border: rgba(30, 64, 175, 0.5);
+    --border: rgba(30, 64, 175, 1);
     --line-color: rgba(30, 64, 175, 0.3);
     --success: #15803d;
     --error: #991b1b;
@@ -224,7 +224,7 @@ body.light-mode .auth-container {
 
 body.light-mode .metric-card {
     background: linear-gradient(135deg, rgba(255,255,255,1), rgba(255,255,255,1));
-    border-color: rgba(30,64,175,0.15);
+    border-color: rgba(30,64,175,1);
 }
 
 body.light-mode .hero-metric {
