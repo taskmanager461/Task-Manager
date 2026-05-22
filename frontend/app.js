@@ -1715,14 +1715,12 @@ function renderHeroMetrics(score) {
         ? 'linear-gradient(135deg, #bbf7d0 0%, #16a34a 30%, #052e16 100%)'
         : 'radial-gradient(circle at bottom right, #009952 0%, #007a42 20%, #005c34 40%, #003d27 60%, #001f1a 80%, #000000 100%)';
 
-    const heroBorder = 'none';
-
     const progressTrackBg = isLightMode ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.1)';
     const progressTrackBorder = isLightMode ? 'rgba(255,255,255,0.28)' : 'rgba(255,255,255,0.2)';
 
     container.innerHTML = `
         <!-- Card 1: Trust Score -->
-        <div class="hero-metric" style="background: ${trustBg} !important; isolation: isolate !important; border: ${heroBorder} !important; box-shadow: none !important;">
+        <div class="hero-metric" style="background: ${trustBg} !important; isolation: isolate !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img1}">
@@ -1736,7 +1734,7 @@ function renderHeroMetrics(score) {
         </div>
 
         <!-- Card 2: Streak -->
-        <div class="hero-metric" style="background: ${streakBg} !important; isolation: isolate !important; border: ${heroBorder} !important; box-shadow: none !important;">
+        <div class="hero-metric" style="background: ${streakBg} !important; isolation: isolate !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img4}">
@@ -1747,7 +1745,7 @@ function renderHeroMetrics(score) {
         </div>
 
         <!-- Card 3: Success -->
-        <div class="hero-metric" style="background: ${successBg} !important; isolation: isolate !important; border: ${heroBorder} !important; box-shadow: none !important;">
+        <div class="hero-metric" style="background: ${successBg} !important; isolation: isolate !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img6}">

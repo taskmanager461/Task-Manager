@@ -120,7 +120,6 @@ def hero_metrics(score_value: str, score_label: str,
         if is_dark
         else "linear-gradient(135deg, #14532d 0%, #166534 40%, #052e16 100%)"
     )
-    hero_border = "none"
     track_bg = "rgba(255,255,255,0.1)" if is_dark else "rgba(255,255,255,0.22)"
     track_border = "rgba(255,255,255,0.2)" if is_dark else "rgba(255,255,255,0.28)"
 
@@ -128,7 +127,7 @@ def hero_metrics(score_value: str, score_label: str,
         f"""
         <div class="hero-metric-grid">
             <!-- Card 1: Trust Score -->
-            <div class="hero-metric" style="position: relative; border: {hero_border} !important; isolation: isolate !important; background: {trust_bg} !important;">
+            <div class="hero-metric" style="position: relative; isolation: isolate !important; background: {trust_bg} !important;">
                 <div class="hero-metric-content">
                     <div class="hero-metric-icon" style="background: none !important; border: none !important; border-radius: 9999px !important; overflow: hidden !important;">
                         {f'<img src="data:image/png;base64,{img1}" style="width: 44px; height: 44px; object-fit: contain;">' if img1 else '🎯'}
@@ -140,7 +139,7 @@ def hero_metrics(score_value: str, score_label: str,
             </div>
 
             <!-- Card 2: Streak -->
-            <div class="hero-metric" style="border: {hero_border} !important; isolation: isolate !important; background: {streak_bg} !important;">
+            <div class="hero-metric" style="isolation: isolate !important; background: {streak_bg} !important;">
                 <div class="hero-metric-content">
                     <div class="hero-metric-icon" style="background: none !important; border: none !important; border-radius: 9999px !important; overflow: hidden !important;">
                         {f'<img src="data:image/png;base64,{img4}" style="width: 45px; height: 45px; object-fit: contain;">' if img4 else '🔥'}
@@ -151,7 +150,7 @@ def hero_metrics(score_value: str, score_label: str,
             </div>
 
             <!-- Card 3: Success -->
-            <div class="hero-metric" style="border: {hero_border} !important; isolation: isolate !important; background: {success_bg} !important;">
+            <div class="hero-metric" style="isolation: isolate !important; background: {success_bg} !important;">
                 <div class="hero-metric-content">
                     <div class="hero-metric-icon" style="background: none !important; border: none !important; border-radius: 9999px !important; overflow: hidden !important;">
                         {f'<img src="data:image/png;base64,{img6}" style="width: 44px; height: 44px; object-fit: contain;">' if img6 else '📈'}
