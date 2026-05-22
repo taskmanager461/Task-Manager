@@ -202,13 +202,13 @@ p { color: var(--text-secondary); font-size: 0.9375rem; }
 .card, .metric-card, .task-card, .settings-card, .chart-container, .insight-card, .auth-container {
     position: relative;
     overflow: hidden;
-    background: var(--surface);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
+    background: var(--background);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: 1.5rem;
-    box-shadow: var(--card-shadow);
+    box-shadow: none;
     transition: transform var(--transition), border-color var(--transition), background var(--transition), box-shadow var(--transition);
     z-index: 1;
 }
@@ -219,11 +219,11 @@ body.light-mode .settings-card,
 body.light-mode .chart-container,
 body.light-mode .insight-card,
 body.light-mode .auth-container {
-    background: var(--surface);
+    background: var(--background);
 }
 
 body.light-mode .metric-card {
-    background: linear-gradient(135deg, rgba(255,255,255,1), rgba(255,255,255,1));
+    background: var(--background);
     border-color: rgba(30,64,175,1);
 }
 
@@ -296,27 +296,27 @@ body.light-mode .hero-metric-value {
 
 /* Score label covers entire metric card background */
 .metric-card:nth-child(1):has(.score-label.excellent) {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(16, 185, 129, 0.08));
+    background: var(--background);
 }
 .metric-card:nth-child(1):has(.score-label.good) {
-    background: linear-gradient(135deg, rgba(0, 102, 255, 0.25), rgba(0, 102, 255, 0.08));
+    background: var(--background);
 }
 .metric-card:nth-child(1):has(.score-label.average) {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(245, 158, 11, 0.08));
+    background: var(--background);
 }
 .metric-card:nth-child(1):has(.score-label.low) {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.35), rgba(239, 68, 68, 0.1));
+    background: var(--background);
     border-left: 6px solid #EF4444;
 }
 
 /* Streak metric card background */
 .metric-card:nth-child(2) {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(239, 68, 68, 0.05));
+    background: var(--background);
 }
 
 /* Success metric card background */
 .metric-card:nth-child(3) {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.05));
+    background: var(--background);
 }
 
 .metric-card .icon {
