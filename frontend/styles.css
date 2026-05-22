@@ -60,8 +60,10 @@
 }
 
 .auth-logo {
-    width: 320px !important;
-    height: 320px !important;
+    width: 1024px !important;
+    height: 1024px !important;
+    max-width: 90vw !important;
+    max-height: 50vh !important;
     margin: 0 auto -0.3rem !important;
     display: block;
 }
