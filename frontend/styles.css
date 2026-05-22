@@ -1002,8 +1002,8 @@ body.light-mode #forgot-form select {
 }
 
 .hero-metric-icon {
-    width: 72px;
-    height: 72px;
+    width: 64px;
+    height: 64px;
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
@@ -1017,10 +1017,9 @@ body.light-mode #forgot-form select {
     overflow: hidden !important;
 }
 
-.hero-metric-icon img,
-.hero-metric-icon svg {
-    width: 64px;
-    height: 64px;
+.hero-metric-icon img {
+    width: 48px;
+    height: 48px;
     object-fit: contain;
     image-rendering: optimizeQuality;
     image-rendering: -webkit-optimize-contrast;
@@ -1028,8 +1027,7 @@ body.light-mode #forgot-form select {
     filter: brightness(1.0) contrast(1.0) saturate(1.0);
 }
 
-body.light-mode .hero-metric-icon img,
-body.light-mode .hero-metric-icon svg {
+body.light-mode .hero-metric-icon img {
     filter: brightness(1.0) contrast(1.0) saturate(1.0) !important;
     mix-blend-mode: normal !important;
 }
