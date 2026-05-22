@@ -137,9 +137,6 @@ def get_theme_css(dark_mode: bool) -> str:
         display: flex;
         flex-direction: column;
         min-height: 240px;
-        border: none !important;
-        background-color: transparent !important;
-        box-shadow: none !important;
     }}
 
     .hero-metric-bg {{
