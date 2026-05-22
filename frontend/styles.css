@@ -45,10 +45,13 @@
 }
 
 .logo {
-    image-rendering: -webkit-optimize-contrast;
     image-rendering: optimizeQuality;
+    image-rendering: -webkit-optimize-contrast;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    object-fit: contain;
+    transform: none;
+    zoom: 1;
 }
 
 .brand-logo {
@@ -57,8 +60,8 @@
 }
 
 .auth-logo {
-    width: 190px !important;
-    height: 190px !important;
+    width: 180px !important;
+    height: 180px !important;
     margin: 0 auto -0.3rem !important;
     display: block;
 }
@@ -73,6 +76,16 @@
 .loading-logo {
     width: 100px;
     height: 100px;
+}
+
+.app-logo-small {
+    width: 40px;
+    height: 40px;
+}
+
+.share-logo {
+    width: 60px;
+    height: 60px;
 }
 
 .loading-title {
