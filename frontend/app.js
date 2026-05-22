@@ -781,14 +781,7 @@ function getWindowScrollMetrics() {
 }
 
 function applyScrollUI(scrollTop, maxScroll) {
-    const topBar = document.querySelector('.top-bar');
-    if (!topBar) return;
-    updateScrollProgressFromMetrics(scrollTop, maxScroll);
-
-    if (Math.abs(lastScrollTop - scrollTop) <= scrollThreshold) return;
-    if (scrollTop > lastScrollTop && scrollTop > 40) topBar.classList.add('hidden');
-    else topBar.classList.remove('hidden');
-    lastScrollTop = scrollTop;
+    // Keep top bar always visible - no scrolling behavior
 }
 
 function scheduleScrollUI(scrollTop, maxScroll) {
