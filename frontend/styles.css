@@ -205,8 +205,8 @@ p { color: var(--text-secondary); font-size: 0.9375rem; }
     background: var(--background);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    border: 2px solid rgba(10, 134, 255, 0.6);
-    box-shadow: 0 0 20px rgba(10, 134, 255, 0.3), 0 8px 30px rgba(0, 0, 0, 0.4);
+    border: 1.5px solid rgba(10, 134, 255, 0.5);
+    box-shadow: 0 0 15px rgba(10, 134, 255, 0.25), 0 6px 25px rgba(0, 0, 0, 0.35);
     border-radius: var(--radius-lg);
     padding: 1.5rem;
     transition: transform var(--transition), border-color var(--transition), background var(--transition), box-shadow var(--transition);
@@ -258,8 +258,8 @@ body.light-mode .hero-metric-value {
 
 .card:hover, .task-card:hover, .metric-card:hover {
     background: var(--surface-hover);
-    border-color: rgba(10, 134, 255, 1);
-    box-shadow: 0 0 30px rgba(10, 134, 255, 0.5), 0 12px 40px rgba(0, 0, 0, 0.5);
+    border-color: rgba(10, 134, 255, 0.8);
+    box-shadow: 0 0 22px rgba(10, 134, 255, 0.4), 0 10px 35px rgba(0, 0, 0, 0.45);
     transform: translateY(-4px);
 }
 
@@ -354,7 +354,8 @@ body.light-mode .hero-metric-value {
     align-items: center;
     justify-content: center;
     padding: 0.85rem 1.6rem;
-    border: 1px solid transparent;
+    border: 1.5px solid rgba(10, 134, 255, 0.5);
+    box-shadow: 0 0 10px rgba(10, 134, 255, 0.2);
     border-radius: var(--radius-md);
     font-weight: 600;
     font-size: 0.9rem;
@@ -380,14 +381,15 @@ body.light-mode .hero-metric-value {
 .btn.primary, .btn.secondary {
     background: var(--primary);
     color: white;
-    box-shadow: none;
-    border: 2px solid rgba(30, 64, 175, 0.8);
+    border: 1.5px solid rgba(10, 134, 255, 0.7);
+    box-shadow: 0 0 12px rgba(10, 134, 255, 0.25);
 }
 
 .btn.primary:hover, .btn.secondary:hover {
     background: #1e3a8a;
     transform: translateY(-2px) scale(1.02);
-    box-shadow: none;
+    border-color: rgba(10, 134, 255, 1);
+    box-shadow: 0 0 18px rgba(10, 134, 255, 0.4);
 }
 
 .btn.full-width { width: 100%; }
@@ -399,31 +401,37 @@ body.light-mode .hero-metric-value {
     font-size: 0.75rem;
     border-radius: var(--radius-md);
     transition: all var(--transition);
+    border: 1.5px solid rgba(10, 134, 255, 0.5);
+    box-shadow: 0 0 8px rgba(10, 134, 255, 0.18);
 }
 
 .task-btn.completed {
     background: rgba(34, 197, 94, 0.12);
-    border: 1px solid var(--success);
+    border-color: rgba(34, 197, 94, 0.6);
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.2);
     color: var(--success);
 }
 
 .task-btn.completed:hover {
     background: var(--success);
     color: white;
-    box-shadow: none;
+    border-color: rgba(34, 197, 94, 1);
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
     transform: translateY(-1px) scale(1.02);
 }
 
 .task-btn.failed {
     background: rgba(239, 68, 68, 0.12);
-    border: 1px solid var(--error);
+    border-color: rgba(239, 68, 68, 0.6);
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.2);
     color: var(--error);
 }
 
 .task-btn.failed:hover {
     background: var(--error);
     color: white;
-    box-shadow: none;
+    border-color: rgba(239, 68, 68, 1);
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
     transform: translateY(-1px) scale(1.02);
 }
 
@@ -836,7 +844,8 @@ body.light-mode .nav-item::before {
     background: rgba(255, 255, 255, 0.03);
     border-radius: 10px;
     overflow: hidden;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(10, 134, 255, 0.45);
+    box-shadow: 0 0 6px rgba(10, 134, 255, 0.15);
 }
 
 #daily-progress-fill {
@@ -875,8 +884,8 @@ body.light-mode .nav-item::before {
     display: flex;
     flex-direction: column;
     min-height: 240px;
-    border: 2px solid rgba(10, 134, 255, 0.6) !important;
-    box-shadow: 0 0 20px rgba(10, 134, 255, 0.3), 0 8px 30px rgba(0, 0, 0, 0.4) !important;
+    border: 1.5px solid rgba(10, 134, 255, 0.5) !important;
+    box-shadow: 0 0 15px rgba(10, 134, 255, 0.25), 0 6px 25px rgba(0, 0, 0, 0.35) !important;
 }
 
 .hero-metric-bg {
@@ -903,8 +912,8 @@ body.light-mode .nav-item::before {
 
 .hero-metric:hover {
     transform: translateY(-8px) scale(1.02);
-    border-color: rgba(10, 134, 255, 1) !important;
-    box-shadow: 0 0 30px rgba(10, 134, 255, 0.5), 0 12px 40px rgba(0, 0, 0, 0.5) !important;
+    border-color: rgba(10, 134, 255, 0.8) !important;
+    box-shadow: 0 0 22px rgba(10, 134, 255, 0.4), 0 10px 35px rgba(0, 0, 0, 0.45) !important;
 }
 
 .hero-metric-icon {
@@ -1007,7 +1016,8 @@ body.light-mode .hero-metric-icon img {
 /* Suggestions & Insights */
 .suggestion-box {
     background: rgba(10, 132, 255, 0.08);
-    border: 1px solid rgba(10, 132, 255, 0.22);
+    border: 1.2px solid rgba(10, 134, 255, 0.45);
+    box-shadow: 0 0 8px rgba(10, 134, 255, 0.18);
     padding: 1rem;
     border-radius: 12px;
     margin-bottom: 1.5rem;
@@ -1490,7 +1500,8 @@ input, select {
     width: 100%;
     padding: 0.85rem 1.25rem;
     background: var(--surface);
-    border: 1px solid var(--border);
+    border: 1.2px solid rgba(10, 134, 255, 0.45);
+    box-shadow: 0 0 8px rgba(10, 134, 255, 0.18);
     border-radius: 12px;
     color: var(--text-primary);
     font-size: 0.9rem;
@@ -1499,8 +1510,8 @@ input, select {
 
 input:focus, select:focus {
     outline: none;
-    border-color: var(--primary);
-    box-shadow: none;
+    border-color: rgba(10, 134, 255, 0.8);
+    box-shadow: 0 0 12px rgba(10, 134, 255, 0.3);
     background: var(--surface-hover);
 }
 
@@ -1521,10 +1532,10 @@ body.light-mode input, body.light-mode select {
 
 .toast {
     background: #0f172a;
-    border: 1px solid var(--primary);
+    border: 1.5px solid rgba(10, 134, 255, 0.6);
+    box-shadow: 0 0 15px rgba(10, 134, 255, 0.25), 0 10px 25px rgba(0, 0, 0, 0.5);
     padding: 1rem 1.25rem;
     border-radius: 12px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.6);
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -1817,7 +1828,8 @@ canvas {
     gap: 1rem;
     padding: 1.25rem;
     background: var(--surface);
-    border: 1px solid var(--border);
+    border: 1.2px solid rgba(10, 134, 255, 0.45);
+    box-shadow: 0 0 10px rgba(10, 134, 255, 0.2);
     border-radius: 16px;
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
@@ -1913,7 +1925,8 @@ canvas {
 
 .identity-stat-item {
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border);
+    border: 1.2px solid rgba(10, 134, 255, 0.45);
+    box-shadow: 0 0 8px rgba(10, 134, 255, 0.18);
     border-radius: 10px;
     padding: 0.65rem 0.75rem;
     transition: all 0.2s ease;
@@ -1973,7 +1986,8 @@ canvas {
     justify-content: space-between;
     align-items: center;
     padding: 0.55rem 0.7rem;
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    border: 1.2px solid rgba(10, 134, 255, 0.45);
+    box-shadow: 0 0 8px rgba(10, 134, 255, 0.18);
     border-radius: 10px;
     background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(37, 99, 235, 0.1));
 }
@@ -1994,7 +2008,8 @@ canvas {
 }
 
 .for-you-item {
-    border: 1px solid var(--border);
+    border: 1.2px solid rgba(10, 134, 255, 0.45);
+    box-shadow: 0 0 8px rgba(10, 134, 255, 0.18);
     border-radius: 10px;
     padding: 0.65rem 0.8rem;
     background: rgba(255, 255, 255, 0.03);
@@ -2035,7 +2050,8 @@ canvas {
 
 .identity-badge {
     font-size: 0.75rem;
-    border: 1px solid var(--border);
+    border: 1.2px solid rgba(10, 134, 255, 0.45);
+    box-shadow: 0 0 6px rgba(10, 134, 255, 0.15);
     border-radius: 999px;
     padding: 0.25rem 0.65rem;
     color: var(--text-secondary);
@@ -2068,7 +2084,8 @@ canvas {
 }
 
 .goal-link-control {
-    border: 1px solid var(--border);
+    border: 1.2px solid rgba(10, 134, 255, 0.45);
+    box-shadow: 0 0 8px rgba(10, 134, 255, 0.18);
     border-radius: 12px;
     padding: 0.75rem;
     background: rgba(255, 255, 255, 0.02);
@@ -2089,13 +2106,13 @@ canvas {
     -webkit-backdrop-filter: var(--glass-blur);
     padding: 2rem;
     border-radius: var(--radius-xl);
-    border: 1px solid var(--border);
+    border: 1.5px solid rgba(10, 134, 255, 0.5);
+    box-shadow: 0 0 15px rgba(10, 134, 255, 0.25), 0 6px 25px rgba(0, 0, 0, 0.35);
     width: 100%;
     max-width: 520px;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    box-shadow: var(--card-hover-shadow);
     transform: scale(0.9);
     opacity: 0;
     transition: transform var(--transition), opacity var(--transition);
@@ -2109,10 +2126,10 @@ canvas {
 /* Share Card */
 .share-card {
     background: var(--surface);
-    border: 1px solid var(--border);
+    border: 1.5px solid rgba(10, 134, 255, 0.5);
+    box-shadow: 0 0 15px rgba(10, 134, 255, 0.25), 0 6px 25px rgba(0, 0, 0, 0.35);
     border-radius: 16px;
     padding: 2rem;
-    box-shadow: none;
 }
 
 .share-card-header {
@@ -2146,7 +2163,8 @@ canvas {
 
 .share-stat {
     background: rgba(37, 99, 235, 0.1);
-    border: 1px solid rgba(37, 99, 235, 0.3);
+    border: 1.2px solid rgba(10, 134, 255, 0.45);
+    box-shadow: 0 0 8px rgba(10, 134, 255, 0.18);
     border-radius: 12px;
     padding: 1rem;
     text-align: center;
