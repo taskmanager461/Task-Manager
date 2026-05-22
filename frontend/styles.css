@@ -205,10 +205,10 @@ p { color: var(--text-secondary); font-size: 0.9375rem; }
     background: var(--background);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    border: 1px solid var(--border);
+    border: 2px solid rgba(10, 134, 255, 0.6);
+    box-shadow: 0 0 20px rgba(10, 134, 255, 0.3), 0 8px 30px rgba(0, 0, 0, 0.4);
     border-radius: var(--radius-lg);
     padding: 1.5rem;
-    box-shadow: none;
     transition: transform var(--transition), border-color var(--transition), background var(--transition), box-shadow var(--transition);
     z-index: 1;
 }
@@ -258,8 +258,8 @@ body.light-mode .hero-metric-value {
 
 .card:hover, .task-card:hover, .metric-card:hover {
     background: var(--surface-hover);
-    border-color: var(--primary);
-    box-shadow: var(--card-hover-shadow);
+    border-color: rgba(10, 134, 255, 1);
+    box-shadow: 0 0 30px rgba(10, 134, 255, 0.5), 0 12px 40px rgba(0, 0, 0, 0.5);
     transform: translateY(-4px);
 }
 
