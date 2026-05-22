@@ -55,13 +55,13 @@
 }
 
 .brand-logo {
-    width: 32px;
-    height: 32px;
+    width: 64px;
+    height: 64px;
 }
 
 .auth-logo {
-    width: 180px !important;
-    height: 180px !important;
+    width: 320px !important;
+    height: 320px !important;
     margin: 0 auto -0.3rem !important;
     display: block;
 }
@@ -74,18 +74,18 @@
 }
 
 .loading-logo {
-    width: 100px;
-    height: 100px;
+    width: 128px;
+    height: 128px;
 }
 
 .app-logo-small {
-    width: 40px;
-    height: 40px;
+    width: 64px;
+    height: 64px;
 }
 
 .share-logo {
-    width: 60px;
-    height: 60px;
+    width: 64px;
+    height: 64px;
 }
 
 .loading-title {
