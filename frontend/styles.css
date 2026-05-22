@@ -1051,18 +1051,23 @@ body.light-mode .hero-metric-icon img {
 }
 
 .trust-score-badge-wrap {
-    margin-top: 14px;
-    width: 140px;
-    max-width: 85%;
+    margin-top: 12px;
+    width: 160px;
+    max-width: 90%;
     height: auto;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .trust-score-badge {
     width: 100%;
     height: auto;
     display: block;
-    filter: drop-shadow(0 0 10px rgba(0,0,0,0.35));
+    object-fit: contain;
+    image-rendering: optimizeQuality;
+    filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 18px rgba(10, 134, 255, 0.25));
     pointer-events: none;
 }
 
