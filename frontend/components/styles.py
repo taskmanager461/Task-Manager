@@ -164,18 +164,18 @@ def get_theme_css(dark_mode: bool) -> str:
     }}
 
     .hero-metric-icon {{
-        width: 72px;
-        height: 72px;
+        width: 64px;
+        height: 64px;
         margin-bottom: 1rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(0, 0, 0, 0.25) !important;
+        background: transparent !important;
         border: none !important;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
-        backdrop-filter: blur(4px);
-        -webkit-backdrop-filter: blur(4px);
-        border-radius: 20px !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border-radius: 9999px !important;
         overflow: hidden !important;
     }}
 

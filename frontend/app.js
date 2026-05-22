@@ -499,6 +499,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initLanguage();
     checkAuth();
     setupEventListeners();
+    initBottomNavDragSwitch();
+    syncBottomNavIndicator(currentView || 'tasks');
 });
 
 function initTheme() {
@@ -1010,6 +1012,7 @@ function showView(viewId) {
             item.classList.remove('active');
         }
     });
+    syncBottomNavIndicator(viewId);
 
     // Scroll content to top
     const content = document.getElementById('content');
@@ -1043,6 +1046,183 @@ function showView(viewId) {
     if (viewId === 'goals') loadGoals();
     if (viewId === 'insights') loadInsights();
     if (viewId === 'settings') applyTheme(); // Sync theme switch state
+}
+
+function getBottomNavViewOrder() {
+    const nav = document.querySelector('.bottom-nav');
+    if (!nav) return [];
+    const items = Array.from(nav.querySelectorAll('.nav-item'));
+    const order = [];
+    for (const item of items) {
+        const handler = item.getAttribute('onclick') || '';
+        const match = handler.match(/showView\('([^']+)'\)/);
+        if (match && match[1]) order.push(match[1]);
+    }
+    return order;
+}
+
+function ensureBottomNavIndicator() {
+    const nav = document.querySelector('.bottom-nav');
+    if (!nav) return null;
+    let indicator = nav.querySelector('.nav-indicator');
+    if (!indicator) {
+        indicator = document.createElement('div');
+        indicator.className = 'nav-indicator';
+        indicator.setAttribute('aria-hidden', 'true');
+        const glow = nav.querySelector('.bottom-nav-glow');
+        if (glow && glow.nextSibling) {
+            nav.insertBefore(indicator, glow.nextSibling);
+        } else {
+            nav.insertBefore(indicator, nav.firstChild);
+        }
+    }
+    nav.classList.add('has-indicator');
+    return indicator;
+}
+
+function setBottomNavIndicatorOffset(nav, indicator, offsetPx) {
+    indicator.style.transform = `translate(-50%, -50%) translateX(${offsetPx}px)`;
+    nav.classList.add('has-indicator');
+}
+
+function syncBottomNavIndicator(viewId) {
+    const nav = document.querySelector('.bottom-nav');
+    if (!nav) return;
+    const indicator = ensureBottomNavIndicator();
+    if (!indicator) return;
+    const items = Array.from(nav.querySelectorAll('.nav-item'));
+    const targetItem = items.find(item => (item.getAttribute('onclick') || '').includes(`'${viewId}'`));
+    if (!targetItem) return;
+    const navRect = nav.getBoundingClientRect();
+    const itemRect = targetItem.getBoundingClientRect();
+    const centerX = (itemRect.left + itemRect.right) / 2;
+    const offset = centerX - (navRect.left + navRect.width / 2);
+    setBottomNavIndicatorOffset(nav, indicator, offset);
+}
+
+function initBottomNavDragSwitch() {
+    const nav = document.querySelector('.bottom-nav');
+    if (!nav) return;
+    if (nav.dataset.dragSwitchInit === 'true') return;
+    nav.dataset.dragSwitchInit = 'true';
+
+    const indicator = ensureBottomNavIndicator();
+    let viewOrder = getBottomNavViewOrder();
+
+    let startX = 0;
+    let startY = 0;
+    let pointerId = null;
+    let dragging = false;
+    let blockClickUntil = 0;
+    let rafId = 0;
+    let pendingX = 0;
+    let pendingY = 0;
+
+    function isMobile() {
+        return window.innerWidth <= 768;
+    }
+
+    function computeNearestIndex(clientX) {
+        const items = Array.from(nav.querySelectorAll('.nav-item'));
+        const centers = items.map(item => {
+            const r = item.getBoundingClientRect();
+            return (r.left + r.right) / 2;
+        });
+        let bestIdx = 0;
+        let bestDist = Infinity;
+        for (let i = 0; i < centers.length; i++) {
+            const d = Math.abs(centers[i] - clientX);
+            if (d < bestDist) {
+                bestDist = d;
+                bestIdx = i;
+            }
+        }
+        return bestIdx;
+    }
+
+    function updateIndicatorFromClientX(clientX) {
+        if (!indicator) return;
+        const navRect = nav.getBoundingClientRect();
+        const clampedX = Math.max(navRect.left, Math.min(navRect.right, clientX));
+        const offset = clampedX - (navRect.left + navRect.width / 2);
+        setBottomNavIndicatorOffset(nav, indicator, offset);
+    }
+
+    function scheduleMove(clientX, clientY) {
+        pendingX = clientX;
+        pendingY = clientY;
+        if (rafId) return;
+        rafId = requestAnimationFrame(() => {
+            rafId = 0;
+            handleMoveFrame(pendingX, pendingY);
+        });
+    }
+
+    function handleMoveFrame(clientX, clientY) {
+        const dx = clientX - startX;
+        const dy = clientY - startY;
+
+        if (!dragging) {
+            if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+                dragging = true;
+                nav.classList.add('is-dragging');
+            } else {
+                return;
+            }
+        }
+
+        updateIndicatorFromClientX(clientX);
+
+        const idx = computeNearestIndex(clientX);
+        const nextView = viewOrder[idx];
+        if (nextView && nextView !== currentView) {
+            showView(nextView);
+        }
+    }
+
+    nav.addEventListener('pointerdown', (e) => {
+        if (!isMobile()) return;
+        if (e.pointerType !== 'touch') return;
+        pointerId = e.pointerId;
+        startX = e.clientX;
+        startY = e.clientY;
+        dragging = false;
+        try { nav.setPointerCapture(pointerId); } catch (_) {}
+    }, { passive: true });
+
+    nav.addEventListener('pointermove', (e) => {
+        if (!isMobile()) return;
+        if (pointerId === null || e.pointerId !== pointerId) return;
+        scheduleMove(e.clientX, e.clientY);
+        if (dragging) e.preventDefault();
+    }, { passive: false });
+
+    function endPointer(e) {
+        if (pointerId === null || e.pointerId !== pointerId) return;
+        pointerId = null;
+        if (dragging) {
+            blockClickUntil = Date.now() + 350;
+            nav.classList.remove('is-dragging');
+            syncBottomNavIndicator(currentView);
+        }
+        dragging = false;
+    }
+
+    nav.addEventListener('pointerup', endPointer, { passive: true });
+    nav.addEventListener('pointercancel', endPointer, { passive: true });
+
+    nav.addEventListener('click', (e) => {
+        if (!isMobile()) return;
+        if (Date.now() < blockClickUntil) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }, true);
+
+    window.addEventListener('resize', () => {
+        viewOrder = getBottomNavViewOrder();
+        syncBottomNavIndicator(currentView);
+    });
 }
 
 function focusInput(id) {
@@ -3370,10 +3550,12 @@ function toggleTaskForm() {
     let touchStartY = 0;
     let touchEndX = 0;
     let touchEndY = 0;
+    let startedOnBottomNav = false;
     
     const viewOrder = ['tasks', 'reports', 'insights', 'me'];
     
     document.addEventListener('touchstart', e => {
+        startedOnBottomNav = Boolean(e.target && e.target.closest && e.target.closest('.bottom-nav'));
         touchStartX = e.changedTouches[0].screenX;
         touchStartY = e.changedTouches[0].screenY;
     }, { passive: true });
@@ -3387,6 +3569,7 @@ function toggleTaskForm() {
     function handleSwipe() {
         const isMobile = window.innerWidth <= 768;
         if (!isMobile) return;
+        if (startedOnBottomNav) return;
         
         const diffX = touchEndX - touchStartX;
         const diffY = touchEndY - touchStartY;
