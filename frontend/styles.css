@@ -1002,8 +1002,8 @@ body.light-mode #forgot-form select {
 }
 
 .hero-metric-icon {
-    width: 64px;
-    height: 64px;
+    width: 72px;
+    height: 72px;
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
@@ -1017,9 +1017,10 @@ body.light-mode #forgot-form select {
     overflow: hidden !important;
 }
 
-.hero-metric-icon img {
-    width: 48px;
-    height: 48px;
+.hero-metric-icon img,
+.hero-metric-icon svg {
+    width: 64px;
+    height: 64px;
     object-fit: contain;
     image-rendering: optimizeQuality;
     image-rendering: -webkit-optimize-contrast;
@@ -1027,7 +1028,8 @@ body.light-mode #forgot-form select {
     filter: brightness(1.0) contrast(1.0) saturate(1.0);
 }
 
-body.light-mode .hero-metric-icon img {
+body.light-mode .hero-metric-icon img,
+body.light-mode .hero-metric-icon svg {
     filter: brightness(1.0) contrast(1.0) saturate(1.0) !important;
     mix-blend-mode: normal !important;
 }
@@ -1051,23 +1053,18 @@ body.light-mode .hero-metric-icon img {
 }
 
 .trust-score-badge-wrap {
-    margin-top: 12px;
-    width: 160px;
-    max-width: 90%;
+    margin-top: 14px;
+    width: 140px;
+    max-width: 85%;
     height: auto;
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .trust-score-badge {
     width: 100%;
     height: auto;
     display: block;
-    object-fit: contain;
-    image-rendering: optimizeQuality;
-    filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 18px rgba(10, 134, 255, 0.25));
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.35));
     pointer-events: none;
 }
 

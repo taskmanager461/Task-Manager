@@ -1793,7 +1793,7 @@ function getBadgeImageSrc(scoreClass) {
         low: 'badge_low.png',
     };
     const name = map[scoreClass] || map.low;
-    return `/static/${name}?v=2`;
+    return `/static/${name}?v=1`;
 }
 
 // --- Reports & Me Logic ---
@@ -1877,11 +1877,6 @@ function renderHeroMetrics(score) {
     const label = getScoreLabel(score.score);
     const scoreVal = score.score.toFixed(1);
     const isLightMode = document.body.classList.contains('light-mode');
-    
-    // Use pre-loaded Base64 assets
-    const img1 = ASSETS.img1;
-    const img4 = ASSETS.img4;
-    const img6 = ASSETS.img6;
 
     const trustBg = isLightMode
         ? 'linear-gradient(135deg, #bfdbfe 0%, #2563eb 30%, #1e293b 100%)'
@@ -1898,12 +1893,40 @@ function renderHeroMetrics(score) {
     const progressTrackBg = isLightMode ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.1)';
     const progressTrackBorder = isLightMode ? 'rgba(255,255,255,0.28)' : 'rgba(255,255,255,0.2)';
 
+    // Perfect circular SVG icons that match card colors
+    const trustIcon = `
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="32" fill="rgba(0,0,0,0.35)"/>
+            <path d="M32 14c-10.5 0-19 8.5-19 19v13c0 10.5 8.5 19 19 19h0c10.5 0 19-8.5 19-19V33c0-10.5-8.5-19-19-19h0Z" fill="rgba(255,255,255,0.15)"/>
+            <path d="M32 41c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9Zm0-14c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5Z" fill="white"/>
+            <path d="M48 32V27c0-8.84-7.16-16-16-16S16 18.16 16 27v5c0 1.1.9 2 2 2h1c1.1 0 2-.9 2-2v-5c0-6.63 5.37-12 12-12s12 5.37 12 12v5c0 1.1.9 2 2 2h1c1.1 0 2-.9 2-2Z" fill="rgba(100,200,255,0.9)"/>
+        </svg>
+    `;
+
+    const streakIcon = `
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="32" fill="rgba(0,0,0,0.35)"/>
+            <path d="M46 22c-2.2 0-4.2 0.9-5.7 2.3-1.5-1.4-3.5-2.3-5.7-2.3s-4.2 0.9-5.7 2.3C28.2 22.9 26.2 22 24 22c-4.4 0-8 3.6-8 8 0 5.2 4 9.4 9 13 2.2 1.6 4.4 2.9 7 4.1 2.6-1.2 4.8-2.5 7-4.1 5-3.6 9-7.8 9-13 0-4.4-3.6-8-8-8Z" fill="rgba(255,255,255,0.15)"/>
+            <path d="M32 18l-4 10h10l-8 8 3-10h-10l9-8Z" fill="#ffaa00"/>
+            <path d="M32 22l-2.5 6.2h6.2l-5 5 2-6.2h-6.2l5.5-5Z" fill="#ffdd44"/>
+        </svg>
+    `;
+
+    const successIcon = `
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="32" fill="rgba(0,0,0,0.35)"/>
+            <path d="M32 14C22.06 14 14 22.06 14 32s8.06 18 18 18 18-8.06 18-18S41.94 14 32 14Z" fill="rgba(255,255,255,0.15)"/>
+            <path d="M32 20c-6.63 0-12 5.37-12 12s5.37 12 12 12 12-5.37 12-12-5.37-12-12-12Zm-2 17l-5-5 1.41-1.41L30 33.17l7.59-7.58L39 27l-9 9Z" fill="#4ade80"/>
+            <circle cx="32" cy="32" r="20" stroke="rgba(74,222,128,0.6)" stroke-width="2"/>
+        </svg>
+    `;
+
     container.innerHTML = `
         <!-- Card 1: Trust Score -->
         <div class="hero-metric" style="background: ${trustBg} !important; isolation: isolate !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
-                    <img src="${img1}">
+                    ${trustIcon}
                 </div>
                 <div class="hero-metric-label">Self Trust Score</div>
                 <div class="hero-metric-value">${scoreVal}</div>
@@ -1917,7 +1940,7 @@ function renderHeroMetrics(score) {
         <div class="hero-metric" style="background: ${streakBg} !important; isolation: isolate !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
-                    <img src="${img4}">
+                    ${streakIcon}
                 </div>
                 <div class="hero-metric-label">Current Streak</div>
                 <div class="hero-metric-value">${score.streak}</div>
@@ -1928,7 +1951,7 @@ function renderHeroMetrics(score) {
         <div class="hero-metric" style="background: ${successBg} !important; isolation: isolate !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
-                    <img src="${img6}">
+                    ${successIcon}
                 </div>
                 <div class="hero-metric-label">Success Rate</div>
                 <div class="hero-metric-value">${(score.success_rate * 100).toFixed(0)}%</div>
