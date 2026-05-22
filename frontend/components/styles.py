@@ -160,16 +160,23 @@ def get_theme_css(dark_mode: bool) -> str:
     }}
 
     .hero-metric:hover {{
-        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 0 32px rgba(10, 134, 255, 0.6), 0 16px 45px rgba(0, 0, 0, 0.6) !important;
     }}
 
     .hero-metric-icon {{
-        width: 50px;
-        height: 50px;
+        width: 72px;
+        height: 72px;
         margin-bottom: 1rem;
         display: flex;
         align-items: center;
         justify-content: center;
+        background: rgba(0, 0, 0, 0.25) !important;
+        border: none !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: 20px !important;
+        overflow: hidden !important;
     }}
 
     /* === BRAND NEW BADGE IMPLEMENTATION (FROM SCRATCH) === */

@@ -3364,6 +3364,51 @@ function toggleTaskForm() {
     }
 }
 
+// === Swipe Navigation (Mobile Only) ===
+(function() {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+    
+    const viewOrder = ['tasks', 'reports', 'insights', 'me'];
+    
+    document.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+    
+    document.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
+        handleSwipe();
+    }, { passive: true });
+    
+    function handleSwipe() {
+        const isMobile = window.innerWidth <= 768;
+        if (!isMobile) return;
+        
+        const diffX = touchEndX - touchStartX;
+        const diffY = touchEndY - touchStartY;
+        
+        // Only handle swipes that are mostly horizontal
+        if (Math.abs(diffX) > Math.abs(diffY) * 2 && Math.abs(diffX) > 50) {
+            const currentIndex = viewOrder.indexOf(currentView);
+            let targetIndex;
+            
+            if (diffX < 0) {
+                // Swipe left - next view
+                targetIndex = (currentIndex + 1) % viewOrder.length;
+            } else {
+                // Swipe right - previous view
+                targetIndex = (currentIndex - 1 + viewOrder.length) % viewOrder.length;
+            }
+            
+            showView(viewOrder[targetIndex]);
+        }
+    }
+})();
+
 async function forceUpdateApp() {
     if (confirm("This will clear all cache and reload the app. Continue?")) {
         showLoading(true);
