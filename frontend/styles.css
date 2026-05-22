@@ -840,6 +840,31 @@ body.light-mode .nav-item::before {
     background: linear-gradient(135deg, rgba(6, 182, 212, 0.18), rgba(10, 134, 255, 0.14), rgba(139, 92, 246, 0.14));
 }
 
+/* Remove ALL effects from forgot password form in BOTH modes */
+#forgot-form *,
+body.light-mode #forgot-form * {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+#forgot-form input,
+#forgot-form select {
+    border-bottom: 1px solid rgba(148, 163, 184, 0.5) !important;
+}
+
+body.light-mode #forgot-form input,
+body.light-mode #forgot-form select {
+    border-bottom: 1px solid rgba(71, 85, 105, 0.6) !important;
+}
+
 .logout-btn {
     margin-top: auto;
     color: var(--error) !important;

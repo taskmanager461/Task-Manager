@@ -1163,7 +1163,7 @@ function initBottomNavDragSwitch() {
         const dy = clientY - startY;
 
         if (!dragging) {
-            if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+            if (Math.abs(dx) > 5 && Math.abs(dx) > Math.abs(dy) * 0.8) { // Lower threshold for faster drag
                 dragging = true;
                 nav.classList.add('is-dragging');
             } else {
