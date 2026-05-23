@@ -1003,32 +1003,92 @@ body.light-mode #forgot-form select {
 }
 
 .hero-metric-icon {
-    width: 56px;
-    height: 56px;
+    --icon-glow: rgba(56,189,248,0.28);
+    --icon-glow-strong: rgba(56,189,248,0.55);
+    width: 52px;
+    height: 52px;
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.2) !important;
-    border: 2px solid rgba(255, 255, 255, 0.2) !important;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) !important;
-    border-radius: 16px !important;
-    overflow: hidden !important;
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow:
+        0 10px 18px rgba(0,0,0,0.42),
+        0 0 22px var(--icon-glow),
+        0 0 0 1px rgba(0,0,0,0.18);
+    transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background-color 160ms ease;
+}
+
+.hero-metric-icon::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.06),
+        inset 0 0 18px var(--icon-glow);
+    pointer-events: none;
+}
+
+.hero-metric-icon::after {
+    content: "";
+    position: absolute;
+    inset: -30% -30% auto -30%;
+    height: 70%;
+    border-radius: 999px;
+    background: radial-gradient(closest-side, rgba(255,255,255,0.14), rgba(255,255,255,0.0));
+    transform: translateY(-10%);
+    pointer-events: none;
+    opacity: 0.9;
+}
+
+.hero-metric:hover .hero-metric-icon {
+    transform: translateY(-1px);
+    border-color: rgba(255,255,255,0.12);
+    box-shadow:
+        0 12px 22px rgba(0,0,0,0.46),
+        0 0 28px var(--icon-glow-strong),
+        0 0 0 1px rgba(0,0,0,0.2);
 }
 
 .hero-metric-icon img {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
     image-rendering: optimizeQuality;
     image-rendering: -webkit-optimize-contrast;
     mix-blend-mode: normal;
-    filter: brightness(1.0) contrast(1.0) saturate(1.0);
+    filter: saturate(1.9) brightness(1.1) contrast(1.05) drop-shadow(0 0 12px var(--icon-glow-strong));
+    position: relative;
+    z-index: 1;
 }
 
 body.light-mode .hero-metric-icon img {
-    filter: brightness(1.0) contrast(1.0) saturate(1.0) !important;
+    filter: saturate(1.9) brightness(1.1) contrast(1.05) drop-shadow(0 0 12px var(--icon-glow-strong)) !important;
     mix-blend-mode: normal !important;
+}
+
+.hero-metric-grid .hero-metric:nth-child(1) .hero-metric-icon {
+    --icon-glow: rgba(56,189,248,0.28);
+    --icon-glow-strong: rgba(56,189,248,0.62);
+}
+
+.hero-metric-grid .hero-metric:nth-child(2) .hero-metric-icon {
+    --icon-glow: rgba(251,146,60,0.24);
+    --icon-glow-strong: rgba(251,146,60,0.58);
+}
+
+.hero-metric-grid .hero-metric:nth-child(3) .hero-metric-icon {
+    --icon-glow: rgba(16,185,129,0.22);
+    --icon-glow-strong: rgba(16,185,129,0.56);
 }
 
 .hero-metric-label {
@@ -1051,10 +1111,10 @@ body.light-mode .hero-metric-icon img {
 
 .trust-score-badge-wrap {
     margin-top: 14px;
-    width: 128px;
-    height: 44px;
+    width: 168px;
+    height: 56px;
     border-radius: 14px;
-    padding: 8px 10px;
+    padding: 10px 12px;
     box-sizing: border-box;
     display: flex;
     align-items: center;
