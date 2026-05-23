@@ -987,6 +987,7 @@ body.light-mode #forgot-form select {
     filter: saturate(1.8) brightness(1.15) contrast(1.1); /* Enhanced color intensity */
     z-index: 0;
     pointer-events: none;
+    opacity: 1;
 }
 
 .hero-metric-content {
