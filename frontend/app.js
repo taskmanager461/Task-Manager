@@ -1793,7 +1793,7 @@ function getBadgeImageSrc(scoreClass) {
         low: 'badge_low.png',
     };
     const name = map[scoreClass] || map.low;
-    return `/${name}?v=2`;
+    return `/static/${name}?v=3`;
 }
 
 // --- Reports & Me Logic ---
