@@ -1120,16 +1120,16 @@ body.light-mode .hero-metric-icon img {
 
 .hero-metric--trust .trust-score-badge {
     margin-top: 18px;
-    width: min(520px, 92%);
+    width: min(560px, 95%);
     height: auto;
-    max-height: 160px;
+    max-height: 130px;
     display: block;
     object-fit: cover;
     object-position: left top;
     pointer-events: none;
     opacity: 0.98;
-    image-rendering: -webkit-optimize-contrast;
-    transform: translateZ(0) scale(0.60);
+    image-rendering: optimizeQuality;
+    transform: translateZ(0) scale(0.75);
     transform-origin: left top;
     filter: drop-shadow(0 10px 22px rgba(0,0,0,0.35));
     align-self: flex-start;
