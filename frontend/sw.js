@@ -1,10 +1,10 @@
-const CACHE_NAME = "task-manager-v7.7.0";
+const CACHE_NAME = "task-manager-v7.8.0";
 const ASSETS_TO_CACHE = [
   "/",
   "/index.html",
-  "/styles.css?v=7.7.0",
-  "/app.js?v=7.7.0",
-  "/assets.js?v=7.7.0",
+  "/styles.css?v=7.8.0",
+  "/app.js?v=7.8.0",
+  "/assets.js?v=7.8.0",
   "/manifest.json",
   "/static/icon-home-192-v7.png",
   "/static/icon-home-512-v7.png"
