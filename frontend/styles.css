@@ -1051,18 +1051,20 @@ body.light-mode .hero-metric-icon img {
 
 .trust-score-badge-wrap {
     margin-top: 14px;
-    width: 140px;
+    width: 110px;
     max-width: 85%;
     height: auto;
     position: relative;
+    background: transparent !important;
 }
 
 .trust-score-badge {
     width: 100%;
     height: auto;
     display: block;
-    filter: drop-shadow(0 0 10px rgba(0,0,0,0.35));
+    filter: drop-shadow(0 0 6px rgba(0,0,0,0.4));
     pointer-events: none;
+    background: transparent !important;
 }
 
 .hero-metric-sub {
