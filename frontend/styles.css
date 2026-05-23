@@ -1129,7 +1129,7 @@ body.light-mode .hero-metric-icon img {
     pointer-events: none;
     opacity: 0.98;
     image-rendering: optimizeQuality;
-    transform: translateZ(0) scale(0.75);
+    transform: translateZ(0) scale(0.60);
     transform-origin: left top;
     filter: drop-shadow(0 10px 22px rgba(0,0,0,0.35));
     align-self: flex-start;
