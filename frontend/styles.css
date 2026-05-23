@@ -1051,20 +1051,50 @@ body.light-mode .hero-metric-icon img {
 
 .trust-score-badge-wrap {
     margin-top: 14px;
-    width: 110px;
-    max-width: 85%;
-    height: auto;
+    width: 128px;
+    height: 44px;
+    border-radius: 14px;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
-    background: transparent !important;
+    overflow: hidden;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(90, 170, 255, 0.28);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.35), 0 0 18px rgba(56,189,248,0.18);
+    transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.trust-score-badge-wrap::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), inset 0 0 18px rgba(56,189,248,0.14);
+    pointer-events: none;
+}
+
+.trust-score-badge-wrap:hover {
+    transform: translateY(-1px);
+    border-color: rgba(90, 170, 255, 0.45);
+    box-shadow: 0 12px 26px rgba(0,0,0,0.4), 0 0 26px rgba(56,189,248,0.22);
 }
 
 .trust-score-badge {
     width: 100%;
-    height: auto;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
     display: block;
-    filter: drop-shadow(0 0 6px rgba(0,0,0,0.4));
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.35));
     pointer-events: none;
-    background: transparent !important;
 }
 
 .hero-metric-sub {
