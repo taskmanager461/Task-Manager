@@ -1122,15 +1122,15 @@ body.light-mode .hero-metric-icon img {
     margin-top: 18px;
     width: min(520px, 92%);
     height: auto;
-    max-height: 220px;
+    max-height: 160px;
     display: block;
-    object-fit: contain;
-    object-position: left center;
+    object-fit: cover;
+    object-position: left top;
     pointer-events: none;
     opacity: 0.98;
     image-rendering: -webkit-optimize-contrast;
-    transform: translateZ(0) scale(0.50);
-    transform-origin: left center;
+    transform: translateZ(0) scale(0.60);
+    transform-origin: left top;
     filter: drop-shadow(0 10px 22px rgba(0,0,0,0.35));
     align-self: flex-start;
 }
