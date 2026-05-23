@@ -1901,7 +1901,6 @@ function renderHeroMetrics(score) {
     container.innerHTML = `
         <!-- Card 1: Trust Score -->
         <div class="hero-metric" style="background: ${trustBg} !important; isolation: isolate !important;">
-            <div class="hero-metric-bg" style="background-image: url(${img1});"></div>
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img1}">
@@ -1916,7 +1915,6 @@ function renderHeroMetrics(score) {
 
         <!-- Card 2: Streak -->
         <div class="hero-metric" style="background: ${streakBg} !important; isolation: isolate !important;">
-            <div class="hero-metric-bg" style="background-image: url(${img4});"></div>
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img4}">
@@ -1928,7 +1926,6 @@ function renderHeroMetrics(score) {
 
         <!-- Card 3: Success -->
         <div class="hero-metric" style="background: ${successBg} !important; isolation: isolate !important;">
-            <div class="hero-metric-bg" style="background-image: url(${img6});"></div>
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img6}">

@@ -1003,24 +1003,22 @@ body.light-mode #forgot-form select {
 }
 
 .hero-metric-icon {
-    width: 64px;
-    height: 64px;
+    width: 56px;
+    height: 56px;
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    border-radius: 9999px !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) !important;
+    border-radius: 16px !important;
     overflow: hidden !important;
 }
 
 .hero-metric-icon img {
-    width: 48px;
-    height: 48px;
+    width: 32px;
+    height: 32px;
     object-fit: contain;
     image-rendering: optimizeQuality;
     image-rendering: -webkit-optimize-contrast;
