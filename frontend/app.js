@@ -1793,7 +1793,7 @@ function getBadgeImageSrc(scoreClass) {
         low: 'badge_low.png',
     };
     const name = map[scoreClass] || map.low;
-    return `/static/${name}?v=5`;
+    return `/static/${name}?v=6`;
 }
 
 // --- Reports & Me Logic ---
@@ -1901,13 +1901,13 @@ function renderHeroMetrics(score) {
     container.innerHTML = `
         <!-- Card 1: Trust Score -->
         <div class="hero-metric hero-metric--trust" style="background: ${trustBg} !important; isolation: isolate !important;">
-            <img class="trust-score-badge trust-score-badge--free" src="${getBadgeImageSrc(label.class)}" alt="${label.text}">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img1}">
                 </div>
                 <div class="hero-metric-label">Self Trust Score</div>
                 <div class="hero-metric-value">${scoreVal}</div>
+                <img class="trust-score-badge" src="${getBadgeImageSrc(label.class)}" alt="${label.text}">
             </div>
         </div>
 

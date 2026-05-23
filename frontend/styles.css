@@ -1119,21 +1119,19 @@ body.light-mode .hero-metric-icon img {
 }
 
 .hero-metric--trust .trust-score-badge {
-    position: absolute;
-    left: 24px;
-    bottom: 22px;
-    width: min(420px, calc(100% - 48px));
+    margin-top: 18px;
+    width: min(520px, 92%);
     height: auto;
-    max-height: 140px;
+    max-height: 220px;
     display: block;
     object-fit: contain;
-    object-position: left bottom;
+    object-position: left center;
     pointer-events: none;
-    z-index: 0;
     opacity: 0.98;
     image-rendering: -webkit-optimize-contrast;
     transform: translateZ(0);
     filter: drop-shadow(0 10px 22px rgba(0,0,0,0.35));
+    align-self: flex-start;
 }
 
 .hero-metric-sub {
