@@ -1115,17 +1115,18 @@ body.light-mode .hero-metric-icon img {
 }
 
 .hero-metric--trust .hero-metric-content {
-    padding-bottom: 92px;
+    padding-bottom: 276px;
 }
 
 .hero-metric--trust .trust-score-badge {
     position: absolute;
-    left: 22px;
-    bottom: 18px;
-    width: min(260px, calc(100% - 44px));
+    left: 18px;
+    bottom: 14px;
+    width: min(780px, calc(100% - 36px));
     height: auto;
-    max-height: 96px;
+    max-height: 288px;
     display: block;
+    object-fit: contain;
     pointer-events: none;
     z-index: 0;
     opacity: 0.98;
