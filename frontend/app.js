@@ -1785,24 +1785,15 @@ function getScoreLabel(score) {
     return { text: 'Low', icon: '⚠️', class: 'low' };
 }
 
-function getBadgeClass(scoreClass) {
+function getBadgeImageSrc(scoreClass) {
     const map = {
-        excellent: 'excellent',
-        good: 'good',
-        average: 'average',
-        low: 'low',
+        excellent: 'badge_excellent.png',
+        good: 'badge_good.png',
+        average: 'badge_average.png',
+        low: 'badge_low.png',
     };
-    return map[scoreClass] || map.low;
-}
-
-function getBadgeText(scoreClass) {
-    const map = {
-        excellent: 'Excellent',
-        good: 'Good',
-        average: 'Average',
-        low: 'Low',
-    };
-    return map[scoreClass] || map.low;
+    const name = map[scoreClass] || map.low;
+    return `/static/${name}?v=4`;
 }
 
 // --- Reports & Me Logic ---
@@ -1917,10 +1908,7 @@ function renderHeroMetrics(score) {
                 <div class="hero-metric-label">Self Trust Score</div>
                 <div class="hero-metric-value">${scoreVal}</div>
                 <div class="trust-score-badge-wrap" aria-label="${label.text}">
-                    <div class="trust-score-badge trust-score-badge-${getBadgeClass(label.class)}">
-                        <span>${label.icon}</span>
-                        <span>${getBadgeText(label.class)}</span>
-                    </div>
+                    <img class="trust-score-badge" src="${getBadgeImageSrc(label.class)}" alt="${label.text}">
                 </div>
             </div>
         </div>
