@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tobedone</title>
-    <link rel="stylesheet" href="styles.css?v=15.0.0">
-    <link rel="stylesheet" href="/src/styles/logo.css?v=15.0.0">
+    <link rel="stylesheet" href="styles.css?v=16.0.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <link rel="stylesheet" href="/src/styles/logo.css?v=16.0.0">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="/assets/app-logo-20260501.png?v=15">
+    <link rel="icon" type="image/png" href="/assets/app-logo-20260501.png?v=16">
     <meta name="theme-color" content="#000000">
     <link rel="apple-touch-icon" href="/static/icon-home-192-v7.png">
     <!-- Chart.js -->
@@ -766,7 +766,51 @@
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropperjs.min.js"></script>
-    <script src="assets.js?v=15.0.0"></script>
-    <script src="app.js?v=15.0.0"></script>
+    <script src="assets.js?v=16.0.0"></script>
+    <script src="app.js?v=16.0.0"></script>
+    <script>
+        // Force logo sizes with JavaScript to override everything!
+        document.addEventListener('DOMContentLoaded', function() {
+            const authLogo = document.querySelector('.auth-logo');
+            const loadingLogo = document.querySelector('.loading-logo');
+            const appLogoSmall = document.querySelector('.app-logo-small');
+            
+            if (authLogo) {
+                console.log('Forcing auth logo size');
+                authLogo.style.width = '2048px';
+                authLogo.style.height = '2048px';
+                authLogo.style.maxWidth = '95vw';
+                authLogo.style.maxHeight = '70vh';
+                authLogo.style.display = 'block';
+                authLogo.style.margin = '0 auto -0.3rem';
+            }
+            
+            if (loadingLogo) {
+                console.log('Forcing loading logo size');
+                loadingLogo.style.width = '400px';
+                loadingLogo.style.height = '400px';
+                loadingLogo.style.maxWidth = '90vw';
+                loadingLogo.style.maxHeight = '50vh';
+                loadingLogo.style.display = 'block';
+            }
+            
+            if (appLogoSmall) {
+                console.log('Forcing app logo small size');
+                appLogoSmall.style.width = '64px';
+                appLogoSmall.style.height = '64px';
+            }
+            
+            // Also update logo srcs with random cache-bust
+            const allLogos = document.querySelectorAll('.logo, .app-logo-small, .loading-logo, .auth-logo');
+            allLogos.forEach(img => {
+                if (img && img.src) {
+                    const url = new URL(img.src, window.location.origin);
+                    url.searchParams.set('v', Date.now()); // use timestamp for fresh load
+                    img.src = url.toString();
+                    console.log('Updated logo src:', img.src);
+                }
+            });
+        });
+    </script>
 </body>
 </html>
