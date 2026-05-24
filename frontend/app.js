@@ -1811,7 +1811,7 @@ async function loadReports() {
         const score = await scorePromise;
         await calendarPromise;
 
-        renderHeroMetrics(score);
+        await renderHeroMetrics(score);
 
         const progressFill = document.getElementById('daily-progress-fill');
         if (progressFill) progressFill.style.width = `${score.success_rate * 100}%`;
@@ -1870,7 +1870,34 @@ async function loadDashboard() {
     await Promise.all([loadReports(), loadMe()]);
 }
 
-function renderHeroMetrics(score) {
+function removeBlackBackground(imageSrc) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
+                if (r < 20 && g < 20 && b < 20) {
+                    data[i + 3] = 0;
+                }
+            }
+            ctx.putImageData(imageData, 0, 0);
+            resolve(canvas.toDataURL('image/png'));
+        };
+        img.src = imageSrc;
+    });
+}
+
+async function renderHeroMetrics(score) {
     const container = document.getElementById('dashboard-hero-metrics');
     if (!container) return;
 
@@ -1878,10 +1905,10 @@ function renderHeroMetrics(score) {
     const scoreVal = score.score.toFixed(1);
     const isLightMode = document.body.classList.contains('light-mode');
     
-    // Use pre-loaded Base64 assets
-    const img1 = ASSETS.img1;
-    const img4 = ASSETS.img4;
-    const img6 = ASSETS.img6;
+    // Use pre-loaded Base64 assets and remove black backgrounds
+    const img1 = await removeBlackBackground(ASSETS.img1);
+    const img4 = await removeBlackBackground(ASSETS.img4);
+    const img6 = await removeBlackBackground(ASSETS.img6);
 
     const trustBg = isLightMode
         ? 'linear-gradient(135deg, #bfdbfe 0%, #2563eb 30%, #1e293b 100%)'
