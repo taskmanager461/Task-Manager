@@ -1039,10 +1039,11 @@ body.light-mode #forgot-form select {
     max-width: 100%;
     max-height: 100%;
     image-rendering: optimizeQuality;
-    mix-blend-mode: screen;
-    filter: saturate(1.9) brightness(1.1) contrast(1.05) drop-shadow(0 0 15px var(--icon-glow-strong));
+    mix-blend-mode: lighten;
+    filter: saturate(1.9) brightness(1000) contrast(1.05) drop-shadow(0 0 15px var(--icon-glow-strong));
     position: relative;
     z-index: 1;
+    background: transparent !important;
 }
 
 body.light-mode .hero-metric-icon img {
