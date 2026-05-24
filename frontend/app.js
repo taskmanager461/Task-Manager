@@ -3891,3 +3891,27 @@ function changeDashboardMonth(delta) {
     dashboardCalendarDate.setMonth(dashboardCalendarDate.getMonth() + delta);
     renderDashboardCalendar();
 }
+
+async function processAllLogos() {
+    const logoSelectors = [
+        '.auth-logo',       // auth page logo
+        '.app-logo-small',  // top bar logo
+        '.share-logo',      // share modal logo
+        '.loading-content img' // loading overlay logo
+    ];
+
+    for (const selector of logoSelectors) {
+        const img = document.querySelector(selector);
+        if (img && img.src) {
+            try {
+                img.src = await removeBlackBackground(img.src);
+            } catch (err) {
+                console.error(`Failed to process logo ${selector}`, err);
+            }
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    processAllLogos();
+});

@@ -1039,8 +1039,7 @@ body.light-mode #forgot-form select {
     max-width: 100% !important;
     max-height: 100% !important;
     image-rendering: optimizeQuality !important;
-    mix-blend-mode: lighten !important;
-    filter: saturate(1.9) brightness(10000) contrast(1.05) drop-shadow(0 0 15px var(--icon-glow-strong)) !important;
+    filter: saturate(1.2) brightness(1.0) contrast(1.05) drop-shadow(0 0 15px var(--icon-glow-strong)) !important;
     position: relative !important;
     z-index: 1 !important;
     background: transparent !important;
@@ -1048,8 +1047,7 @@ body.light-mode #forgot-form select {
 }
 
 body.light-mode .hero-metric-icon img {
-    filter: saturate(1.9) brightness(1.1) contrast(1.05) drop-shadow(0 0 12px var(--icon-glow-strong)) !important;
-    mix-blend-mode: normal !important;
+    filter: saturate(1.2) brightness(1.0) contrast(1.05) drop-shadow(0 0 12px var(--icon-glow-strong)) !important;
 }
 
 .hero-metric-grid .hero-metric:nth-child(1) .hero-metric-icon {
