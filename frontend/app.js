@@ -3892,6 +3892,18 @@ function changeDashboardMonth(delta) {
     renderDashboardCalendar();
 }
 
+async function processSingleLogo(img) {
+    if (!img || img._processed) return;
+    img._processed = true;
+    try {
+        console.log('Processing single logo:', img.src.substring(0, 50) + '...');
+        img.src = await removeBlackBackground(img.src);
+        console.log('Single logo processed:', img.src.substring(0, 50) + '...');
+    } catch (err) {
+        console.error('Failed to process single logo', err);
+    }
+}
+
 async function processAllLogos() {
     const logoSelectors = [
         '.auth-logo',       // auth page logo
@@ -3906,9 +3918,7 @@ async function processAllLogos() {
         console.log(`Selector ${selector}:`, img);
         if (img && img.src) {
             try {
-                console.log(`Processing ${selector} with src:`, img.src.substring(0, 50) + '...');
-                img.src = await removeBlackBackground(img.src);
-                console.log(`Updated ${selector} src:`, img.src.substring(0, 50) + '...');
+                await processSingleLogo(img);
             } catch (err) {
                 console.error(`Failed to process logo ${selector}`, err);
             }

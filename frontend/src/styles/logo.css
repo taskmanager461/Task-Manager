@@ -1,3 +1,4 @@
-.logo {
-  filter: none;
+.logo, .app-logo-small {
+  mix-blend-mode: lighten !important;
+  filter: none !important;
 }
