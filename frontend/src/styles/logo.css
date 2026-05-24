@@ -2,3 +2,25 @@
   mix-blend-mode: lighten !important;
   filter: none !important;
 }
+
+.auth-logo {
+  width: 2048px !important;
+  height: 2048px !important;
+  max-width: 95vw !important;
+  max-height: 70vh !important;
+  margin: 0 auto -0.3rem !important;
+  display: block !important;
+}
+
+.loading-logo {
+  width: 400px !important;
+  height: 400px !important;
+  max-width: 90vw !important;
+  max-height: 50vh !important;
+  display: block !important;
+}
+
+.app-logo-small {
+  width: 64px !important;
+  height: 64px !important;
+}
