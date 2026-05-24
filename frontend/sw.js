@@ -1,11 +1,15 @@
-const CACHE_NAME = "task-manager-v8.2.0";
+const CACHE_NAME = "task-manager-v18.0.0";
 const ASSETS_TO_CACHE = [
   "/",
   "/index.html",
-  "/styles.css?v=8.2.0",
-  "/app.js?v=8.2.0",
-  "/assets.js?v=8.2.0",
+  "/styles.css?v=18.0.0",
+  "/src/styles/logo.css?v=18.0.0",
+  "/app.js?v=18.0.0",
+  "/assets.js?v=18.0.0",
   "/manifest.json",
+  "/assets/logo-128.png?v=18",
+  "/assets/logo-512.png?v=18",
+  "/assets/logo-1024.png?v=18",
   "/static/icon-home-192-v7.png",
   "/static/icon-home-512-v7.png"
 ];
@@ -43,9 +47,11 @@ self.addEventListener("fetch", (event) => {
   // Only cache GET requests for static assets
   if (event.request.method !== "GET") return;
 
+  const url = new URL(event.request.url);
+
   if (event.request.mode === "navigate") {
     event.respondWith(
-      fetch(event.request).catch(() => caches.match("/"))
+      fetch(event.request, { cache: "no-store" }).catch(() => caches.match("/"))
     );
     return;
   }
@@ -55,13 +61,29 @@ self.addEventListener("fetch", (event) => {
       return;
   }
 
+  const isVersioned = url.searchParams.has("v");
+
+  if (isVersioned) {
+    event.respondWith(
+      fetch(event.request, { cache: "no-store" })
+        .then((networkResponse) => {
+          if (networkResponse.ok && event.request.url.startsWith(self.location.origin)) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
+      if (cachedResponse) return cachedResponse;
       return fetch(event.request).then((networkResponse) => {
-        // Cache new static requests
         if (networkResponse.ok && event.request.url.startsWith(self.location.origin)) {
           const responseToCache = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
@@ -69,9 +91,7 @@ self.addEventListener("fetch", (event) => {
           });
         }
         return networkResponse;
-      }).catch(() => {
-        return caches.match("/");
-      });
+      }).catch(() => caches.match("/"));
     })
   );
 });
