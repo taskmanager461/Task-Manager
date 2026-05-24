@@ -3900,11 +3900,15 @@ async function processAllLogos() {
         '.loading-content img' // loading overlay logo
     ];
 
+    console.log('Found logo selectors:', logoSelectors);
     for (const selector of logoSelectors) {
         const img = document.querySelector(selector);
+        console.log(`Selector ${selector}:`, img);
         if (img && img.src) {
             try {
+                console.log(`Processing ${selector} with src:`, img.src.substring(0, 50) + '...');
                 img.src = await removeBlackBackground(img.src);
+                console.log(`Updated ${selector} src:`, img.src.substring(0, 50) + '...');
             } catch (err) {
                 console.error(`Failed to process logo ${selector}`, err);
             }
@@ -3912,6 +3916,7 @@ async function processAllLogos() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('load', () => {
+    console.log('Processing all logos...');
     processAllLogos();
 });
