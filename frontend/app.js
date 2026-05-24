@@ -1886,14 +1886,8 @@ function removeBlackBackground(imageSrc) {
                 const r = data[i];
                 const g = data[i + 1];
                 const b = data[i + 2];
-                const maxRgb = Math.max(r, g, b);
-                if (maxRgb <= 30) {
+                if (r < 20 && g < 20 && b < 20) {
                     data[i + 3] = 0;
-                    continue;
-                }
-                if (maxRgb < 70) {
-                    const t = (maxRgb - 30) / 40;
-                    data[i + 3] = Math.floor(data[i + 3] * t);
                 }
             }
             ctx.putImageData(imageData, 0, 0);

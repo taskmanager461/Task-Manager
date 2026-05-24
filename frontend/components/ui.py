@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 @st.cache_data
-def get_base64_image(image_path, cache_bust=None):
+def get_base64_image(image_path):
     try:
         if os.path.exists(image_path):
             with open(image_path, "rb") as img_file:
@@ -17,46 +17,7 @@ def render_logo(dark_mode: bool) -> None:
     primary_color = "#0a86ff"
     text_color = "#000000" if not dark_mode else "#ffffff"
     glow_style = f"filter: drop-shadow(0 0 12px {primary_color});" if dark_mode else ""
-
-    current_file = Path(__file__).resolve()
-    project_root = current_file.parent.parent.parent
-    candidates = [
-        project_root / "frontend" / "public" / "assets" / "logo-512.png",
-        project_root / "public" / "assets" / "logo-512.png",
-        project_root / "frontend" / "public" / "assets" / "logo.png",
-        Path.cwd() / "frontend" / "public" / "assets" / "logo-512.png",
-        Path.cwd() / "public" / "assets" / "logo-512.png",
-    ]
-    logo_b64 = ""
-    for p in candidates:
-        if p.exists():
-            logo_b64 = get_base64_image(str(p), p.stat().st_mtime)
-            if logo_b64:
-                break
     
-    if logo_b64:
-        st.markdown(
-            f"""
-            <div style="text-align: center; margin-bottom: 2.5rem; animation: fadeIn 0.8s ease-out;">
-                <img src="data:image/png;base64,{logo_b64}" style="width: 160px; height: 160px; object-fit: contain; {glow_style} display: block; margin: 0 auto 0.6rem;">
-                <div style="font-size: 3.5rem; font-weight: 900; margin-top: -10px; letter-spacing: -0.05em;">
-                    <span style="color: {primary_color};">To</span><span style="color: {text_color};">bedone</span>
-                </div>
-                <div style="color: #64748b; font-size: 1.2rem; font-weight: 600; margin-top: 0.3rem; letter-spacing: 0.05em;">
-                    Plan it. Do it. Done.
-                </div>
-            </div>
-            <style>
-                @keyframes fadeIn {{
-                    from {{ opacity: 0; transform: translateY(-10px); }}
-                    to {{ opacity: 1; transform: translateY(0); }}
-                }}
-            </style>
-            """,
-            unsafe_allow_html=True
-        )
-        return
-
     st.markdown(
         f"""
         <div style="text-align: center; margin-bottom: 2.5rem; animation: fadeIn 0.8s ease-out;">
@@ -111,7 +72,7 @@ def hero_metrics(score_value: str, score_label: str,
     for root in search_roots:
         bp = root / target_name
         if bp.exists():
-            badge_b64 = get_base64_image(str(bp), bp.stat().st_mtime)
+            badge_b64 = get_base64_image(str(bp))
             if badge_b64:
                 break
 
@@ -122,8 +83,7 @@ def hero_metrics(score_value: str, score_label: str,
                 if root.exists():
                     for f in os.listdir(root):
                         if f.startswith("ChatGPT Image") and pattern in f:
-                            fp = root / f
-                            return get_base64_image(str(fp), fp.stat().st_mtime)
+                            return get_base64_image(str(root / f))
             except:
                 pass
         return ""
