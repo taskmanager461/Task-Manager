@@ -1389,7 +1389,8 @@ body.light-mode .auth-container {
 .main-title {
     font-size: 2.25rem;
     font-weight: 800;
-    margin-bottom: 0.28rem;
+    margin-top: 0;
+    margin-bottom: 0.15rem;
     letter-spacing: -0.04em;
     line-height: 1;
     font-family: "Poppins", "Inter", system-ui, sans-serif;
@@ -1417,7 +1418,7 @@ body.light-mode .main-title-rest {
 #auth-page .auth-logo {
       width: 150px !important;
       height: auto !important;
-      margin: 0 auto 1.5rem !important;
+      margin: 0 auto 0.25rem !important;
       object-fit: contain !important;
   }
 
