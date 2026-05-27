@@ -1886,8 +1886,17 @@ function removeBlackBackground(imageSrc) {
                 const r = data[i];
                 const g = data[i + 1];
                 const b = data[i + 2];
-                if (r < 20 && g < 20 && b < 20) {
+                
+                // Calculate brightness/luminance
+                const maxVal = Math.max(r, g, b);
+                
+                if (maxVal < 45) {
+                    // Fully black or very dark pixel -> Transparent
                     data[i + 3] = 0;
+                } else if (maxVal < 80) {
+                    // Feathering border (semi-transparent transition)
+                    const factor = (maxVal - 45) / (80 - 45); // Scale alpha between 0 and 1
+                    data[i + 3] = Math.round(data[i + 3] * factor);
                 }
             }
             ctx.putImageData(imageData, 0, 0);
@@ -3879,8 +3888,27 @@ async function renderDashboardCalendar() {
         const isActive = activeDays.has(dateStr);
         const hasTasks = monthTasks.some(t => t.date === dateStr);
 
+        // Streak connection detection
+        let streakClass = '';
+        if (isActive) {
+            const prevDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d - 1).padStart(2, '0')}`;
+            const nextDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d + 1).padStart(2, '0')}`;
+            const prevActive = d > 1 && activeDays.has(prevDateStr);
+            const nextActive = d < daysInMonth && activeDays.has(nextDateStr);
+
+            if (prevActive && nextActive) {
+                streakClass = 'streak-mid';
+            } else if (prevActive) {
+                streakClass = 'streak-end';
+            } else if (nextActive) {
+                streakClass = 'streak-start';
+            } else {
+                streakClass = 'streak-single';
+            }
+        }
+
         const dayEl = document.createElement('div');
-        dayEl.className = `calendar-day ${isToday ? 'today' : ''} ${isActive ? 'active-day' : ''}`;
+        dayEl.className = `calendar-day ${isToday ? 'today' : ''} ${isActive ? 'active-day' : ''} ${streakClass}`;
         dayEl.textContent = d;
         dayEl.onclick = () => renderDayTasks(dateStr);
         grid.appendChild(dayEl);
