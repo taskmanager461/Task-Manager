@@ -14,29 +14,7 @@ def get_base64_image(image_path):
         return ""
 
 def render_logo(dark_mode: bool) -> None:
-    primary_color = "#0a86ff"
-    text_color = "#000000" if not dark_mode else "#ffffff"
-    glow_style = f"filter: drop-shadow(0 0 12px {primary_color});" if dark_mode else ""
-    
-    current_file = Path(__file__).resolve()
-    project_root = current_file.parent.parent.parent
-    logo_path = project_root / "frontend" / "public" / "assets" / "logo-highres.png"
-    logo_b64 = get_base64_image(str(logo_path))
-    
-    st.markdown(
-        f"""
-        <div style="text-align: center; margin-bottom: 2.5rem; animation: fadeIn 0.8s ease-out;">
-            <img src="data:image/png;base64,{logo_b64}" class="auth-logo" style="{glow_style} max-width: 400px; height: auto;">
-        </div>
-        <style>
-            @keyframes fadeIn {{
-                from {{ opacity: 0; transform: translateY(-10px); }}
-                to {{ opacity: 1; transform: translateY(0); }}
-            }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+    pass
 
 def hero_metrics(score_value: str, score_label: str,
                   streak_value: str, streak_sub: str,
