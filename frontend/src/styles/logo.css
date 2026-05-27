@@ -5,11 +5,16 @@
 
 .auth-logo {
   width: 100% !important;
-  max-width: 300px !important;
+  max-width: 120px !important;
   height: auto !important;
   margin: 0 auto 0.25rem !important;
   display: block !important;
   object-fit: contain !important;
+  /* Force GPU compositing for smooth scaling on desktop */
+  transform: translateZ(0);
+  will-change: transform;
+  image-rendering: auto;
+  -ms-interpolation-mode: bicubic;
 }
 
 .loading-logo {

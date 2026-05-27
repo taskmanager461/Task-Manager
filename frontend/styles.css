@@ -62,8 +62,8 @@
 .auth-logo {
       width: 100% !important;
       height: auto !important;
-      max-width: 300px !important;
-      margin: 0 auto 1rem !important;
+      max-width: 120px !important;
+      margin: 0 auto 0.25rem !important;
       object-fit: contain !important;
       display: block;
 }
@@ -1416,7 +1416,7 @@ body.light-mode .main-title-rest {
 }
 
 #auth-page .auth-logo {
-      width: 150px !important;
+      width: 120px !important;
       height: auto !important;
       margin: 0 auto 0.25rem !important;
       object-fit: contain !important;
@@ -1630,9 +1630,9 @@ body.light-mode #forgot-form .btn {
         padding: 1.2rem 1rem;
     }
     .auth-logo {
-          width: 150px !important;
+          width: 100px !important;
           height: auto !important;
-          margin: 0 auto 1rem !important;
+          margin: 0 auto 0.25rem !important;
           object-fit: contain !important;
       }
     .main-title {
