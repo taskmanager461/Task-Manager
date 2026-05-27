@@ -26,7 +26,7 @@ def render_logo(dark_mode: bool) -> None:
     st.markdown(
         f"""
         <div style="text-align: center; margin-bottom: 2.5rem; animation: fadeIn 0.8s ease-out;">
-            <img src="data:image/png;base64,{logo_b64}" class="auth-logo" style="{glow_style} max-width: 400px; height: auto;">
+            <img src="data:image/png;base64,{logo_b64}" class="auth-logo" style="{glow_style} width: 100%; max-width: 800px; height: auto; object-fit: contain; image-rendering: high-quality;">
         </div>
         <style>
             @keyframes fadeIn {{
