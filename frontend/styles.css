@@ -82,9 +82,11 @@
 }
 
 .app-logo-small {
-    width: 64px;
-    height: 64px;
-}
+      width: 48px;
+      height: auto;
+      object-fit: contain;
+      image-rendering: high-quality;
+  }
 
 .share-logo {
     width: 64px;
@@ -580,9 +582,11 @@ body.light-mode .scroll-progress-track {
 }
 
 .app-logo-small {
-    width: 32px;
-    height: 32px;
-}
+      width: 40px;
+      height: auto;
+      object-fit: contain;
+      image-rendering: high-quality;
+  }
 
 .app-title-small {
     font-size: 1.1rem;
