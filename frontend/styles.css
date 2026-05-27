@@ -1,9 +1,8 @@
 /* Global Design System - Professional Production Polish */
 :root {
-    --primary: #1e40af;
-    --primary-2: #1e3a8a;
-    --primary-3: #3730a3;
-    --primary-glow: rgba(30, 64, 175, 0);
+    --primary: #1086ff;
+    --primary-hover: #0070df;
+    --primary-glow: rgba(16, 134, 255, 0.3);
     --background: #000000;
     --background-rgb: 0, 0, 0;
     --surface: rgba(30, 30, 35, 1);
@@ -11,13 +10,13 @@
     --surface-soft: rgba(25, 25, 30, 1);
     --text-primary: #f5f5f5;
     --text-secondary: rgba(245, 245, 245, 0.6);
-    --border: rgba(30, 64, 175, 1);
-    --success: #15803d;
-    --success-glow: rgba(21, 128, 61, 0);
-    --error: #991b1b;
-    --error-glow: rgba(153, 27, 27, 0);
+    --border: rgba(16, 134, 255, 1);
+    --success: #10b981;
+    --success-hover: #059669;
+    --error: #ef4444;
+    --error-hover: #dc2626;
     --warning: #f59e0b;
-    --line-color: rgba(30, 64, 175, 0.4);
+    --line-color: rgba(16, 134, 255, 0.4);
     
     /* Glassmorphism */
     --glass-blur: blur(40px);
@@ -127,20 +126,19 @@ body.light-mode .tab.active {
 }
 
 body.light-mode {
-    --primary: #1e40af;
-    --primary-2: #1e3a8a;
-    --primary-3: #3730a3;
+    --primary: #1086ff;
+    --primary-hover: #0070df;
     --background: #ffffff;
     --background-rgb: 255, 255, 255;
     --surface: rgba(230, 235, 245, 1);
     --surface-hover: rgba(220, 225, 235, 1);
     --text-primary: #000000;
     --text-secondary: #475569;
-    --border: rgba(30, 64, 175, 1);
-    --line-color: rgba(30, 64, 175, 0.3);
-    --success: #15803d;
-    --error: #991b1b;
-    --primary-glow: rgba(30, 64, 175, 0);
+    --border: rgba(16, 134, 255, 1);
+    --line-color: rgba(16, 134, 255, 0.3);
+    --success: #10b981;
+    --error: #ef4444;
+    --primary-glow: rgba(16, 134, 255, 0.15);
     --glass-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
@@ -404,18 +402,31 @@ body.light-mode .hero-metric-value {
     transition: all var(--transition-fast);
 }
 
-.btn.primary, .btn.secondary {
+.btn.primary {
     background: var(--primary);
     color: white;
-    border: 2px solid rgba(10, 134, 255, 0.8);
-    box-shadow: 0 0 16px rgba(10, 134, 255, 0.35);
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 16px var(--primary-glow);
 }
 
-.btn.primary:hover, .btn.secondary:hover {
-    background: #1e3a8a;
+.btn.primary:hover {
+    background: var(--primary-hover);
     transform: translateY(-2px) scale(1.02);
-    border-color: rgba(10, 134, 255, 1);
-    box-shadow: 0 0 22px rgba(10, 134, 255, 0.5);
+    border-color: var(--primary-hover);
+    box-shadow: 0 0 22px rgba(16, 134, 255, 0.5);
+}
+
+.btn.secondary {
+    background: rgba(120, 120, 130, 0.2);
+    color: var(--text-primary);
+    border: 2px solid rgba(120, 120, 130, 0.4);
+    box-shadow: none;
+}
+
+.btn.secondary:hover {
+    background: rgba(120, 120, 130, 0.35);
+    border-color: rgba(120, 120, 130, 0.6);
+    transform: translateY(-2px) scale(1.02);
 }
 
 .btn.full-width { width: 100%; }
@@ -432,31 +443,31 @@ body.light-mode .hero-metric-value {
 }
 
 .task-btn.completed {
-    background: rgba(34, 197, 94, 0.12);
-    border-color: rgba(34, 197, 94, 0.75);
-    box-shadow: 0 0 12px rgba(34, 197, 94, 0.32);
-    color: var(--success);
+    background: var(--success);
+    border-color: var(--success);
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
+    color: white;
 }
 
 .task-btn.completed:hover {
-    background: var(--success);
+    background: var(--success-hover);
     color: white;
-    border-color: rgba(34, 197, 94, 1);
-    box-shadow: 0 0 18px rgba(34, 197, 94, 0.45);
+    border-color: var(--success-hover);
+    box-shadow: 0 0 18px rgba(16, 185, 129, 0.45);
     transform: translateY(-1px) scale(1.02);
 }
 
 .task-btn.failed {
-    background: rgba(239, 68, 68, 0.12);
-    border-color: rgba(239, 68, 68, 0.75);
-    box-shadow: 0 0 12px rgba(239, 68, 68, 0.32);
-    color: var(--error);
+    background: var(--error);
+    border-color: var(--error);
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+    color: white;
 }
 
 .task-btn.failed:hover {
-    background: var(--error);
+    background: var(--error-hover);
     color: white;
-    border-color: rgba(239, 68, 68, 1);
+    border-color: var(--error-hover);
     box-shadow: 0 0 18px rgba(239, 68, 68, 0.45);
     transform: translateY(-1px) scale(1.02);
 }
@@ -803,11 +814,23 @@ body.light-mode #forgot-form select {
 
 .logout-btn {
     margin-top: auto;
-    color: var(--error) !important;
-    opacity: 0.8;
+    background: var(--error) !important;
+    color: white !important;
+    border: 2px solid var(--error) !important;
+    border-radius: var(--radius-md) !important;
+    padding: 0.85rem 1.6rem !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4) !important;
+    transition: all var(--transition) !important;
 }
 
-.logout-btn:hover { opacity: 1; background: rgba(239, 68, 68, 0.1) !important; }
+.logout-btn:hover {
+    background: var(--error-hover) !important;
+    border-color: var(--error-hover) !important;
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.6) !important;
+    transform: translateY(-2px) scale(1.02) !important;
+}
 
 .view { 
     display: none; 
@@ -2466,7 +2489,7 @@ canvas {
 }
 
 .btn.primary {
-    background: linear-gradient(135deg, var(--primary), #00d2ff);
+    background: var(--primary);
     color: #ffffff;
     border: none;
     padding: 12px 24px;
@@ -2476,19 +2499,19 @@ canvas {
     text-transform: uppercase;
     letter-spacing: 0.08em;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(10, 134, 255, 0.4);
+    box-shadow: 0 4px 15px var(--primary-glow);
 }
 
 .btn.primary:hover {
+    background: var(--primary-hover);
     transform: translateY(-3px);
-    box-shadow: 0 12px 25px rgba(10, 134, 255, 0.6);
-    filter: brightness(1.1);
+    box-shadow: 0 12px 25px rgba(16, 134, 255, 0.6);
 }
 
 .btn.secondary {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(120, 120, 130, 0.2);
     color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(120, 120, 130, 0.4);
     padding: 12px 24px;
     border-radius: 100px;
     font-weight: 700;
@@ -2497,8 +2520,8 @@ canvas {
 }
 
 .btn.secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--text-secondary);
+    background: rgba(120, 120, 130, 0.35);
+    border-color: rgba(120, 120, 130, 0.6);
 }
 
 input.editable {
