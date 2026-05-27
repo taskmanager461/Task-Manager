@@ -1025,7 +1025,15 @@ body.light-mode #forgot-form select {
     transition: transform 160ms ease;
 }
 
-.hero-metric-icon::before,
+.hero-metric-icon::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: #000;
+    z-index: 0;
+}
+
 .hero-metric-icon::after {
     content: none;
 }
