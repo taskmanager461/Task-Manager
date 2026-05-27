@@ -2355,7 +2355,7 @@ function renderHabits(habits) {
         return;
     }
     list.innerHTML = habits.map(habit => `
-        <div class="task-card habit-card">
+        <div class="task-card habit-card ${habit.today_status === 'completed' ? 'completed' : habit.today_status === 'skipped' ? 'failed' : ''}">
             <div class="task-info">
                 <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
                     <h3>${habit.title}</h3>
