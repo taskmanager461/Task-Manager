@@ -3662,8 +3662,10 @@ async function forceUpdateApp() {
                     await caches.delete(name);
                 }
             }
-            // 3. Hard reload
-            window.location.reload(true);
+            // 3. Hard reload after giving loading overlay time to animate (300ms)
+            setTimeout(() => {
+                window.location.reload(true);
+            }, 300);
         } catch (err) {
             console.error("Force update failed", err);
             window.location.reload(true);
@@ -3860,21 +3862,20 @@ function copyProfileLink() {
 }
 
 // --- Dashboard Calendar Functions ---
+let dashboardCalendarRequestId = 0;
 async function renderDashboardCalendar() {
     const grid = document.getElementById('dashboard-calendar-grid');
     const title = document.getElementById('dashboard-calendar-month-year');
     if (!grid || !title) return;
 
-    grid.innerHTML = '';
+    // Track active request ID to cancel older async responses
+    const currentRequestId = ++dashboardCalendarRequestId;
+
     const month = dashboardCalendarDate.getMonth();
     const year = dashboardCalendarDate.getFullYear();
 
     const monthNames = [t('january'), t('february'), t('march'), t('april'), t('may'), t('june'), t('july'), t('august'), t('september'), t('october'), t('november'), t('december')];
     title.textContent = `${monthNames[month]} ${year}`;
-
-    // Days Labels
-    const days = [t('mon'), t('tue'), t('wed'), t('thu'), t('fri'), t('sat'), t('sun')];
-    days.forEach(d => grid.innerHTML += `<div class="calendar-day-label">${d}</div>`);
 
     // Get all tasks for the month to check active days
     const firstDay = new Date(year, month, 1);
@@ -3888,6 +3889,17 @@ async function renderDashboardCalendar() {
     } catch (err) {
         console.error('Failed to load month tasks for calendar', err);
     }
+
+    // If another month change occurred while fetching, ignore this outdated response
+    if (currentRequestId !== dashboardCalendarRequestId) {
+        return;
+    }
+
+    grid.innerHTML = '';
+
+    // Days Labels
+    const days = [t('mon'), t('tue'), t('wed'), t('thu'), t('fri'), t('sat'), t('sun')];
+    days.forEach(d => grid.innerHTML += `<div class="calendar-day-label">${d}</div>`);
 
     // Determine active days: days with at least one completed task
     const activeDays = new Set();
