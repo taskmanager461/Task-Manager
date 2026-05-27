@@ -1746,12 +1746,15 @@ body.light-mode .toast {
     align-items: center;
     justify-content: center;
     z-index: 2000;
-    opacity: 0;
-    pointer-events: none;
+    opacity: 1;
+    pointer-events: all;
     transition: opacity 0.3s;
 }
 
-.loading-overlay.active { opacity: 1; pointer-events: all; }
+.loading-overlay:not(.active) {
+    opacity: 0;
+    pointer-events: none;
+}
 
 .spinner {
     width: 32px;

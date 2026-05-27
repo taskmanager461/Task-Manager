@@ -1890,12 +1890,12 @@ function removeBlackBackground(imageSrc) {
                 // Calculate brightness/luminance
                 const maxVal = Math.max(r, g, b);
                 
-                if (maxVal < 45) {
+                if (maxVal < 65) {
                     // Fully black or very dark pixel -> Transparent
                     data[i + 3] = 0;
-                } else if (maxVal < 80) {
+                } else if (maxVal < 110) {
                     // Feathering border (semi-transparent transition)
-                    const factor = (maxVal - 45) / (80 - 45); // Scale alpha between 0 and 1
+                    const factor = (maxVal - 65) / (110 - 65); // Scale alpha between 0 and 1
                     data[i + 3] = Math.round(data[i + 3] * factor);
                 }
             }
@@ -3476,22 +3476,32 @@ function setupEventListeners() {
                 console.log("File read complete, opening crop modal");
                 const cropImg = document.getElementById('crop-image');
                 cropImg.src = e.target.result;
+                
+                // Set explicit dimensions for Cropper wrapper container to render properly
+                cropImg.style.display = 'block';
+                cropImg.style.maxWidth = '100%';
+                cropImg.style.maxHeight = '350px';
+
                 document.getElementById('crop-modal').classList.add('active');
                 
                 if (cropper) cropper.destroy();
-                cropper = new Cropper(cropImg, {
-                    aspectRatio: 1,
-                    viewMode: 1,
-                    dragMode: 'move',
-                    autoCropArea: 1,
-                    restore: false,
-                    guides: false,
-                    center: true,
-                    highlight: false,
-                    cropBoxMovable: true,
-                    cropBoxResizable: true,
-                    toggleDragModeOnDblclick: false,
-                });
+                
+                // Wrap in a microtask/timeout to allow modal to display before cropper calculates container sizing
+                setTimeout(() => {
+                    cropper = new Cropper(cropImg, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        dragMode: 'move',
+                        autoCropArea: 1,
+                        restore: false,
+                        guides: false,
+                        center: true,
+                        highlight: false,
+                        cropBoxMovable: true,
+                        cropBoxResizable: true,
+                        toggleDragModeOnDblclick: false,
+                    });
+                }, 50);
             };
             reader.readAsDataURL(file);
         });
@@ -3654,10 +3664,17 @@ async function forceUpdateApp() {
 }
 
 function showLoading(show) {
-    // We only show full loading overlay for major operations like initial load or auth
-    // For smaller tasks, we use skeleton or inline loaders
     const overlay = document.getElementById('loading-overlay');
-    if (overlay) overlay.classList.toggle('active', show);
+    if (!overlay) return;
+    if (show) {
+        overlay.classList.add('active');
+        overlay.style.opacity = '1';
+        overlay.style.pointerEvents = 'all';
+    } else {
+        overlay.classList.remove('active');
+        overlay.style.opacity = '0';
+        overlay.style.pointerEvents = 'none';
+    }
 }
 
 // --- PWA Service Worker Registration ---
