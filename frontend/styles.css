@@ -62,11 +62,10 @@
 .auth-logo {
       width: 100% !important;
       height: auto !important;
-      max-width: 400px !important;
+      max-width: 300px !important;
       margin: 0 auto 1rem !important;
       object-fit: contain !important;
-      image-rendering: high-quality !important;
-    display: block;
+      display: block;
 }
 
 .loading-content {
@@ -82,10 +81,9 @@
 }
 
 .app-logo-small {
-      width: 48px;
+      width: 32px;
       height: auto;
       object-fit: contain;
-      image-rendering: high-quality;
   }
 
 .share-logo {
@@ -582,10 +580,9 @@ body.light-mode .scroll-progress-track {
 }
 
 .app-logo-small {
-      width: 40px;
+      width: 32px;
       height: auto;
       object-fit: contain;
-      image-rendering: high-quality;
   }
 
 .app-title-small {
@@ -1418,11 +1415,10 @@ body.light-mode .main-title-rest {
 }
 
 #auth-page .auth-logo {
-      width: 200px !important; /* Doubled from 80px */
+      width: 150px !important;
       height: auto !important;
       margin: 0 auto 1.5rem !important;
       object-fit: contain !important;
-      image-rendering: high-quality !important;
   }
 
 .tabs {
@@ -1633,11 +1629,10 @@ body.light-mode #forgot-form .btn {
         padding: 1.2rem 1rem;
     }
     .auth-logo {
-          width: 250px !important; /* Doubled from 104px */
+          width: 150px !important;
           height: auto !important;
           margin: 0 auto 1rem !important;
           object-fit: contain !important;
-          image-rendering: high-quality !important;
       }
     .main-title {
         font-size: 2.05rem;

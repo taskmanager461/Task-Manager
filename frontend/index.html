@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tobedone</title>
-    <link rel="stylesheet" href="styles.css?v=19.0.0">
+    <link rel="stylesheet" href="styles.css?v=20.0.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
-    <link rel="stylesheet" href="/src/styles/logo.css?v=19.0.0">
+    <link rel="stylesheet" href="/src/styles/logo.css?v=20.0.0">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="/assets/app-logo-20260501.png?v=17">
     <meta name="theme-color" content="#000000">
@@ -31,7 +31,7 @@
             <img class="auth-logo logo" 
                  src="/assets/new_logo.png?v=18" 
                  alt="Tobedone logo"
-                 style="width: 100% !important; max-width: 400px !important; height: auto !important; margin: 0 auto 1rem !important; display: block !important; object-fit: contain; image-rendering: high-quality;">
+                 style="width: 100% !important; max-width: 300px !important; height: auto !important; margin: 0 auto 1rem !important; display: block !important; object-fit: contain;">
             <h1 class="main-title">
                 <span class="main-title-t">T</span><span class="main-title-rest">obedone</span>
             </h1>
@@ -782,12 +782,11 @@
                 console.log('Forcing auth logo size');
                 authLogo.style.width = '100%';
                 authLogo.style.height = 'auto';
-                authLogo.style.maxWidth = '600px'; // Doubled size for desktop
+                authLogo.style.maxWidth = '300px'; // Reduced size
                 authLogo.style.maxHeight = '50vh';
                 authLogo.style.display = 'block';
                 authLogo.style.margin = '0 auto 1rem';
                 authLogo.style.objectFit = 'contain';
-                authLogo.style.imageRendering = 'high-quality';
             }
             
             if (loadingLogo) {
@@ -801,10 +800,9 @@
             
             if (appLogoSmall) {
                 console.log('Forcing app logo small size');
-                appLogoSmall.style.width = '48px';
+                appLogoSmall.style.width = '32px';
                 appLogoSmall.style.height = 'auto';
                 appLogoSmall.style.objectFit = 'contain';
-                appLogoSmall.style.imageRendering = 'high-quality';
             }
             
             // Also update logo srcs with random cache-bust
