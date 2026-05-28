@@ -1896,12 +1896,12 @@ function removeBlackBackground(imageSrc) {
                 // Calculate max channel value
                 const maxVal = Math.max(r, g, b);
                 
-                if (maxVal < 90) {
-                    // Fully black or very dark pixel -> Transparent
+                if (maxVal < 20) {
+                    // Only pure-black pixels -> fully transparent
                     data[i + 3] = 0;
-                } else if (maxVal < 145) {
-                    // Feathering border (semi-transparent transition)
-                    const factor = (maxVal - 90) / (145 - 90);
+                } else if (maxVal < 40) {
+                    // Very narrow feathering at the edge
+                    const factor = (maxVal - 20) / (40 - 20);
                     data[i + 3] = Math.round(data[i + 3] * factor);
                 }
             }
@@ -1922,10 +1922,10 @@ async function renderHeroMetrics(score) {
     const scoreVal = score.score.toFixed(1);
     const isLightMode = document.body.classList.contains('light-mode');
     
-    // Use pre-loaded Base64 assets directly (no background removal)
-    const img1 = ASSETS.img1;
-    const img4 = ASSETS.img4;
-    const img6 = ASSETS.img6;
+    // Use pre-loaded Base64 assets and remove only pure-black background pixels
+    const img1 = await removeBlackBackground(ASSETS.img1);
+    const img4 = await removeBlackBackground(ASSETS.img4);
+    const img6 = await removeBlackBackground(ASSETS.img6);
 
     const trustBg = isLightMode
         ? 'linear-gradient(135deg, #bfdbfe 0%, #2563eb 30%, #1e293b 100%)'
