@@ -1035,13 +1035,14 @@ body.light-mode #forgot-form select {
 }
 
 .hero-metric-icon img {
-    width: 36px !important;
-    height: 36px !important;
+    width: 44px !important;
+    height: 44px !important;
     object-fit: contain !important;
     max-width: 100% !important;
     max-height: 100% !important;
     image-rendering: optimizeQuality !important;
-    filter: saturate(1.3) brightness(1.1) contrast(1.05) drop-shadow(0 0 8px var(--icon-glow-strong)) !important;
+    mix-blend-mode: screen !important;
+    filter: saturate(1.4) brightness(1.2) contrast(1.1) !important;
     position: relative !important;
     z-index: 1 !important;
     background: transparent !important;
@@ -1055,22 +1056,22 @@ body.light-mode .hero-metric-icon img {
 .hero-metric-grid .hero-metric:nth-child(1) .hero-metric-icon {
     --icon-glow: rgba(56,189,248,0.28);
     --icon-glow-strong: rgba(56,189,248,0.62);
-    --icon-bg: #0d1f40;
-    --icon-border: rgba(56,189,248,0.40);
+    --icon-bg: #162d56;
+    --icon-border: rgba(56,189,248,0.45);
 }
 
 .hero-metric-grid .hero-metric:nth-child(2) .hero-metric-icon {
     --icon-glow: rgba(251,146,60,0.24);
     --icon-glow-strong: rgba(251,146,60,0.58);
-    --icon-bg: #1a0d00;
-    --icon-border: rgba(251,146,60,0.40);
+    --icon-bg: #2a1400;
+    --icon-border: rgba(251,146,60,0.45);
 }
 
 .hero-metric-grid .hero-metric:nth-child(3) .hero-metric-icon {
     --icon-glow: rgba(16,185,129,0.22);
     --icon-glow-strong: rgba(16,185,129,0.56);
-    --icon-bg: #001a10;
-    --icon-border: rgba(16,185,129,0.40);
+    --icon-bg: #0a2818;
+    --icon-border: rgba(16,185,129,0.45);
 }
 
 .hero-metric-label {
