@@ -1922,10 +1922,10 @@ async function renderHeroMetrics(score) {
     const scoreVal = score.score.toFixed(1);
     const isLightMode = document.body.classList.contains('light-mode');
     
-    // Use pre-loaded Base64 assets and remove black backgrounds
-    const img1 = await removeBlackBackground(ASSETS.img1);
-    const img4 = await removeBlackBackground(ASSETS.img4);
-    const img6 = await removeBlackBackground(ASSETS.img6);
+    // Use pre-loaded Base64 assets directly (no background removal)
+    const img1 = ASSETS.img1;
+    const img4 = ASSETS.img4;
+    const img6 = ASSETS.img6;
 
     const trustBg = isLightMode
         ? 'linear-gradient(135deg, #bfdbfe 0%, #2563eb 30%, #1e293b 100%)'
