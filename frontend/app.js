@@ -1893,15 +1893,15 @@ function removeBlackBackground(imageSrc) {
                 const g = data[i + 1];
                 const b = data[i + 2];
                 
-                // Calculate brightness/luminance
+                // Calculate max channel value
                 const maxVal = Math.max(r, g, b);
                 
-                if (maxVal < 65) {
+                if (maxVal < 90) {
                     // Fully black or very dark pixel -> Transparent
                     data[i + 3] = 0;
-                } else if (maxVal < 110) {
+                } else if (maxVal < 145) {
                     // Feathering border (semi-transparent transition)
-                    const factor = (maxVal - 65) / (110 - 65); // Scale alpha between 0 and 1
+                    const factor = (maxVal - 90) / (145 - 90);
                     data[i + 3] = Math.round(data[i + 3] * factor);
                 }
             }
@@ -1944,7 +1944,7 @@ async function renderHeroMetrics(score) {
 
     container.innerHTML = `
         <!-- Card 1: Trust Score -->
-        <div class="hero-metric hero-metric--trust" style="background: ${trustBg} !important; isolation: isolate !important;">
+        <div class="hero-metric hero-metric--trust" style="background: ${trustBg} !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img1}">
@@ -1956,7 +1956,7 @@ async function renderHeroMetrics(score) {
         </div>
 
         <!-- Card 2: Streak -->
-        <div class="hero-metric" style="background: ${streakBg} !important; isolation: isolate !important;">
+        <div class="hero-metric" style="background: ${streakBg} !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img4}">
@@ -1967,7 +1967,7 @@ async function renderHeroMetrics(score) {
         </div>
 
         <!-- Card 3: Success -->
-        <div class="hero-metric" style="background: ${successBg} !important; isolation: isolate !important;">
+        <div class="hero-metric" style="background: ${successBg} !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img6}">
