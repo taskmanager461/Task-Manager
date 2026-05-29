@@ -1856,8 +1856,9 @@ function getBadgeImageSrc(scoreClass) {
         low: 'badge_low.png',
     };
     const name = map[scoreClass] || map.low;
-    // Use root-level routes served directly by FastAPI (no /static/ conflict)
-    return `/${name}`;
+    // Use /static/ prefix so that assets are correctly located inside the static/ folder
+    // across both FastAPI production environment and local dev server environments
+    return `/static/${name}`;
 }
 
 // --- Reports & Me Logic ---
