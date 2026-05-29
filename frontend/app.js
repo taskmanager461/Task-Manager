@@ -1892,10 +1892,12 @@ function removeBlackBackground(imageSrc) {
         img.onload = function() {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0);
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            // Downscale high-resolution images to 256x256 for instant processing and crisp mobile/desktop display
+            const targetSize = 256;
+            canvas.width = targetSize;
+            canvas.height = targetSize;
+            ctx.drawImage(img, 0, 0, targetSize, targetSize);
+            const imageData = ctx.getImageData(0, 0, targetSize, targetSize);
             const data = imageData.data;
             
             for (let i = 0; i < data.length; i += 4) {
