@@ -1,6 +1,12 @@
 .logo, .app-logo-small {
   mix-blend-mode: normal !important;
   filter: none !important;
+  opacity: 0 !important;
+  transition: opacity 0.25s ease-in !important;
+}
+
+.logo.processed, .app-logo-small.processed {
+  opacity: 1 !important;
 }
 
 .auth-logo {

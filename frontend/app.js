@@ -500,6 +500,7 @@ function updateUILanguage() {
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initLanguage();
+    processAllLogos(); // Run immediately so logos start processing/fade in right away
     checkAuth();
     setupEventListeners();
     initBottomNavDragSwitch();
@@ -773,7 +774,29 @@ async function checkAuth() {
             return;
         }
 
-        const { data } = await withTimeout(supabaseClient.auth.getSession(), 8000, 'Auth timeout');
+        // Fast path: Check if there's a cached Supabase auth session token in localStorage
+        const hasCachedSession = Object.keys(localStorage).some(key => 
+            (key.startsWith('sb-') && key.endsWith('-auth-token')) || 
+            key.includes('supabase.auth.token')
+        );
+
+        if (!hasCachedSession) {
+            console.log('Fast path: No cached session found, rendering login screen immediately.');
+            currentUser = null;
+            supabaseSession = null;
+            supabaseAccessToken = null;
+            renderLogin();
+            setAuthView('login');
+            showLoading(false);
+            
+            // Set up listener for subsequent auth state changes
+            supabaseClient.auth.onAuthStateChange(async (event, session) => {
+                await handleAuthSessionChange(event, session);
+            });
+            return;
+        }
+
+        const { data } = await withTimeout(supabaseClient.auth.getSession(), 4000, 'Auth timeout');
         supabaseSession = data.session;
         supabaseAccessToken = data.session?.access_token || null;
         await handleAuthSessionChange('INITIAL', data.session);
@@ -1908,9 +1931,9 @@ async function loadDashboard() {
 }
 
 const logoBackgroundCache = new Map();
-function removeBlackBackground(imageSrc, scale = 1) {
+function removeBlackBackground(imageSrc, scale = 1, isLogo = false) {
     if (!imageSrc) return Promise.resolve('');
-    const cacheKey = imageSrc + '_' + scale;
+    const cacheKey = imageSrc + '_' + scale + '_' + isLogo;
     if (logoBackgroundCache.has(cacheKey)) {
         return Promise.resolve(logoBackgroundCache.get(cacheKey));
     }
@@ -1933,21 +1956,24 @@ function removeBlackBackground(imageSrc, scale = 1) {
             const imageData = ctx.getImageData(0, 0, targetSize, targetSize);
             const data = imageData.data;
             
+            // For logo, use a much higher threshold to ensure all dark/black pixels are completely invisible
+            const threshold = isLogo ? 55 : 5;
+            const feather = isLogo ? 58 : 8;
+            
             for (let i = 0; i < data.length; i += 4) {
                 const r = data[i];
                 const g = data[i + 1];
                 const b = data[i + 2];
-
-                // Luminance-based multiply blend: darker pixel = more transparent.
-                // Uses perceived luminance weighting (same as screen/multiply blend modes).
-                // A pixel with luminance 0 (pure black) becomes fully transparent;
-                // a pixel with luminance 255 (pure white) stays fully opaque.
-                const luminance = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
-
-                // Remap with a gentle curve so very dark areas disappear
-                // while mid/bright areas stay well-visible (pow < 1 brightens the curve)
-                const newAlpha = Math.pow(luminance, 0.85);
-                data[i + 3] = Math.round(Math.min(255, newAlpha * 255));
+                
+                // Calculate max channel value
+                const maxVal = Math.max(r, g, b);
+                
+                if (maxVal < threshold) {
+                    data[i + 3] = 0;
+                } else if (maxVal < feather) {
+                    const factor = (maxVal - threshold) / (feather - threshold);
+                    data[i + 3] = Math.round(data[i + 3] * factor);
+                }
             }
             ctx.putImageData(imageData, 0, 0);
             const resultUrl = canvas.toDataURL('image/png');
@@ -3998,30 +4024,13 @@ async function processSingleLogo(img) {
     img._processed = true;
     try {
         console.log('Processing single logo:', img.src.substring(0, 50) + '...');
-        const processedUrl = await removeBlackBackground(img.src, 0.99);
-        img.src = processedUrl;
+        img.src = await removeBlackBackground(img.src, 0.99, true);
         img.classList.add('processed');
         console.log('Single logo processed:', img.src.substring(0, 50) + '...');
     } catch (err) {
         console.error('Failed to process single logo', err);
     }
 }
-
-// Automatically observe the DOM for any new images with logo classes/selectors
-const logoObserver = new MutationObserver((mutations) => {
-    for (const mutation of mutations) {
-        for (const node of mutation.addedNodes) {
-            if (node.nodeType === Node.ELEMENT_NODE) {
-                if (node.matches && (node.matches('.logo') || node.matches('.app-logo-small') || node.matches('.auth-logo') || node.matches('.share-logo'))) {
-                    processSingleLogo(node);
-                }
-                const nestedImgs = node.querySelectorAll ? node.querySelectorAll('.logo, .app-logo-small, .auth-logo, .share-logo') : [];
-                nestedImgs.forEach(img => processSingleLogo(img));
-            }
-        }
-    }
-});
-logoObserver.observe(document.documentElement, { childList: true, subtree: true });
 
 async function processAllLogos() {
     const logoSelectors = [
@@ -4031,10 +4040,9 @@ async function processAllLogos() {
         '.loading-content img' // loading overlay logo
     ];
 
-    console.log('Found logo selectors:', logoSelectors);
-    for (const selector of logoSelectors) {
+    console.log('Found logo selectors for parallel processing:', logoSelectors);
+    const promises = logoSelectors.map(async (selector) => {
         const img = document.querySelector(selector);
-        console.log(`Selector ${selector}:`, img);
         if (img && img.src) {
             try {
                 await processSingleLogo(img);
@@ -4042,18 +4050,10 @@ async function processAllLogos() {
                 console.error(`Failed to process logo ${selector}`, err);
             }
         }
-    }
-}
-
-// Run immediately when script executes if DOM is already loaded, or on DOMContentLoaded
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', processAllLogos);
-} else {
-    processAllLogos();
+    });
+    await Promise.all(promises);
 }
 
 window.addEventListener('load', () => {
-    console.log('Processing all logos...');
     processAllLogos();
 });
-
