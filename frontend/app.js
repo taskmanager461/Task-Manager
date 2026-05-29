@@ -40,6 +40,9 @@ let identitySnapshot = { level: 1, unlockedBadgeIds: [] };
 let smartPersonalizationCache = { timestamp: 0, data: null };
 let cropper = null;
 let currentCropFile = null;
+let cachedDailyScore = null;
+let cachedWeeklyTrendHistory = null;
+let cachedTasksForChart = null;
 
 const translations = {
     en: {
@@ -501,6 +504,13 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     initBottomNavDragSwitch();
     syncBottomNavIndicator(currentView || 'tasks');
+    
+    // Pre-warm the hero metrics background-removed image assets
+    if (window.ASSETS) {
+        removeBlackBackground(ASSETS.img1);
+        removeBlackBackground(ASSETS.img4);
+        removeBlackBackground(ASSETS.img6);
+    }
 });
 
 function initTheme() {
@@ -1918,14 +1928,18 @@ async function renderHeroMetrics(score) {
     const container = document.getElementById('dashboard-hero-metrics');
     if (!container) return;
 
+    cachedDailyScore = score;
+
     const label = getScoreLabel(score.score);
     const scoreVal = score.score.toFixed(1);
     const isLightMode = document.body.classList.contains('light-mode');
     
-    // Use pre-loaded Base64 assets and remove only pure-black background pixels
-    const img1 = await removeBlackBackground(ASSETS.img1);
-    const img4 = await removeBlackBackground(ASSETS.img4);
-    const img6 = await removeBlackBackground(ASSETS.img6);
+    // Use pre-loaded Base64 assets and remove only pure-black background pixels in parallel
+    const [img1, img4, img6] = await Promise.all([
+        removeBlackBackground(ASSETS.img1),
+        removeBlackBackground(ASSETS.img4),
+        removeBlackBackground(ASSETS.img6)
+    ]);
 
     const trustBg = isLightMode
         ? 'linear-gradient(135deg, #bfdbfe 0%, #2563eb 30%, #1e293b 100%)'
@@ -2177,6 +2191,7 @@ async function loadWeeklyTrend() {
 }
 
 function updateTrendChart(history) {
+    cachedWeeklyTrendHistory = history;
     const ctx = document.getElementById('weekly-trend-chart').getContext('2d');
     if (trendChart) trendChart.destroy();
 
@@ -2253,6 +2268,7 @@ function updateTrendChart(history) {
 }
 
 function updateTaskChart(tasks) {
+    cachedTasksForChart = tasks;
     const counts = {
         completed: tasks.filter(t => t.status === 'completed').length,
         failed: tasks.filter(t => t.status === 'failed').length,
@@ -3577,9 +3593,30 @@ function toggleDarkMode() {
     localStorage.setItem('tm_dark_mode', isDarkMode ? '1' : '0');
     applyTheme();
     if (currentUser) {
-        if (currentView === 'reports') loadReports();
-        if (currentView === 'me') loadMe();
-        if (currentView === 'tasks') renderTasks(cachedTasks);
+        if (currentView === 'reports') {
+            if (cachedDailyScore) {
+                renderHeroMetrics(cachedDailyScore);
+                const progressFill = document.getElementById('daily-progress-fill');
+                if (progressFill) progressFill.style.width = `${cachedDailyScore.success_rate * 100}%`;
+            } else {
+                loadReports();
+            }
+        }
+        if (currentView === 'me') {
+            renderProfileCard();
+            if (cachedWeeklyTrendHistory && document.getElementById('weekly-trend-chart')) {
+                updateTrendChart(cachedWeeklyTrendHistory);
+            }
+            if (cachedTasksForChart && document.getElementById('task-pie-chart')) {
+                updateTaskChart(cachedTasksForChart);
+            }
+            if (!cachedWeeklyTrendHistory || !cachedTasksForChart) {
+                loadMe();
+            }
+        }
+        if (currentView === 'tasks') {
+            renderTasks(cachedTasks);
+        }
     }
     showToast(t('task_updated'), 'success');
 }
