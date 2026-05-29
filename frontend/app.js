@@ -527,17 +527,45 @@ function applyTheme() {
     if (isDarkMode) {
         document.body.classList.add('dark-mode');
         document.body.classList.remove('light-mode');
+        document.documentElement.style.setProperty('--trust-bg', 'radial-gradient(circle at bottom right, #005c99 0%, #004a7a 20%, #003761 40%, #002542 60%, #001221 80%, #000000 100%)');
+        document.documentElement.style.setProperty('--streak-bg', 'radial-gradient(circle at bottom right, #993d00 0%, #7a3100 20%, #5c2700 40%, #3d1a00 60%, #1f0d00 80%, #000000 100%)');
+        document.documentElement.style.setProperty('--success-bg', 'radial-gradient(circle at bottom right, #009952 0%, #007a42 20%, #005c34 40%, #003d27 60%, #001f1a 80%, #000000 100%)');
+        document.documentElement.style.setProperty('--progress-track-bg', 'rgba(255,255,255,0.1)');
+        document.documentElement.style.setProperty('--progress-track-border', 'rgba(255,255,255,0.2)');
     } else {
         document.body.classList.remove('dark-mode');
         document.body.classList.add('light-mode');
+        document.documentElement.style.setProperty('--trust-bg', 'linear-gradient(135deg, #bfdbfe 0%, #2563eb 30%, #1e293b 100%)');
+        document.documentElement.style.setProperty('--streak-bg', 'linear-gradient(135deg, #fed7aa 0%, #ea580c 30%, #451a03 100%)');
+        document.documentElement.style.setProperty('--success-bg', 'linear-gradient(135deg, #bbf7d0 0%, #16a34a 30%, #052e16 100%)');
+        document.documentElement.style.setProperty('--progress-track-bg', 'rgba(255,255,255,0.22)');
+        document.documentElement.style.setProperty('--progress-track-border', 'rgba(255,255,255,0.28)');
     }
     const switchEl = document.getElementById('dark-mode-switch');
     if (switchEl) {
         switchEl.checked = isDarkMode;
     }
-    // Refresh charts to match theme
-    if (currentUser && currentView === 'reports') loadReports();
-    if (currentUser && currentView === 'me') loadMe();
+    
+    // Dynamically update UI elements that depend on JS/Canvas theme without making network requests
+    if (currentUser) {
+        if (currentView === 'reports' && cachedDailyScore) {
+            renderHeroMetrics(cachedDailyScore);
+            const progressFill = document.getElementById('daily-progress-fill');
+            if (progressFill) progressFill.style.width = `${cachedDailyScore.success_rate * 100}%`;
+        }
+        if (currentView === 'me') {
+            renderProfileCard();
+            if (cachedWeeklyTrendHistory && document.getElementById('weekly-trend-chart')) {
+                updateTrendChart(cachedWeeklyTrendHistory);
+            }
+            if (cachedTasksForChart && document.getElementById('task-pie-chart')) {
+                updateTaskChart(cachedTasksForChart);
+            }
+        }
+        if (currentView === 'tasks') {
+            renderTasks(cachedTasks);
+        }
+    }
 }
 
 function initLanguage() {
@@ -1943,20 +1971,11 @@ async function renderHeroMetrics(score) {
         removeBlackBackground(ASSETS.img6)
     ]);
 
-    const trustBg = isLightMode
-        ? 'linear-gradient(135deg, #bfdbfe 0%, #2563eb 30%, #1e293b 100%)'
-        : 'radial-gradient(circle at bottom right, #005c99 0%, #004a7a 20%, #003761 40%, #002542 60%, #001221 80%, #000000 100%)';
-
-    const streakBg = isLightMode
-        ? 'linear-gradient(135deg, #fed7aa 0%, #ea580c 30%, #451a03 100%)'
-        : 'radial-gradient(circle at bottom right, #993d00 0%, #7a3100 20%, #5c2700 40%, #3d1a00 60%, #1f0d00 80%, #000000 100%)';
-
-    const successBg = isLightMode
-        ? 'linear-gradient(135deg, #bbf7d0 0%, #16a34a 30%, #052e16 100%)'
-        : 'radial-gradient(circle at bottom right, #009952 0%, #007a42 20%, #005c34 40%, #003d27 60%, #001f1a 80%, #000000 100%)';
-
-    const progressTrackBg = isLightMode ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.1)';
-    const progressTrackBorder = isLightMode ? 'rgba(255,255,255,0.28)' : 'rgba(255,255,255,0.2)';
+    const trustBg = 'var(--trust-bg)';
+    const streakBg = 'var(--streak-bg)';
+    const successBg = 'var(--success-bg)';
+    const progressTrackBg = 'var(--progress-track-bg)';
+    const progressTrackBorder = 'var(--progress-track-border)';
 
     container.innerHTML = `
         <!-- Card 1: Trust Score -->
@@ -3594,32 +3613,6 @@ function toggleDarkMode() {
     isDarkMode = !isDarkMode;
     localStorage.setItem('tm_dark_mode', isDarkMode ? '1' : '0');
     applyTheme();
-    if (currentUser) {
-        if (currentView === 'reports') {
-            if (cachedDailyScore) {
-                renderHeroMetrics(cachedDailyScore);
-                const progressFill = document.getElementById('daily-progress-fill');
-                if (progressFill) progressFill.style.width = `${cachedDailyScore.success_rate * 100}%`;
-            } else {
-                loadReports();
-            }
-        }
-        if (currentView === 'me') {
-            renderProfileCard();
-            if (cachedWeeklyTrendHistory && document.getElementById('weekly-trend-chart')) {
-                updateTrendChart(cachedWeeklyTrendHistory);
-            }
-            if (cachedTasksForChart && document.getElementById('task-pie-chart')) {
-                updateTaskChart(cachedTasksForChart);
-            }
-            if (!cachedWeeklyTrendHistory || !cachedTasksForChart) {
-                loadMe();
-            }
-        }
-        if (currentView === 'tasks') {
-            renderTasks(cachedTasks);
-        }
-    }
     showToast(t('task_updated'), 'success');
 }
 
