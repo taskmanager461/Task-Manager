@@ -196,6 +196,7 @@ def track_habit(
     progression = {"xp_delta": 0, "trust_delta": 0.0, "leveled_up": False}
     if status_changed:
         progression = apply_habit_impact(
+            db,
             current_user,
             status=payload.status,
             consistency_score=consistency_score,

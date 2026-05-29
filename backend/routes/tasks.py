@@ -130,6 +130,9 @@ def update_task_status(
     if task.status == "completed" and previous_status != "completed" and not task.xp_awarded:
         award_task_completion_xp(db, current_user, task)
         task.xp_awarded = True
+    elif task.status == "failed" and previous_status != "failed":
+        from backend.services.identity_service import penalize_task_failure
+        penalize_task_failure(db, current_user, task)
 
     db.commit()
 

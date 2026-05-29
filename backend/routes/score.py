@@ -35,123 +35,51 @@ def compute_daily_score(
         raise HTTPException(status_code=403, detail="Forbidden")
 
     day = payload.day or date.today()
-    
     current_streak = recompute_streak(db, current_user, today=day)
 
     tasks = db.query(Task).filter(Task.user_id == target_user_id, Task.date == day).all()
-    if not tasks:
-        goal_bonus = 0.0
-        completed_goals_today = db.query(Goal).filter(
+    total_tasks = len(tasks)
+    completed_tasks = sum(1 for t in tasks if t.status == "completed")
+    success_rate = completed_tasks / total_tasks if total_tasks > 0 else 0.0
+
+    # 1. Check for Inactivity Decay (Only if DailyScore for today does not exist yet)
+    daily_score = db.query(DailyScore).filter(DailyScore.user_id == target_user_id, DailyScore.date == day).first()
+    if not daily_score:
+        yesterday = day - timedelta(days=1)
+        
+        # Check completed tasks yesterday
+        tasks_yesterday = db.query(Task).filter(
+            Task.user_id == target_user_id,
+            Task.date == yesterday,
+            Task.status == "completed"
+        ).count()
+        
+        # Check goals achieved yesterday
+        goals_yesterday = db.query(Goal).filter(
             Goal.user_id == target_user_id,
             Goal.status == "achieved",
-            func.date(Goal.completed_at) == day,
-        ).all()
-        for goal in completed_goals_today:
-            goal_bonus += 30.0
-            if goal.completed_at and goal.completed_at.date() < goal.deadline:
-                goal_bonus += 15.0
-            elif goal.completed_at and goal.completed_at.date() == goal.deadline:
-                goal_bonus += 5.0
+            func.date(Goal.completed_at) == yesterday
+        ).count()
         
-        failed_goals_today = db.query(Goal).filter(
-            Goal.user_id == target_user_id,
-            Goal.status == "failed",
-            (func.date(Goal.deadline) == day) | (func.date(Goal.completed_at) == day),
-        ).all()
-        for goal in failed_goals_today:
-            goal_bonus -= 25.0
+        # Check habits completed yesterday
+        habits_yesterday = db.query(HabitLog).filter(
+            HabitLog.user_id == target_user_id,
+            HabitLog.date == yesterday,
+            HabitLog.status == "completed"
+        ).count()
+        
+        total_activity_yesterday = tasks_yesterday + goals_yesterday + habits_yesterday
+        has_any_history = db.query(Task).filter(Task.user_id == target_user_id).count() > 0
+        
+        if total_activity_yesterday == 0 and has_any_history:
+            # Apply Inactivity Decay: small gradual trust decay (-0.2 base penalty)
+            from backend.services.identity_service import change_user_trust_score
+            change_user_trust_score(db, current_user, -0.2, is_penalty=True, today_date=day)
 
-        level = max(1, current_user.level or 1)
-        stability = min(0.82, 0.35 + level * 0.03)
-        xp_factor = min(18.0, (current_user.total_xp or 0) / 120.0)
-        level_factor = level * 1.2
-        current_user.trust_score = max(
-            0.0,
-            min(
-                150.0,
-                ((current_user.trust_score or 0.0) * stability) + (goal_bonus * (1 - stability)) + xp_factor + level_factor,
-            ),
-        )
+    # 2. Strict bounding to redesigned 100 max range
+    current_user.trust_score = max(0.0, min(100.0, current_user.trust_score or 0.0))
 
-        db.commit()
-        return DailyScoreComputationResponse(
-            date=day,
-            score=round(current_user.trust_score, 2),
-            success_rate=0.0,
-            streak=current_streak,
-            multiplier=1.0,
-            total_tasks=0,
-            goal_bonus=goal_bonus,
-        )
-
-    # 2. Compute Score with Difficulty & Priority weights
-    difficulty_map = {"easy": 1, "medium": 2, "hard": 3}
-    priority_map = {"low": 1, "medium": 1.5, "high": 2}
-    
-    total_weight = 0
-    earned_weight = 0
-    completed_count = 0
-
-    for task in tasks:
-        weight = difficulty_map.get(task.difficulty, 1) * priority_map.get(task.priority, 1)
-        total_weight += weight
-        if task.status == "completed":
-            earned_weight += weight
-            completed_count += 1
-
-    success_rate = completed_count / len(tasks) if len(tasks) > 0 else 0.0
-    
-    # Streak multiplier (bonus only, not primary source)
-    multiplier = 1.0 + (min(current_streak, 10) * 0.1)
-    base_score = (earned_weight / total_weight) * 100 if total_weight > 0 else 0
-    final_score = base_score * multiplier
-
-    # Goals have stronger trust-score impact than regular tasks - MUCH HIGHER WEIGHT!
-    goal_bonus = 0.0
-    
-    # Completed goals - BIG boost!
-    completed_goals_today = db.query(Goal).filter(
-        Goal.user_id == target_user_id,
-        Goal.status == "achieved",
-        func.date(Goal.completed_at) == day,
-    ).all()
-    for goal in completed_goals_today:
-        goal_bonus += 30.0
-        if goal.completed_at and goal.completed_at.date() < goal.deadline:
-            goal_bonus += 15.0
-        elif goal.completed_at and goal.completed_at.date() == goal.deadline:
-            goal_bonus += 5.0
-    
-    # Failed goals - Penalty!
-    failed_goals_today = db.query(Goal).filter(
-        Goal.user_id == target_user_id,
-        Goal.status == "failed",
-        (func.date(Goal.deadline) == day) | (func.date(Goal.completed_at) == day),
-    ).all()
-    for goal in failed_goals_today:
-        goal_bonus -= 25.0
-
-    performance_score = max(0.0, final_score + goal_bonus)
-    level = max(1, current_user.level or 1)
-    stability = min(0.82, 0.35 + level * 0.03)
-    xp_factor = min(18.0, (current_user.total_xp or 0) / 120.0)
-    level_factor = level * 1.2
-    trust_delta_from_goals = 0.0
-    if goal_bonus > 0:
-        trust_delta_from_goals = min(5.0, goal_bonus * 0.08)
-    elif goal_bonus < 0:
-        trust_delta_from_goals = max(-4.0, goal_bonus * 0.06)
-    stabilized_trust = (
-        ((current_user.trust_score or 0.0) * stability)
-        + (performance_score * (1 - stability))
-        + xp_factor
-        + level_factor
-        + trust_delta_from_goals
-    )
-    current_user.trust_score = max(0.0, min(150.0, stabilized_trust))
-
-    # 4. Save/Update DailyScore
-    daily_score = db.query(DailyScore).filter(DailyScore.user_id == target_user_id, DailyScore.date == day).first()
+    # 3. Save / Update DailyScore
     if not daily_score:
         daily_score = DailyScore(user_id=target_user_id, date=day, score=current_user.trust_score, success_rate=success_rate)
         db.add(daily_score)
@@ -161,14 +89,20 @@ def compute_daily_score(
 
     db.commit()
 
+    multiplier = 1.0
+    if current_streak >= 14:
+        multiplier = 1.5
+    elif current_streak >= 7:
+        multiplier = 1.25
+
     return DailyScoreComputationResponse(
         date=day,
         score=round(current_user.trust_score, 2),
         success_rate=success_rate,
         streak=current_streak,
         multiplier=multiplier,
-        total_tasks=len(tasks),
-        goal_bonus=goal_bonus,
+        total_tasks=total_tasks,
+        goal_bonus=0.0,
     )
 
 

@@ -35,8 +35,8 @@ def xp_required_for_level(level: int) -> int:
     if level <= 1:
         return 0
     required = 0
-    for lvl in range(1, level):
-        required += 100 + (lvl - 1) * 40
+    for lvl in range(2, level + 1):
+        required += 50 * lvl
     return required
 
 
@@ -89,14 +89,107 @@ def recompute_streak(db: Session, user: User, today: date | None = None) -> int:
     return streak
 
 
+def change_user_trust_score(db: Session, user: User, base_val: float, is_penalty: bool = False, is_task: bool = False, today_date: date | None = None) -> float:
+    if today_date is None:
+        today_date = date.today()
+    
+    current_score = user.trust_score or 0.0
+    streak = user.streak or 0
+    
+    if not is_penalty:
+        # 1. Anti-Spam Diminishing Returns for Tasks
+        diminishing_factor = 1.0
+        if is_task:
+            completed_today = db.query(Task).filter(
+                Task.user_id == user.id,
+                Task.date == today_date,
+                Task.status == "completed"
+            ).count()
+            # Diminishing returns:
+            # - First 3 tasks in a day: 100% gain
+            # - Tasks 4-6: 50% gain
+            # - Tasks 7+: 10% gain
+            if completed_today > 6:
+                diminishing_factor = 0.1
+            elif completed_today > 3:
+                diminishing_factor = 0.5
+        
+        gain = base_val * diminishing_factor
+        
+        # 2. Streak Multipliers
+        # Streaks should act as multipliers (7+ day streak -> slightly stronger positive gains)
+        streak_mult = 1.0
+        if streak >= 14:
+            streak_mult = 1.5
+        elif streak >= 7:
+            streak_mult = 1.25
+        
+        gain *= streak_mult
+        
+        # 3. Recovery System
+        # Motivates users to recover, applying recovery bonuses at lower scores
+        recovery_mult = 1.0
+        if current_score <= 25.0:
+            recovery_mult = 1.5      # +50% recovery bonus on low tier
+        elif current_score <= 50.0:
+            recovery_mult = 1.25     # +25% recovery bonus on average tier
+            
+        gain *= recovery_mult
+        
+        # 4. Progression Scaling
+        # Trust becomes harder to increase at high levels
+        scale_factor = 1.0
+        if current_score >= 75.0:
+            scale_factor = 0.25      # 75-100 -> difficult progression (25% gain)
+        elif current_score >= 50.0:
+            scale_factor = 0.5       # 50-75 -> slower progression (50% gain)
+            
+        gain *= scale_factor
+        
+        # Apply positive change, capped at max 100
+        new_score = min(100.0, current_score + gain)
+        user.trust_score = new_score
+        return round(gain, 2)
+    else:
+        # 1. Streak Trust Protection
+        # Long streaks act as stronger trust protection for penalties
+        protection_factor = 1.0
+        if streak >= 14:
+            protection_factor = 0.5   # 50% penalty reduction
+        elif streak >= 7:
+            protection_factor = 0.75  # 25% penalty reduction
+            
+        penalty = base_val * protection_factor
+        
+        # Apply negative change, floor at 0
+        new_score = max(0.0, current_score + penalty)
+        user.trust_score = new_score
+        return round(penalty, 2)
+
+
+def penalize_task_failure(db: Session, user: User, task: Task) -> float:
+    # Failed tasks reduce Trust: easy -> -0.3, medium -> -0.6, hard -> -1.0
+    penalty = {"easy": -0.3, "medium": -0.6, "hard": -1.0}.get(task.difficulty, -0.6)
+    return change_user_trust_score(db, user, penalty, is_penalty=True, today_date=task.date)
+
+
+def penalize_goal_failure(db: Session, user: User, goal: Goal) -> float:
+    # noticeable trust decrease for failed goal (-4.0)
+    penalty = -4.0
+    return change_user_trust_score(db, user, penalty, is_penalty=True, today_date=goal.completed_at.date() if goal.completed_at else None)
+
+
+def penalize_goal_abandonment(db: Session, user: User, goal: Goal) -> float:
+    # noticeable trust decrease for abandoning an active goal
+    penalty = -4.0
+    return change_user_trust_score(db, user, penalty, is_penalty=True, today_date=date.today())
+
+
 def _apply_progression_gain(user: User, xp_delta: int, is_goal: bool) -> dict:
     xp_delta = max(0, xp_delta)
     previous_level = max(1, user.level or 1)
     user.total_xp = max(0, (user.total_xp or 0) + xp_delta)
     user.level = compute_level_from_xp(user.total_xp)
-    anchor = _trust_anchor(user.total_xp, user.level)
-    trust_boost = _trust_gain_from_xp(xp_delta, is_goal=is_goal)
-    user.trust_score = min(100.0, max(anchor * 0.35, (user.trust_score or 0.0) + trust_boost))
     return {
         "xp_delta": xp_delta,
         "previous_level": previous_level,
@@ -107,52 +200,133 @@ def _apply_progression_gain(user: User, xp_delta: int, is_goal: bool) -> dict:
 
 def award_task_completion_xp(db: Session, user: User, task: Task) -> dict:
     streak = recompute_streak(db, user)
-    base_xp = TASK_XP_BY_DIFFICULTY.get(task.difficulty, 10)
-    priority_multiplier = TASK_PRIORITY_MULTIPLIER.get(task.priority, 1.0)
-    streak_multiplier = _streak_multiplier(streak, step=0.02)
-    xp_delta = int(round(base_xp * priority_multiplier * streak_multiplier))
-    return _apply_progression_gain(user, xp_delta=xp_delta, is_goal=False)
+    
+    # Redesigned Task XP values: easy -> 5 XP, medium -> 10 XP, hard -> 20 XP
+    base_xp = {"easy": 5, "medium": 10, "hard": 20}.get(task.difficulty, 10)
+    
+    # Streak multipliers for task XP (makes maintaining a streak exciting!)
+    streak_mult = 1.0
+    if streak >= 100:
+        streak_mult = 2.0
+    elif streak >= 30:
+        streak_mult = 1.6
+    elif streak >= 14:
+        streak_mult = 1.4
+    elif streak >= 7:
+        streak_mult = 1.2
+        
+    # Diminishing returns (Anti-exploit logic to prevent spamming tiny tasks)
+    completed_today = db.query(Task).filter(
+        Task.user_id == user.id,
+        Task.date == task.date,
+        Task.status == "completed"
+    ).count()
+    
+    diminishing_factor = 1.0
+    if completed_today > 10:
+        diminishing_factor = 0.1
+    elif completed_today > 5:
+        diminishing_factor = 0.5
+        
+    xp_delta = int(round(base_xp * streak_mult * diminishing_factor))
+    
+    # Streak Milestone rewards
+    if streak == 7:
+        xp_delta += 50
+    elif streak == 30:
+        xp_delta += 200
+    elif streak == 100:
+        xp_delta += 1000
+        
+    # Achievement XP
+    completed_total = db.query(Task).filter(Task.user_id == user.id, Task.status == "completed").count()
+    if completed_total == 1:
+        xp_delta += 20  # First task completed bonus XP
+    elif completed_total == 100:
+        xp_delta += 500 # 100 tasks completed milestone XP
+        
+    progression = _apply_progression_gain(user, xp_delta=xp_delta, is_goal=False)
+    
+    # Redesigned Trust Score System task values:
+    # easy task -> +0.2, medium -> +0.5, hard -> +0.8
+    task_trust_gain = {"easy": 0.2, "medium": 0.5, "hard": 0.8}.get(task.difficulty, 0.5)
+    
+    # Active goal progress gives small additional trust
+    if task.goal_id:
+        task_trust_gain += 0.1
+        
+    trust_delta = change_user_trust_score(db, user, task_trust_gain, is_penalty=False, is_task=True, today_date=task.date)
+    progression["trust_delta"] = trust_delta
+    return progression
 
 
 def award_goal_completion_xp(db: Session, user: User, goal: Goal) -> dict:
     streak = recompute_streak(db, user)
-    base_xp = GOAL_XP_BY_TYPE.get(goal.goal_type, 100)
-    deadline_bonus = 0
-    if goal.completed_at:
-        if goal.completed_at.date() < goal.deadline:
-            deadline_bonus = 20
-        elif goal.completed_at.date() == goal.deadline:
-            deadline_bonus = 8
-    streak_multiplier = _streak_multiplier(streak, step=0.015)
-    xp_delta = int(round((base_xp + deadline_bonus) * streak_multiplier))
-    return _apply_progression_gain(user, xp_delta=xp_delta, is_goal=True)
+    
+    # Redesigned Goal XP values (LARGE XP rewards)
+    base_xp = {
+        "today": 25,
+        "tomorrow": 40,
+        "three_days": 60,
+        "one_week": 100,
+        "two_weeks": 150,
+        "one_month": 250,
+        "three_months": 400,
+        "six_months": 600,
+        "one_year": 900,
+        "one_year_plus": 1200,
+    }.get(goal.goal_type, 100)
+    
+    # Achievement XP: first completed goal
+    completed_goals_total = db.query(Goal).filter(Goal.user_id == user.id, Goal.status == "achieved").count()
+    if completed_goals_total == 1:
+        base_xp += 50  # First completed goal milestone XP reward
+        
+    xp_delta = base_xp
+    progression = _apply_progression_gain(user, xp_delta=xp_delta, is_goal=True)
+    
+    # Goal completion gives meaningful trust reward (+5.0)
+    trust_delta = change_user_trust_score(db, user, 5.0, is_penalty=False, today_date=goal.completed_at.date() if goal.completed_at else None)
+    progression["trust_delta"] = trust_delta
+    return progression
 
 
-def apply_habit_impact(user: User, status: str, consistency_score: float, habit_streak: int) -> dict:
+def apply_habit_impact(db: Session, user: User, status: str, consistency_score: float, habit_streak: int) -> dict:
     if status == "completed":
-        xp_delta = 4
-        if consistency_score >= 70:
-            xp_delta += 1
-        if habit_streak >= 7:
-            xp_delta += 1
+        # Redesigned Habits system: daily habit complete -> +3 XP
+        xp_delta = 3
+        
+        # 7-day habit streak -> bonus XP (+15 XP); 14-day streak -> bonus XP (+35 XP)
+        if habit_streak == 7:
+            xp_delta += 15
+        elif habit_streak == 14:
+            xp_delta += 35
+            
         progression = _apply_progression_gain(user, xp_delta=xp_delta, is_goal=False)
-        trust_boost = 0.25 + min(0.9, consistency_score * 0.007)
-        if habit_streak >= 10:
+        
+        # Habits consistency: completed daily habit -> small positive trust gain (+0.2)
+        trust_boost = 0.2
+        if consistency_score >= 80:
+            trust_boost += 0.1
+        if habit_streak >= 7:
+            trust_boost += 0.1
+        if habit_streak >= 14:
             trust_boost += 0.2
-        user.trust_score = min(150.0, (user.trust_score or 0.0) + trust_boost)
+            
+        trust_delta = change_user_trust_score(db, user, trust_boost, is_penalty=False, today_date=date.today())
         return {
             "xp_delta": progression["xp_delta"],
-            "trust_delta": round(trust_boost, 2),
+            "trust_delta": trust_delta,
             "leveled_up": progression["leveled_up"],
         }
 
-    trust_penalty = 0.1
+    # Repeated missed habits -> gradual trust decline (XP remains unaffected for failure)
+    trust_penalty = -0.3
     if consistency_score < 40:
-        trust_penalty = 0.35
-    elif consistency_score < 60:
-        trust_penalty = 0.2
-    user.trust_score = max(0.0, (user.trust_score or 0.0) - trust_penalty)
-    return {"xp_delta": 0, "trust_delta": -round(trust_penalty, 2), "leveled_up": False}
+        trust_penalty -= 0.2
+        
+    trust_delta = change_user_trust_score(db, user, trust_penalty, is_penalty=True, today_date=date.today())
+    return {"xp_delta": 0, "trust_delta": trust_delta, "leveled_up": False}
 
 
 def build_badges(completed_tasks: int, completed_goals: int, streak: int) -> list[dict]:

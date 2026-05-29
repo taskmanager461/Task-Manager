@@ -169,6 +169,9 @@ def update_goal(
     if goal.status == "achieved" and previous_status != "achieved" and not goal.xp_awarded:
         award_goal_completion_xp(db, current_user, goal)
         goal.xp_awarded = True
+    elif goal.status == "failed" and previous_status != "failed":
+        from backend.services.identity_service import penalize_goal_failure
+        penalize_goal_failure(db, current_user, goal)
     
     db.commit()
     db.refresh(goal)
@@ -207,6 +210,11 @@ def delete_goal(
     if not goal:
         raise HTTPException(status_code=404, detail="Goal not found")
     
+    # If the goal was active, penalize it as abandoned
+    if goal.status == "active":
+        from backend.services.identity_service import penalize_goal_abandonment
+        penalize_goal_abandonment(db, current_user, goal)
+        
     db.delete(goal)
     db.commit()
     return {"message": "Goal deleted successfully"}

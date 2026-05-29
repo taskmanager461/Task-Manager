@@ -164,6 +164,22 @@ async def get_badge_average():
 async def get_badge_excellent():
     return _serve_root_badge("badge_excellent.png")
 
+@app.get("/static/badge_low.png")
+async def get_static_badge_low():
+    return _serve_root_badge("badge_low.png")
+
+@app.get("/static/badge_good.png")
+async def get_static_badge_good():
+    return _serve_root_badge("badge_good.png")
+
+@app.get("/static/badge_average.png")
+async def get_static_badge_average():
+    return _serve_root_badge("badge_average.png")
+
+@app.get("/static/badge_excellent.png")
+async def get_static_badge_excellent():
+    return _serve_root_badge("badge_excellent.png")
+
 # Mount frontend static directory
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
