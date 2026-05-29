@@ -3,7 +3,6 @@ import base64
 import os
 from pathlib import Path
 
-@st.cache_data
 def get_base64_image(image_path):
     try:
         if os.path.exists(image_path):
