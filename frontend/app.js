@@ -1850,15 +1850,17 @@ function getScoreLabel(score) {
 
 function getBadgeImageSrc(scoreClass) {
     const map = {
-        excellent: 'badge_excellent.png',
-        good: 'badge_good.png',
-        average: 'badge_average.png',
-        low: 'badge_low.png',
+        excellent: 'excellent',
+        good: 'good',
+        average: 'average',
+        low: 'low',
     };
-    const name = map[scoreClass] || map.low;
-    // Use /static/ prefix so that assets are correctly located inside the static/ folder
-    // across both FastAPI production environment and local dev server environments
-    return `/static/${name}`;
+    const key = map[scoreClass] || 'low';
+    if (window.BADGE_ASSETS && window.BADGE_ASSETS[key]) {
+        return window.BADGE_ASSETS[key];
+    }
+    // Fallback if badge_assets.js is not loaded or fails
+    return `/static/badge_${key}.png`;
 }
 
 // --- Reports & Me Logic ---
