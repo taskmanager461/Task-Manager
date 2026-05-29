@@ -1937,18 +1937,17 @@ function removeBlackBackground(imageSrc, scale = 1) {
                 const r = data[i];
                 const g = data[i + 1];
                 const b = data[i + 2];
-                
-                // Calculate max channel value
-                const maxVal = Math.max(r, g, b);
-                
-                if (maxVal < 5) {
-                    // Only absolute pure-black pixels -> transparent
-                    data[i + 3] = 0;
-                } else if (maxVal < 8) {
-                    // Minimal feathering
-                    const factor = (maxVal - 5) / (8 - 5);
-                    data[i + 3] = Math.round(data[i + 3] * factor);
-                }
+
+                // Luminance-based multiply blend: darker pixel = more transparent.
+                // Uses perceived luminance weighting (same as screen/multiply blend modes).
+                // A pixel with luminance 0 (pure black) becomes fully transparent;
+                // a pixel with luminance 255 (pure white) stays fully opaque.
+                const luminance = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
+
+                // Remap with a gentle curve so very dark areas disappear
+                // while mid/bright areas stay well-visible (pow < 1 brightens the curve)
+                const newAlpha = Math.pow(luminance, 0.85);
+                data[i + 3] = Math.round(Math.min(255, newAlpha * 255));
             }
             ctx.putImageData(imageData, 0, 0);
             const resultUrl = canvas.toDataURL('image/png');
@@ -3999,13 +3998,30 @@ async function processSingleLogo(img) {
     img._processed = true;
     try {
         console.log('Processing single logo:', img.src.substring(0, 50) + '...');
-        img.src = await removeBlackBackground(img.src, 0.99);
+        const processedUrl = await removeBlackBackground(img.src, 0.99);
+        img.src = processedUrl;
         img.classList.add('processed');
         console.log('Single logo processed:', img.src.substring(0, 50) + '...');
     } catch (err) {
         console.error('Failed to process single logo', err);
     }
 }
+
+// Automatically observe the DOM for any new images with logo classes/selectors
+const logoObserver = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+                if (node.matches && (node.matches('.logo') || node.matches('.app-logo-small') || node.matches('.auth-logo') || node.matches('.share-logo'))) {
+                    processSingleLogo(node);
+                }
+                const nestedImgs = node.querySelectorAll ? node.querySelectorAll('.logo, .app-logo-small, .auth-logo, .share-logo') : [];
+                nestedImgs.forEach(img => processSingleLogo(img));
+            }
+        }
+    }
+});
+logoObserver.observe(document.documentElement, { childList: true, subtree: true });
 
 async function processAllLogos() {
     const logoSelectors = [
@@ -4029,7 +4045,15 @@ async function processAllLogos() {
     }
 }
 
+// Run immediately when script executes if DOM is already loaded, or on DOMContentLoaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', processAllLogos);
+} else {
+    processAllLogos();
+}
+
 window.addEventListener('load', () => {
     console.log('Processing all logos...');
     processAllLogos();
 });
+
