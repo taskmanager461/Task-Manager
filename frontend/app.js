@@ -744,14 +744,13 @@ async function handleAuthSessionChange(event, session) {
         }
     }
 
-    // Then sync in background to get full profile
-    try {
-        await syncCurrentUserFromApi();
+    // Then sync in background to get full profile without blocking UI
+    syncCurrentUserFromApi().then(() => {
         // Update UI if anything changed after sync
         const userNameEl = document.getElementById('user-display-name');
         if (userNameEl) userNameEl.textContent = currentUser.name || currentUser.username;
         renderProfileCard();
-    } catch (err) {
+    }).catch(async (err) => {
         console.error('Background sync failed', err);
         // If it failed because session is invalid, then logout
         if (err.message === 'Session expired') {
@@ -762,7 +761,7 @@ async function handleAuthSessionChange(event, session) {
             renderLogin();
             setAuthView('login');
         }
-    }
+    });
 }
 
 async function checkAuth() {
@@ -1909,10 +1908,11 @@ async function loadDashboard() {
 }
 
 const logoBackgroundCache = new Map();
-function removeBlackBackground(imageSrc) {
+function removeBlackBackground(imageSrc, scale = 1) {
     if (!imageSrc) return Promise.resolve('');
-    if (logoBackgroundCache.has(imageSrc)) {
-        return Promise.resolve(logoBackgroundCache.get(imageSrc));
+    const cacheKey = imageSrc + '_' + scale;
+    if (logoBackgroundCache.has(cacheKey)) {
+        return Promise.resolve(logoBackgroundCache.get(cacheKey));
     }
     return new Promise((resolve) => {
         const img = new Image();
@@ -1924,7 +1924,12 @@ function removeBlackBackground(imageSrc) {
             const targetSize = 256;
             canvas.width = targetSize;
             canvas.height = targetSize;
-            ctx.drawImage(img, 0, 0, targetSize, targetSize);
+            
+            // Apply scale and center
+            const drawSize = targetSize * scale;
+            const offset = (targetSize - drawSize) / 2;
+            
+            ctx.drawImage(img, offset, offset, drawSize, drawSize);
             const imageData = ctx.getImageData(0, 0, targetSize, targetSize);
             const data = imageData.data;
             
@@ -1936,18 +1941,18 @@ function removeBlackBackground(imageSrc) {
                 // Calculate max channel value
                 const maxVal = Math.max(r, g, b);
                 
-                if (maxVal < 99) {
-                    // Only pixels with max channel value < 99 -> transparent
+                if (maxVal < 5) {
+                    // Only absolute pure-black pixels -> transparent
                     data[i + 3] = 0;
-                } else if (maxVal < 102) {
+                } else if (maxVal < 8) {
                     // Minimal feathering
-                    const factor = (maxVal - 99) / (102 - 99);
+                    const factor = (maxVal - 5) / (8 - 5);
                     data[i + 3] = Math.round(data[i + 3] * factor);
                 }
             }
             ctx.putImageData(imageData, 0, 0);
             const resultUrl = canvas.toDataURL('image/png');
-            logoBackgroundCache.set(imageSrc, resultUrl);
+            logoBackgroundCache.set(cacheKey, resultUrl);
             resolve(resultUrl);
         };
         img.src = imageSrc;
@@ -3994,7 +3999,8 @@ async function processSingleLogo(img) {
     img._processed = true;
     try {
         console.log('Processing single logo:', img.src.substring(0, 50) + '...');
-        img.src = await removeBlackBackground(img.src);
+        img.src = await removeBlackBackground(img.src, 0.99);
+        img.classList.add('processed');
         console.log('Single logo processed:', img.src.substring(0, 50) + '...');
     } catch (err) {
         console.error('Failed to process single logo', err);

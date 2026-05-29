@@ -43,7 +43,7 @@
     overflow: hidden;
 }
 
-.logo {
+.logo, .app-logo-small {
     image-rendering: optimizeQuality;
     image-rendering: -webkit-optimize-contrast;
     -webkit-font-smoothing: antialiased;
@@ -51,6 +51,12 @@
     object-fit: contain;
     transform: none;
     zoom: 1;
+    opacity: 0;
+    transition: opacity 0.25s ease-in;
+}
+
+.logo.processed, .app-logo-small.processed {
+    opacity: 1;
 }
 
 .brand-logo {
