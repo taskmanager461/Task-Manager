@@ -1839,9 +1839,9 @@ function logout() {
 }
 
 function getScoreLabel(score) {
-    if (score >= 100) return { text: 'Excellent', icon: '🏆', class: 'excellent' };
-    if (score >= 60) return { text: 'Good', icon: '✨', class: 'good' };
-    if (score >= 30) return { text: 'Average', icon: '⚡', class: 'average' };
+    if (score >= 76) return { text: 'Excellent', icon: '🏆', class: 'excellent' };
+    if (score >= 51) return { text: 'Good', icon: '✨', class: 'good' };
+    if (score >= 26) return { text: 'Average', icon: '⚡', class: 'average' };
     return { text: 'Low', icon: '⚠️', class: 'low' };
 }
 
@@ -3298,17 +3298,26 @@ async function loadIdentityProfile() {
         const identity = await apiFetch('/identity/profile');
         if (identityInitialized) {
             if (identity.level > identitySnapshot.level) {
-                showToast(`Level Up! You reached Level ${identity.level}`, 'success');
+                triggerLevelUpCelebration(identity.level);
             }
             const currentUnlocked = identity.badges.filter(b => b.unlocked).map(b => b.id);
             const previousUnlocked = new Set(identitySnapshot.unlockedBadgeIds);
             const newlyUnlocked = currentUnlocked.filter(id => !previousUnlocked.has(id));
             newlyUnlocked.forEach(() => showToast('New Badge Unlocked', 'info'));
+
+            // Redesigned Trust Score Change UX Feedback
+            const oldTrust = identitySnapshot.trust_score || 0.0;
+            const newTrust = identity.trust_score || 0.0;
+            const trustDiff = newTrust - oldTrust;
+            if (Math.abs(trustDiff) >= 0.05) {
+                triggerTrustScoreFeedback(trustDiff);
+            }
         }
         renderIdentity(identity);
         identitySnapshot = {
             level: identity.level,
             unlockedBadgeIds: identity.badges.filter(b => b.unlocked).map(b => b.id),
+            trust_score: identity.trust_score || 0.0
         };
         identityInitialized = true;
         const achievementList = document.getElementById('achievements-list');
@@ -3344,6 +3353,69 @@ function renderIdentity(identity) {
         <div class="identity-stat-item"><span class="label">Streak</span><span class="value">${identity.streak}</span></div>
     `;
     badgesEl.innerHTML = identity.badges.map(b => `<span class="identity-badge ${b.unlocked ? 'unlocked' : ''}">${b.label}</span>`).join('');
+}
+
+function triggerTrustScoreFeedback(diff) {
+    const isPositive = diff > 0;
+    const sign = isPositive ? '+' : '';
+    const text = `Trust Score changed: ${sign}${diff.toFixed(1)}`;
+    
+    // Play satisfying (success) or warning toast
+    showToast(text, isPositive ? 'success' : 'warning');
+    
+    // Apply animation / glow effects to the trust score value element
+    const trustEl = document.getElementById('identity-trust-value');
+    if (trustEl) {
+        const glowClass = isPositive ? 'trust-glow-positive' : 'trust-glow-negative';
+        trustEl.classList.remove('trust-glow-positive', 'trust-glow-negative');
+        void trustEl.offsetWidth; // Trigger reflow to restart CSS keyframe animation
+        trustEl.classList.add(glowClass);
+        setTimeout(() => {
+            trustEl.classList.remove(glowClass);
+        }, 1500);
+    }
+}
+
+function triggerLevelUpCelebration(level) {
+    showToast(`🎉 LEVEL UP! You reached Level ${level}!`, 'success');
+    
+    // Pulse and glow the level badge
+    const levelEl = document.getElementById('identity-level-badge');
+    if (levelEl) {
+        levelEl.classList.remove('level-up-animate');
+        void levelEl.offsetWidth; // Trigger reflow
+        levelEl.classList.add('level-up-animate');
+        setTimeout(() => {
+            levelEl.classList.remove('level-up-animate');
+        }, 3000);
+    }
+    
+    // Particle confetti celebration!
+    createCelebrationParticles();
+}
+
+function createCelebrationParticles() {
+    const colors = ['#00c6ff', '#0072ff', '#00f2fe', '#4facfe', '#00f5d4', '#10b981'];
+    const container = document.body;
+    for (let i = 0; i < 40; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'celebration-confetti';
+        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.left = `${Math.random() * 100}vw`;
+        particle.style.top = `-20px`;
+        particle.style.transform = `rotate(${Math.random() * 360}deg)`;
+        particle.style.animationDelay = `${Math.random() * 0.8}s`;
+        
+        // Random size
+        const size = Math.random() * 8 + 6;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        
+        container.appendChild(particle);
+        setTimeout(() => {
+            particle.remove();
+        }, 2500);
+    }
 }
 
 // --- Helpers & Listeners ---
