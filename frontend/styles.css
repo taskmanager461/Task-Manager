@@ -1095,20 +1095,19 @@ body.light-mode .hero-metric-icon img {
 }
 
 .hero-metric--trust .trust-score-badge {
-    margin-top: 18px;
-    width: min(560px, 95%);
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 140px;
     height: auto;
-    max-height: 100px;
+    max-height: 85px;
     display: block;
-    object-fit: cover;
-    object-position: left top;
+    object-fit: contain;
     pointer-events: none;
-    opacity: 0.98;
+    opacity: 0.95;
     image-rendering: optimizeQuality;
-    transform: translateZ(0) scale(0.57);
-    transform-origin: left top;
-    filter: drop-shadow(0 10px 22px rgba(0,0,0,0.35));
-    align-self: flex-start;
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.4));
+    z-index: 2;
 }
 
 .hero-metric-sub {
