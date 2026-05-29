@@ -1936,12 +1936,12 @@ function removeBlackBackground(imageSrc) {
                 // Calculate max channel value
                 const maxVal = Math.max(r, g, b);
                 
-                if (maxVal < 5) {
-                    // Only absolute pure-black pixels -> transparent
+                if (maxVal < 99) {
+                    // Only pixels with max channel value < 99 -> transparent
                     data[i + 3] = 0;
-                } else if (maxVal < 8) {
+                } else if (maxVal < 102) {
                     // Minimal feathering
-                    const factor = (maxVal - 5) / (8 - 5);
+                    const factor = (maxVal - 99) / (102 - 99);
                     data[i + 3] = Math.round(data[i + 3] * factor);
                 }
             }
