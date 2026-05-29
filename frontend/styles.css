@@ -51,8 +51,8 @@
     object-fit: contain;
     transform: none;
     zoom: 1;
-    opacity: 0;
-    transition: opacity 0.25s ease-in;
+    opacity: 0.15; /* Sized/visible slightly so it's not a pure empty void before processing */
+    transition: opacity 0.2s ease-in;
 }
 
 .logo.processed, .app-logo-small.processed {
