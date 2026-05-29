@@ -1856,7 +1856,8 @@ function getBadgeImageSrc(scoreClass) {
         low: 'badge_low.png',
     };
     const name = map[scoreClass] || map.low;
-    return `/static/${name}?v=7`;
+    // Use root-level routes served directly by FastAPI (no /static/ conflict)
+    return `/${name}`;
 }
 
 // --- Reports & Me Logic ---
@@ -2013,7 +2014,6 @@ async function renderHeroMetrics(score) {
     container.innerHTML = `
         <!-- Card 1: Trust Score -->
         <div class="hero-metric hero-metric--trust" style="background: ${trustBg} !important;">
-            <div class="hero-metric-bg" style="background-image: url('${getBadgeImageSrc(label.class)}') !important;"></div>
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
                     <img src="${img1}">
