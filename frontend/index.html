@@ -252,25 +252,41 @@
 
                 <div class="card identity-card" style="margin-bottom: 1.5rem;">
                     <div class="identity-header">
-                        <h3>Identity</h3>
-                        <span id="identity-level-badge" class="priority-badge priority-low">Level 1</span>
+                        <div class="identity-title-group">
+                            <div class="identity-avatar-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h3>Identity</h3>
+                        </div>
+                        <span id="identity-level-badge" class="identity-level-pill">
+                            <i class="fas fa-star"></i> Level 1
+                        </span>
                     </div>
                     <div class="identity-progress-wrap">
-                        <div class="progress-bar">
+                        <div class="progress-bar identity-progress-bar">
                             <div id="identity-xp-fill" class="identity-xp-fill" style="width: 0%"></div>
                         </div>
-                        <div id="identity-xp-text" class="identity-xp-text">XP 0/100 Total 0</div>
+                        <div id="identity-xp-text" class="identity-xp-text">XP 0/100 &nbsp; Total 0</div>
                     </div>
                     <div id="identity-stats" class="identity-stats"></div>
                     <div class="identity-trust">
-                        <span class="label">Trust Sync</span>
-                        <span id="identity-trust-value" class="value">0.0</span>
+                        <div class="identity-trust-left">
+                            <i class="fas fa-shield-halved identity-trust-icon"></i>
+                            <span class="label">Trust Sync</span>
+                        </div>
+                        <div class="identity-trust-right">
+                            <span id="identity-trust-value" class="value">0.0</span>
+                            <svg class="trust-trend-line" viewBox="0 0 64 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <polyline points="2,24 14,18 24,14 34,16 46,8 62,3" stroke="#10b981" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
                     </div>
                     <div id="identity-badges" class="identity-badges"></div>
-                    <button onclick="openShareModal()" class="btn primary" style="width: 100%; margin-top: 1rem;">
-                        <i class="fas fa-share-alt" style="margin-right: 0.5rem;"></i> Share Progress
+                    <button onclick="openShareModal()" class="identity-share-btn">
+                        <i class="fas fa-share-nodes"></i> SHARE PROGRESS
                     </button>
                 </div>
+
 
                 <div class="card for-you-card" style="margin-bottom: 1.5rem;">
                     <div class="identity-header">

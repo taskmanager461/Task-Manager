@@ -3347,16 +3347,65 @@ function renderIdentity(identity) {
     const trustEl = document.getElementById('identity-trust-value');
     if (!levelEl || !statsEl || !badgesEl || !xpFillEl || !xpTextEl || !trustEl) return;
 
-    levelEl.textContent = `Level ${identity.level}`;
+    // Level pill (with star icon)
+    levelEl.innerHTML = `<i class="fas fa-star"></i> Level ${identity.level}`;
+
+    // XP bar & text
     xpFillEl.style.width = `${identity.level_progress_percent || 0}%`;
-    xpTextEl.textContent = `XP ${identity.xp_into_current_level}/${identity.xp_for_next_level} Total ${identity.total_xp}`;
+    xpTextEl.innerHTML = `XP ${identity.xp_into_current_level}/${identity.xp_for_next_level} &nbsp; Total ${identity.total_xp}`;
+
+    // Trust score
     trustEl.textContent = `${(identity.trust_score || 0).toFixed(1)}`;
-    statsEl.innerHTML = `
-        <div class="identity-stat-item"><span class="label">Completed Tasks</span><span class="value">${identity.completed_tasks}</span></div>
-        <div class="identity-stat-item"><span class="label">Completed Goals</span><span class="value">${identity.completed_goals}</span></div>
-        <div class="identity-stat-item"><span class="label">Streak</span><span class="value">${identity.streak}</span></div>
-    `;
-    badgesEl.innerHTML = identity.badges.map(b => `<span class="identity-badge ${b.unlocked ? 'unlocked' : ''}">${b.label}</span>`).join('');
+
+    // Stat cards with icons + dot grid
+    const statConfigs = [
+        {
+            label: 'Completed Tasks',
+            value: identity.completed_tasks,
+            icon: 'fa-list-check',
+            colorClass: 'stat-green'
+        },
+        {
+            label: 'Completed Goals',
+            value: identity.completed_goals,
+            icon: 'fa-bullseye',
+            colorClass: 'stat-blue'
+        },
+        {
+            label: 'Streak',
+            value: identity.streak,
+            icon: 'fa-fire',
+            colorClass: 'stat-orange'
+        }
+    ];
+
+    statsEl.innerHTML = statConfigs.map(s => `
+        <div class="identity-stat-item ${s.colorClass}">
+            <div class="stat-icon-wrap">
+                <i class="fas ${s.icon}"></i>
+            </div>
+            <div class="stat-content">
+                <span class="label">${s.label}</span>
+                <span class="value">${s.value}</span>
+            </div>
+            <div class="stat-dot-grid" aria-hidden="true"></div>
+        </div>
+    `).join('');
+
+    // Badge icons map
+    const badgeIconMap = {
+        'first_task_completed': '✓',
+        'first_goal_completed': '🏆',
+        'streak_7': '⚡',
+        'goal_crusher': '💎'
+    };
+
+    badgesEl.innerHTML = identity.badges.map(b => `
+        <span class="identity-badge ${b.unlocked ? 'unlocked' : ''}">
+            <span>${badgeIconMap[b.id] || '🎖️'}</span>
+            ${b.label}
+        </span>
+    `).join('');
 }
 
 function triggerTrustScoreFeedback(diff) {
