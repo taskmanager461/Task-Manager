@@ -1839,12 +1839,9 @@ function logout() {
 }
 
 function getScoreLabel(score) {
-    // Original badge thresholds adapted for new 0-100 Trust Score
-    // (old system: >=100 Excellent, >=60 Good, >=30 Average out of 150 max)
-    // Scaled proportionally to new 100 max: 100→66.7, 60→40, 30→20
-    if (score >= 67) return { text: 'Excellent', icon: '🏆', class: 'excellent' };
-    if (score >= 40) return { text: 'Good', icon: '✨', class: 'good' };
-    if (score >= 20) return { text: 'Average', icon: '⚡', class: 'average' };
+    if (score > 75) return { text: 'Excellent', icon: '🏆', class: 'excellent' };
+    if (score > 50) return { text: 'Good', icon: '✨', class: 'good' };
+    if (score > 20) return { text: 'Average', icon: '⚡', class: 'average' };
     return { text: 'Low', icon: '⚠️', class: 'low' };
 }
 
