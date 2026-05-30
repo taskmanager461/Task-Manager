@@ -36,7 +36,7 @@ let notifiedHabits = new Set();
 let currentTasksGoalsTab = 'tasks';
 let currentGoalForReflection = null;
 let identityInitialized = false;
-let identitySnapshot = { level: 1, unlockedBadgeIds: [] };
+let identitySnapshot = { level: 1, unlockedBadgeIds: [], trust_score: null };
 let smartPersonalizationCache = { timestamp: 0, data: null };
 let cropper = null;
 let currentCropFile = null;
@@ -3310,11 +3310,13 @@ async function loadIdentityProfile() {
             newlyUnlocked.forEach(() => showToast('New Badge Unlocked', 'info'));
 
             // Redesigned Trust Score Change UX Feedback
-            const oldTrust = identitySnapshot.trust_score || 0.0;
+            const oldTrust = identitySnapshot.trust_score;
             const newTrust = identity.trust_score || 0.0;
-            const trustDiff = newTrust - oldTrust;
-            if (Math.abs(trustDiff) >= 0.05) {
-                triggerTrustScoreFeedback(trustDiff);
+            if (oldTrust !== null && oldTrust !== undefined) {
+                const trustDiff = newTrust - oldTrust;
+                if (Math.abs(trustDiff) >= 0.05) {
+                    triggerTrustScoreFeedback(trustDiff);
+                }
             }
         }
         renderIdentity(identity);
@@ -3392,20 +3394,205 @@ function renderIdentity(identity) {
         </div>
     `).join('');
 
-    // Badge icons map
-    const badgeIconMap = {
-        'first_task_completed': '✓',
-        'first_goal_completed': '🏆',
-        'streak_7': '⚡',
-        'goal_crusher': '💎'
-    };
+    // Badge summary pills (compact, unlocked only, max 4)
+    const unlockedBadges = identity.badges.filter(b => b.unlocked).slice(0, 4);
+    badgesEl.innerHTML = unlockedBadges.length > 0
+        ? unlockedBadges.map(b => `
+            <span class="identity-badge unlocked">
+                <span>${getAchievementIcon(b.id)}</span>
+                ${b.label}
+            </span>
+        `).join('')
+        : `<span class="identity-badge" style="opacity:0.5"><span>🔒</span> No achievements yet</span>`;
 
-    badgesEl.innerHTML = identity.badges.map(b => `
-        <span class="identity-badge ${b.unlocked ? 'unlocked' : ''}">
-            <span>${badgeIconMap[b.id] || '🎖️'}</span>
-            ${b.label}
-        </span>
-    `).join('');
+    // Render full achievements section
+    renderAchievements(identity.badges);
+}
+
+// Icon map for all achievements
+function getAchievementIcon(id) {
+    const map = {
+        // Tasks
+        first_step: '👣', productive_day: '⚡', task_machine: '🤖',
+        task_master: '🏆', completion_expert: '💪', perfection_day: '✨',
+        zero_miss_day: '🎯', marathon: '🏃',
+        // Goals
+        goal_setter: '📌', goal_hunter: '🎯', focused: '🔍',
+        visionary: '🔮', unstoppable: '🚀', goal_legend: '👑',
+        // Habits
+        habit_beginner: '🌱', consistent: '📅', dedicated: '💎',
+        ritual_master: '🧘', habit_collector: '📚', habit_legend: '🌟',
+        // Streaks
+        streak_3: '🔥', streak_7: '🔥', streak_14: '🔥',
+        streak_30: '🌟', streak_50: '💥', streak_100: '🏅',
+        century_streak: '🏅', comeback_king: '👑',
+        // Trust
+        average_citizen: '🛡️', reliable: '⚡', excellent: '🌟',
+        trusted: '💎', iron_discipline: '⚔️', elite_consistency: '🏆',
+        // XP
+        level_5: '⭐', level_10: '🌟', level_25: '💫',
+        level_50: '🚀', level_100: '👑', veteran: '🎖️',
+        // Calendar
+        active_week: '📅', active_month: '🗓️', weekend_warrior: '🎉',
+        perfect_week: '✨',
+        // Rare
+        night_owl: '🦉', early_bird: '🐦', recovery_mode: '💚',
+        redemption_arc: '🌅', one_year_strong: '🎂',
+        // Legendary
+        tobedone_legend: '👑',
+    };
+    return map[id] || '🎖️';
+}
+
+// Global state for achievements
+let allAchievementsData = [];
+let currentAchievementFilter = 'All';
+let currentAchievementSearch = '';
+
+function renderAchievements(badges) {
+    allAchievementsData = badges;
+    updateAchievementStats(badges);
+    updateAchievementRing(badges);
+    renderAchievementGrid(badges);
+
+    // Wire up search (only once)
+    const searchEl = document.getElementById('achievements-search');
+    if (searchEl && !searchEl.dataset.wired) {
+        searchEl.dataset.wired = '1';
+        searchEl.addEventListener('input', e => {
+            currentAchievementSearch = e.target.value.toLowerCase().trim();
+            applyAchievementFilters();
+        });
+    }
+}
+
+function updateAchievementStats(badges) {
+    const counts = { Common: 0, Rare: 0, Epic: 0, Legendary: 0 };
+    let unlocked = 0;
+    for (const b of badges) {
+        if (b.unlocked) {
+            counts[b.rarity] = (counts[b.rarity] || 0) + 1;
+            unlocked++;
+        }
+    }
+    const el = id => document.getElementById(id);
+    if (el('ach-count-common'))    el('ach-count-common').textContent = counts.Common || 0;
+    if (el('ach-count-rare'))      el('ach-count-rare').textContent = counts.Rare || 0;
+    if (el('ach-count-epic'))      el('ach-count-epic').textContent = counts.Epic || 0;
+    if (el('ach-count-legendary')) el('ach-count-legendary').textContent = counts.Legendary || 0;
+
+    const subtitleEl = document.getElementById('achievements-subtitle');
+    if (subtitleEl) {
+        subtitleEl.textContent = `${unlocked} / ${badges.length} unlocked`;
+    }
+}
+
+function updateAchievementRing(badges) {
+    const total = badges.length;
+    const unlocked = badges.filter(b => b.unlocked).length;
+    const pct = total > 0 ? Math.round((unlocked / total) * 100) : 0;
+
+    const circle = document.getElementById('ring-progress-circle');
+    const textEl = document.getElementById('ring-percent-text');
+    if (circle) {
+        circle.setAttribute('stroke-dasharray', `${pct} ${100 - pct}`);
+    }
+    if (textEl) textEl.textContent = `${pct}%`;
+}
+
+function filterAchievements(filter, btn) {
+    currentAchievementFilter = filter;
+    // Update active button
+    document.querySelectorAll('.ach-filter-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    applyAchievementFilters();
+}
+
+function applyAchievementFilters() {
+    let filtered = allAchievementsData;
+
+    // Category / state filter
+    if (currentAchievementFilter === 'unlocked') {
+        filtered = filtered.filter(b => b.unlocked);
+    } else if (currentAchievementFilter === 'locked') {
+        filtered = filtered.filter(b => !b.unlocked);
+    } else if (currentAchievementFilter !== 'All') {
+        filtered = filtered.filter(b => b.category === currentAchievementFilter);
+    }
+
+    // Search
+    if (currentAchievementSearch) {
+        filtered = filtered.filter(b =>
+            b.label.toLowerCase().includes(currentAchievementSearch) ||
+            b.description.toLowerCase().includes(currentAchievementSearch) ||
+            b.category.toLowerCase().includes(currentAchievementSearch)
+        );
+    }
+
+    renderAchievementGrid(filtered);
+}
+
+function renderAchievementGrid(badges) {
+    const grid = document.getElementById('achievements-grid');
+    if (!grid) return;
+
+    if (!badges || badges.length === 0) {
+        grid.innerHTML = `<div class="achievements-empty">
+            <span style="font-size:2rem;display:block;margin-bottom:0.5rem;">🔍</span>
+            No achievements match your search.
+        </div>`;
+        return;
+    }
+
+    // Sort: unlocked first, then by rarity (Legendary > Epic > Rare > Common)
+    const rarityOrder = { Legendary: 0, Epic: 1, Rare: 2, Common: 3 };
+    const sorted = [...badges].sort((a, b) => {
+        if (a.unlocked !== b.unlocked) return a.unlocked ? -1 : 1;
+        return (rarityOrder[a.rarity] ?? 3) - (rarityOrder[b.rarity] ?? 3);
+    });
+
+    grid.innerHTML = sorted.map(b => {
+        const rClass = `rarity-${b.rarity.toLowerCase()}`;
+        const lockedClass = b.unlocked ? 'unlocked' : 'locked';
+        const icon = getAchievementIcon(b.id);
+        const pct = b.progress_target > 0
+            ? Math.min(100, Math.round((b.progress_current / b.progress_target) * 100))
+            : (b.unlocked ? 100 : 0);
+        const progressLabel = b.progress_target === 1
+            ? (b.unlocked ? 'Completed' : 'Locked')
+            : `${b.progress_current.toLocaleString()} / ${b.progress_target.toLocaleString()}`;
+
+        return `
+        <div class="ach-card ${rClass} ${lockedClass}" id="ach-card-${b.id}">
+            ${b.unlocked ? '<div class="ach-unlocked-badge"><i class="fas fa-check"></i></div>' : ''}
+            <div class="ach-card-top">
+                <div class="ach-icon-wrap">${icon}</div>
+                <span class="ach-rarity-pill">${b.rarity}</span>
+            </div>
+            <div class="ach-card-label">${b.label}</div>
+            <div class="ach-card-desc">${b.description}</div>
+            <div class="ach-reward-chip">
+                <i class="fas fa-star" style="font-size:0.55rem;"></i>
+                +${b.reward_xp.toLocaleString()} XP
+            </div>
+            <div class="ach-progress-wrap">
+                <div class="ach-progress-meta">
+                    <span>${progressLabel}</span>
+                    <span class="ach-progress-pct">${pct}%</span>
+                </div>
+                <div class="ach-progress-track">
+                    <div class="ach-progress-fill" style="width:${pct}%"></div>
+                </div>
+            </div>
+            ${b.unlocked && b.unlock_date ? `
+                <div class="ach-unlock-date">
+                    <i class="fas fa-check-circle"></i>
+                    Unlocked ${b.unlock_date}
+                </div>
+            ` : ''}
+        </div>
+        `;
+    }).join('');
 }
 
 function triggerTrustScoreFeedback(diff) {

@@ -287,6 +287,78 @@
                     </button>
                 </div>
 
+                <!-- Achievements Section -->
+                <div class="card achievements-section" style="margin-bottom: 1.5rem;">
+                    <!-- Header -->
+                    <div class="achievements-header">
+                        <div class="achievements-title-group">
+                            <div class="achievements-icon-wrap">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div>
+                                <h3>Achievements</h3>
+                                <p id="achievements-subtitle" class="achievements-subtitle">Loading...</p>
+                            </div>
+                        </div>
+                        <div id="achievements-completion-ring" class="achievements-ring">
+                            <svg viewBox="0 0 36 36" class="ring-svg">
+                                <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+                                <circle id="ring-progress-circle" class="ring-fill" cx="18" cy="18" r="15.9" stroke-dasharray="0 100"/>
+                            </svg>
+                            <span id="ring-percent-text" class="ring-text">0%</span>
+                        </div>
+                    </div>
+
+                    <!-- Stats Bar -->
+                    <div class="achievements-stats-bar">
+                        <div class="ach-stat ach-stat-common">
+                            <span id="ach-count-common" class="ach-stat-value">0</span>
+                            <span class="ach-stat-label">Common</span>
+                        </div>
+                        <div class="ach-stat ach-stat-rare">
+                            <span id="ach-count-rare" class="ach-stat-value">0</span>
+                            <span class="ach-stat-label">Rare</span>
+                        </div>
+                        <div class="ach-stat ach-stat-epic">
+                            <span id="ach-count-epic" class="ach-stat-value">0</span>
+                            <span class="ach-stat-label">Epic</span>
+                        </div>
+                        <div class="ach-stat ach-stat-legendary">
+                            <span id="ach-count-legendary" class="ach-stat-value">0</span>
+                            <span class="ach-stat-label">Legendary</span>
+                        </div>
+                    </div>
+
+                    <!-- Search -->
+                    <div class="achievements-search-wrap">
+                        <i class="fas fa-search achievements-search-icon"></i>
+                        <input type="text" id="achievements-search" class="achievements-search" placeholder="Search achievements...">
+                    </div>
+
+                    <!-- Category Filters -->
+                    <div class="achievements-filters" id="achievements-filters">
+                        <button class="ach-filter-btn active" data-filter="All" onclick="filterAchievements('All', this)">All</button>
+                        <button class="ach-filter-btn" data-filter="Tasks" onclick="filterAchievements('Tasks', this)">📋 Tasks</button>
+                        <button class="ach-filter-btn" data-filter="Goals" onclick="filterAchievements('Goals', this)">🎯 Goals</button>
+                        <button class="ach-filter-btn" data-filter="Habits" onclick="filterAchievements('Habits', this)">⚡ Habits</button>
+                        <button class="ach-filter-btn" data-filter="Streaks" onclick="filterAchievements('Streaks', this)">🔥 Streaks</button>
+                        <button class="ach-filter-btn" data-filter="Trust" onclick="filterAchievements('Trust', this)">🛡️ Trust</button>
+                        <button class="ach-filter-btn" data-filter="XP" onclick="filterAchievements('XP', this)">⭐ XP</button>
+                        <button class="ach-filter-btn" data-filter="Calendar" onclick="filterAchievements('Calendar', this)">📅 Calendar</button>
+                        <button class="ach-filter-btn" data-filter="Rare" onclick="filterAchievements('Rare', this)">💎 Rare</button>
+                        <button class="ach-filter-btn" data-filter="Legendary" onclick="filterAchievements('Legendary', this)">👑 Legendary</button>
+                        <button class="ach-filter-btn" data-filter="unlocked" onclick="filterAchievements('unlocked', this)">✅ Unlocked</button>
+                        <button class="ach-filter-btn" data-filter="locked" onclick="filterAchievements('locked', this)">🔒 Locked</button>
+                    </div>
+
+                    <!-- Achievements Grid -->
+                    <div id="achievements-grid" class="achievements-grid">
+                        <div class="achievements-loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <span>Loading achievements...</span>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="card for-you-card" style="margin-bottom: 1.5rem;">
                     <div class="identity-header">
@@ -697,7 +769,7 @@
             <!-- Share Card Preview -->
             <div id="share-card" class="share-card">
                 <div class="share-card-header">
-
+                    <img src="/assets/logo_auth.png?v=21" class="share-logo" alt="Tobedone Logo">
                     <h3 id="share-username">Username</h3>
                 </div>
                 <div class="share-card-stats">
