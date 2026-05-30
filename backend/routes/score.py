@@ -42,39 +42,45 @@ def compute_daily_score(
     completed_tasks = sum(1 for t in tasks if t.status == "completed")
     success_rate = completed_tasks / total_tasks if total_tasks > 0 else 0.0
 
-    # 1. Check for Inactivity Decay (Only if DailyScore for today does not exist yet)
+    # 1. Check for Inactivity Decay
+    # Only fires ONCE per day (when no DailyScore record exists for today yet).
+    # Skipped entirely for brand-new accounts (trust_score == 0) to avoid phantom values.
     daily_score = db.query(DailyScore).filter(DailyScore.user_id == target_user_id, DailyScore.date == day).first()
     if not daily_score:
-        yesterday = day - timedelta(days=1)
+        current_trust = current_user.trust_score or 0.0
         
-        # Check completed tasks yesterday
-        tasks_yesterday = db.query(Task).filter(
-            Task.user_id == target_user_id,
-            Task.date == yesterday,
-            Task.status == "completed"
-        ).count()
-        
-        # Check goals achieved yesterday
-        goals_yesterday = db.query(Goal).filter(
-            Goal.user_id == target_user_id,
-            Goal.status == "achieved",
-            func.date(Goal.completed_at) == yesterday
-        ).count()
-        
-        # Check habits completed yesterday
-        habits_yesterday = db.query(HabitLog).filter(
-            HabitLog.user_id == target_user_id,
-            HabitLog.date == yesterday,
-            HabitLog.status == "completed"
-        ).count()
-        
-        total_activity_yesterday = tasks_yesterday + goals_yesterday + habits_yesterday
-        has_any_history = db.query(Task).filter(Task.user_id == target_user_id).count() > 0
-        
-        if total_activity_yesterday == 0 and has_any_history:
-            # Apply Inactivity Decay: small gradual trust decay (-0.2 base penalty)
-            from backend.services.identity_service import change_user_trust_score
-            change_user_trust_score(db, current_user, -0.2, is_penalty=True, today_date=day)
+        # Only apply decay if the user has a score above 0 and has real history
+        if current_trust > 0.0:
+            yesterday = day - timedelta(days=1)
+            
+            # Check completed tasks yesterday
+            tasks_yesterday = db.query(Task).filter(
+                Task.user_id == target_user_id,
+                Task.date == yesterday,
+                Task.status == "completed"
+            ).count()
+            
+            # Check goals achieved yesterday
+            goals_yesterday = db.query(Goal).filter(
+                Goal.user_id == target_user_id,
+                Goal.status == "achieved",
+                func.date(Goal.completed_at) == yesterday
+            ).count()
+            
+            # Check habits completed yesterday
+            habits_yesterday = db.query(HabitLog).filter(
+                HabitLog.user_id == target_user_id,
+                HabitLog.date == yesterday,
+                HabitLog.status == "completed"
+            ).count()
+            
+            total_activity_yesterday = tasks_yesterday + goals_yesterday + habits_yesterday
+            has_any_history = db.query(Task).filter(Task.user_id == target_user_id).count() > 0
+            
+            if total_activity_yesterday == 0 and has_any_history:
+                # Apply Inactivity Decay: small gradual trust decay (-0.2 base penalty)
+                from backend.services.identity_service import change_user_trust_score
+                change_user_trust_score(db, current_user, -0.2, is_penalty=True, today_date=day)
 
     # 2. Strict bounding to redesigned 100 max range
     current_user.trust_score = max(0.0, min(100.0, current_user.trust_score or 0.0))

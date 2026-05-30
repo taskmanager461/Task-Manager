@@ -165,7 +165,15 @@ class HabitResponse(BaseModel):
 class BadgeResponse(BaseModel):
     id: str
     label: str
+    description: str
+    category: str
+    rarity: str
+    reward_xp: int
     unlocked: bool
+    progress_current: int
+    progress_target: int
+    unlock_date: Optional[str] = None
+    completion_percentage: float = 0.0
 
 
 class IdentityProfileResponse(BaseModel):

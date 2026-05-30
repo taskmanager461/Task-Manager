@@ -82,6 +82,10 @@ def _get_or_create_local_user(db: Session, sb_user: dict) -> User:
             email=safe_email,
             password="SUPABASE_AUTH",
             name=raw_name or username,
+            trust_score=0.0,
+            total_xp=0,
+            level=1,
+            streak=0,
         )
         db.add(user)
         try:

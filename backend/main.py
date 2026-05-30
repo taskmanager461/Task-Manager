@@ -64,7 +64,7 @@ async def lifespan(app: FastAPI):
 settings = get_settings()
 
 # Define static path (relative to project root)
-PROJECT_ROOT = Path(__file__).parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 FRONTEND_DIR = PROJECT_ROOT / "frontend"
 
 logger.info(f"PROJECT_ROOT: {PROJECT_ROOT.absolute()}")
@@ -143,8 +143,12 @@ async def get_js():
     return FileResponse(path) if path.exists() else {"error": "app.js not found"}
 
 def _serve_root_badge(filename: str) -> FileResponse:
-    path = PROJECT_ROOT / filename
+    # Try STATIC_DIR first, then fall back to PROJECT_ROOT
+    path = STATIC_DIR / filename
     if not path.exists():
+        path = PROJECT_ROOT / filename
+    if not path.exists():
+        logger.error(f"Badge file not found: {filename} in {STATIC_DIR} or {PROJECT_ROOT}")
         raise HTTPException(status_code=404, detail=f"{filename} not found")
     return FileResponse(path)
 
