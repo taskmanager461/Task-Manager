@@ -1894,6 +1894,14 @@ async function loadReports() {
         }
 
         await Promise.all([loadWeeklySummary(), loadTodayHabits()]);
+
+        // Generate personalized intelligence feed
+        try {
+            const identity = await apiFetch('/identity/profile');
+            const history = await apiFetch('/score/history?days=30');
+            generateDashboardIntelligence(identity, score, history);
+        } catch(e) { /* Non-critical */ }
+
     } catch (err) {
         console.error('Reports load failed', err);
     }
@@ -1928,8 +1936,94 @@ async function loadMe() {
         }
 
         await Promise.all(promises);
+
+        // Load embedded Me-Insights section (non-critical)
+        try {
+            await loadMeInsights();
+        } catch(e) { console.warn('Me insights failed', e); }
+
     } catch (err) {
         console.error('Me load failed', err);
+    }
+}
+
+async function loadMeInsights() {
+    // Fetch 30-day score history
+    const history = await apiFetch('/score/history?days=30');
+    
+    // Best Day
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayStats = Array(7).fill(0).map((_, i) => ({ name: dayNames[i], completed: 0 }));
+    let tasks30d = 0;
+    history.forEach(entry => {
+        const d = new Date(entry.date);
+        if (entry.success_rate > 0.5) dayStats[d.getDay()].completed++;
+        tasks30d += (entry.completed_tasks || 0);
+    });
+    const bestIdx = dayStats.reduce((best, cur, i) => cur.completed > dayStats[best].completed ? i : best, 0);
+    const bestDayEl = document.getElementById('me-insight-best-day');
+    if (bestDayEl) bestDayEl.textContent = dayStats[bestIdx].name;
+
+    // Tasks 30d
+    const tasks30dEl = document.getElementById('me-tasks-30d');
+    if (tasks30dEl) tasks30dEl.textContent = history.reduce((s, e) => s + (e.completed_tasks || 0), 0);
+
+    // Goal Rate from identity
+    try {
+        const identity = await apiFetch('/identity/profile');
+        const total = (identity.completed_goals || 0) + (identity.failed_goals || 0);
+        const rateEl = document.getElementById('me-goal-completion-rate');
+        if (rateEl) rateEl.textContent = total > 0 ? `${Math.round((identity.completed_goals / total) * 100)}%` : '—';
+
+        // Smart insights mini feed
+        const miniInsights = generateSmartInsightCards(identity, history);
+        const feedEl = document.getElementById('me-smart-insights');
+        if (feedEl && miniInsights.length > 0) {
+            feedEl.innerHTML = miniInsights.slice(0, 2).map(c => `
+                <div class="insight-card" style="margin-bottom:0.5rem; padding:0.75rem 1rem;">
+                    <span class="icon"><i class="${c.icon}"></i></span>
+                    <div class="insight-content">
+                        <h4 style="font-size:0.8rem;">${c.title}</h4>
+                        <p style="font-size:0.72rem;">${c.body}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+    } catch(e) { /* silent */ }
+
+    // Mini weekly trend chart for Me
+    const meTrendEl = document.getElementById('me-weekly-trend-chart');
+    if (meTrendEl && history.length > 0) {
+        const last7 = history.slice(-7);
+        const ctx = meTrendEl.getContext('2d');
+        if (window._meTrendChart) window._meTrendChart.destroy();
+        const textColor = isDarkMode ? '#FFFFFF' : '#0F172A';
+        const gridColor = isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)';
+        window._meTrendChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: last7.map(s => s.date.split('-').slice(1).join('/')),
+                datasets: [{
+                    label: 'Score',
+                    data: last7.map(s => s.score),
+                    borderColor: '#0a86ff',
+                    backgroundColor: 'rgba(10,134,255,0.1)',
+                    fill: true,
+                    tension: 0.35,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#0a86ff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, max: 150, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 } } },
+                    x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10 } } }
+                }
+            }
+        });
     }
 }
 
@@ -4431,6 +4525,12 @@ async function loadProgressHub() {
         await renderMilestoneTimeline(identity);
         await renderPerformanceReports(identity);
         await renderSeasonalChallenges();
+
+        // Mastery Score
+        computeAndRenderMastery(identity);
+
+        // Future Self
+        await loadFutureSelf();
     } catch (err) {
         console.error('Failed to load progression hub data', err);
     }
@@ -4677,4 +4777,295 @@ function triggerLevelUpCelebration(newLevel) {
     `;
     
     document.body.appendChild(overlay);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MASTERY PROGRESS METRIC
+// ══════════════════════════════════════════════════════════════════════════════
+
+function computeAndRenderMastery(identity) {
+    // Weighted components (each 0-100 scale)
+    const totalAchievements = (identity.badges || []).length || 1;
+    const unlockedAchievements = (identity.badges || []).filter(b => b.unlocked).length;
+
+    const components = [
+        { label: 'XP',           icon: '⭐', value: Math.min(100, (identity.total_xp / 5000) * 100), weight: 0.20 },
+        { label: 'Level',        icon: '🏆', value: Math.min(100, (identity.level / 50) * 100),     weight: 0.20 },
+        { label: 'Trust',        icon: '🛡️', value: Math.min(100, identity.trust_score),             weight: 0.25 },
+        { label: 'Achievements', icon: '🎖️', value: Math.min(100, (unlockedAchievements / Math.max(totalAchievements, 1)) * 100), weight: 0.15 },
+        { label: 'Tasks',        icon: '✅', value: Math.min(100, (identity.completed_tasks / 100) * 100), weight: 0.10 },
+        { label: 'Goals',        icon: '🎯', value: Math.min(100, (identity.completed_goals / 20) * 100),  weight: 0.10 },
+    ];
+
+    const mastery = Math.round(components.reduce((sum, c) => sum + c.value * c.weight, 0));
+
+    let rankLabel = 'Novice';
+    if (mastery >= 80) rankLabel = 'Master';
+    else if (mastery >= 60) rankLabel = 'Expert';
+    else if (mastery >= 40) rankLabel = 'Skilled';
+    else if (mastery >= 20) rankLabel = 'Developing';
+
+    const pctEl = document.getElementById('mastery-percent-badge');
+    const fillEl = document.getElementById('mastery-progress-fill');
+    const lblEl = document.getElementById('mastery-rank-label');
+    const bkdEl = document.getElementById('mastery-breakdown');
+
+    if (pctEl) pctEl.textContent = `${mastery}%`;
+    if (fillEl) fillEl.style.width = `${mastery}%`;
+    if (lblEl) lblEl.textContent = `${rankLabel} · Cross-system progression score`;
+    if (bkdEl) {
+        bkdEl.innerHTML = components.map(c => `
+            <div class="mastery-item">
+                <span class="mastery-item-icon">${c.icon}</span>
+                <span class="mastery-item-label">${c.label}</span>
+                <div class="mastery-item-bar">
+                    <div class="mastery-item-fill" style="width:${Math.round(c.value)}%"></div>
+                </div>
+                <span class="mastery-item-val">${Math.round(c.value)}%</span>
+            </div>
+        `).join('');
+    }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// FUTURE SELF FEATURE
+// ══════════════════════════════════════════════════════════════════════════════
+
+function toggleFutureSelfForm() {
+    const body = document.getElementById('future-self-compose-body');
+    const chevron = document.getElementById('fs-compose-chevron');
+    if (!body) return;
+    const isOpen = body.style.display !== 'none';
+    body.style.display = isOpen ? 'none' : 'block';
+    if (chevron) chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
+async function submitFutureSelfMessage() {
+    const title = document.getElementById('fs-title')?.value?.trim();
+    const message = document.getElementById('fs-message')?.value?.trim();
+    const delivery = document.getElementById('fs-delivery')?.value || '1_month';
+    const category = document.getElementById('fs-category')?.value || 'motivational';
+
+    if (!title || !message) {
+        showToast('Please fill in the title and message.', 'error');
+        return;
+    }
+
+    try {
+        await apiFetch('/future-self', {
+            method: 'POST',
+            body: JSON.stringify({ title, message, delivery, category })
+        });
+
+        // Clear form
+        document.getElementById('fs-title').value = '';
+        document.getElementById('fs-message').value = '';
+        toggleFutureSelfForm();
+        showToast('✉️ Message sealed! It will be waiting for you.', 'success');
+        await loadFutureSelf();
+    } catch(e) {
+        showToast('Failed to send message. Please try again.', 'error');
+    }
+}
+
+async function openFutureSelfMessage(msgId) {
+    try {
+        const msg = await apiFetch(`/future-self/${msgId}/open`, { method: 'PATCH' });
+        showToast(`📬 Message from your past self opened!`, 'success');
+        await loadFutureSelf();
+        // Show message in a simple overlay
+        showFutureSelfMessageOverlay(msg);
+    } catch(e) {
+        showToast(e.message || 'Cannot open yet!', 'error');
+    }
+}
+
+function showFutureSelfMessageOverlay(msg) {
+    const catEmoji = { goal: '🎯', promise: '🤝', prediction: '🔮', reminder: '🔔', motivational: '💪' };
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:9998;padding:1.5rem;';
+    overlay.innerHTML = `
+        <div style="background:var(--bg-card);border-radius:24px;padding:2rem;max-width:480px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,0.5);border:1px solid rgba(124,58,237,0.3);">
+            <div style="text-align:center;margin-bottom:1.5rem;">
+                <div style="font-size:3rem;margin-bottom:0.5rem;">${catEmoji[msg.category] || '✉️'}</div>
+                <h2 style="font-size:1.4rem;font-weight:900;margin:0;">${msg.title}</h2>
+                <p style="font-size:0.75rem;color:var(--text-secondary);margin:0.25rem 0 0;">Written on ${new Date(msg.created_at).toLocaleDateString()}</p>
+            </div>
+            <div style="background:rgba(124,58,237,0.08);border-radius:16px;padding:1.25rem;margin-bottom:1.5rem;border:1px solid rgba(124,58,237,0.15);line-height:1.7;font-size:0.95rem;">
+                ${msg.message.replace(/\n/g, '<br>')}
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" class="btn primary" style="width:100%;">Close Message</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+}
+
+async function loadFutureSelf() {
+    const archive = document.getElementById('future-self-archive');
+    if (!archive) return;
+
+    try {
+        const messages = await apiFetch('/future-self');
+
+        // Stats
+        const total = messages.length;
+        const opened = messages.filter(m => m.is_opened).length;
+        const ready = messages.filter(m => !m.is_opened && m.days_until_open === 0).length;
+
+        const sentEl = document.getElementById('fs-stat-sent');
+        const readyEl = document.getElementById('fs-stat-ready');
+        const openedEl = document.getElementById('fs-stat-opened');
+        if (sentEl) sentEl.textContent = `${total} Sent`;
+        if (readyEl) readyEl.textContent = `${ready} Ready`;
+        if (openedEl) openedEl.textContent = `${opened} Opened`;
+
+        if (messages.length === 0) {
+            archive.innerHTML = `
+                <div style="text-align:center;padding:1.5rem;color:var(--text-secondary);">
+                    <div style="font-size:2.5rem;margin-bottom:0.5rem;">✉️</div>
+                    <p style="font-size:0.85rem;">No messages yet. Write your first one above!</p>
+                </div>
+            `;
+            return;
+        }
+
+        const catEmoji = { goal: '🎯', promise: '🤝', prediction: '🔮', reminder: '🔔', motivational: '💪' };
+
+        archive.innerHTML = `
+            <div style="font-size:0.78rem;font-weight:700;color:var(--text-secondary);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em;">Message Archive</div>
+            ${messages.map(m => {
+                const isReady = !m.is_opened && m.days_until_open === 0;
+                const isOpened = m.is_opened;
+                const daysLeft = m.days_until_open;
+                const openDate = new Date(m.open_date).toLocaleDateString();
+
+                let statusBadge, actionBtn;
+                if (isOpened) {
+                    statusBadge = `<span class="priority-badge priority-low" style="background:rgba(34,197,94,0.15);color:#22c55e;">Opened ✓</span>`;
+                    actionBtn = '';
+                } else if (isReady) {
+                    statusBadge = `<span class="priority-badge priority-high">Ready to Open! 🔓</span>`;
+                    actionBtn = `<button onclick="openFutureSelfMessage(${m.id})" class="btn primary" style="font-size:0.72rem;padding:0.3rem 0.75rem;margin-top:0.5rem;">Open Message</button>`;
+                } else {
+                    statusBadge = `<span class="priority-badge priority-medium">Opens in ${daysLeft}d</span>`;
+                    actionBtn = '';
+                }
+
+                return `
+                    <div class="future-self-msg-card ${isOpened ? 'opened' : isReady ? 'ready' : 'sealed'}">
+                        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;">
+                            <div style="display:flex;align-items:center;gap:0.5rem;flex:1;min-width:0;">
+                                <span style="font-size:1.25rem;">${catEmoji[m.category] || '✉️'}</span>
+                                <div style="flex:1;min-width:0;">
+                                    <div style="font-weight:700;font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.title}</div>
+                                    <div style="font-size:0.7rem;color:var(--text-secondary);">Opens ${openDate}</div>
+                                </div>
+                            </div>
+                            ${statusBadge}
+                        </div>
+                        ${actionBtn}
+                    </div>
+                `;
+            }).join('')}
+        `;
+    } catch(e) {
+        archive.innerHTML = `<p style="color:var(--error);font-size:0.8rem;">Failed to load messages.</p>`;
+    }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SMART INSIGHT ENGINE (reusable)
+// ══════════════════════════════════════════════════════════════════════════════
+
+function generateSmartInsightCards(identity, history = []) {
+    const cards = [];
+    const streak = identity.streak || 0;
+    const trust = identity.trust_score || 0;
+    const tasks = identity.completed_tasks || 0;
+    const level = identity.level || 1;
+
+    // Streak insights
+    if (streak === 0) {
+        cards.push({ icon: 'fas fa-fire', title: 'Start Your Streak', body: 'Complete a task today to ignite your streak. Consistency is the foundation of trust.' });
+    } else if (streak >= 3 && streak < 7) {
+        cards.push({ icon: 'fas fa-fire', title: `${streak}-Day Streak 🔥`, body: `Only ${7 - streak} more days to reach a 1-week streak. You're building momentum!` });
+    } else if (streak >= 7) {
+        cards.push({ icon: 'fas fa-fire-flame-curved', title: `${streak}-Day Streak! 🏆`, body: `Incredible consistency. Your streak is in the top tier — protect it!` });
+    }
+
+    // Trust trajectory
+    if (history.length >= 7) {
+        const recent = history.slice(-7).map(h => h.score);
+        const avg7 = recent.reduce((a, b) => a + b, 0) / recent.length;
+        const prev7 = history.slice(-14, -7).map(h => h.score);
+        if (prev7.length > 0) {
+            const avgPrev = prev7.reduce((a, b) => a + b, 0) / prev7.length;
+            const delta = avg7 - avgPrev;
+            if (delta > 2) {
+                cards.push({ icon: 'fas fa-trending-up', title: 'Trust Rising 📈', body: `Your trust score improved by ${delta.toFixed(1)} points vs last week. Keep it up!` });
+            } else if (delta < -2) {
+                cards.push({ icon: 'fas fa-trending-down', title: 'Trust Declining', body: `Your trust score dropped ${Math.abs(delta).toFixed(1)} pts this week. Focus on completing tasks on time.` });
+            }
+        }
+    }
+
+    // Level milestone
+    const nextRankThresholds = [6, 11, 21, 36, 50];
+    const nextThreshold = nextRankThresholds.find(t => t > level);
+    if (nextThreshold) {
+        const diff = nextThreshold - level;
+        cards.push({ icon: 'fas fa-star', title: `${diff} Levels to Rank Up`, body: `Reach Level ${nextThreshold} to unlock the "${getRankName(nextThreshold)}" rank. Push for it!` });
+    }
+
+    // Task milestone
+    const taskMilestones = [10, 25, 50, 100, 250, 500];
+    const nextTask = taskMilestones.find(t => t > tasks);
+    if (nextTask) {
+        cards.push({ icon: 'fas fa-tasks', title: `${nextTask - tasks} Tasks to Milestone`, body: `Complete ${nextTask - tasks} more tasks to reach the ${nextTask}-task milestone!` });
+    }
+
+    return cards;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// DASHBOARD INTELLIGENCE FEED
+// ══════════════════════════════════════════════════════════════════════════════
+
+function generateDashboardIntelligence(identity, todayScore, history) {
+    const feed = document.getElementById('dashboard-intelligence-feed');
+    if (!feed) return;
+
+    const cards = generateSmartInsightCards(identity, history);
+
+    // Add today-specific insights
+    const successRate = (todayScore.success_rate || 0) * 100;
+    if (successRate === 100 && todayScore.total > 0) {
+        cards.unshift({ icon: 'fas fa-star', title: 'Perfect Day! ⭐', body: 'You completed every task today. Exceptional discipline — trust score boost incoming!' });
+    } else if (successRate >= 70) {
+        cards.unshift({ icon: 'fas fa-check-circle', title: `Strong Day (${Math.round(successRate)}%)`, body: `${todayScore.completed || 0} tasks done today. You're in the top tier of today's performance.` });
+    } else if (successRate > 0 && successRate < 50) {
+        cards.unshift({ icon: 'fas fa-exclamation-triangle', title: 'Day Can Still Be Saved', body: `${todayScore.pending || 0} tasks still pending. Every completion helps protect your trust score.` });
+    }
+
+    if (cards.length === 0) {
+        feed.innerHTML = '';
+        return;
+    }
+
+    const colors = ['#0a86ff', '#7c3aed', '#f59e0b', '#22c55e', '#ef4444'];
+    feed.innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:0.75rem;">
+            ${cards.slice(0, 4).map((c, i) => `
+                <div class="intelligence-card" style="border-left-color:${colors[i % colors.length]}">
+                    <div class="intelligence-icon" style="color:${colors[i % colors.length]};">
+                        <i class="${c.icon}"></i>
+                    </div>
+                    <div class="intelligence-body">
+                        <div class="intelligence-title">${c.title}</div>
+                        <div class="intelligence-text">${c.body}</div>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
 }

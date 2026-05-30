@@ -170,6 +170,11 @@
                     </div>
                 </div>
 
+                <!-- Dynamic Intelligence Feed -->
+                <div id="dashboard-intelligence-feed" style="margin-bottom: 1.5rem;">
+                    <!-- Personalized data-driven insights injected by JS -->
+                </div>
+
                 <div id="dashboard-hero-metrics" class="hero-metric-grid">
                     <!-- Hero Metrics injected by app.js -->
                 </div>
@@ -196,7 +201,7 @@
                 </div>
             </section>
 
-            <!-- Me View (Simplified) -->
+            <!-- Me View -->
             <section id="view-me" class="view">
                 <div class="view-header">
                     <h1 data-i18n="me">Me</h1>
@@ -263,6 +268,37 @@
 
                 <div id="missed-tasks-alert" class="card missed-tasks-alert" style="display: none; margin-bottom: 1.5rem;">
                     <span id="missed-tasks-text"></span>
+                </div>
+
+                <!-- Insights Section embedded in Me -->
+                <div class="card" style="margin-bottom: 1.5rem;">
+                    <div class="identity-header" style="margin-bottom:1rem;">
+                        <h3><i class="fas fa-chart-line" style="margin-right:0.5rem; color:var(--primary);"></i>Your Analytics</h3>
+                        <button onclick="showView('insights')" class="btn secondary" style="font-size:0.7rem; padding:0.3rem 0.7rem;">Full Report</button>
+                    </div>
+                    <div id="me-smart-insights" class="insights-container" style="margin-bottom:1rem;">
+                        <!-- Smart insights mini-feed injected by JS -->
+                    </div>
+                    <div class="weekly-summary-stats" style="margin-bottom:1rem;">
+                        <div class="weekly-summary-stat">
+                            <span class="label">Best Day</span>
+                            <span id="me-insight-best-day" class="value">—</span>
+                        </div>
+                        <div class="weekly-summary-stat">
+                            <span class="label">Goal Rate</span>
+                            <span id="me-goal-completion-rate" class="value">0%</span>
+                        </div>
+                        <div class="weekly-summary-stat">
+                            <span class="label">Tasks (30d)</span>
+                            <span id="me-tasks-30d" class="value">0</span>
+                        </div>
+                    </div>
+                    <div class="chart-grid" style="grid-template-columns:1fr;">
+                        <div class="chart-container" style="padding:0;">
+                            <h3 data-i18n="weekly_trend" style="font-size:0.85rem; margin-bottom:0.75rem;">Weekly Trend</h3>
+                            <canvas id="me-weekly-trend-chart"></canvas>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -353,6 +389,30 @@
             <section id="view-progress" class="view">
                 <div class="view-header">
                     <h1>Progression Hub</h1>
+                </div>
+
+                <!-- Mastery Progress Card -->
+                <div class="card mastery-progress-card" style="margin-bottom: 1.5rem;">
+                    <div class="identity-header">
+                        <div class="identity-title-group">
+                            <div class="identity-avatar-icon" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">
+                                <i class="fas fa-fire-flame-curved"></i>
+                            </div>
+                            <div>
+                                <h3>Mastery Progress</h3>
+                                <p id="mastery-rank-label" style="font-size:0.72rem; color:var(--text-secondary); margin:0;">Calculating...</p>
+                            </div>
+                        </div>
+                        <span id="mastery-percent-badge" class="identity-level-pill" style="font-size:1rem; padding:0.4rem 0.9rem;">0%</span>
+                    </div>
+                    <div style="margin-top:1.25rem;">
+                        <div class="progress-bar identity-progress-bar" style="height:10px; border-radius:8px;">
+                            <div id="mastery-progress-fill" class="identity-xp-fill" style="width:0%; background: linear-gradient(90deg, #f59e0b, #ef4444, #7c3aed); border-radius:8px;"></div>
+                        </div>
+                        <div id="mastery-breakdown" class="mastery-breakdown" style="margin-top:1rem; display:grid; grid-template-columns:repeat(3, 1fr); gap:0.5rem;">
+                            <!-- Breakdown items injected by JS -->
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Rank & XP Card -->
@@ -513,8 +573,62 @@
                         <!-- Challenges loaded dynamically -->
                     </div>
                 </div>
-            </section>
-          </div>
+
+                <!-- Future Self Section -->
+                <div class="card future-self-card" style="margin-bottom: 1.5rem;" id="future-self-section">
+                    <div class="identity-header" style="margin-bottom: 1.25rem;">
+                        <div class="identity-title-group">
+                            <div class="identity-avatar-icon" style="background: linear-gradient(135deg, #7c3aed, #a78bfa);">
+                                <i class="fas fa-envelope-open-text"></i>
+                            </div>
+                            <div>
+                                <h3>Future Self</h3>
+                                <p style="font-size:0.72rem; color:var(--text-secondary); margin:0;">Send a message to your future self</p>
+                            </div>
+                        </div>
+                        <div id="future-self-stats" class="future-self-stats-bar">
+                            <span id="fs-stat-sent">0 Sent</span>
+                            <span id="fs-stat-ready">0 Ready</span>
+                            <span id="fs-stat-opened">0 Opened</span>
+                        </div>
+                    </div>
+
+                    <!-- Compose Form -->
+                    <div class="future-self-compose">
+                        <div class="future-self-compose-header" onclick="toggleFutureSelfForm()">
+                            <span><i class="fas fa-plus-circle" style="margin-right:0.5rem; color:var(--primary);"></i>Write a message to your future self</span>
+                            <i class="fas fa-chevron-down" id="fs-compose-chevron"></i>
+                        </div>
+                        <div id="future-self-compose-body" style="display:none; margin-top:1rem;">
+                            <input type="text" id="fs-title" placeholder="Message title (e.g. My fitness goal)" style="width:100%; margin-bottom:0.75rem; padding:0.75rem; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-size:0.9rem;">
+                            <textarea id="fs-message" placeholder="Write a message to your future self... goals, promises, predictions, reminders, or motivation." rows="4" style="width:100%; margin-bottom:0.75rem; padding:0.75rem; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-size:0.9rem; resize:vertical;"></textarea>
+                            <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:0.75rem;">
+                                <select id="fs-delivery" style="flex:1; padding:0.6rem; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
+                                    <option value="1_week">📅 Open in 1 Week</option>
+                                    <option value="1_month" selected>📅 Open in 1 Month</option>
+                                    <option value="3_months">📅 Open in 3 Months</option>
+                                    <option value="6_months">📅 Open in 6 Months</option>
+                                    <option value="1_year">📅 Open in 1 Year</option>
+                                </select>
+                                <select id="fs-category" style="flex:1; padding:0.6rem; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
+                                    <option value="goal">🎯 Goal</option>
+                                    <option value="promise">🤝 Promise</option>
+                                    <option value="prediction">🔮 Prediction</option>
+                                    <option value="reminder">🔔 Reminder</option>
+                                    <option value="motivational" selected>💪 Motivational</option>
+                                </select>
+                            </div>
+                            <button onclick="submitFutureSelfMessage()" class="btn primary" style="width:100%;">
+                                <i class="fas fa-paper-plane" style="margin-right:0.5rem;"></i>Send to Future Self
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Archive -->
+                    <div id="future-self-archive" class="future-self-archive" style="margin-top:1.25rem;">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
             </section>
 
 
