@@ -152,14 +152,13 @@
             </button>
         </div>
 
-        <main id="content">
-            <!-- Reports View -->
+        <main id="content">            <!-- Dashboard View (formerly Reports) -->
             <section id="view-reports" class="view">
                 <div class="view-header">
-                    <h1 data-i18n="reports">Reports</h1>
+                    <h1 data-i18n="dashboard">Dashboard</h1>
                 </div>
                 
-                <!-- Monthly Calendar -->
+                <!-- Monthly Calendar (moved near the top) -->
                 <div class="card calendar-container" style="margin-bottom: 1.5rem;">
                     <div class="calendar-header">
                         <button class="btn secondary" onclick="changeDashboardMonth(-1)">❮</button>
@@ -197,7 +196,7 @@
                 </div>
             </section>
 
-            <!-- Me View -->
+            <!-- Me View (Simplified) -->
             <section id="view-me" class="view">
                 <div class="view-header">
                     <h1 data-i18n="me">Me</h1>
@@ -250,116 +249,6 @@
                     </form>
                 </div>
 
-                <div class="card identity-card" style="margin-bottom: 1.5rem;">
-                    <div class="identity-header">
-                        <div class="identity-title-group">
-                            <div class="identity-avatar-icon">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <h3>Identity</h3>
-                        </div>
-                        <span id="identity-level-badge" class="identity-level-pill">
-                            <i class="fas fa-star"></i> Level 1
-                        </span>
-                    </div>
-                    <div class="identity-progress-wrap">
-                        <div class="progress-bar identity-progress-bar">
-                            <div id="identity-xp-fill" class="identity-xp-fill" style="width: 0%"></div>
-                        </div>
-                        <div id="identity-xp-text" class="identity-xp-text">XP 0/100 &nbsp; Total 0</div>
-                    </div>
-                    <div id="identity-stats" class="identity-stats"></div>
-                    <div class="identity-trust">
-                        <div class="identity-trust-left">
-                            <i class="fas fa-shield-halved identity-trust-icon"></i>
-                            <span class="label">Trust Sync</span>
-                        </div>
-                        <div class="identity-trust-right">
-                            <span id="identity-trust-value" class="value">0.0</span>
-                            <svg class="trust-trend-line" viewBox="0 0 64 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <polyline points="2,24 14,18 24,14 34,16 46,8 62,3" stroke="#10b981" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div id="identity-badges" class="identity-badges"></div>
-                    <button onclick="openShareModal()" class="identity-share-btn">
-                        <i class="fas fa-share-nodes"></i> SHARE PROGRESS
-                    </button>
-                </div>
-
-                <!-- Achievements Section -->
-                <div class="card achievements-section" style="margin-bottom: 1.5rem;">
-                    <!-- Header -->
-                    <div class="achievements-header">
-                        <div class="achievements-title-group">
-                            <div class="achievements-icon-wrap">
-                                <i class="fas fa-trophy"></i>
-                            </div>
-                            <div>
-                                <h3>Achievements</h3>
-                                <p id="achievements-subtitle" class="achievements-subtitle">Loading...</p>
-                            </div>
-                        </div>
-                        <div id="achievements-completion-ring" class="achievements-ring">
-                            <svg viewBox="0 0 36 36" class="ring-svg">
-                                <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
-                                <circle id="ring-progress-circle" class="ring-fill" cx="18" cy="18" r="15.9" stroke-dasharray="0 100"/>
-                            </svg>
-                            <span id="ring-percent-text" class="ring-text">0%</span>
-                        </div>
-                    </div>
-
-                    <!-- Stats Bar -->
-                    <div class="achievements-stats-bar">
-                        <div class="ach-stat ach-stat-common">
-                            <span id="ach-count-common" class="ach-stat-value">0</span>
-                            <span class="ach-stat-label">Common</span>
-                        </div>
-                        <div class="ach-stat ach-stat-rare">
-                            <span id="ach-count-rare" class="ach-stat-value">0</span>
-                            <span class="ach-stat-label">Rare</span>
-                        </div>
-                        <div class="ach-stat ach-stat-epic">
-                            <span id="ach-count-epic" class="ach-stat-value">0</span>
-                            <span class="ach-stat-label">Epic</span>
-                        </div>
-                        <div class="ach-stat ach-stat-legendary">
-                            <span id="ach-count-legendary" class="ach-stat-value">0</span>
-                            <span class="ach-stat-label">Legendary</span>
-                        </div>
-                    </div>
-
-                    <!-- Search -->
-                    <div class="achievements-search-wrap">
-                        <i class="fas fa-search achievements-search-icon"></i>
-                        <input type="text" id="achievements-search" class="achievements-search" placeholder="Search achievements...">
-                    </div>
-
-                    <!-- Category Filters -->
-                    <div class="achievements-filters" id="achievements-filters">
-                        <button class="ach-filter-btn active" data-filter="All" onclick="filterAchievements('All', this)">All</button>
-                        <button class="ach-filter-btn" data-filter="Tasks" onclick="filterAchievements('Tasks', this)">📋 Tasks</button>
-                        <button class="ach-filter-btn" data-filter="Goals" onclick="filterAchievements('Goals', this)">🎯 Goals</button>
-                        <button class="ach-filter-btn" data-filter="Habits" onclick="filterAchievements('Habits', this)">⚡ Habits</button>
-                        <button class="ach-filter-btn" data-filter="Streaks" onclick="filterAchievements('Streaks', this)">🔥 Streaks</button>
-                        <button class="ach-filter-btn" data-filter="Trust" onclick="filterAchievements('Trust', this)">🛡️ Trust</button>
-                        <button class="ach-filter-btn" data-filter="XP" onclick="filterAchievements('XP', this)">⭐ XP</button>
-                        <button class="ach-filter-btn" data-filter="Calendar" onclick="filterAchievements('Calendar', this)">📅 Calendar</button>
-                        <button class="ach-filter-btn" data-filter="Rare" onclick="filterAchievements('Rare', this)">💎 Rare</button>
-                        <button class="ach-filter-btn" data-filter="Legendary" onclick="filterAchievements('Legendary', this)">👑 Legendary</button>
-                        <button class="ach-filter-btn" data-filter="unlocked" onclick="filterAchievements('unlocked', this)">✅ Unlocked</button>
-                        <button class="ach-filter-btn" data-filter="locked" onclick="filterAchievements('locked', this)">🔒 Locked</button>
-                    </div>
-
-                    <!-- Achievements Grid -->
-                    <div id="achievements-grid" class="achievements-grid">
-                        <div class="achievements-loading">
-                            <i class="fas fa-spinner fa-spin"></i>
-                            <span>Loading achievements...</span>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="card for-you-card" style="margin-bottom: 1.5rem;">
                     <div class="identity-header">
                         <h3>For You</h3>
@@ -375,48 +264,25 @@
                 <div id="missed-tasks-alert" class="card missed-tasks-alert" style="display: none; margin-bottom: 1.5rem;">
                     <span id="missed-tasks-text"></span>
                 </div>
-
-                <div class="charts-section">
-                    <h2 class="view-subtitle" data-i18n="statistics">Statistics</h2>
-                    <div class="chart-grid">
-                        <div class="chart-container">
-                            <h3 data-i18n="task_distribution">Task Distribution</h3>
-                            <canvas id="task-pie-chart"></canvas>
-                        </div>
-                        <div class="chart-container">
-                            <h3 data-i18n="weekly_trend">Weekly Trend</h3>
-                            <canvas id="weekly-trend-chart"></canvas>
-                        </div>
-                    </div>
-                </div>
             </section>
 
-
-
-            <!-- Calendar View -->
-            <section id="view-calendar" class="view">
+            <!-- Calendar View (Removed or integrated into Dashboard, keeping hidden container for API compatibility if needed, but not in bottom menu) -->
+            <section id="view-calendar" class="view" style="display:none !important;">
                 <div class="view-header">
                     <h1 data-i18n="calendar">Calendar</h1>
                 </div>
-                
                 <div class="card calendar-container">
                     <div class="calendar-header">
                         <button class="btn secondary" onclick="changeMonth(-1)">❮</button>
                         <h2 id="calendar-month-year">Month Year</h2>
                         <button class="btn secondary" onclick="changeMonth(1)">❯</button>
                     </div>
-                    <div class="calendar-grid" id="calendar-grid">
-                        <!-- Calendar injected here -->
-                    </div>
+                    <div class="calendar-grid" id="calendar-grid"></div>
                 </div>
-
-                <div id="day-tasks-container" class="day-tasks-list" style="margin-top: 2rem;">
-                    <!-- Tasks for selected day injected here -->
-                </div>
+                <div id="day-tasks-container" class="day-tasks-list"></div>
             </section>
 
-
-            <!-- Insights View -->
+            <!-- Insights View (Analytics Only) -->
             <section id="view-insights" class="view">
                 <div class="view-header">
                     <h1 data-i18n="insights">Insights</h1>
@@ -444,7 +310,7 @@
                     </div>
                 </div>
 
-                <div class="insights-container">
+                <div class="insights-container" style="margin-bottom: 1.5rem;">
                     <div class="insight-card">
                         <span class="icon"><i class="fas fa-lightbulb"></i></span>
                         <div class="insight-content">
@@ -468,12 +334,187 @@
                     </div>
                 </div>
 
-                <div class="card">
-                    <h3 data-i18n="achievements" style="margin-bottom: 1.5rem;">Achievements</h3>
-                    <div id="achievements-list" class="achievements-grid">
-                        <!-- Achievements injected here -->
+                <div class="charts-section">
+                    <h2 class="view-subtitle" data-i18n="statistics">Statistics</h2>
+                    <div class="chart-grid">
+                        <div class="chart-container">
+                            <h3 data-i18n="task_distribution">Task Distribution</h3>
+                            <canvas id="task-pie-chart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3 data-i18n="weekly_trend">Weekly Trend</h3>
+                            <canvas id="weekly-trend-chart"></canvas>
+                        </div>
                     </div>
                 </div>
+            </section>
+
+            <!-- Progress View (NEW HUB) -->
+            <section id="view-progress" class="view">
+                <div class="view-header">
+                    <h1>Progression Hub</h1>
+                </div>
+
+                <!-- Rank & XP Card -->
+                <div class="card rank-xp-card" style="margin-bottom: 1.5rem;">
+                    <div class="rank-header">
+                        <div class="rank-title-group">
+                            <span class="rank-badge-icon"><i class="fas fa-crown"></i></span>
+                            <div>
+                                <h3 id="progress-rank-name" class="rank-name">Explorer</h3>
+                                <p class="rank-subtitle">Permanent Rank System</p>
+                            </div>
+                        </div>
+                        <span id="progress-level-badge" class="identity-level-pill">
+                            <i class="fas fa-star"></i> Level 1
+                        </span>
+                    </div>
+
+                    <div class="xp-progress-wrap" style="margin-top: 1.5rem;">
+                        <div class="xp-progress-meta">
+                            <span id="progress-xp-text" style="font-weight: 700;">XP 0 / 100</span>
+                            <span class="next-level-indicator">Next Level</span>
+                        </div>
+                        <div class="progress-bar identity-progress-bar">
+                            <div id="progress-xp-fill" class="identity-xp-fill" style="width: 0%"></div>
+                        </div>
+                        <div id="progress-total-xp" class="total-xp-lbl" style="margin-top: 0.4rem; font-size: 0.72rem; opacity: 0.7;">Total XP: 0</div>
+                    </div>
+                </div>
+
+                <!-- Trust Progress Card -->
+                <div class="card trust-progress-card" style="margin-bottom: 1.5rem;">
+                    <div class="identity-header">
+                        <div class="identity-title-group">
+                            <div class="identity-avatar-icon">
+                                <i class="fas fa-shield-halved"></i>
+                            </div>
+                            <h3>Self Trust Score</h3>
+                        </div>
+                        <span id="progress-trust-tier" class="priority-badge priority-medium">Average</span>
+                    </div>
+                    <div class="trust-progress-details" style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
+                        <span id="progress-trust-value" style="font-size: 2.2rem; font-weight: 900; color: #fbbf24;">0.0</span>
+                        <svg class="trust-trend-line" viewBox="0 0 64 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 80px; height: 35px;">
+                            <polyline points="2,24 14,18 24,14 34,16 46,8 62,3" stroke="#fbbf24" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div style="margin-top: 1rem; font-size: 0.72rem; color: var(--text-secondary);">
+                        Trust builds slowly through discipline and consistency. Penalty protection is active at higher streak levels.
+                    </div>
+                </div>
+
+                <!-- Achievements System (Grid, Filters, Search) -->
+                <div class="card achievements-section" style="margin-bottom: 1.5rem;">
+                    <div class="achievements-header">
+                        <div class="achievements-title-group">
+                            <div class="achievements-icon-wrap">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div>
+                                <h3>Achievements</h3>
+                                <p id="achievements-subtitle" class="achievements-subtitle">Loading...</p>
+                            </div>
+                        </div>
+                        <div id="achievements-completion-ring" class="achievements-ring">
+                            <svg viewBox="0 0 36 36" class="ring-svg">
+                                <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+                                <circle id="ring-progress-circle" class="ring-fill" cx="18" cy="18" r="15.9" stroke-dasharray="0 100"/>
+                            </svg>
+                            <span id="ring-percent-text" class="ring-text">0%</span>
+                        </div>
+                    </div>
+
+                    <div class="achievements-stats-bar">
+                        <div class="ach-stat ach-stat-common">
+                            <span id="ach-count-common" class="ach-stat-value">0</span>
+                            <span class="ach-stat-label">Common</span>
+                        </div>
+                        <div class="ach-stat ach-stat-rare">
+                            <span id="ach-count-rare" class="ach-stat-value">0</span>
+                            <span class="ach-stat-label">Rare</span>
+                        </div>
+                        <div class="ach-stat ach-stat-epic">
+                            <span id="ach-count-epic" class="ach-stat-value">0</span>
+                            <span class="ach-stat-label">Epic</span>
+                        </div>
+                        <div class="ach-stat ach-stat-legendary">
+                            <span id="ach-count-legendary" class="ach-stat-value">0</span>
+                            <span class="ach-stat-label">Legendary</span>
+                        </div>
+                    </div>
+
+                    <div class="achievements-search-wrap">
+                        <i class="fas fa-search achievements-search-icon"></i>
+                        <input type="text" id="achievements-search" class="achievements-search" placeholder="Search achievements...">
+                    </div>
+
+                    <div class="achievements-filters" id="achievements-filters">
+                        <button class="ach-filter-btn active" data-filter="All" onclick="filterAchievements('All', this)">All</button>
+                        <button class="ach-filter-btn" data-filter="Tasks" onclick="filterAchievements('Tasks', this)">📋 Tasks</button>
+                        <button class="ach-filter-btn" data-filter="Goals" onclick="filterAchievements('Goals', this)">🎯 Goals</button>
+                        <button class="ach-filter-btn" data-filter="Habits" onclick="filterAchievements('Habits', this)">⚡ Habits</button>
+                        <button class="ach-filter-btn" data-filter="Streaks" onclick="filterAchievements('Streaks', this)">🔥 Streaks</button>
+                        <button class="ach-filter-btn" data-filter="Trust" onclick="filterAchievements('Trust', this)">🛡️ Trust</button>
+                        <button class="ach-filter-btn" data-filter="XP" onclick="filterAchievements('XP', this)">⭐ XP</button>
+                        <button class="ach-filter-btn" data-filter="Calendar" onclick="filterAchievements('Calendar', this)">📅 Calendar</button>
+                        <button class="ach-filter-btn" data-filter="Rare" onclick="filterAchievements('Rare', this)">💎 Rare</button>
+                        <button class="ach-filter-btn" data-filter="Legendary" onclick="filterAchievements('Legendary', this)">👑 Legendary</button>
+                        <button class="ach-filter-btn" data-filter="unlocked" onclick="filterAchievements('unlocked', this)">✅ Unlocked</button>
+                        <button class="ach-filter-btn" data-filter="locked" onclick="filterAchievements('locked', this)">🔒 Locked</button>
+                    </div>
+
+                    <div id="achievements-grid" class="achievements-grid">
+                        <div class="achievements-loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <span>Loading achievements...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personal Records Card -->
+                <div class="card personal-records-card" style="margin-bottom: 1.5rem;">
+                    <div class="identity-header">
+                        <h3>🏆 Personal Records</h3>
+                    </div>
+                    <div id="personal-records-list" class="records-grid" style="margin-top: 1rem;">
+                        <!-- Records dynamically loaded by JS -->
+                    </div>
+                </div>
+
+                <!-- Milestone Timeline Card -->
+                <div class="card milestone-timeline-card" style="margin-bottom: 1.5rem;">
+                    <div class="identity-header">
+                        <h3>📅 Milestone Timeline</h3>
+                    </div>
+                    <div id="milestone-timeline-list" class="timeline-list" style="margin-top: 1rem; position: relative;">
+                        <!-- Timeline entries loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Weekly & Monthly Performance Reviews -->
+                <div class="card performance-reports-card" style="margin-bottom: 1.5rem;">
+                    <div class="tabs" style="margin-bottom: 1.2rem;">
+                        <button id="tab-report-weekly" class="tab active" onclick="switchPerformanceReport('weekly')">Weekly Report</button>
+                        <button id="tab-report-monthly" class="tab" onclick="switchPerformanceReport('monthly')">Monthly Review</button>
+                    </div>
+                    <div id="performance-report-content" class="report-content-body">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Seasonal Challenges Card -->
+                <div class="card seasonal-challenges-card" style="margin-bottom: 1.5rem;">
+                    <div class="identity-header">
+                        <h3>❄️ Seasonal Challenges</h3>
+                        <span class="priority-badge priority-high">Limited Time</span>
+                    </div>
+                    <div id="seasonal-challenges-list" class="challenges-grid" style="margin-top: 1rem;">
+                        <!-- Challenges loaded dynamically -->
+                    </div>
+                </div>
+            </section>
+          </div>
             </section>
 
 
@@ -587,11 +628,15 @@
             </button>
             <button class="nav-item" onclick="showView('reports')">
                 <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
-                <span class="nav-label" data-i18n="reports">Reports</span>
+                <span class="nav-label" data-i18n="dashboard">Dashboard</span>
             </button>
             <button class="nav-item" onclick="showView('insights')">
                 <span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
                 <span class="nav-label" data-i18n="insights">Insights</span>
+            </button>
+            <button class="nav-item" onclick="showView('progress')">
+                <span class="nav-icon"><i class="fas fa-crown"></i></span>
+                <span class="nav-label" data-i18n="progress">Progress</span>
             </button>
             <button class="nav-item" onclick="showView('me')">
                 <span class="nav-icon"><i class="fas fa-user"></i></span>

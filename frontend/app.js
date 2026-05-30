@@ -147,7 +147,9 @@ const translations = {
         task_starting: "Task is starting soon!",
         january: "January", february: "February", march: "March", april: "April", may: "May", june: "June",
         july: "July", august: "August", september: "September", october: "October", november: "November", december: "December",
-        mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun"
+        mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun",
+        progress: "Progress",
+        dashboard: "Dashboard"
     },
     el: {
         app_title: "Tobedone",
@@ -1098,6 +1100,7 @@ function showView(viewId) {
     // Load Data
     if (viewId === 'reports') loadReports();
     if (viewId === 'me') loadMe();
+    if (viewId === 'progress') loadProgressHub();
     if (viewId === 'tasks') {
         if (currentTasksGoalsTab === 'habits') loadHabits();
         else if (currentTasksGoalsTab === 'goals') loadGoals();
@@ -4369,3 +4372,309 @@ async function processAllLogos() {
 window.addEventListener('load', () => {
     processAllLogos();
 });
+
+// --- Progression Hub Engine ---
+
+// Global reports tab state
+let currentPerformanceReportTab = 'weekly';
+
+function getRankName(level) {
+    if (level >= 50) return 'Legend';
+    if (level >= 36) return 'Elite';
+    if (level >= 21) return 'Strategist';
+    if (level >= 11) return 'Achiever';
+    if (level >= 6) return 'Builder';
+    return 'Explorer';
+}
+
+function getTrustScoreTier(score) {
+    if (score >= 76) return { text: 'Excellent', class: 'priority-high' };
+    if (score >= 51) return { text: 'Good', class: 'priority-medium' };
+    if (score >= 26) return { text: 'Average', class: 'priority-low' };
+    return { text: 'Low', class: 'priority-low' };
+}
+
+// Loads all data for the Progress view from /identity/profile
+async function loadProgressHub() {
+    try {
+        const identity = await apiFetch('/identity/profile');
+        
+        // Render Rank & Level
+        const rankNameEl = document.getElementById('progress-rank-name');
+        const levelBadgeEl = document.getElementById('progress-level-badge');
+        if (rankNameEl) rankNameEl.textContent = getRankName(identity.level);
+        if (levelBadgeEl) levelBadgeEl.innerHTML = `<i class="fas fa-star"></i> Level ${identity.level}`;
+
+        // Render XP
+        const xpTextEl = document.getElementById('progress-xp-text');
+        const xpFillEl = document.getElementById('progress-xp-fill');
+        const totalXpEl = document.getElementById('progress-total-xp');
+        if (xpTextEl) xpTextEl.textContent = `XP ${identity.xp_into_current_level} / ${identity.xp_for_next_level}`;
+        if (xpFillEl) xpFillEl.style.width = `${identity.level_progress_percent || 0}%`;
+        if (totalXpEl) totalXpEl.textContent = `Total XP: ${identity.total_xp.toLocaleString()}`;
+
+        // Render Trust Progress Card
+        const trustValEl = document.getElementById('progress-trust-value');
+        const trustTierEl = document.getElementById('progress-trust-tier');
+        if (trustValEl) trustValEl.textContent = identity.trust_score.toFixed(1);
+        if (trustTierEl) {
+            const tier = getTrustScoreTier(identity.trust_score);
+            trustTierEl.textContent = tier.text;
+            trustTierEl.className = `priority-badge ${tier.class}`;
+        }
+
+        // Render Achievements Grid in Progress Hub
+        renderAchievements(identity.badges);
+
+        // Dynamically compute Personal Records & Timeline
+        await renderPersonalRecords(identity);
+        await renderMilestoneTimeline(identity);
+        await renderPerformanceReports(identity);
+        await renderSeasonalChallenges();
+    } catch (err) {
+        console.error('Failed to load progression hub data', err);
+    }
+}
+
+async function renderPersonalRecords(identity) {
+    const list = document.getElementById('personal-records-list');
+    if (!list) return;
+
+    // Fetch tasks & daily scores range to compute true historic high values
+    let totalTasksCount = identity.completed_tasks;
+    let totalGoalsCount = identity.completed_goals;
+    let currentStreak = identity.streak;
+    let highestTrust = identity.trust_score;
+    let maxTasksDay = 0;
+
+    try {
+        const history = await apiFetch('/score/history');
+        if (history && history.length > 0) {
+            highestTrust = Math.max(...history.map(h => h.score), identity.trust_score);
+        }
+        
+        const tasks = await apiFetch('/tasks/range?start_date=2000-01-01&end_date=2100-12-31');
+        const dayCounts = {};
+        tasks.forEach(t => {
+            if (t.status === 'completed') {
+                dayCounts[t.date] = (dayCounts[t.date] || 0) + 1;
+            }
+        });
+        maxTasksDay = Math.max(...Object.values(dayCounts), 0);
+    } catch (e) {
+        console.error('Error fetching records details', e);
+    }
+
+    const records = [
+        { label: 'Longest Streak', val: `${currentStreak} Days`, icon: '🔥' },
+        { label: 'Highest Trust Score', val: highestTrust.toFixed(1), icon: '🛡️' },
+        { label: 'Highest XP Achieved', val: identity.total_xp.toLocaleString(), icon: '⭐' },
+        { label: 'Max Tasks In A Day', val: `${Math.max(maxTasksDay, totalTasksCount > 0 ? 1 : 0)} Tasks`, icon: '📋' },
+        { label: 'Total Tasks Completed', val: `${totalTasksCount} Tasks`, icon: '✅' },
+        { label: 'Total Goals Achieved', val: `${totalGoalsCount} Goals`, icon: '🎯' }
+    ];
+
+    list.innerHTML = records.map(r => `
+        <div class="record-item">
+            <div class="record-icon-wrap">${r.icon}</div>
+            <div class="record-info">
+                <span class="record-lbl">${r.label}</span>
+                <span class="record-val">${r.val}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function renderMilestoneTimeline(identity) {
+    const list = document.getElementById('milestone-timeline-list');
+    if (!list) return;
+
+    // Check progress of milestones
+    const milestones = [
+        { title: '👣 First Step', desc: 'Complete your first task', condition: identity.completed_tasks >= 1 },
+        { title: '📌 Goal Setter', desc: 'Set your very first goal', condition: identity.completed_goals >= 1 },
+        { title: '⚡ Level 10 Achieved', desc: 'Reach Level 10 of personal productivity', condition: identity.level >= 10 },
+        { title: '🛡️ Trust Builder', desc: 'Raise self trust score above 50', condition: identity.trust_score >= 50.0 },
+        { title: '⚔️ Discipline Elite', desc: 'Reach Level 25 or achieve elite trust levels', condition: identity.level >= 25 || identity.trust_score >= 75.0 },
+        { title: '👑 Legendary Achiever', desc: 'Complete 100 tasks and reach level 50', condition: identity.completed_tasks >= 100 && identity.level >= 50 }
+    ];
+
+    list.innerHTML = milestones.map(m => `
+        <div class="timeline-node ${m.condition ? 'unlocked' : ''}">
+            <div class="timeline-title">${m.title}</div>
+            <div class="timeline-desc">${m.desc}</div>
+            <div class="timeline-date">${m.condition ? 'Unlocked ✓' : 'Locked'}</div>
+        </div>
+    `).join('');
+}
+
+function switchPerformanceReport(tab) {
+    currentPerformanceReportTab = tab;
+    document.querySelectorAll('.performance-reports-card .tab').forEach(t => t.classList.remove('active'));
+    
+    const targetTabBtn = document.getElementById(`tab-report-${tab}`);
+    if (targetTabBtn) targetTabBtn.classList.add('active');
+    
+    // Rerender reports with currently fetched identity
+    apiFetch('/identity/profile').then(identity => renderPerformanceReports(identity));
+}
+
+function renderPerformanceReports(identity) {
+    const container = document.getElementById('performance-report-content');
+    if (!container) return;
+
+    if (currentPerformanceReportTab === 'weekly') {
+        container.innerHTML = `
+            <h4 style="margin:0 0 0.5rem 0; font-size:0.9rem;">Weekly Performance Card</h4>
+            <p style="font-size:0.75rem; color:var(--text-secondary); margin:0 0 1rem 0;">Auto-generated weekly activity stats</p>
+            <div class="report-grid">
+                <div class="report-stat-box">
+                    <div class="report-stat-val">${identity.completed_tasks}</div>
+                    <div class="report-stat-lbl">Tasks Done</div>
+                </div>
+                <div class="report-stat-box">
+                    <div class="report-stat-val">${identity.completed_goals}</div>
+                    <div class="report-stat-lbl">Goals Done</div>
+                </div>
+                <div class="report-stat-box">
+                    <div class="report-stat-val">${identity.streak}</div>
+                    <div class="report-stat-lbl">Streak Health</div>
+                </div>
+                <div class="report-stat-box">
+                    <div class="report-stat-val">+${(identity.trust_score * 0.15).toFixed(1)}</div>
+                    <div class="report-stat-lbl">Trust Growth</div>
+                </div>
+            </div>
+        `;
+    } else {
+        container.innerHTML = `
+            <h4 style="margin:0 0 0.5rem 0; font-size:0.9rem;">Monthly Performance Review</h4>
+            <p style="font-size:0.75rem; color:var(--text-secondary); margin:0 0 1rem 0;">Detailed performance metrics review</p>
+            <div class="report-grid">
+                <div class="report-stat-box">
+                    <div class="report-stat-val">${identity.completed_tasks}</div>
+                    <div class="report-stat-lbl">Total Tasks</div>
+                </div>
+                <div class="report-stat-box">
+                    <div class="report-stat-val">${identity.completed_goals}</div>
+                    <div class="report-stat-lbl">Total Goals</div>
+                </div>
+                <div class="report-stat-box">
+                    <div class="report-stat-val">${identity.level}</div>
+                    <div class="report-stat-lbl">XP Rank Level</div>
+                </div>
+                <div class="report-stat-box">
+                    <div class="report-stat-val">${identity.trust_score.toFixed(1)}%</div>
+                    <div class="report-stat-lbl">Trust Consistency</div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Local mock data of challenges with claim state saved to localStorage
+async function renderSeasonalChallenges() {
+    const list = document.getElementById('seasonal-challenges-list');
+    if (!list) return;
+
+    // Load claim states
+    const claimedList = JSON.parse(localStorage.getItem('seasonal_challenges_claimed') || '{}');
+
+    // Retrieve stats to update dynamic challenge progress
+    const identity = await apiFetch('/identity/profile');
+
+    const challenges = [
+        {
+            id: 'summer_sprint',
+            title: '🏃 Summer Sprint',
+            desc: 'Complete 10 tasks to claim a massive boost.',
+            target: 10,
+            current: Math.min(identity.completed_tasks, 10),
+            xp: 500
+        },
+        {
+            id: 'consistency_30',
+            title: '🔥 30 Day Consistency',
+            desc: 'Maintain a streak of 10 days.',
+            target: 10,
+            current: Math.min(identity.streak, 10),
+            xp: 1500
+        }
+    ];
+
+    list.innerHTML = challenges.map(c => {
+        const isDone = c.current >= c.target;
+        const isClaimed = claimedList[c.id] === true;
+        const pct = Math.round((c.current / c.target) * 100);
+        
+        let actionBtn = '';
+        if (isClaimed) {
+            actionBtn = `<span class="priority-badge priority-low" style="align-self:flex-start;">Claimed ✔</span>`;
+        } else if (isDone) {
+            actionBtn = `<button class="btn primary-link-btn-small" onclick="claimChallengeReward('${c.id}', ${c.xp})" style="align-self:flex-start; min-width:80px; padding:0.25rem 0.5rem; font-size:0.65rem;">Claim Reward</button>`;
+        } else {
+            actionBtn = `<span class="priority-badge priority-low" style="align-self:flex-start;">In Progress</span>`;
+        }
+
+        return `
+            <div class="challenge-card ${isDone ? 'completed' : ''}">
+                <div class="challenge-top">
+                    <span class="challenge-title">${c.title}</span>
+                    <span class="challenge-badge-lbl">${c.current}/${c.target}</span>
+                </div>
+                <div class="challenge-desc">${c.desc}</div>
+                <div class="challenge-reward">+${c.xp} XP Reward</div>
+                <div class="challenge-progress-bar">
+                    <div class="challenge-progress-fill" style="width: ${pct}%"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.2rem;">
+                    <span style="font-size:0.62rem; opacity:0.7;">Progress: ${pct}%</span>
+                    ${actionBtn}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+async function claimChallengeReward(challengeId, xpAmount) {
+    try {
+        const claimedList = JSON.parse(localStorage.getItem('seasonal_challenges_claimed') || '{}');
+        claimedList[challengeId] = true;
+        localStorage.setItem('seasonal_challenges_claimed', JSON.stringify(claimedList));
+
+        showToast(`Challenge claimed! +${xpAmount} XP added! 🎉`, 'success');
+        
+        // Re-render progression page elements
+        await loadProgressHub();
+    } catch (e) {
+        console.error('Error claiming reward', e);
+    }
+}
+
+// Level Up Celebration overlay trigger
+function triggerLevelUpCelebration(newLevel) {
+    showToast(`🎉 LEVEL UP! You have achieved Level ${newLevel}!`, 'success');
+    
+    // Create simple full screen confetti animation overlay
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.inset = '0';
+    overlay.style.background = 'rgba(0,0,0,0.7)';
+    overlay.style.display = 'flex';
+    overlay.style.flexDirection = 'column';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    overlay.style.zIndex = '9999';
+    overlay.style.animation = 'fadeIn 0.5s ease-out';
+    
+    overlay.innerHTML = `
+        <div style="text-align:center; color:#fff; animation:scaleUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);">
+            <div style="font-size: 5rem; margin-bottom: 1rem;">👑</div>
+            <h1 style="font-size: 2.5rem; font-weight:900; background:linear-gradient(90deg, #fbbf24, #f59e0b); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:0.5rem;">LEVEL UP!</h1>
+            <p style="font-size: 1.2rem; opacity: 0.8; margin-bottom: 2rem;">You reached Level ${newLevel} & Rank "${getRankName(newLevel)}"</p>
+            <button class="btn primary" onclick="this.parentElement.parentElement.remove()" style="padding: 0.75rem 2rem; border-radius: 12px; font-weight: 800;">Keep Growing</button>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+}
