@@ -28,3 +28,4 @@ class User(Base):
     habits = relationship("Habit", back_populates="user", cascade="all, delete-orphan")
     habit_logs = relationship("HabitLog", back_populates="user", cascade="all, delete-orphan")
     social_profile = relationship("UserSocialProfile", back_populates="user", uselist=False, cascade="all, delete-orphan")
+    future_self_messages = relationship("FutureSelfMessage", back_populates="user", cascade="all, delete-orphan")

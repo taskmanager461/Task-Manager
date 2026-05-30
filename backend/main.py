@@ -17,6 +17,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from backend import models  # noqa: F401
 from backend.database import Base, SessionLocal, engine, ensure_schema_compatibility
 from backend.routes.auth import router as auth_router
+from backend.routes.future_self import router as future_self_router
 from backend.routes.goals import router as goals_router
 from backend.routes.habits import router as habits_router
 from backend.routes.identity import router as identity_router
@@ -99,6 +100,7 @@ app.include_router(score_router, prefix="/api")
 app.include_router(identity_router, prefix="/api")
 app.include_router(push_router, prefix="/api")
 app.include_router(social_router, prefix="/api")
+app.include_router(future_self_router, prefix="/api")
 
 @app.get("/health")
 async def health_check():
