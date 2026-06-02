@@ -1,4 +1,5 @@
 from datetime import date
+from time import time
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
@@ -13,6 +14,8 @@ from backend.services.goal_service import refresh_goal_status_by_id
 from backend.services.identity_service import award_task_completion_xp
 
 router = APIRouter(tags=["tasks"])
+TASKS_CACHE: dict[tuple[int, date, str | None, str | None, str | None], dict] = {}
+TASKS_CACHE_TTL_SECONDS = 10
 
 
 @router.get("/tasks", response_model=list[TaskResponse])
@@ -28,6 +31,11 @@ def get_tasks(
     target_user_id = user_id or current_user.id
     if target_user_id != current_user.id:
         raise HTTPException(status_code=403, detail="Forbidden")
+    
+    cache_key = (target_user_id, day, category, priority, status)
+    cached = TASKS_CACHE.get(cache_key)
+    if cached and (time() - cached.get("timestamp", 0)) < TASKS_CACHE_TTL_SECONDS:
+        return cached["payload"]
 
     query = db.query(Task).filter(Task.user_id == target_user_id, Task.date == day)
     
@@ -39,6 +47,8 @@ def get_tasks(
         query = query.filter(Task.status == status)
 
     tasks = query.order_by(Task.created_at.asc()).all()
+    
+    TASKS_CACHE[cache_key] = {"timestamp": time(), "payload": tasks}
     return tasks
 
 

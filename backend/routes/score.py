@@ -22,6 +22,8 @@ from backend.services.identity_service import recompute_streak
 router = APIRouter(tags=["score"])
 SMART_INSIGHTS_CACHE: dict[int, dict] = {}
 SMART_CACHE_TTL_SECONDS = 300
+DAILY_SCORE_CACHE: dict[tuple[int, date], dict] = {}
+DAILY_SCORE_CACHE_TTL_SECONDS = 10
 
 
 @router.post("/score/daily", response_model=DailyScoreComputationResponse)
@@ -35,6 +37,11 @@ def compute_daily_score(
         raise HTTPException(status_code=403, detail="Forbidden")
 
     day = payload.day or date.today()
+    cache_key = (target_user_id, day)
+    cached = DAILY_SCORE_CACHE.get(cache_key)
+    if cached and (time() - cached.get("timestamp", 0)) < DAILY_SCORE_CACHE_TTL_SECONDS:
+        return cached["payload"]
+    
     current_streak = recompute_streak(db, current_user, today=day)
 
     tasks = db.query(Task).filter(Task.user_id == target_user_id, Task.date == day).all()
@@ -101,7 +108,7 @@ def compute_daily_score(
     elif current_streak >= 7:
         multiplier = 1.25
 
-    return DailyScoreComputationResponse(
+    payload = DailyScoreComputationResponse(
         date=day,
         score=round(current_user.trust_score, 2),
         success_rate=success_rate,
@@ -110,6 +117,9 @@ def compute_daily_score(
         total_tasks=total_tasks,
         goal_bonus=0.0,
     )
+    
+    DAILY_SCORE_CACHE[cache_key] = {"timestamp": time(), "payload": payload}
+    return payload
 
 
 @router.get("/score/history", response_model=list[DailyScoreResponse])

@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from time import time
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -12,6 +13,8 @@ from backend.services.goal_service import compute_goal_task_counts, refresh_goal
 from backend.services.identity_service import award_goal_completion_xp
 
 router = APIRouter(tags=["goals"])
+GOALS_CACHE: dict[int, dict] = {}
+GOALS_CACHE_TTL_SECONDS = 10
 
 
 @router.get("/goals", response_model=list[GoalResponse])
@@ -19,6 +22,10 @@ def get_goals(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    cached = GOALS_CACHE.get(current_user.id)
+    if cached and (time() - cached.get("timestamp", 0)) < GOALS_CACHE_TTL_SECONDS:
+        return cached["payload"]
+    
     goals = (
         db.query(Goal)
         .filter(Goal.user_id == current_user.id)
@@ -60,6 +67,8 @@ def get_goals(
         )
     if changed:
         db.commit()
+    
+    GOALS_CACHE[current_user.id] = {"timestamp": time(), "payload": response}
     return response
 
 

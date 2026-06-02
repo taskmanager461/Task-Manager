@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+from time import time
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
@@ -20,6 +21,8 @@ from backend.services.habit_service import (
 from backend.services.identity_service import apply_habit_impact
 
 router = APIRouter(tags=["habits"])
+HABITS_CACHE: dict[tuple[int, date], dict] = {}
+HABITS_CACHE_TTL_SECONDS = 10
 
 
 @router.post("/habits", response_model=HabitResponse)
@@ -72,6 +75,13 @@ def list_habits(
     db: Session = Depends(get_db),
 ):
     target_day = day or date.today()
+    cache_key = (current_user.id, target_day)
+    cached = HABITS_CACHE.get(cache_key)
+    if cached and (cached.get("timestamp", 0) - date.today().toordinal() if hasattr(cached.get("timestamp"), "toordinal") else False or ( (lambda t: t)(cached.get("timestamp", 0)) < HABITS_CACHE_TTL_SECONDS )):
+        # Wait better to use time() like in score.py
+        if isinstance(cached.get("timestamp"), (int, float)) and (time() - cached["timestamp"]) < HABITS_CACHE_TTL_SECONDS:
+            return cached["payload"]
+    
     habits = (
         db.query(Habit)
         .filter(Habit.user_id == current_user.id, Habit.is_active.is_(True))
@@ -79,6 +89,7 @@ def list_habits(
         .all()
     )
     if not habits:
+        HABITS_CACHE[cache_key] = {"timestamp": time(), "payload": []}
         return []
 
     habit_ids = [habit.id for habit in habits]
@@ -121,6 +132,8 @@ def list_habits(
 
     if changed:
         db.commit()
+    
+    HABITS_CACHE[cache_key] = {"timestamp": time(), "payload": items}
     return items
 
 
