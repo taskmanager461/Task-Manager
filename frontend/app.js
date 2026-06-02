@@ -1915,117 +1915,20 @@ async function loadMe() {
         
         // Parallelize everything
         const promises = [
-            loadIdentityProfile(),
-            loadDashboardPersonalization(),
-            loadScoreComparison(),
-            loadMissedTasks()
+             loadIdentityProfile(),
+             loadDashboardPersonalization(),
+             loadScoreComparison(),
+             loadMissedTasks()
         ];
 
-        const pieEl = document.getElementById('task-pie-chart');
-        if (pieEl) {
-            let tasksUrl = `/tasks?day=${today}`;
-            if (currentUser.user_id && Number.isInteger(currentUser.user_id)) {
-                tasksUrl += `&user_id=${currentUser.user_id}`;
-            }
-            promises.push(apiFetch(tasksUrl).then(tasks => updateTaskChart(tasks)));
-        }
-
-        const trendEl = document.getElementById('weekly-trend-chart');
-        if (trendEl) {
-            promises.push(loadWeeklyTrend());
-        }
-
         await Promise.all(promises);
-
-        // Load embedded Me-Insights section (non-critical)
-        try {
-            await loadMeInsights();
-        } catch(e) { console.warn('Me insights failed', e); }
 
     } catch (err) {
         console.error('Me load failed', err);
     }
 }
 
-async function loadMeInsights() {
-    // Fetch 30-day score history
-    const history = await apiFetch('/score/history?days=30');
-    
-    // Best Day
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const dayStats = Array(7).fill(0).map((_, i) => ({ name: dayNames[i], completed: 0 }));
-    let tasks30d = 0;
-    history.forEach(entry => {
-        const d = new Date(entry.date);
-        if (entry.success_rate > 0.5) dayStats[d.getDay()].completed++;
-        tasks30d += (entry.completed_tasks || 0);
-    });
-    const bestIdx = dayStats.reduce((best, cur, i) => cur.completed > dayStats[best].completed ? i : best, 0);
-    const bestDayEl = document.getElementById('me-insight-best-day');
-    if (bestDayEl) bestDayEl.textContent = dayStats[bestIdx].name;
 
-    // Tasks 30d
-    const tasks30dEl = document.getElementById('me-tasks-30d');
-    if (tasks30dEl) tasks30dEl.textContent = history.reduce((s, e) => s + (e.completed_tasks || 0), 0);
-
-    // Goal Rate from identity
-    try {
-        const identity = await apiFetch('/identity/profile');
-        const total = (identity.completed_goals || 0) + (identity.failed_goals || 0);
-        const rateEl = document.getElementById('me-goal-completion-rate');
-        if (rateEl) rateEl.textContent = total > 0 ? `${Math.round((identity.completed_goals / total) * 100)}%` : '—';
-
-        // Smart insights mini feed
-        const miniInsights = generateSmartInsightCards(identity, history);
-        const feedEl = document.getElementById('me-smart-insights');
-        if (feedEl && miniInsights.length > 0) {
-            feedEl.innerHTML = miniInsights.slice(0, 2).map(c => `
-                <div class="insight-card" style="margin-bottom:0.5rem; padding:0.75rem 1rem;">
-                    <span class="icon"><i class="${c.icon}"></i></span>
-                    <div class="insight-content">
-                        <h4 style="font-size:0.8rem;">${c.title}</h4>
-                        <p style="font-size:0.72rem;">${c.body}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-    } catch(e) { /* silent */ }
-
-    // Mini weekly trend chart for Me
-    const meTrendEl = document.getElementById('me-weekly-trend-chart');
-    if (meTrendEl && history.length > 0) {
-        const last7 = history.slice(-7);
-        const ctx = meTrendEl.getContext('2d');
-        if (window._meTrendChart) window._meTrendChart.destroy();
-        const textColor = isDarkMode ? '#FFFFFF' : '#0F172A';
-        const gridColor = isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)';
-        window._meTrendChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: last7.map(s => s.date.split('-').slice(1).join('/')),
-                datasets: [{
-                    label: 'Score',
-                    data: last7.map(s => s.score),
-                    borderColor: '#0a86ff',
-                    backgroundColor: 'rgba(10,134,255,0.1)',
-                    fill: true,
-                    tension: 0.35,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#0a86ff'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, max: 150, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 } } },
-                    x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10 } } }
-                }
-            }
-        });
-    }
-}
 
 async function loadDashboard() {
     await Promise.all([loadReports(), loadMe()]);
