@@ -207,6 +207,44 @@
                     <h1 data-i18n="me">Me</h1>
                 </div>
 
+                <!-- Identity Card (Re-added) -->
+                <div class="card identity-card" id="identity-card-section" style="margin-bottom: 1.5rem;">
+                    <div class="identity-header">
+                        <div class="identity-title-group">
+                            <div class="identity-avatar-icon">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+                            <div>
+                                <h3 id="identity-name-display" class="profile-display-name" style="margin: 0;">User</h3>
+                                <p id="identity-username-display" class="profile-display-username" style="font-size:0.72rem; color:var(--text-secondary); margin:0;">@user</p>
+                            </div>
+                        </div>
+                        <span id="identity-level-badge" class="identity-level-pill">
+                            <i class="fas fa-star"></i> Level 1
+                        </span>
+                    </div>
+
+                    <div class="identity-progress-wrap" style="margin-top: 1.25rem; margin-bottom: 1.25rem;">
+                        <div class="progress-bar identity-progress-bar">
+                            <div id="identity-xp-fill" class="identity-xp-fill" style="width: 0%"></div>
+                        </div>
+                        <div id="identity-xp-text" class="identity-xp-text">XP 0/100</div>
+                    </div>
+
+                    <div id="identity-stats" class="identity-stats" style="margin-bottom: 1rem;">
+                        <!-- Injected by app.js -->
+                    </div>
+
+                    <div class="identity-trust-score-row" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02); padding:0.75rem 1rem; border-radius:12px; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.05);">
+                        <span style="font-size:0.9rem; font-weight:600; color:var(--text-secondary);">Self Trust Score</span>
+                        <span id="identity-trust-value" style="font-size:1.4rem; font-weight:900; color:#fbbf24;">0.0</span>
+                    </div>
+
+                    <div id="identity-badges" class="identity-badges">
+                        <!-- Badges summary list -->
+                    </div>
+                </div>
+
                 <div class="card" style="margin-bottom: 1.5rem;">
                     <div style="display: flex; align-items: center; gap: 1rem;">
                         <div class="profile-avatar-wrap">
@@ -270,6 +308,36 @@
                     <span id="missed-tasks-text"></span>
                 </div>
 
+                <!-- Insights Section embedded in Me -->
+                <div class="card" style="margin-bottom: 1.5rem;">
+                    <div class="identity-header" style="margin-bottom:1rem;">
+                        <h3><i class="fas fa-chart-line" style="margin-right:0.5rem; color:var(--primary);"></i>Your Analytics</h3>
+                        <button onclick="showView('insights')" class="btn secondary" style="font-size:0.7rem; padding:0.3rem 0.7rem;">Full Report</button>
+                    </div>
+                    <div id="me-smart-insights" class="insights-container" style="margin-bottom:1rem;">
+                        <!-- Smart insights mini-feed injected by JS -->
+                    </div>
+                    <div class="weekly-summary-stats" style="margin-bottom:1rem;">
+                        <div class="weekly-summary-stat">
+                            <span class="label">Best Day</span>
+                            <span id="me-insight-best-day" class="value">—</span>
+                        </div>
+                        <div class="weekly-summary-stat">
+                            <span class="label">Goal Rate</span>
+                            <span id="me-goal-completion-rate" class="value">0%</span>
+                        </div>
+                        <div class="weekly-summary-stat">
+                            <span class="label">Tasks (30d)</span>
+                            <span id="me-tasks-30d" class="value">0</span>
+                        </div>
+                    </div>
+                    <div class="chart-grid" style="grid-template-columns:1fr;">
+                        <div class="chart-container" style="padding:0;">
+                            <h3 data-i18n="weekly_trend" style="font-size:0.85rem; margin-bottom:0.75rem;">Weekly Trend</h3>
+                            <canvas id="me-weekly-trend-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <!-- Calendar View (Removed or integrated into Dashboard, keeping hidden container for API compatibility if needed, but not in bottom menu) -->
