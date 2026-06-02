@@ -171,12 +171,13 @@
                 </div>
 
                 <!-- Dynamic Intelligence Feed -->
-                <div id="dashboard-intelligence-feed" style="margin-bottom: 1.5rem;">
-                    <!-- Personalized data-driven insights injected by JS -->
-                </div>
-
-                <div id="dashboard-hero-metrics" class="hero-metric-grid">
-                    <!-- Hero Metrics injected by app.js -->
+                <div style="margin-bottom: 1.5rem;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+                        <h3 style="margin:0;font-size:1.1rem;font-weight:700;color:var(--text-primary);">Today's Insights</h3>
+                    </div>
+                    <div id="dashboard-intelligence-feed">
+                        <!-- Personalized data-driven insights injected by JS -->
+                    </div>
                 </div>
 
                 <div class="card progress-section" style="margin-bottom: 1.5rem;">
@@ -205,44 +206,6 @@
             <section id="view-me" class="view">
                 <div class="view-header">
                     <h1 data-i18n="me">Me</h1>
-                </div>
-
-                <!-- Identity Card (Re-added) -->
-                <div class="card identity-card" id="identity-card-section" style="margin-bottom: 1.5rem;">
-                    <div class="identity-header">
-                        <div class="identity-title-group">
-                            <div class="identity-avatar-icon">
-                                <i class="fas fa-user-shield"></i>
-                            </div>
-                            <div>
-                                <h3 id="identity-name-display" class="profile-display-name" style="margin: 0;">User</h3>
-                                <p id="identity-username-display" class="profile-display-username" style="font-size:0.72rem; color:var(--text-secondary); margin:0;">@user</p>
-                            </div>
-                        </div>
-                        <span id="identity-level-badge" class="identity-level-pill">
-                            <i class="fas fa-star"></i> Level 1
-                        </span>
-                    </div>
-
-                    <div class="identity-progress-wrap" style="margin-top: 1.25rem; margin-bottom: 1.25rem;">
-                        <div class="progress-bar identity-progress-bar">
-                            <div id="identity-xp-fill" class="identity-xp-fill" style="width: 0%"></div>
-                        </div>
-                        <div id="identity-xp-text" class="identity-xp-text">XP 0/100</div>
-                    </div>
-
-                    <div id="identity-stats" class="identity-stats" style="margin-bottom: 1rem;">
-                        <!-- Injected by app.js -->
-                    </div>
-
-                    <div class="identity-trust-score-row" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02); padding:0.75rem 1rem; border-radius:12px; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.05);">
-                        <span style="font-size:0.9rem; font-weight:600; color:var(--text-secondary);">Self Trust Score</span>
-                        <span id="identity-trust-value" style="font-size:1.4rem; font-weight:900; color:#fbbf24;">0.0</span>
-                    </div>
-
-                    <div id="identity-badges" class="identity-badges">
-                        <!-- Badges summary list -->
-                    </div>
                 </div>
 
                 <div class="card" style="margin-bottom: 1.5rem;">
@@ -290,6 +253,44 @@
                             </div>
                         </div>
                     </form>
+                </div>
+
+                <!-- Identity Card (Re-added, moved below Profile Card) -->
+                <div class="card identity-card" id="identity-card-section" style="margin-bottom: 1.5rem;">
+                    <div class="identity-header">
+                        <div class="identity-title-group">
+                            <div class="identity-avatar-icon">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+                            <div>
+                                <h3 id="identity-name-display" class="profile-display-name" style="margin: 0;">User</h3>
+                                <p id="identity-username-display" class="profile-display-username" style="font-size:0.72rem; color:var(--text-secondary); margin:0;">@user</p>
+                            </div>
+                        </div>
+                        <span id="identity-level-badge" class="identity-level-pill">
+                            <i class="fas fa-star"></i> Level 1
+                        </span>
+                    </div>
+
+                    <div class="identity-progress-wrap" style="margin-top: 1.25rem; margin-bottom: 1.25rem;">
+                        <div class="progress-bar identity-progress-bar">
+                            <div id="identity-xp-fill" class="identity-xp-fill" style="width: 0%"></div>
+                        </div>
+                        <div id="identity-xp-text" class="identity-xp-text">XP 0/100</div>
+                    </div>
+
+                    <div id="identity-stats" class="identity-stats" style="margin-bottom: 1rem;">
+                        <!-- Injected by app.js -->
+                    </div>
+
+                    <div class="identity-trust-score-row" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02); padding:0.75rem 1rem; border-radius:12px; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.05);">
+                        <span style="font-size:0.9rem; font-weight:600; color:var(--text-secondary);">Self Trust Score</span>
+                        <span id="identity-trust-value" style="font-size:1.4rem; font-weight:900; color:#fbbf24;">0.0</span>
+                    </div>
+
+                    <div id="identity-badges" class="identity-badges">
+                        <!-- Badges summary list -->
+                    </div>
                 </div>
 
                 <div class="card for-you-card" style="margin-bottom: 1.5rem;">

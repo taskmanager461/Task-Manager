@@ -148,6 +148,49 @@ body.light-mode {
     --glass-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
+/* Intelligence Cards Styling */
+.intelligence-card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border-left: 4px solid;
+    padding: 1rem 1.25rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.intelligence-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+}
+
+.intelligence-icon {
+    font-size: 1.5rem;
+    margin-top: 0.1rem;
+    flex-shrink: 0;
+}
+
+.intelligence-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.intelligence-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.intelligence-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
 body.light-mode .bg-lines-container {
     display: block;
 }
@@ -617,6 +660,19 @@ body.light-mode .scroll-progress-track {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 0.4rem 0.8rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(8px);
+    transition: border-color 0.3s ease;
+}
+
+body.light-mode .top-bar-left {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .app-logo-small {
@@ -3646,6 +3702,7 @@ input.editable {
     letter-spacing: -0.01em;
     background: linear-gradient(90deg, #fbbf24, #f59e0b);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
