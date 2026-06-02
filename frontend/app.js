@@ -552,6 +552,7 @@ function applyTheme() {
     // Dynamically update UI elements that depend on JS/Canvas theme without making network requests
     if (currentUser) {
         if (currentView === 'reports' && cachedDailyScore) {
+            renderHeroMetrics(cachedDailyScore);
             const progressFill = document.getElementById('daily-progress-fill');
             if (progressFill) progressFill.style.width = `${cachedDailyScore.success_rate * 100}%`;
         }
@@ -1882,6 +1883,8 @@ async function loadReports() {
 
         const score = await scorePromise;
         await calendarPromise;
+
+        await renderHeroMetrics(score);
 
         const progressFill = document.getElementById('daily-progress-fill');
         if (progressFill) progressFill.style.width = `${score.success_rate * 100}%`;
