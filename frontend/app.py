@@ -1255,21 +1255,20 @@ def main() -> None:
     
     user_id = int(st.session_state.user_id)
     
-    with st.spinner("🚀 Optimizing..."):
-        if st.session_state.menu == "tasks":
-            tasks_analytics_page(client, user_id)
-        elif st.session_state.menu == "reports":
-            reports_page(client, user_id)
-        elif st.session_state.menu == "me":
-            me_page(client, user_id)
-        elif st.session_state.menu == "weekly":
-            weekly_report_page(client, user_id)
-        elif st.session_state.menu == "notifications":
-            notifications_page()
-        elif st.session_state.menu == "settings":
-            settings_page()
-        else:
-            tasks_analytics_page(client, user_id)
+    if st.session_state.menu == "tasks":
+        tasks_analytics_page(client, user_id)
+    elif st.session_state.menu == "reports":
+        reports_page(client, user_id)
+    elif st.session_state.menu == "me":
+        me_page(client, user_id)
+    elif st.session_state.menu == "weekly":
+        weekly_report_page(client, user_id)
+    elif st.session_state.menu == "notifications":
+        notifications_page()
+    elif st.session_state.menu == "settings":
+        settings_page()
+    else:
+        tasks_analytics_page(client, user_id)
 
 
 if __name__ == "__main__":
