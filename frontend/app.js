@@ -2064,8 +2064,8 @@ function removeBlackBackground(imageSrc, scale = 1, isLogo = false) {
             const data = imageData.data;
             
             // For logo, use a much higher threshold to ensure all dark/black pixels are completely invisible
-            const threshold = isLogo ? 55 : 5;
-            const feather = isLogo ? 58 : 8;
+            const threshold = isLogo ? 97 : 5;
+            const feather = isLogo ? 100 : 8;
             
             for (let i = 0; i < data.length; i += 4) {
                 const r = data[i];
