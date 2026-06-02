@@ -241,8 +241,6 @@ def inject_pwa_support() -> None:
 
 
 def render_bottom_nav() -> None:
-    active_menu = st.session_state.menu
-    
     # Define icons for each menu item
     icons = {
         "tasks": "fa-solid fa-list-check",
@@ -253,12 +251,12 @@ def render_bottom_nav() -> None:
     }
     
     items_html = ""
-    for key, menu_key in MENU.items():
-        is_active = "active" if active_menu == key else ""
+    for idx, (key, menu_key) in enumerate(MENU.items()):
+        is_active = "active" if idx == 0 else "" # Tasks is active by default
         label = t(menu_key)
         icon = icons.get(key, "fa-solid fa-circle")
         items_html += f"""
-        <div class="nav-item {is_active}" onclick="window.parent.postMessage({{type: 'change_menu_url', menu: '{key}'}}, '*')">
+        <div class="nav-item {is_active}" onclick="window.parent.switchTab({idx}, this)">
             <i class="{icon}"></i>
             <span>{label}</span>
         </div>
@@ -277,8 +275,28 @@ def render_bottom_nav() -> None:
             }}
             nav.innerHTML = `{items_html}`;
             
-            // Re-apply active class based on items_html
-            // The active state is already handled by Streamlit rerun
+            // Define the tab switching function globally
+            if (!window.parent.switchTab) {{
+                window.parent.switchTab = function(index, element) {{
+                    const tabsLists = doc.querySelectorAll('div[data-testid="stTabs"]:has(.hide-main-tabs) > div[data-baseweb="tab-list"]');
+                    if (tabsLists.length > 0) {{
+                        const tabButtons = tabsLists[0].querySelectorAll('button[role="tab"]');
+                        if (tabButtons.length > index) {{
+                            tabButtons[index].click();
+                        }}
+                    }}
+                    
+                    // Update active class on nav items
+                    const navs = doc.querySelectorAll('.bottom-nav');
+                    navs.forEach(n => {{
+                        const items = n.querySelectorAll('.nav-item');
+                        items.forEach(item => item.classList.remove('active'));
+                        if (items.length > index) {{
+                            items[index].classList.add('active');
+                        }}
+                    }});
+                }};
+            }}
         }})();
         </script>
         """,
@@ -386,15 +404,28 @@ def render_achievements(score: dict[str, Any]) -> None:
 def render_sidebar() -> None:
     with st.sidebar:
         st.markdown(f"### {t('nav')}")
-        for key, menu_key in MENU.items():
-            if st.button(
-                t(menu_key),
-                key=f"menu_{key}",
-                use_container_width=True,
-                type="primary" if st.session_state.menu == key else "secondary",
-            ):
-                st.session_state.menu = key
-                st.rerun()
+        
+        # Output custom HTML buttons for instant tab switching
+        sidebar_buttons_html = ""
+        for idx, (key, menu_key) in enumerate(MENU.items()):
+            label = t(menu_key)
+            sidebar_buttons_html += f"""
+            <button class="sidebar-btn" onclick="window.parent.switchTab({idx}, null); return false;" 
+                    style="width: 100%; padding: 0.5rem 1rem; margin-bottom: 0.5rem; text-align: left; 
+                           background: rgba(10, 134, 255, 0.1); color: #0a86ff; border: 1px solid rgba(10, 134, 255, 0.2); 
+                           border-radius: 8px; cursor: pointer; font-weight: 600;">
+                {label}
+            </button>
+            """
+            
+        components.html(
+            f"""
+            <div style="display: flex; flex-direction: column;">
+                {sidebar_buttons_html}
+            </div>
+            """,
+            height=250,
+        )
 
         st.markdown("---")
         selected_dark = st.toggle(t("dark_mode"), value=st.session_state.dark_mode, key="sidebar_dark_mode")
@@ -979,24 +1010,10 @@ def render_analytics_section(tasks, dark_mode):
 def tasks_analytics_page(client: APIClient, user_id: int) -> None:
     st.markdown(f"<div class='section-title'>{t('tasks_analytics')}</div>", unsafe_allow_html=True)
     
-    # Initialize active tab in session state if not exists
-    if "tasks_goals_tab" not in st.session_state:
-        st.session_state.tasks_goals_tab = "Tasks"
+    # Create native tabs for instant switching on the client side
+    tab_tasks, tab_goals = st.tabs(["📋 Tasks", "🎯 Goals"])
     
-    # Create tab buttons with styling
-    tab1, tab2 = st.columns(2)
-    with tab1:
-        if st.button("📋 Tasks", key="tab_tasks", use_container_width=True, type="primary" if st.session_state.tasks_goals_tab == "Tasks" else "secondary"):
-            st.session_state.tasks_goals_tab = "Tasks"
-            st.rerun()
-    with tab2:
-        if st.button("🎯 Goals", key="tab_goals", use_container_width=True, type="primary" if st.session_state.tasks_goals_tab == "Goals" else "secondary"):
-            st.session_state.tasks_goals_tab = "Goals"
-            st.rerun()
-    
-    st.markdown("---")
-    
-    if st.session_state.tasks_goals_tab == "Tasks":
+    with tab_tasks:
         selected_day = st.date_input(t("task_day"), value=date.today(), key="task_day")
 
         with st.form("add_task"):
@@ -1041,7 +1058,7 @@ def tasks_analytics_page(client: APIClient, user_id: int) -> None:
         with right:
             render_analytics_section(tasks, st.session_state.dark_mode)
     
-    else:
+    with tab_goals:
         # Goals Tab
         st.markdown(f"<div class='section-title'>Your Goals</div>", unsafe_allow_html=True)
         
@@ -1255,20 +1272,29 @@ def main() -> None:
     
     user_id = int(st.session_state.user_id)
     
-    if st.session_state.menu == "tasks":
+    # Use native st.tabs for the main menu to make switching INSTANT
+    tab_tasks, tab_reports, tab_weekly, tab_me, tab_settings = st.tabs(["tasks", "reports", "weekly", "me", "settings"])
+    
+    with tab_tasks:
+        st.markdown("""<style>
+        /* Hide ONLY the main menu tabs header, keeping other tabs (like Tasks/Goals) visible */
+        div[data-testid="stTabs"]:has(.hide-main-tabs) > div[data-baseweb="tab-list"] {
+            display: none !important;
+        }
+        </style><div class='hide-main-tabs'></div>""", unsafe_allow_html=True)
         tasks_analytics_page(client, user_id)
-    elif st.session_state.menu == "reports":
+        
+    with tab_reports:
         reports_page(client, user_id)
-    elif st.session_state.menu == "me":
-        me_page(client, user_id)
-    elif st.session_state.menu == "weekly":
+        
+    with tab_weekly:
         weekly_report_page(client, user_id)
-    elif st.session_state.menu == "notifications":
-        notifications_page()
-    elif st.session_state.menu == "settings":
+        
+    with tab_me:
+        me_page(client, user_id)
+        
+    with tab_settings:
         settings_page()
-    else:
-        tasks_analytics_page(client, user_id)
 
 
 if __name__ == "__main__":
