@@ -41,12 +41,16 @@ T = TypeVar("T")
 def cached_score_history(user_id: int, _client: APIClient):
     return _client.score_history(user_id)
 
+@st.cache_data(ttl=60)
+def cached_get_missed_tasks(user_id: int, _client: APIClient):
+    return _client.get_missed_tasks()
+
 @st.cache_data(ttl=300)
-def cached_smart_insights(_client: APIClient):
+def cached_smart_insights(user_id: int, _client: APIClient):
     return _client.smart_insights()
 
 @st.cache_data(ttl=300)
-def cached_weekly_summary(_client: APIClient):
+def cached_weekly_summary(user_id: int, _client: APIClient):
     return _client.weekly_summary()
 
 @st.cache_data(ttl=10)
@@ -54,7 +58,7 @@ def cached_get_tasks(user_id: int, day: date, _client: APIClient):
     return _client.get_tasks(user_id, day)
 
 @st.cache_data(ttl=10)
-def cached_get_habits(day: date, _client: APIClient):
+def cached_get_habits(user_id: int, day: date, _client: APIClient):
     return _client.get_habits(day)
 
 @st.cache_data(ttl=10)
@@ -62,7 +66,7 @@ def cached_compute_daily_score(user_id: int, day: date, _client: APIClient):
     return _client.compute_daily_score(user_id, day)
 
 @st.cache_data(ttl=10)
-def cached_get_goals(_client: APIClient):
+def cached_get_goals(user_id: int, _client: APIClient):
     return _client.get_goals()
 
 
@@ -95,9 +99,11 @@ def init_state() -> None:
 
 
 def get_client() -> APIClient:
-    client = APIClient(st.session_state.api_url)
-    client.set_token(st.session_state.access_token or None)
-    return client
+    if "api_client" not in st.session_state:
+        st.session_state.api_client = APIClient(st.session_state.api_url)
+    
+    st.session_state.api_client.set_token(st.session_state.access_token or None)
+    return st.session_state.api_client
 
 
 def t(key: str, **kwargs: str) -> str:
@@ -241,6 +247,8 @@ def inject_pwa_support() -> None:
 
 
 def render_bottom_nav() -> None:
+    active_menu = st.session_state.menu
+    
     # Define icons for each menu item
     icons = {
         "tasks": "fa-solid fa-list-check",
@@ -251,12 +259,12 @@ def render_bottom_nav() -> None:
     }
     
     items_html = ""
-    for idx, (key, menu_key) in enumerate(MENU.items()):
-        is_active = "active" if idx == 0 else "" # Tasks is active by default
+    for key, menu_key in MENU.items():
+        is_active = "active" if active_menu == key else ""
         label = t(menu_key)
         icon = icons.get(key, "fa-solid fa-circle")
         items_html += f"""
-        <div class="nav-item {is_active}" onclick="window.parent.switchTab({idx}, this)">
+        <div class="nav-item {is_active}" onclick="window.parent.postMessage({{type: 'change_menu_url', menu: '{key}'}}, '*')">
             <i class="{icon}"></i>
             <span>{label}</span>
         </div>
@@ -275,28 +283,8 @@ def render_bottom_nav() -> None:
             }}
             nav.innerHTML = `{items_html}`;
             
-            // Define the tab switching function globally
-            if (!window.parent.switchTab) {{
-                window.parent.switchTab = function(index, element) {{
-                    const tabsLists = doc.querySelectorAll('div[data-testid="stTabs"]:has(.hide-main-tabs) > div[data-baseweb="tab-list"]');
-                    if (tabsLists.length > 0) {{
-                        const tabButtons = tabsLists[0].querySelectorAll('button[role="tab"]');
-                        if (tabButtons.length > index) {{
-                            tabButtons[index].click();
-                        }}
-                    }}
-                    
-                    // Update active class on nav items
-                    const navs = doc.querySelectorAll('.bottom-nav');
-                    navs.forEach(n => {{
-                        const items = n.querySelectorAll('.nav-item');
-                        items.forEach(item => item.classList.remove('active'));
-                        if (items.length > index) {{
-                            items[index].classList.add('active');
-                        }}
-                    }});
-                }};
-            }}
+            // Re-apply active class based on items_html
+            // The active state is already handled by Streamlit rerun
         }})();
         </script>
         """,
@@ -404,28 +392,15 @@ def render_achievements(score: dict[str, Any]) -> None:
 def render_sidebar() -> None:
     with st.sidebar:
         st.markdown(f"### {t('nav')}")
-        
-        # Output custom HTML buttons for instant tab switching
-        sidebar_buttons_html = ""
-        for idx, (key, menu_key) in enumerate(MENU.items()):
-            label = t(menu_key)
-            sidebar_buttons_html += f"""
-            <button class="sidebar-btn" onclick="window.parent.switchTab({idx}, null); return false;" 
-                    style="width: 100%; padding: 0.5rem 1rem; margin-bottom: 0.5rem; text-align: left; 
-                           background: rgba(10, 134, 255, 0.1); color: #0a86ff; border: 1px solid rgba(10, 134, 255, 0.2); 
-                           border-radius: 8px; cursor: pointer; font-weight: 600;">
-                {label}
-            </button>
-            """
-            
-        components.html(
-            f"""
-            <div style="display: flex; flex-direction: column;">
-                {sidebar_buttons_html}
-            </div>
-            """,
-            height=250,
-        )
+        for key, menu_key in MENU.items():
+            if st.button(
+                t(menu_key),
+                key=f"menu_{key}",
+                use_container_width=True,
+                type="primary" if st.session_state.menu == key else "secondary",
+            ):
+                st.session_state.menu = key
+                st.rerun()
 
         st.markdown("---")
         selected_dark = st.toggle(t("dark_mode"), value=st.session_state.dark_mode, key="sidebar_dark_mode")
@@ -632,9 +607,9 @@ def get_score_label(score: float) -> str:
 
 
 @st.fragment
-def render_habits_section(client: APIClient, selected_day: date):
+def render_habits_section(client: APIClient, selected_day: date, user_id: int):
     st.markdown(f"<div class='section-title'>Today's Habits</div>", unsafe_allow_html=True)
-    habits, habit_err = call_api(cached_get_habits, selected_day, client)
+    habits, habit_err = call_api(cached_get_habits, user_id, selected_day, client)
     if habit_err:
         st.warning(habit_err)
     elif habits:
@@ -689,7 +664,7 @@ def reports_page(client: APIClient, user_id: int) -> None:
         st.error(err)
     
     # 2. Today's Habits (using fragment)
-    render_habits_section(client, selected_day)
+    render_habits_section(client, selected_day, user_id)
 
     st.markdown("---")
 
@@ -701,7 +676,7 @@ def reports_page(client: APIClient, user_id: int) -> None:
 
     # 4. Weekly Summary (Comparison from weekly summary endpoint)
     st.markdown(f"<div class='section-title'>Weekly Summary</div>", unsafe_allow_html=True)
-    weekly_summary, summary_err = call_api(cached_weekly_summary, client)
+    weekly_summary, summary_err = call_api(cached_weekly_summary, user_id, client)
     if weekly_summary:
         current_week = weekly_summary["current_week"]
         success_change = weekly_summary["success_change"]
@@ -808,7 +783,7 @@ def me_page(client: APIClient, user_id: int) -> None:
     assert score is not None and tasks is not None
 
     # Get missed tasks
-    missed, missed_err = call_api(client.get_missed_tasks, fallback_message="Could not load missed tasks")
+    missed, missed_err = call_api(cached_get_missed_tasks, user_id, client, fallback_message="Could not load missed tasks")
     missed_count = missed.get("count", 0) if missed else 0
 
     # Render Hero and Progress
@@ -826,9 +801,9 @@ def me_page(client: APIClient, user_id: int) -> None:
 
 
 @st.fragment
-def render_weekly_insights(client: APIClient, theme):
+def render_weekly_insights(client: APIClient, theme, user_id: int):
     # --- Load Smart Insights (Cached) ---
-    smart_insights, insights_err = call_api(cached_smart_insights, client)
+    smart_insights, insights_err = call_api(cached_smart_insights, user_id, client)
     if insights_err:
         st.warning(insights_err)
         return
@@ -922,7 +897,7 @@ def weekly_report_page(client: APIClient, user_id: int) -> None:
     st.plotly_chart(plot_score_trend(weekly_df, st.session_state.dark_mode), use_container_width=True, config={"displayModeBar": False})
     
     # Render Insights via Fragment
-    render_weekly_insights(client, theme)
+    render_weekly_insights(client, theme, user_id)
 
 
 
@@ -1010,10 +985,24 @@ def render_analytics_section(tasks, dark_mode):
 def tasks_analytics_page(client: APIClient, user_id: int) -> None:
     st.markdown(f"<div class='section-title'>{t('tasks_analytics')}</div>", unsafe_allow_html=True)
     
-    # Create native tabs for instant switching on the client side
-    tab_tasks, tab_goals = st.tabs(["📋 Tasks", "🎯 Goals"])
+    # Initialize active tab in session state if not exists
+    if "tasks_goals_tab" not in st.session_state:
+        st.session_state.tasks_goals_tab = "Tasks"
     
-    with tab_tasks:
+    # Create tab buttons with styling
+    tab1, tab2 = st.columns(2)
+    with tab1:
+        if st.button("📋 Tasks", key="tab_tasks", use_container_width=True, type="primary" if st.session_state.tasks_goals_tab == "Tasks" else "secondary"):
+            st.session_state.tasks_goals_tab = "Tasks"
+            st.rerun()
+    with tab2:
+        if st.button("🎯 Goals", key="tab_goals", use_container_width=True, type="primary" if st.session_state.tasks_goals_tab == "Goals" else "secondary"):
+            st.session_state.tasks_goals_tab = "Goals"
+            st.rerun()
+    
+    st.markdown("---")
+    
+    if st.session_state.tasks_goals_tab == "Tasks":
         selected_day = st.date_input(t("task_day"), value=date.today(), key="task_day")
 
         with st.form("add_task"):
@@ -1058,7 +1047,7 @@ def tasks_analytics_page(client: APIClient, user_id: int) -> None:
         with right:
             render_analytics_section(tasks, st.session_state.dark_mode)
     
-    with tab_goals:
+    else:
         # Goals Tab
         st.markdown(f"<div class='section-title'>Your Goals</div>", unsafe_allow_html=True)
         
@@ -1102,7 +1091,7 @@ def tasks_analytics_page(client: APIClient, user_id: int) -> None:
                     st.rerun()
         
         # Load and display goals
-        goals, goals_err = call_api(cached_get_goals, client, fallback_message="Could not load goals")
+        goals, goals_err = call_api(cached_get_goals, user_id, client, fallback_message="Could not load goals")
         if goals_err:
             st.error(goals_err)
             return
@@ -1272,29 +1261,20 @@ def main() -> None:
     
     user_id = int(st.session_state.user_id)
     
-    # Use native st.tabs for the main menu to make switching INSTANT
-    tab_tasks, tab_reports, tab_weekly, tab_me, tab_settings = st.tabs(["tasks", "reports", "weekly", "me", "settings"])
-    
-    with tab_tasks:
-        st.markdown("""<style>
-        /* Hide ONLY the main menu tabs header, keeping other tabs (like Tasks/Goals) visible */
-        div[data-testid="stTabs"]:has(.hide-main-tabs) > div[data-baseweb="tab-list"] {
-            display: none !important;
-        }
-        </style><div class='hide-main-tabs'></div>""", unsafe_allow_html=True)
+    if st.session_state.menu == "tasks":
         tasks_analytics_page(client, user_id)
-        
-    with tab_reports:
+    elif st.session_state.menu == "reports":
         reports_page(client, user_id)
-        
-    with tab_weekly:
-        weekly_report_page(client, user_id)
-        
-    with tab_me:
+    elif st.session_state.menu == "me":
         me_page(client, user_id)
-        
-    with tab_settings:
+    elif st.session_state.menu == "weekly":
+        weekly_report_page(client, user_id)
+    elif st.session_state.menu == "notifications":
+        notifications_page()
+    elif st.session_state.menu == "settings":
         settings_page()
+    else:
+        tasks_analytics_page(client, user_id)
 
 
 if __name__ == "__main__":
