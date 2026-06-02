@@ -1901,13 +1901,6 @@ async function loadReports() {
 
         await Promise.all([loadWeeklySummary(), loadTodayHabits()]);
 
-        // Generate personalized intelligence feed
-        try {
-            const identity = await apiFetch('/identity/profile');
-            const history = await apiFetch('/score/history?days=30');
-            generateDashboardIntelligence(identity, score, history);
-        } catch(e) { /* Non-critical */ }
-
     } catch (err) {
         console.error('Reports load failed', err);
     }
@@ -2330,6 +2323,22 @@ async function loadInsights() {
         const endStr = end.toISOString().split('T')[0];
         renderRealInsights(await apiFetch(`/tasks/range?start_date=${startStr}&end_date=${endStr}`));
         loadIdentityProfile();
+        
+        // Also populate Today's Insights and Personal Records since they were moved here
+        try {
+            const identity = await apiFetch('/identity/profile');
+            const history = await apiFetch('/score/history?days=30');
+            const todayStr = new Date().toISOString().split('T')[0];
+            const todayScore = await apiFetch('/score/daily', {
+                method: 'POST',
+                body: JSON.stringify({ user_id: currentUser.user_id, day: todayStr })
+            });
+            generateDashboardIntelligence(identity, todayScore, history);
+            renderPersonalRecords(identity);
+        } catch(e) {
+            console.error('Failed to load insight feeds', e);
+        }
+        
     } catch (err) {
         console.error('Insights load failed', err);
     }
@@ -2350,7 +2359,9 @@ async function loadWeeklyTrend() {
 
 function updateTrendChart(history) {
     cachedWeeklyTrendHistory = history;
-    const ctx = document.getElementById('weekly-trend-chart').getContext('2d');
+    const canvas = document.getElementById('weekly-trend-chart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     if (trendChart) trendChart.destroy();
 
     const labels = history.map(s => s.date.split('-').slice(1).reverse().join('/'));
@@ -2433,7 +2444,9 @@ function updateTaskChart(tasks) {
         pending: tasks.filter(t => t.status === 'pending').length
     };
 
-    const ctx = document.getElementById('task-pie-chart').getContext('2d');
+    const canvas = document.getElementById('task-pie-chart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     
     if (taskChart) {
         taskChart.destroy();
@@ -4526,8 +4539,7 @@ async function loadProgressHub() {
         // Render Achievements Grid in Progress Hub
         renderAchievements(identity.badges);
 
-        // Dynamically compute Personal Records & Timeline
-        await renderPersonalRecords(identity);
+        // Dynamically compute Timeline
         await renderMilestoneTimeline(identity);
         await renderPerformanceReports(identity);
         await renderSeasonalChallenges();
