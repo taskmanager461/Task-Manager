@@ -3,27 +3,43 @@ import base64
 import os
 from pathlib import Path
 
+# Cache for base64 images to avoid reloading/encoding on every render
+_image_cache = {}
+
 def get_base64_image(image_path):
     try:
+        # Check cache first
+        if image_path in _image_cache:
+            return _image_cache[image_path]
+            
         if os.path.exists(image_path):
             with open(image_path, "rb") as img_file:
-                return base64.b64encode(img_file.read()).decode()
+                encoded = base64.b64encode(img_file.read()).decode()
+                _image_cache[image_path] = encoded
+                return encoded
         return ""
     except:
         return ""
+
+# Cache for logo
+_logo_cache = {}
 
 def render_logo(dark_mode: bool) -> None:
     primary_color = "#0a86ff"
     text_color = "#000000" if not dark_mode else "#ffffff"
     glow_style = f"filter: drop-shadow(0 0 12px {primary_color});" if dark_mode else ""
     
+    cache_key = ("logo", dark_mode)
+    if cache_key in _logo_cache:
+        st.markdown(_logo_cache[cache_key], unsafe_allow_html=True)
+        return
+    
     current_file = Path(__file__).resolve()
     project_root = current_file.parent.parent.parent
     logo_path = project_root / "frontend" / "public" / "assets" / "new_logo.png"
     logo_b64 = get_base64_image(str(logo_path))
     
-    st.markdown(
-        f"""
+    html = f"""
         <div style="text-align: center; margin-bottom: 2.5rem; animation: fadeIn 0.8s ease-out;">
             <img src="data:image/png;base64,{logo_b64}" class="auth-logo" style="{glow_style} width: 100%; max-width: 300px; height: auto; object-fit: contain;">
         </div>
@@ -33,18 +49,68 @@ def render_logo(dark_mode: bool) -> None:
                 to {{ opacity: 1; transform: translateY(0); }}
             }}
         </style>
-        """,
-        unsafe_allow_html=True
-    )
+        """
+    _logo_cache[cache_key] = html
+    st.markdown(html, unsafe_allow_html=True)
+
+# Cache for hero metrics images
+_hero_images_cache = None
+
+def _load_hero_images():
+    global _hero_images_cache
+    if _hero_images_cache is not None:
+        return _hero_images_cache
+        
+    # Path setup
+    current_file = Path(__file__).resolve()
+    project_root = current_file.parent.parent.parent
+        
+    # Try multiple paths for robustness (Server-safe)
+    search_roots = [
+        project_root, 
+        Path.cwd(), 
+        Path(__file__).resolve().parent.parent.parent,
+        project_root / "frontend" / "static"
+    ]
+    
+    # Load badge images first
+    badges = {}
+    badge_names = ["badge_excellent.png", "badge_good.png", "badge_average.png", "badge_low.png"]
+    for badge_name in badge_names:
+        for root in search_roots:
+            bp = root / badge_name
+            if bp.exists():
+                b64 = get_base64_image(str(bp))
+                if b64:
+                    badges[badge_name] = b64
+                    break
+    
+    # Load other icons
+    icons = {}
+    for root in search_roots:
+        try:
+            if root.exists():
+                for f in os.listdir(root):
+                    if f.startswith("ChatGPT Image"):
+                        if "06_42_45" in f:
+                            icons["img1"] = get_base64_image(str(root / f))
+                        elif "01_28_01" in f:
+                            icons["img4"] = get_base64_image(str(root / f))
+                        elif "01_40_08" in f:
+                            icons["img6"] = get_base64_image(str(root / f))
+        except:
+            pass
+    
+    _hero_images_cache = (badges, icons)
+    return _hero_images_cache
 
 def hero_metrics(score_value: str, score_label: str,
                   streak_value: str, streak_sub: str,
                   success_value: str, success_sub: str) -> None:
     is_dark = bool(st.session_state.get("dark_mode", True))
     
-    # Path setup
-    current_file = Path(__file__).resolve()
-    project_root = current_file.parent.parent.parent
+    # Load cached images
+    badges, icons = _load_hero_images()
     
     # Find the badge file dynamically
     lbl = str(score_label).lower()
@@ -54,36 +120,11 @@ def hero_metrics(score_value: str, score_label: str,
     elif "average" in lbl: target_name = "badge_average.png"
     elif "low" in lbl: target_name = "badge_low.png"
         
-    badge_b64 = ""
-    # Try multiple paths for robustness (Server-safe)
-    search_roots = [
-        project_root, 
-        Path.cwd(), 
-        Path(__file__).resolve().parent.parent.parent,
-        project_root / "frontend" / "static"
-    ]
-    for root in search_roots:
-        bp = root / target_name
-        if bp.exists():
-            badge_b64 = get_base64_image(str(bp))
-            if badge_b64:
-                break
+    badge_b64 = badges.get(target_name, "")
 
-    # Other icons
-    def find_icon(pattern):
-        for root in search_roots:
-            try:
-                if root.exists():
-                    for f in os.listdir(root):
-                        if f.startswith("ChatGPT Image") and pattern in f:
-                            return get_base64_image(str(root / f))
-            except:
-                pass
-        return ""
-
-    img1 = find_icon("06_42_45") # img1
-    img4 = find_icon("01_28_01") # img4
-    img6 = find_icon("01_40_08") # img6
+    img1 = icons.get("img1", "")
+    img4 = icons.get("img4", "")
+    img6 = icons.get("img6", "")
 
     badge_html = ""
     if badge_b64:

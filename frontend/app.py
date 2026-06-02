@@ -57,6 +57,14 @@ def cached_get_tasks(user_id: int, day: date, _client: APIClient):
 def cached_get_habits(day: date, _client: APIClient):
     return _client.get_habits(day)
 
+@st.cache_data(ttl=10)
+def cached_compute_daily_score(user_id: int, day: date, _client: APIClient):
+    return _client.compute_daily_score(user_id, day)
+
+@st.cache_data(ttl=10)
+def cached_get_goals(_client: APIClient):
+    return _client.get_goals()
+
 
 def init_state() -> None:
     # Handle Navigation from Query Params
@@ -495,9 +503,10 @@ def load_day_bundle(
     day: date,
 ) -> tuple[dict[str, Any] | None, list[dict[str, Any]] | None, str | None]:
     score, score_err = call_api(
-        client.compute_daily_score,
-        user_id=user_id,
-        day=day,
+        cached_compute_daily_score,
+        user_id,
+        day,
+        client,
         fallback_message=t("could_not_compute_daily_score"),
     )
     if score_err:
@@ -1019,7 +1028,7 @@ def tasks_analytics_page(client: APIClient, user_id: int) -> None:
                     st.toast(t("task_added"))
                     st.rerun()
 
-        tasks, err = call_api(client.get_tasks, user_id=user_id, day=selected_day, fallback_message=t("could_not_load_tasks"))
+        tasks, err = call_api(cached_get_tasks, user_id, selected_day, client, fallback_message=t("could_not_load_tasks"))
         if err:
             st.error(err)
             return
@@ -1076,7 +1085,7 @@ def tasks_analytics_page(client: APIClient, user_id: int) -> None:
                     st.rerun()
         
         # Load and display goals
-        goals, goals_err = call_api(client.get_goals, fallback_message="Could not load goals")
+        goals, goals_err = call_api(cached_get_goals, client, fallback_message="Could not load goals")
         if goals_err:
             st.error(goals_err)
             return

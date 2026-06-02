@@ -1103,7 +1103,16 @@ function showView(viewId) {
         document.body.dataset.windowScrollBound = "true";
     }
 
-    // Load Data
+    // Load Data with caching (Instant loading)
+    const now = Date.now();
+    const CACHE_TTL = 30000; // 30 seconds
+    if (!window.viewCacheTime) window.viewCacheTime = {};
+    
+    if (window.viewCacheTime[viewId] && (now - window.viewCacheTime[viewId]) < CACHE_TTL) {
+        return; // Skip network requests, UI already updated!
+    }
+    window.viewCacheTime[viewId] = now;
+
     if (viewId === 'reports') loadReports();
     if (viewId === 'me') loadMe();
     if (viewId === 'progress') loadProgressHub();
@@ -1115,6 +1124,11 @@ function showView(viewId) {
     if (viewId === 'goals') loadGoals();
     if (viewId === 'insights') loadInsights();
     if (viewId === 'settings') applyTheme(); // Sync theme switch state
+}
+
+// Invalidate caches when actions happen
+function invalidateCaches() {
+    window.viewCacheTime = {};
 }
 
 function getBottomNavViewOrder() {
@@ -1582,6 +1596,13 @@ async function apiFetch(endpoint, options = {}) {
     
     if (supabaseAccessToken) {
         options.headers['Authorization'] = `Bearer ${supabaseAccessToken}`;
+    }
+    
+    // Invalidate caches if it's a mutating request
+    if (options.method && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(options.method.toUpperCase())) {
+        if (!apiEndpoint.includes('/score/daily')) { // ignore read-only pseudo-POSTs
+            if (typeof invalidateCaches === 'function') invalidateCaches();
+        }
     }
     
     try {
