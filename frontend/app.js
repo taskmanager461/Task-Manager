@@ -2310,13 +2310,22 @@ async function loadMissedTasks() {
 
 async function loadWeeklySummary() {
     try {
-        const data = await apiFetch('/score/weekly-summary');
         const container = document.getElementById('weekly-summary');
         const content = document.getElementById('weekly-summary-content');
         
+        if (container && content) {
+            const cachedHtml = localStorage.getItem('tm_weekly_summary_html');
+            if (cachedHtml) {
+                container.style.display = 'block';
+                content.innerHTML = cachedHtml;
+            }
+        }
+
+        const data = await apiFetch('/score/weekly-summary');
+        
         container.style.display = 'block';
         
-        content.innerHTML = `
+        const html = `
             <div class="weekly-summary-stats">
                 <div class="weekly-summary-stat">
                     <span class="label">Total Tasks</span>
@@ -2339,6 +2348,8 @@ async function loadWeeklySummary() {
                 ${data.success_change >= 0 ? '↑' : '↓'} ${Math.abs(data.success_change)}% ${data.success_change >= 0 ? 'improvement' : 'drop'} from last week
             </div>
         `;
+        content.innerHTML = html;
+        localStorage.setItem('tm_weekly_summary_html', html);
     } catch (err) {
         console.error('Weekly summary load failed', err);
     }
@@ -2699,7 +2710,7 @@ function renderTodayHabits(habits) {
         list.innerHTML = `<div class="for-you-item">No habits scheduled for today.</div>`;
         return;
     }
-    list.innerHTML = dueHabits.map(habit => `
+    const html = dueHabits.map(habit => `
         <div class="for-you-item">
             <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem;">
                 <span>${habit.title} 🔥 ${habit.streak}</span>
@@ -2713,9 +2724,19 @@ function renderTodayHabits(habits) {
             </div>
         </div>
     `).join('');
+    list.innerHTML = html;
+    localStorage.setItem('tm_today_habits_html', html);
 }
 
 async function loadTodayHabits() {
+    const list = document.getElementById('today-habits-list');
+    if (list) {
+        const cachedHtml = localStorage.getItem('tm_today_habits_html');
+        if (cachedHtml) {
+            list.innerHTML = cachedHtml;
+        }
+    }
+
     if (cachedHabits.length > 0) {
         renderTodayHabits(cachedHabits);
         return;
@@ -2725,8 +2746,9 @@ async function loadTodayHabits() {
         cachedHabits = habits;
         renderTodayHabits(habits);
     } catch (err) {
-        const list = document.getElementById('today-habits-list');
-        if (list) list.innerHTML = `<div class="for-you-item">Unable to load habits now.</div>`;
+        if (list && !list.innerHTML) {
+            list.innerHTML = `<div class="for-you-item">Unable to load habits now.</div>`;
+        }
     }
 }
 
@@ -3671,6 +3693,16 @@ function renderAchievements(badges) {
     allAchievementsData = badges;
     updateAchievementStats(badges);
     updateAchievementRing(badges);
+    
+    // Check if we have a cache to render instantly
+    const grid = document.getElementById('achievements-grid');
+    if (grid) {
+        const cachedHtml = localStorage.getItem('tm_achievements_html');
+        if (cachedHtml && currentAchievementFilter === 'All' && !currentAchievementSearch) {
+            grid.innerHTML = cachedHtml;
+        }
+    }
+    
     renderAchievementGrid(badges);
 
     // Wire up search (only once)
@@ -3769,7 +3801,7 @@ function renderAchievementGrid(badges) {
         return (rarityOrder[a.rarity] ?? 3) - (rarityOrder[b.rarity] ?? 3);
     });
 
-    grid.innerHTML = sorted.map(b => {
+    const html = sorted.map(b => {
         const rClass = `rarity-${b.rarity.toLowerCase()}`;
         const lockedClass = b.unlocked ? 'unlocked' : 'locked';
         const icon = getAchievementIcon(b.id);
@@ -3811,6 +3843,13 @@ function renderAchievementGrid(badges) {
         </div>
         `;
     }).join('');
+    
+    grid.innerHTML = html;
+    
+    // Cache the "All" unfiltered view
+    if (currentAchievementFilter === 'All' && !currentAchievementSearch) {
+        localStorage.setItem('tm_achievements_html', html);
+    }
 }
 
 function triggerTrustScoreFeedback(diff) {
