@@ -962,9 +962,10 @@ body.light-mode #forgot-form select {
 
 .view-header {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem; /* reduced from 1.5rem */
     background: transparent;
     border: none;
     border-radius: 0;
@@ -972,6 +973,15 @@ body.light-mode #forgot-form select {
     box-shadow: none;
     z-index: 1;
     position: relative;
+    gap: 0.5rem;
+}
+
+.view-header h1 {
+    font-size: 1.25rem !important; /* Reduced font size */
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 0 !important;
+    color: var(--text-primary);
 }
 
 
@@ -1953,8 +1963,8 @@ body.light-mode .toast {
     
     .view-header {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
+        align-items: center; /* Changed from flex-start to center */
+        gap: 0.5rem; /* Reduced from 1rem */
     }
     
     .view-header h1 { margin-bottom: 0; }

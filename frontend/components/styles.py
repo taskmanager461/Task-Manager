@@ -109,13 +109,20 @@ def get_theme_css(dark_mode: bool) -> str:
         font-weight: 600 !important;
         text-align: center !important;
         margin-top: 0 !important;
-        margin-bottom: -1rem !important;
+        margin-bottom: 0 !important;
         letter-spacing: 0.05em !important;
         color: {c["muted"]} !important;
         opacity: 0.8 !important;
         text-transform: uppercase !important;
         display: block !important;
         width: 100% !important;
+    }}
+
+    /* Remove Streamlit's default gap around section titles */
+    div[data-testid="stMarkdownContainer"]:has(.section-title),
+    div.element-container:has(.section-title) {{
+        margin-bottom: -1.5rem !important;
+        padding-bottom: 0 !important;
     }}
 
     /* === COMPLETELY NEW METRIC CARDS === */
