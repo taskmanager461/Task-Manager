@@ -1,9 +1,9 @@
-const CACHE_NAME = "task-manager-v18.1.0";
+const CACHE_NAME = "task-manager-v18.2.0";
 const ASSETS_TO_CACHE = [
   "/",
   "/index.html",
   "/styles.css?v=42.0.3",
-  "/app.js?v=18.1.0",
+  "/app.js?v=18.2.0",
   "/assets.js?v=17.0.0",
   "/badge_assets.js?v=36.0.0",
   "/manifest.json",
@@ -52,13 +52,16 @@ self.addEventListener("fetch", (event) => {
 
   if (event.request.mode === "navigate") {
     event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put("/index.html", copy));
-          return response;
-        })
-        .catch(() => caches.match("/index.html"))
+      caches.match("/index.html").then((cached) => {
+        const fetchPromise = fetch(event.request)
+          .then((response) => {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put("/index.html", copy));
+            return response;
+          })
+          .catch(() => cached || caches.match("/index.html"));
+        return cached || fetchPromise;
+      })
     );
     return;
   }

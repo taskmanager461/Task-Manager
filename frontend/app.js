@@ -1,6 +1,6 @@
 // Configuration
 const API_BASE_URL = window.location.origin;
-const APP_BUILD = '18.1.0';
+const APP_BUILD = '18.3.0';
 const SUPABASE_URL = 'https://hngljslkwyzzlcugiiqz.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_YTyCF9SfOoh-5TaFLUVxmw_NYk3_jiO';
 const supabaseClient = window.supabase?.createClient
@@ -32,16 +32,27 @@ function ensureChartJs() {
 function migrateClientCaches() {
     const prev = localStorage.getItem('tm_app_build');
     if (prev === APP_BUILD) return;
-    const keysToClear = [
-        'tm_hero_metrics_html',
-        'tm_weekly_summary_html',
-        'tm_todays_insights',
-        'tm_today_habits_html',
-        'tm_cached_identity',
-        'tm_achievements_html'
-    ];
-    for (const k of keysToClear) localStorage.removeItem(k);
     localStorage.setItem('tm_app_build', APP_BUILD);
+}
+
+function cacheGet(key, maxAgeMs) {
+    try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return null;
+        const t = parsed.t;
+        if (!t || (Date.now() - t) > maxAgeMs) return null;
+        return parsed.v ?? null;
+    } catch (e) {
+        return null;
+    }
+}
+
+function cacheSet(key, value) {
+    try {
+        localStorage.setItem(key, JSON.stringify({ t: Date.now(), v: value }));
+    } catch (e) {}
 }
 
 // State Management
@@ -1965,6 +1976,13 @@ async function loadReports() {
         }
 
         const today = new Date().toISOString().split('T')[0];
+        const cachedScore = cacheGet(`tm_cache_score_daily_${today}`, 2 * 60 * 1000);
+        if (cachedScore) {
+            cachedDailyScore = cachedScore;
+            await renderHeroMetrics(cachedScore);
+            const progressFill = document.getElementById('daily-progress-fill');
+            if (progressFill) progressFill.style.width = `${(cachedScore.success_rate || 0) * 100}%`;
+        }
 
         const scorePromise = apiFetch('/score/daily', {
             method: 'POST',
@@ -1976,6 +1994,8 @@ async function loadReports() {
         const score = await scorePromise;
         await calendarPromise;
 
+        cachedDailyScore = score;
+        cacheSet(`tm_cache_score_daily_${today}`, score);
         await renderHeroMetrics(score);
 
         const progressFill = document.getElementById('daily-progress-fill');
@@ -2040,7 +2060,15 @@ async function loadMe() {
 
 async function loadMeInsights() {
     // Fetch 30-day score history
-    const history = await apiFetch('/score/history?days=30');
+    let history = cacheGet('tm_cache_score_history_30', 10 * 60 * 1000);
+    if (!history || !Array.isArray(history)) {
+        history = await apiFetch('/score/history?days=30');
+        cacheSet('tm_cache_score_history_30', history);
+    } else {
+        apiFetch('/score/history?days=30').then(fresh => {
+            if (fresh && Array.isArray(fresh)) cacheSet('tm_cache_score_history_30', fresh);
+        }).catch(() => {});
+    }
     
     // Best Day
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -2502,11 +2530,18 @@ async function loadInsights() {
 
 async function loadWeeklyTrend() {
     try {
+        const cached = cacheGet('tm_cache_score_history_7', 5 * 60 * 1000);
+        if (cached && Array.isArray(cached) && document.getElementById('weekly-trend-chart') && window.Chart) {
+            cachedWeeklyTrendHistory = cached;
+            updateTrendChart(cached);
+        }
         let url = `/score/history?days=7`;
         if (currentUser.user_id && Number.isInteger(currentUser.user_id)) {
             url += `&user_id=${currentUser.user_id}`;
         }
         const scores = await apiFetch(url);
+        cachedWeeklyTrendHistory = scores;
+        cacheSet('tm_cache_score_history_7', scores);
         await ensureChartJs();
         updateTrendChart(scores);
     } catch (err) {
@@ -2670,11 +2705,29 @@ async function loadTasks() {
     if (cachedTasks.length > 0) {
         renderTasks(cachedTasks);
     } else if (list.innerHTML === '' || list.querySelector('.empty-state')) {
-        list.innerHTML = `
-            <div class="task-card skeleton" style="height: 80px; opacity: 0.6;"></div>
-            <div class="task-card skeleton" style="height: 80px; opacity: 0.4;"></div>
-            <div class="task-card skeleton" style="height: 80px; opacity: 0.2;"></div>
-        `;
+        try {
+            const today = new Date().toISOString().split('T')[0];
+            const priority = document.getElementById('filter-priority')?.value || '';
+            const status = document.getElementById('filter-status')?.value || '';
+            const cacheKey = `tm_cache_tasks_${today}_${priority}_${status}`;
+            const cached = cacheGet(cacheKey, 5 * 60 * 1000);
+            if (cached && Array.isArray(cached)) {
+                cachedTasks = cached;
+                renderTasks(cached);
+            } else {
+                list.innerHTML = `
+                    <div class="task-card skeleton" style="height: 80px; opacity: 0.6;"></div>
+                    <div class="task-card skeleton" style="height: 80px; opacity: 0.4;"></div>
+                    <div class="task-card skeleton" style="height: 80px; opacity: 0.2;"></div>
+                `;
+            }
+        } catch (e) {
+            list.innerHTML = `
+                <div class="task-card skeleton" style="height: 80px; opacity: 0.6;"></div>
+                <div class="task-card skeleton" style="height: 80px; opacity: 0.4;"></div>
+                <div class="task-card skeleton" style="height: 80px; opacity: 0.2;"></div>
+            `;
+        }
     }
 
     try {
@@ -2691,6 +2744,8 @@ async function loadTasks() {
 
         const tasks = await apiFetch(url);
         cachedTasks = tasks;
+        const cacheKey = `tm_cache_tasks_${today}_${priority || ''}_${status || ''}`;
+        cacheSet(cacheKey, tasks);
         renderTasks(tasks);
     } catch (err) {
         console.error('Tasks load failed', err);
@@ -2753,8 +2808,15 @@ function renderHabits(habits) {
 
 async function loadHabits() {
     try {
+        const cached = cacheGet('tm_cache_habits', 5 * 60 * 1000);
+        if (cached && Array.isArray(cached)) {
+            cachedHabits = cached;
+            renderHabits(cached);
+            if (currentView === 'reports') renderTodayHabits(cached);
+        }
         const habits = await apiFetch('/habits');
         cachedHabits = habits;
+        cacheSet('tm_cache_habits', habits);
         renderHabits(habits);
         if (currentView === 'reports') renderTodayHabits(habits);
     } catch (err) {
@@ -3095,8 +3157,15 @@ function toggleTaskGoalLink(isEnabled) {
 async function loadGoals() {
     const list = document.getElementById('goals-list');
     try {
+        const cached = cacheGet('tm_cache_goals', 5 * 60 * 1000);
+        if (cached && Array.isArray(cached)) {
+            cachedGoals = cached;
+            populateGoalOptions();
+            if (list) renderGoals(cached);
+        }
         const goals = await apiFetch('/goals');
         cachedGoals = goals;
+        cacheSet('tm_cache_goals', goals);
         populateGoalOptions();
         if (list) {
             renderGoals(goals);
