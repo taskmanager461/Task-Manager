@@ -1520,21 +1520,13 @@ function showNotification(task) {
 }
 
 // --- Real Insights Upgrade ---
-async function loadInsights() {
-    showLoading(true);
-    try {
-        // Fetch all user tasks for comprehensive insights
-        const tasks = await apiFetch(`/tasks/range?start_date=2000-01-01&end_date=2100-12-31`);
-        renderRealInsights(tasks);
-    } catch (err) {
-        console.error('Insights load failed', err);
-    } finally {
-        showLoading(false);
-    }
-}
-
 function renderRealInsights(tasks) {
-    if (!tasks || tasks.length === 0) return;
+    if (!tasks || tasks.length === 0) {
+        document.getElementById('insight-best-day').textContent = 'Not enough data';
+        document.getElementById('insight-best-hour').textContent = 'Not enough data';
+        document.getElementById('insight-failure-pattern').textContent = 'Not enough data';
+        return;
+    }
 
     const completed = tasks.filter(t => t.status === 'completed');
     const failed = tasks.filter(t => t.status === 'failed');
@@ -1547,23 +1539,35 @@ function renderRealInsights(tasks) {
         dayCounts[d] = (dayCounts[d] || 0) + 1;
     });
     const dayNames = [t('sun'), t('mon'), t('tue'), t('wed'), t('thu'), t('fri'), t('sat')];
-    let bestDayIdx = 0;
-    for (let d in dayCounts) if (dayCounts[d] > (dayCounts[bestDayIdx] || 0)) bestDayIdx = d;
+    let bestDayIdx = null;
+    let maxDayCount = 0;
+    for (let d in dayCounts) {
+        if (dayCounts[d] > maxDayCount) {
+            bestDayIdx = d;
+            maxDayCount = dayCounts[d];
+        }
+    }
 
-    // Most active hours
+    // Most active hours (only from completed tasks)
     const hourCounts = {};
-    tasks.forEach(t => {
+    completed.forEach(t => {
         if (t.time) {
             const h = t.time.split(':')[0];
             hourCounts[h] = (hourCounts[h] || 0) + 1;
         }
     });
-    let bestHour = '00';
-    for (let h in hourCounts) if (hourCounts[h] > (hourCounts[bestHour] || 0)) bestHour = h;
+    let bestHour = null;
+    let maxHourCount = 0;
+    for (let h in hourCounts) {
+        if (hourCounts[h] > maxHourCount) {
+            bestHour = h;
+            maxHourCount = hourCounts[h];
+        }
+    }
 
     // Update UI
-    document.getElementById('insight-best-day').textContent = dayNames[bestDayIdx];
-    document.getElementById('insight-best-hour').textContent = `${bestHour}:00`;
+    document.getElementById('insight-best-day').textContent = bestDayIdx !== null ? dayNames[bestDayIdx] : 'Not enough data';
+    document.getElementById('insight-best-hour').textContent = bestHour !== null ? `${bestHour}:00` : 'Not enough data';
     
     // Update stats grid (if exists)
     const successVal = document.getElementById('success-value');
@@ -1572,9 +1576,15 @@ function renderRealInsights(tasks) {
     // Failure patterns
     const failCategories = {};
     failed.forEach(t => failCategories[t.category] = (failCategories[t.category] || 0) + 1);
-    let worstCat = 'None';
-    for (let c in failCategories) if (failCategories[c] > (failCategories[worstCat] || 0)) worstCat = c;
-    document.getElementById('insight-failure-pattern').textContent = worstCat;
+    let worstCat = null;
+    let maxFailCount = 0;
+    for (let c in failCategories) {
+        if (failCategories[c] > maxFailCount) {
+            worstCat = c;
+            maxFailCount = failCategories[c];
+        }
+    }
+    document.getElementById('insight-failure-pattern').textContent = worstCat !== null ? worstCat : 'None';
 }
 
 // Override showView to handle Calendar load
@@ -1625,6 +1635,9 @@ async function apiFetch(endpoint, options = {}) {
         }
         return response.json();
     } catch (err) {
+        if (err.name === 'AbortError') {
+            throw err;
+        }
         if (err.message !== 'Session expired') {
             showToast(err.message, 'error');
         }
@@ -1893,6 +1906,14 @@ function getBadgeImageSrc(scoreClass) {
 // --- Reports & Me Logic ---
 async function loadReports() {
     try {
+        const container = document.getElementById('dashboard-hero-metrics');
+        if (container) {
+            const cachedHtml = localStorage.getItem('tm_hero_metrics_html');
+            if (cachedHtml) {
+                container.innerHTML = cachedHtml;
+            }
+        }
+
         const today = new Date().toISOString().split('T')[0];
 
         const scorePromise = apiFetch('/score/daily', {
@@ -2115,25 +2136,19 @@ async function renderHeroMetrics(score) {
     const scoreVal = score.score.toFixed(1);
     const isLightMode = document.body.classList.contains('light-mode');
     
-    // Use pre-loaded Base64 assets and remove only pure-black background pixels in parallel
-    const [img1, img4, img6] = await Promise.all([
-        removeBlackBackground(ASSETS.img1),
-        removeBlackBackground(ASSETS.img4),
-        removeBlackBackground(ASSETS.img6)
-    ]);
-
     const trustBg = 'var(--trust-bg)';
     const streakBg = 'var(--streak-bg)';
     const successBg = 'var(--success-bg)';
     const progressTrackBg = 'var(--progress-track-bg)';
     const progressTrackBorder = 'var(--progress-track-border)';
 
-    container.innerHTML = `
+    // Define structure without waiting for slow image processing
+    const htmlContent = `
         <!-- Card 1: Trust Score -->
         <div class="hero-metric hero-metric--trust" style="background: ${trustBg} !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
-                    <img src="${img1}">
+                    <img id="hero-img-trust" src="">
                 </div>
                 <div class="hero-metric-label">Self Trust Score</div>
                 <div class="hero-metric-value">${scoreVal}</div>
@@ -2145,7 +2160,7 @@ async function renderHeroMetrics(score) {
         <div class="hero-metric" style="background: ${streakBg} !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
-                    <img src="${img4}">
+                    <img id="hero-img-streak" src="">
                 </div>
                 <div class="hero-metric-label">Current Streak</div>
                 <div class="hero-metric-value">${score.streak}</div>
@@ -2156,7 +2171,7 @@ async function renderHeroMetrics(score) {
         <div class="hero-metric" style="background: ${successBg} !important;">
             <div class="hero-metric-content">
                 <div class="hero-metric-icon">
-                    <img src="${img6}">
+                    <img id="hero-img-success" src="">
                 </div>
                 <div class="hero-metric-label">Success Rate</div>
                 <div class="hero-metric-value">${(score.success_rate * 100).toFixed(0)}%</div>
@@ -2166,6 +2181,29 @@ async function renderHeroMetrics(score) {
             </div>
         </div>
     `;
+
+    container.innerHTML = htmlContent;
+    localStorage.setItem('tm_hero_metrics_html', htmlContent);
+
+    // Process images non-blocking
+    Promise.all([
+        removeBlackBackground(ASSETS.img1),
+        removeBlackBackground(ASSETS.img4),
+        removeBlackBackground(ASSETS.img6)
+    ]).then(([img1, img4, img6]) => {
+        const trustEl = document.getElementById('hero-img-trust');
+        const streakEl = document.getElementById('hero-img-streak');
+        const successEl = document.getElementById('hero-img-success');
+        
+        if (trustEl) trustEl.src = img1;
+        if (streakEl) streakEl.src = img4;
+        if (successEl) successEl.src = img6;
+        
+        // Cache the fully rendered HTML with base64 images included
+        if (container) {
+            localStorage.setItem('tm_hero_metrics_html', container.innerHTML);
+        }
+    }).catch(err => console.error("Error processing hero metrics images:", err));
 }
 
 async function getSmartPersonalization(forceRefresh = false) {
@@ -4314,10 +4352,9 @@ async function openShareModal() {
     modal.classList.add('active');
     
     try {
-        const [identity, socialProfile, allTasks] = await Promise.all([
+        const [identity, socialProfile] = await Promise.all([
             apiFetch('/identity/profile'),
-            apiFetch('/social/profile'),
-            apiFetch('/tasks/range?start_date=2000-01-01&end_date=2100-12-31')
+            apiFetch('/social/profile')
         ]);
         
         shareData = {
@@ -4417,6 +4454,8 @@ function copyProfileLink() {
 
 // --- Dashboard Calendar Functions ---
 let dashboardCalendarRequestId = 0;
+let dashboardCalendarAbortController = null;
+
 async function renderDashboardCalendar() {
     const grid = document.getElementById('dashboard-calendar-grid');
     const title = document.getElementById('dashboard-calendar-month-year');
@@ -4424,6 +4463,12 @@ async function renderDashboardCalendar() {
 
     // Track active request ID to cancel older async responses
     const currentRequestId = ++dashboardCalendarRequestId;
+    
+    // Abort previous request if still pending
+    if (dashboardCalendarAbortController) {
+        dashboardCalendarAbortController.abort();
+    }
+    dashboardCalendarAbortController = new AbortController();
 
     const month = dashboardCalendarDate.getMonth();
     const year = dashboardCalendarDate.getFullYear();
@@ -4491,9 +4536,15 @@ async function renderDashboardCalendar() {
 
     let monthTasks = [];
     try {
-        monthTasks = await apiFetch(`/tasks/range?start_date=${startStr}&end_date=${endStr}`);
+        monthTasks = await apiFetch(`/tasks/range?start_date=${startStr}&end_date=${endStr}`, {
+            signal: dashboardCalendarAbortController.signal
+        });
         localStorage.setItem(cacheKey, JSON.stringify(monthTasks));
     } catch (err) {
+        if (err.name === 'AbortError') {
+            console.log('Calendar request aborted');
+            return;
+        }
         console.error('Failed to load month tasks for calendar', err);
     }
 
@@ -4668,14 +4719,8 @@ async function renderPersonalRecords(identity) {
             highestTrust = Math.max(...history.map(h => h.score), identity.trust_score);
         }
         
-        const tasks = await apiFetch('/tasks/range?start_date=2000-01-01&end_date=2100-12-31');
-        const dayCounts = {};
-        tasks.forEach(t => {
-            if (t.status === 'completed') {
-                dayCounts[t.date] = (dayCounts[t.date] || 0) + 1;
-            }
-        });
-        maxTasksDay = Math.max(...Object.values(dayCounts), 0);
+        const maxTasksData = await apiFetch('/tasks/max_daily');
+        maxTasksDay = maxTasksData.max_tasks_day || 0;
         
         localStorage.setItem(cacheKey, JSON.stringify({ highestTrust, maxTasksDay }));
         renderList(highestTrust, maxTasksDay);
