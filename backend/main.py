@@ -51,11 +51,19 @@ async def lifespan(app: FastAPI):
     init_db_on_startup = _env_flag("INIT_DB_ON_STARTUP", default=False)
     enable_scheduler = _env_flag("ENABLE_SCHEDULER", default=False)
 
+    # Always ensure tables exist and schema is up to date on startup
+    logger.info("Startup: checking database tables and schema compatibility...")
+    try:
+        Base.metadata.create_all(bind=engine)
+        ensure_schema_compatibility()
+        logger.info("Database tables verified and schema compatibility updated.")
+    except Exception as e:
+        logger.error(f"Database verification/schema check failed: {e}")
+
     if init_db_on_startup:
         logger.info("Startup: initializing database...")
         try:
             Base.metadata.create_all(bind=engine)
-            ensure_schema_compatibility()
             logger.info("Database initialized successfully.")
         except Exception as e:
             logger.error(f"Database initialization failed: {e}")
