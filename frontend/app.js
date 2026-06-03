@@ -2309,43 +2309,7 @@ async function loadWeeklySummary() {
 // --- Insights Logic ---
 async function loadInsights() {
     try {
-        const smartData = await getSmartPersonalization();
-        const container = document.getElementById('smart-insights-container');
-        
-        const smartMessages = [
-            ...(smartData.insights || []),
-            ...(smartData.suggestions || []),
-            ...(smartData.adaptive_feedback || []),
-            ...(smartData.habit_insights || []),
-        ].slice(0, 6);
-        if (smartMessages.length > 0) {
-            container.innerHTML = smartMessages.map(insight => `
-                <div class="insight-card">
-                    <span class="icon">✨</span>
-                    <div class="insight-content">
-                        <p style="font-weight: 600; color: var(--text-primary);">${insight}</p>
-                    </div>
-                </div>
-            `).join('');
-        } else {
-            container.innerHTML = '';
-        }
-
-        const completionRate = document.getElementById('goal-completion-rate');
-        const achievedFailed = document.getElementById('goal-achieved-failed');
-        const averageTime = document.getElementById('goal-average-time');
-        if (completionRate) completionRate.textContent = `${smartData.goal_completion_rate || 0}%`;
-        if (achievedFailed) achievedFailed.textContent = `${smartData.goals_achieved || 0} / ${smartData.goals_failed || 0}`;
-        if (averageTime) averageTime.textContent = `${smartData.average_completion_time || 0}d`;
-
-        const end = new Date();
-        const start = new Date(Date.now() - 120 * 86400000);
-        const startStr = start.toISOString().split('T')[0];
-        const endStr = end.toISOString().split('T')[0];
-        renderRealInsights(await apiFetch(`/tasks/range?start_date=${startStr}&end_date=${endStr}`));
-        loadIdentityProfile();
-        
-        // Also populate Today's Insights and Personal Records since they were moved here
+        // Fast path: load cached Today's Insights immediately
         try {
             const feedCacheKey = 'tm_todays_insights';
             const feed = document.getElementById('dashboard-intelligence-feed');
@@ -2353,7 +2317,64 @@ async function loadInsights() {
                 const cachedHtml = localStorage.getItem(feedCacheKey);
                 if (cachedHtml) feed.innerHTML = cachedHtml;
             }
+        } catch(e) {}
 
+        // Fast path: load cached Personal Records immediately
+        try {
+            // We pass a dummy identity since renderPersonalRecords uses cache inside it
+            // but it needs total_tasks etc. Let's get it from tm_cached_identity if available
+            const cachedIdStr = localStorage.getItem('tm_cached_identity');
+            if (cachedIdStr) {
+                renderPersonalRecords(JSON.parse(cachedIdStr));
+            } else {
+                renderPersonalRecords({ completed_tasks: 0, completed_goals: 0, streak: 0, trust_score: 0, total_xp: 0 });
+            }
+        } catch(e) {}
+
+        // Non-blocking fetch for insights
+        getSmartPersonalization().then(smartData => {
+            const container = document.getElementById('smart-insights-container');
+            
+            const smartMessages = [
+                ...(smartData.insights || []),
+                ...(smartData.suggestions || []),
+                ...(smartData.adaptive_feedback || []),
+                ...(smartData.habit_insights || []),
+            ].slice(0, 6);
+            if (smartMessages.length > 0) {
+                container.innerHTML = smartMessages.map(insight => `
+                    <div class="insight-card">
+                        <span class="icon">✨</span>
+                        <div class="insight-content">
+                            <p style="font-weight: 600; color: var(--text-primary);">${insight}</p>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = '';
+            }
+
+            const completionRate = document.getElementById('goal-completion-rate');
+            const achievedFailed = document.getElementById('goal-achieved-failed');
+            const averageTime = document.getElementById('goal-average-time');
+            if (completionRate) completionRate.textContent = `${smartData.goal_completion_rate || 0}%`;
+            if (achievedFailed) achievedFailed.textContent = `${smartData.goals_achieved || 0} / ${smartData.goals_failed || 0}`;
+            if (averageTime) averageTime.textContent = `${smartData.average_completion_time || 0}d`;
+        }).catch(err => console.error('Smart insights load failed', err));
+
+        const end = new Date();
+        const start = new Date(Date.now() - 120 * 86400000);
+        const startStr = start.toISOString().split('T')[0];
+        const endStr = end.toISOString().split('T')[0];
+        
+        apiFetch(`/tasks/range?start_date=${startStr}&end_date=${endStr}`).then(tasks => {
+            renderRealInsights(tasks);
+        }).catch(err => console.error('Tasks range for insights failed', err));
+        
+        loadIdentityProfile();
+        
+        // Also populate Today's Insights and Personal Records with fresh data
+        try {
             const identity = await apiFetch('/identity/profile');
             const history = await apiFetch('/score/history?days=30');
             const todayStr = new Date().toISOString().split('T')[0];
@@ -2362,7 +2383,8 @@ async function loadInsights() {
                 body: JSON.stringify({ user_id: currentUser.user_id, day: todayStr })
             });
             generateDashboardIntelligence(identity, todayScore, history);
-            if (feed) localStorage.setItem(feedCacheKey, feed.innerHTML);
+            const feed = document.getElementById('dashboard-intelligence-feed');
+            if (feed) localStorage.setItem('tm_todays_insights', feed.innerHTML);
             
             renderPersonalRecords(identity);
         } catch(e) {
