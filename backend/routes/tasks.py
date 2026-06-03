@@ -15,7 +15,7 @@ from backend.services.identity_service import award_task_completion_xp
 
 router = APIRouter(tags=["tasks"])
 TASKS_CACHE: dict[tuple[int, date, str | None, str | None, str | None], dict] = {}
-TASKS_CACHE_TTL_SECONDS = 10
+TASKS_CACHE_TTL_SECONDS = 60
 
 
 @router.get("/tasks", response_model=list[TaskResponse])

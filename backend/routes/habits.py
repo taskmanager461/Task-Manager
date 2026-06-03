@@ -22,7 +22,7 @@ from backend.services.identity_service import apply_habit_impact
 
 router = APIRouter(tags=["habits"])
 HABITS_CACHE: dict[tuple[int, date], dict] = {}
-HABITS_CACHE_TTL_SECONDS = 10
+HABITS_CACHE_TTL_SECONDS = 60
 
 
 @router.post("/habits", response_model=HabitResponse)

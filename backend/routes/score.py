@@ -21,9 +21,11 @@ from backend.services.identity_service import recompute_streak
 
 router = APIRouter(tags=["score"])
 SMART_INSIGHTS_CACHE: dict[int, dict] = {}
-SMART_CACHE_TTL_SECONDS = 300
+SMART_CACHE_TTL_SECONDS = 600
 DAILY_SCORE_CACHE: dict[tuple[int, date], dict] = {}
-DAILY_SCORE_CACHE_TTL_SECONDS = 10
+DAILY_SCORE_CACHE_TTL_SECONDS = 60
+WEEKLY_SUMMARY_CACHE: dict[int, dict] = {}
+WEEKLY_SUMMARY_CACHE_TTL_SECONDS = 600
 
 
 @router.post("/score/daily", response_model=DailyScoreComputationResponse)
@@ -150,6 +152,10 @@ def weekly_summary(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    cached = WEEKLY_SUMMARY_CACHE.get(current_user.id)
+    if cached and (time() - cached.get("timestamp", 0)) < WEEKLY_SUMMARY_CACHE_TTL_SECONDS:
+        return cached["payload"]
+        
     today = date.today()
     week_start = today - timedelta(days=today.weekday())
     week_end = week_start + timedelta(days=6)
@@ -183,7 +189,7 @@ def weekly_summary(
     if prev_success > 0:
         success_change = ((current_success - prev_success) / prev_success) * 100
     
-    return {
+    payload = {
         "current_week": {
             "total_tasks": current_total,
             "completed_tasks": current_completed,
@@ -197,6 +203,9 @@ def weekly_summary(
         },
         "success_change": round(success_change, 1)
     }
+    
+    WEEKLY_SUMMARY_CACHE[current_user.id] = {"timestamp": time(), "payload": payload}
+    return payload
 
 
 @router.get("/insights/smart")
