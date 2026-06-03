@@ -5206,7 +5206,7 @@ function generateSmartInsightCards(identity, history = []) {
     }
 
     // Level milestone
-    const nextRankThresholds = [6, 11, 21, 36, 50];
+    const nextRankThresholds = [10, 20, 30, 40, 50];
     const nextThreshold = nextRankThresholds.find(t => t > level);
     if (nextThreshold) {
         const diff = nextThreshold - level;
