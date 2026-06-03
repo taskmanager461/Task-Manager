@@ -37,35 +37,35 @@ MENU = {
 }
 T = TypeVar("T")
 
-@st.cache_data(ttl=60)
+@st.cache_data(ttl=300)
 def cached_score_history(user_id: int, _client: APIClient):
     return _client.score_history(user_id)
 
-@st.cache_data(ttl=60)
+@st.cache_data(ttl=300)
 def cached_get_missed_tasks(user_id: int, _client: APIClient):
     return _client.get_missed_tasks()
 
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=600)
 def cached_smart_insights(user_id: int, _client: APIClient):
     return _client.smart_insights()
 
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=600)
 def cached_weekly_summary(user_id: int, _client: APIClient):
     return _client.weekly_summary()
 
-@st.cache_data(ttl=10)
+@st.cache_data(ttl=60)
 def cached_get_tasks(user_id: int, day: date, _client: APIClient):
     return _client.get_tasks(user_id, day)
 
-@st.cache_data(ttl=10)
+@st.cache_data(ttl=60)
 def cached_get_habits(user_id: int, day: date, _client: APIClient):
     return _client.get_habits(day)
 
-@st.cache_data(ttl=10)
+@st.cache_data(ttl=60)
 def cached_compute_daily_score(user_id: int, day: date, _client: APIClient):
     return _client.compute_daily_score(user_id, day)
 
-@st.cache_data(ttl=10)
+@st.cache_data(ttl=60)
 def cached_get_goals(user_id: int, _client: APIClient):
     return _client.get_goals()
 
@@ -674,10 +674,17 @@ def reports_page(client: APIClient, user_id: int) -> None:
 
     st.markdown("---")
 
-    # 4. Weekly Summary (Comparison from weekly summary endpoint)
+    # 4. Weekly Summary (Comparison from weekly summary endpoint) - wrapped in fragment
+    render_weekly_summary(client, user_id)
+
+
+@st.fragment
+def render_weekly_summary(client: APIClient, user_id: int):
     st.markdown(f"<div class='section-title'>Weekly Summary</div>", unsafe_allow_html=True)
     weekly_summary, summary_err = call_api(cached_weekly_summary, user_id, client)
-    if weekly_summary:
+    if summary_err:
+        st.warning(summary_err)
+    elif weekly_summary:
         current_week = weekly_summary["current_week"]
         success_change = weekly_summary["success_change"]
 
