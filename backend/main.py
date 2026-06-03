@@ -29,6 +29,12 @@ from config.settings import get_settings
 
 scheduler = BackgroundScheduler()
 
+def _env_flag(name: str, default: bool) -> bool:
+    raw = os.getenv(name)
+    if raw is None:
+        return default
+    return raw.strip().lower() in {"1", "true", "yes", "on"}
+
 
 def scheduled_job_wrapper():
     db = SessionLocal()
@@ -42,24 +48,32 @@ def scheduled_job_wrapper():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: Initialize database
-    logger.info("Starting up and initializing database...")
-    try:
-        Base.metadata.create_all(bind=engine)
-        ensure_schema_compatibility()
-        logger.info("Database initialized successfully.")
-    except Exception as e:
-        logger.error(f"Database initialization failed: {e}")
+    init_db_on_startup = _env_flag("INIT_DB_ON_STARTUP", default=False)
+    enable_scheduler = _env_flag("ENABLE_SCHEDULER", default=False)
 
-    # Start scheduler
-    scheduler.add_job(scheduled_job_wrapper, trigger=IntervalTrigger(minutes=1))
-    scheduler.start()
-    logger.info("Scheduler started.")
+    if init_db_on_startup:
+        logger.info("Startup: initializing database...")
+        try:
+            Base.metadata.create_all(bind=engine)
+            ensure_schema_compatibility()
+            logger.info("Database initialized successfully.")
+        except Exception as e:
+            logger.error(f"Database initialization failed: {e}")
+    else:
+        logger.info("Startup: skipping database initialization (INIT_DB_ON_STARTUP=false).")
+
+    if enable_scheduler:
+        scheduler.add_job(scheduled_job_wrapper, trigger=IntervalTrigger(minutes=1))
+        scheduler.start()
+        logger.info("Scheduler started.")
+    else:
+        logger.info("Startup: scheduler disabled (ENABLE_SCHEDULER=false).")
 
     yield
 
     # Shutdown
-    scheduler.shutdown()
+    if enable_scheduler:
+        scheduler.shutdown()
     logger.info("Shutting down...")
 
 settings = get_settings()
