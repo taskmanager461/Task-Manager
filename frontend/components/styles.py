@@ -105,14 +105,15 @@ def get_theme_css(dark_mode: bool) -> str:
         letter-spacing: 0.02em;
     }}
     .section-title {{
-        font-size: 0.875rem;
-        font-weight: 400;
-        margin-top: 0.5rem;
-        margin-bottom: 0.25rem;
-        letter-spacing: 0;
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: -0.5rem;
+        letter-spacing: 0.02em;
         color: {c["muted"]};
         opacity: 0.6;
-        text-transform: none;
+        text-transform: uppercase;
     }}
 
     /* === COMPLETELY NEW METRIC CARDS === */
