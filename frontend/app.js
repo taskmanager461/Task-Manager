@@ -1,5 +1,6 @@
 // Configuration
 const API_BASE_URL = window.location.origin;
+const APP_BUILD = '18.1.0';
 const SUPABASE_URL = 'https://hngljslkwyzzlcugiiqz.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_YTyCF9SfOoh-5TaFLUVxmw_NYk3_jiO';
 const supabaseClient = window.supabase?.createClient
@@ -12,6 +13,36 @@ const supabaseClient = window.supabase?.createClient
         }
     })
     : null;
+
+let chartJsPromise = null;
+function ensureChartJs() {
+    if (window.Chart) return Promise.resolve();
+    if (chartJsPromise) return chartJsPromise;
+    chartJsPromise = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+        script.async = true;
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error('Chart.js failed to load'));
+        document.head.appendChild(script);
+    });
+    return chartJsPromise;
+}
+
+function migrateClientCaches() {
+    const prev = localStorage.getItem('tm_app_build');
+    if (prev === APP_BUILD) return;
+    const keysToClear = [
+        'tm_hero_metrics_html',
+        'tm_weekly_summary_html',
+        'tm_todays_insights',
+        'tm_today_habits_html',
+        'tm_cached_identity',
+        'tm_achievements_html'
+    ];
+    for (const k of keysToClear) localStorage.removeItem(k);
+    localStorage.setItem('tm_app_build', APP_BUILD);
+}
 
 // State Management
 let currentUser = null;
@@ -513,9 +544,14 @@ function updateUILanguage() {
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
+    migrateClientCaches();
     initTheme();
     initLanguage();
-    processAllLogos(); // Run immediately so logos start processing/fade in right away
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => processAllLogos(), { timeout: 1500 });
+    } else {
+        setTimeout(() => processAllLogos(), 0);
+    }
     checkAuth();
     setupEventListeners();
     initBottomNavDragSwitch();
@@ -572,7 +608,7 @@ function applyTheme() {
         if (currentView === 'me') {
             renderProfileCard();
             if (cachedWeeklyTrendHistory && document.getElementById('weekly-trend-chart')) {
-                updateTrendChart(cachedWeeklyTrendHistory);
+                if (window.Chart) updateTrendChart(cachedWeeklyTrendHistory);
             }
             if (cachedTasksForChart && document.getElementById('task-pie-chart')) {
                 updateTaskChart(cachedTasksForChart);
@@ -781,7 +817,8 @@ async function handleAuthSessionChange(event, session) {
 }
 
 async function checkAuth() {
-    showLoading(true);
+    let loadingTimer = null;
+    loadingTimer = setTimeout(() => showLoading(true), 250);
     try {
         if (!supabaseClient) {
             renderLogin();
@@ -802,7 +839,6 @@ async function checkAuth() {
             supabaseAccessToken = null;
             renderLogin();
             setAuthView('login');
-            showLoading(false);
             
             // Set up listener for subsequent auth state changes
             supabaseClient.auth.onAuthStateChange(async (event, session) => {
@@ -825,6 +861,7 @@ async function checkAuth() {
         setAuthView('login');
         showAuthError('Auth unavailable. Check Supabase URL/keys and Redirect URLs.');
     } finally {
+        if (loadingTimer) clearTimeout(loadingTimer);
         showLoading(false);
     }
 }
@@ -2048,6 +2085,11 @@ async function loadMeInsights() {
     // Mini weekly trend chart for Me
     const meTrendEl = document.getElementById('me-weekly-trend-chart');
     if (meTrendEl && history.length > 0) {
+        try {
+            await ensureChartJs();
+        } catch (e) {
+            return;
+        }
         const last7 = history.slice(-7);
         const ctx = meTrendEl.getContext('2d');
         if (window._meTrendChart) window._meTrendChart.destroy();
@@ -2465,6 +2507,7 @@ async function loadWeeklyTrend() {
             url += `&user_id=${currentUser.user_id}`;
         }
         const scores = await apiFetch(url);
+        await ensureChartJs();
         updateTrendChart(scores);
     } catch (err) {
         console.error('Trend load failed', err);
@@ -2550,8 +2593,13 @@ function updateTrendChart(history) {
     });
 }
 
-function updateTaskChart(tasks) {
+async function updateTaskChart(tasks) {
     cachedTasksForChart = tasks;
+    try {
+        await ensureChartJs();
+    } catch (e) {
+        return;
+    }
     const counts = {
         completed: tasks.filter(t => t.status === 'completed').length,
         failed: tasks.filter(t => t.status === 'failed').length,
@@ -4334,9 +4382,17 @@ function showLoading(show) {
 // --- PWA Service Worker Registration ---
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (refreshing) return;
+            refreshing = true;
+            window.location.reload();
+        });
+
         navigator.serviceWorker.register('/sw.js')
             .then(reg => {
                 console.log('SW registered');
+                reg.update().catch(() => {});
                 
                 // Check for updates
                 reg.onupdatefound = () => {
@@ -4344,11 +4400,12 @@ if ('serviceWorker' in navigator) {
                     installingWorker.onstatechange = () => {
                         if (installingWorker.state === 'installed') {
                             if (navigator.serviceWorker.controller) {
-                                // New content is available, show toast
-                                showToast("New version available! Refreshing...", "info");
-                                setTimeout(() => {
+                                showToast("Updating...", "info");
+                                if (reg.waiting) {
+                                    reg.waiting.postMessage({ type: "SKIP_WAITING" });
+                                } else {
                                     window.location.reload();
-                                }, 2000);
+                                }
                             }
                         }
                     };

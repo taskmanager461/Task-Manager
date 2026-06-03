@@ -1,10 +1,11 @@
-const CACHE_NAME = "task-manager-v8.2.0";
+const CACHE_NAME = "task-manager-v18.1.0";
 const ASSETS_TO_CACHE = [
   "/",
   "/index.html",
-  "/styles.css?v=8.2.0",
-  "/app.js?v=8.2.0",
-  "/assets.js?v=8.2.0",
+  "/styles.css?v=42.0.3",
+  "/app.js?v=18.1.0",
+  "/assets.js?v=17.0.0",
+  "/badge_assets.js?v=36.0.0",
   "/manifest.json",
   "/static/icon-home-192-v7.png",
   "/static/icon-home-512-v7.png"
@@ -19,6 +20,12 @@ self.addEventListener("install", (event) => {
     })
   );
   self.skipWaiting();
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });
 
 // Activate Event
@@ -45,7 +52,13 @@ self.addEventListener("fetch", (event) => {
 
   if (event.request.mode === "navigate") {
     event.respondWith(
-      fetch(event.request).catch(() => caches.match("/"))
+      fetch(event.request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put("/index.html", copy));
+          return response;
+        })
+        .catch(() => caches.match("/index.html"))
     );
     return;
   }
@@ -57,21 +70,17 @@ self.addEventListener("fetch", (event) => {
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request).then((networkResponse) => {
-        // Cache new static requests
-        if (networkResponse.ok && event.request.url.startsWith(self.location.origin)) {
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-        }
-        return networkResponse;
-      }).catch(() => {
-        return caches.match("/");
-      });
+      const fetchPromise = fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.ok && event.request.url.startsWith(self.location.origin)) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseToCache));
+          }
+          return networkResponse;
+        })
+        .catch(() => cachedResponse || caches.match("/index.html"));
+
+      return cachedResponse || fetchPromise;
     })
   );
 });
