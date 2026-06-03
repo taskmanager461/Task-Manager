@@ -2800,7 +2800,71 @@ body.light-mode .ach-filter-btn {
 
 @media (max-width: 480px) {
     .achievements-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(5, 1fr); /* 5 per row on mobile */
+        gap: 0.35rem;
+    }
+    
+    /* Make achievement cards compact on mobile */
+    .ach-card {
+        padding: 0.4rem 0.35rem;
+        gap: 0.25rem;
+        border-radius: 10px;
+    }
+    
+    /* Hide less important elements on mobile to save space */
+    .ach-card-desc, 
+    .ach-reward-chip, 
+    .ach-unlock-date {
+        display: none;
+    }
+    
+    /* Make icon smaller */
+    .ach-icon-wrap {
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+        border-radius: 8px;
+    }
+    
+    /* Make rarity pill tiny */
+    .ach-rarity-pill {
+        font-size: 0.45rem;
+        padding: 0.1rem 0.35rem;
+    }
+    
+    /* Make label smaller and single line */
+    .ach-card-label {
+        font-size: 0.55rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* Simplify progress bar */
+    .ach-progress-wrap {
+        margin-top: 0.1rem;
+    }
+    .ach-progress-meta {
+        display: none; /* Hide progress meta text */
+    }
+    .ach-progress-track {
+        height: 3px;
+    }
+    
+    /* Move unlocked badge */
+    .ach-unlocked-badge {
+        top: 0.35rem;
+        right: 0.35rem;
+        width: 14px;
+        height: 14px;
+        font-size: 0.45rem;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+    .achievements-grid {
+        grid-template-columns: repeat(4, 1fr); /* 4 per row on medium screens */
+        gap: 0.5rem;
     }
 }
 
