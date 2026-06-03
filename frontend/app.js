@@ -1164,26 +1164,30 @@ function showView(viewId) {
         document.body.dataset.windowScrollBound = "true";
     }
 
-    // Load Data with caching (Instant loading)
+    // Instant optimistic tab switching: we show the container immediately.
+    // Fetch fresh data in the background unless cached within 5 minutes (300,000 ms)
     const now = Date.now();
-    const CACHE_TTL = 30000; // 30 seconds
+    const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
     if (!window.viewCacheTime) window.viewCacheTime = {};
-    
-    if (window.viewCacheTime[viewId] && (now - window.viewCacheTime[viewId]) < CACHE_TTL) {
-        return; // Skip network requests, UI already updated!
-    }
-    window.viewCacheTime[viewId] = now;
 
-    if (viewId === 'reports') loadReports();
-    if (viewId === 'me') loadMe();
-    if (viewId === 'progress') loadProgressHub();
-    if (viewId === 'tasks') {
-        if (currentTasksGoalsTab === 'habits') loadHabits();
-        else if (currentTasksGoalsTab === 'goals') loadGoals();
-        else loadTasks();
+    const isCached = window.viewCacheTime[viewId] && (now - window.viewCacheTime[viewId]) < CACHE_TTL;
+    
+    // In background, fetch fresh data if cache is older than TTL
+    if (!isCached) {
+        window.viewCacheTime[viewId] = now;
+        setTimeout(() => {
+            if (viewId === 'reports') loadReports();
+            if (viewId === 'me') loadMe();
+            if (viewId === 'progress') loadProgressHub();
+            if (viewId === 'tasks') {
+                if (currentTasksGoalsTab === 'habits') loadHabits();
+                else if (currentTasksGoalsTab === 'goals') loadGoals();
+                else loadTasks();
+            }
+            if (viewId === 'goals') loadGoals();
+            if (viewId === 'insights') loadInsights();
+        }, 0);
     }
-    if (viewId === 'goals') loadGoals();
-    if (viewId === 'insights') loadInsights();
     if (viewId === 'settings') applyTheme(); // Sync theme switch state
 }
 
