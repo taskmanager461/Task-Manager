@@ -137,12 +137,22 @@ async def get_icon512():
 @app.get("/styles.css")
 async def get_css():
     path = FRONTEND_DIR / "styles.css"
-    return FileResponse(path) if path.exists() else {"error": "styles.css not found"}
+    return FileResponse(path, headers={"Cache-Control": "public, max-age=31536000, immutable"}) if path.exists() else {"error": "styles.css not found"}
 
 @app.get("/app.js")
 async def get_js():
     path = FRONTEND_DIR / "app.js"
-    return FileResponse(path) if path.exists() else {"error": "app.js not found"}
+    return FileResponse(path, headers={"Cache-Control": "public, max-age=31536000, immutable"}) if path.exists() else {"error": "app.js not found"}
+
+@app.get("/assets.js")
+async def get_assets_js():
+    path = FRONTEND_DIR / "assets.js"
+    return FileResponse(path, headers={"Cache-Control": "public, max-age=31536000, immutable"}) if path.exists() else {"error": "assets.js not found"}
+
+@app.get("/badge_assets.js")
+async def get_badge_assets_js():
+    path = FRONTEND_DIR / "badge_assets.js"
+    return FileResponse(path, headers={"Cache-Control": "public, max-age=31536000, immutable"}) if path.exists() else {"error": "badge_assets.js not found"}
 
 def _serve_root_badge(filename: str) -> FileResponse:
     # Try STATIC_DIR first, then fall back to PROJECT_ROOT
