@@ -66,6 +66,23 @@ def get_tasks_range(
     ).all()
     return tasks
 
+from sqlalchemy import func
+
+@router.get("/tasks/max_daily")
+def get_max_daily_tasks(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    # Group by date and count completed tasks
+    result = db.query(
+        func.count(Task.id).label('task_count')
+    ).filter(
+        Task.user_id == current_user.id,
+        Task.status == "completed"
+    ).group_by(Task.date).order_by(func.count(Task.id).desc()).first()
+    
+    return {"max_tasks_day": result.task_count if result else 0}
+
 
 @router.post("/tasks", response_model=TaskResponse)
 def create_task(payload: TaskCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
