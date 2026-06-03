@@ -2818,17 +2818,35 @@ body.light-mode .ach-filter-btn {
         display: none;
     }
     
-    /* Make icon smaller */
+    /* Center the card top content and hide rarity pill */
+    .ach-card-top {
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 0.15rem;
+    }
+    .ach-rarity-pill {
+        display: none;
+    }
+    
+    /* Make icon smaller and add padding to avoid cropping */
     .ach-icon-wrap {
-        width: 30px;
-        height: 30px;
-        font-size: 1rem;
+        width: 34px;
+        height: 34px;
+        font-size: 1.1rem;
         border-radius: 8px;
+        padding: 0.35rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
     }
     
     /* Adjust label and reward */
     .ach-card-label {
-        font-size: 0.7rem;
+        font-size: 0.68rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .ach-reward-chip {
         font-size: 0.58rem;

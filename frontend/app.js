@@ -149,7 +149,8 @@ const translations = {
         july: "July", august: "August", september: "September", october: "October", november: "November", december: "December",
         mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun",
         progress: "Progress",
-        dashboard: "Dashboard"
+        dashboard: "Dashboard",
+        weekly_trend: "Weekly Trend"
     },
     el: {
         app_title: "Tobedone",
@@ -254,7 +255,9 @@ const translations = {
         task_starting: "Η εργασία ξεκινά σύντομα!",
         january: "Ιανουάριος", february: "Φεβρουάριος", march: "Μάρτιος", april: "Απρίλιος", may: "Μάιος", june: "Ιούνιος",
         july: "Ιούλιος", august: "Αύγουστος", september: "Σεπτέμβριος", october: "Οκτώβριος", november: "Νοέμβριος", december: "Δεκέμβριος",
-        mon: "Δευ", tue: "Τρι", wed: "Τετ", thu: "Πεμ", fri: "Παρ", sat: "Σαβ", sun: "Κυρ"
+        mon: "Δευ", tue: "Τρι", wed: "Τετ", thu: "Πεμ", fri: "Παρ", sat: "Σαβ", sun: "Κυρ",
+        progress: "Πρόοδος",
+        weekly_trend: "Εβδομαδιαία Τάση"
     },
     es: {
         app_title: "Tobedone",
@@ -299,7 +302,9 @@ const translations = {
         session_expired: "Sesión expirada",
         task_added: "¡Tarea añadida!",
         task_updated: "¡Tarea actualizada!",
-        error_occurred: "Ocurrió un error"
+        error_occurred: "Ocurrió un error",
+        progress: "Progreso",
+        weekly_trend: "Tendencia Semanal"
     },
     fr: {
         app_title: "Tobedone",
@@ -344,7 +349,9 @@ const translations = {
         session_expired: "Session expirée",
         task_added: "Tâche ajoutée !",
         task_updated: "Tâche mise à jour !",
-        error_occurred: "Une erreur est survenue"
+        error_occurred: "Une erreur est survenue",
+        progress: "Progression",
+        weekly_trend: "Tendance Hebdomadaire"
     },
     de: {
         app_title: "Tobedone",
@@ -389,7 +396,9 @@ const translations = {
         session_expired: "Sitzung abgelaufen",
         task_added: "Aufgabe hinzugefügt!",
         task_updated: "Aufgabe aktualisiert!",
-        error_occurred: "Fehler aufgetreten"
+        error_occurred: "Fehler aufgetreten",
+        progress: "Fortschritt",
+        weekly_trend: "Wöchentlicher Trend"
     },
     it: {
         app_title: "Tobedone",
@@ -434,7 +443,9 @@ const translations = {
         session_expired: "Sessione scaduta",
         task_added: "Compito aggiunto!",
         task_updated: "Compito aggiornato!",
-        error_occurred: "Errore verificato"
+        error_occurred: "Errore verificato",
+        progress: "Progresso",
+        weekly_trend: "Andamento Settimanale"
     },
     pt: {
         app_title: "Tobedone",
@@ -479,7 +490,9 @@ const translations = {
         session_expired: "Sessão expirada",
         task_added: "Tarefa adicionada!",
         task_updated: "Tarefa atualizada!",
-        error_occurred: "Ocorreu um erro"
+        error_occurred: "Ocorreu um erro",
+        progress: "Progresso",
+        weekly_trend: "Tendência Semanal"
     }
 };
 
@@ -4645,11 +4658,11 @@ let currentPerformanceReportTab = 'weekly';
 
 function getRankName(level) {
     if (level >= 50) return 'Legend';
-    if (level >= 36) return 'Elite';
-    if (level >= 21) return 'Strategist';
-    if (level >= 11) return 'Achiever';
-    if (level >= 6) return 'Builder';
-    return 'Explorer';
+    if (level >= 40) return 'Elite';
+    if (level >= 30) return 'Consistent';
+    if (level >= 20) return 'Achiever';
+    if (level >= 10) return 'Builder';
+    return 'Starter';
 }
 
 function getTrustScoreTier(score) {
