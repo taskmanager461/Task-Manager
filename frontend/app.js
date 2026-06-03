@@ -1399,12 +1399,20 @@ async function loadInsights() {
         if (currentUser.user_id && Number.isInteger(currentUser.user_id)) {
             url += `&user_id=${currentUser.user_id}`;
         }
+        // INSTANT: show cached history right away
+        const cacheKey = 'tm_cache_score_history_30';
+        const cached = cacheGet(cacheKey, 10 * 60 * 1000);
+        if (cached && Array.isArray(cached)) renderInsights(cached);
+
+        // Refresh in background
         const history = await apiFetch(url);
+        cacheSet(cacheKey, history);
         renderInsights(history);
     } catch (err) {
         console.error('Insights load failed', err);
     }
 }
+
 
 function renderInsights(history) {
     // 1. Pattern Detection Logic
@@ -1971,36 +1979,36 @@ function getBadgeImageSrc(scoreClass) {
 // --- Reports & Me Logic ---
 async function loadReports() {
     try {
+        const today = new Date().toISOString().split('T')[0];
+
+        // INSTANT: Show cached metrics immediately
         const container = document.getElementById('dashboard-hero-metrics');
         if (container) {
             const cachedHtml = localStorage.getItem('tm_hero_metrics_html');
-            if (cachedHtml) {
-                container.innerHTML = cachedHtml;
-            }
+            if (cachedHtml) container.innerHTML = cachedHtml;
         }
-
-        const today = new Date().toISOString().split('T')[0];
         const cachedScore = cacheGet(`tm_cache_score_daily_${today}`, 2 * 60 * 1000);
         if (cachedScore) {
             cachedDailyScore = cachedScore;
-            await renderHeroMetrics(cachedScore);
+            renderHeroMetrics(cachedScore); // no await - fire and forget for instant UI
             const progressFill = document.getElementById('daily-progress-fill');
             if (progressFill) progressFill.style.width = `${(cachedScore.success_rate || 0) * 100}%`;
         }
 
-        const scorePromise = apiFetch('/score/daily', {
-            method: 'POST',
-            body: JSON.stringify({ user_id: currentUser.user_id, day: today })
-        });
-
-        const calendarPromise = renderDashboardCalendar();
-
-        const score = await scorePromise;
-        await calendarPromise;
+        // Kick off ALL network requests in parallel
+        const [score] = await Promise.all([
+            apiFetch('/score/daily', {
+                method: 'POST',
+                body: JSON.stringify({ user_id: currentUser.user_id, day: today })
+            }),
+            renderDashboardCalendar(),
+            loadWeeklySummary(),
+            loadTodayHabits()
+        ]);
 
         cachedDailyScore = score;
         cacheSet(`tm_cache_score_daily_${today}`, score);
-        await renderHeroMetrics(score);
+        renderHeroMetrics(score); // no await - update metrics in background
 
         const progressFill = document.getElementById('daily-progress-fill');
         if (progressFill) progressFill.style.width = `${score.success_rate * 100}%`;
@@ -2015,8 +2023,6 @@ async function loadReports() {
             }
         }
 
-        await Promise.all([loadWeeklySummary(), loadTodayHabits()]);
-
     } catch (err) {
         console.error('Reports load failed', err);
     }
@@ -2028,12 +2034,13 @@ async function loadMe() {
         
         const today = new Date().toISOString().split('T')[0];
         
-        // Parallelize everything
+        // Parallelize everything including insights (non-blocking)
         const promises = [
             loadIdentityProfile(),
             loadDashboardPersonalization(),
             loadScoreComparison(),
-            loadMissedTasks()
+            loadMissedTasks(),
+            loadMeInsights().catch(e => console.warn('Me insights failed', e))
         ];
 
         const pieEl = document.getElementById('task-pie-chart');
@@ -2046,21 +2053,15 @@ async function loadMe() {
         }
 
         const trendEl = document.getElementById('weekly-trend-chart');
-        if (trendEl) {
-            promises.push(loadWeeklyTrend());
-        }
+        if (trendEl) promises.push(loadWeeklyTrend());
 
         await Promise.all(promises);
-
-        // Load embedded Me-Insights section (non-critical)
-        try {
-            await loadMeInsights();
-        } catch(e) { console.warn('Me insights failed', e); }
 
     } catch (err) {
         console.error('Me load failed', err);
     }
 }
+
 
 async function loadMeInsights() {
     // Fetch 30-day score history
@@ -4804,16 +4805,16 @@ function getTrustScoreTier(score) {
 
 // Loads all data for the Progress view from /identity/profile
 async function loadProgressHub() {
-    try {
-        const identity = await apiFetch('/identity/profile');
-        
-        // Render Rank & Level
+    // INSTANT RENDER: Show cached identity immediately, fetch fresh in background
+    const CACHE_KEY = 'tm_cache_identity_profile';
+    const cached = cacheGet(CACHE_KEY, 5 * 60 * 1000);
+
+    function renderIdentityToProgress(identity) {
         const rankNameEl = document.getElementById('progress-rank-name');
         const levelBadgeEl = document.getElementById('progress-level-badge');
         if (rankNameEl) rankNameEl.textContent = getRankName(identity.level);
         if (levelBadgeEl) levelBadgeEl.innerHTML = `<i class="fas fa-star"></i> Level ${identity.level}`;
 
-        // Render XP
         const xpTextEl = document.getElementById('progress-xp-text');
         const xpFillEl = document.getElementById('progress-xp-fill');
         const totalXpEl = document.getElementById('progress-total-xp');
@@ -4821,7 +4822,6 @@ async function loadProgressHub() {
         if (xpFillEl) xpFillEl.style.width = `${identity.level_progress_percent || 0}%`;
         if (totalXpEl) totalXpEl.textContent = `Total XP: ${identity.total_xp.toLocaleString()}`;
 
-        // Render Trust Progress Card
         const trustValEl = document.getElementById('progress-trust-value');
         const trustTierEl = document.getElementById('progress-trust-tier');
         if (trustValEl) trustValEl.textContent = identity.trust_score.toFixed(1);
@@ -4830,20 +4830,31 @@ async function loadProgressHub() {
             trustTierEl.textContent = tier.text;
             trustTierEl.className = `priority-badge ${tier.class}`;
         }
-
-        // Render Achievements Grid in Progress Hub
         renderAchievements(identity.badges);
-
-        // Dynamically compute Timeline
-        await renderMilestoneTimeline(identity);
-        await renderPerformanceReports(identity);
-        await renderSeasonalChallenges();
-
-        // Mastery Score
         computeAndRenderMastery(identity);
+    }
 
-        // Future Self
-        await loadFutureSelf();
+    // Show cached data immediately
+    if (cached) renderIdentityToProgress(cached);
+
+    try {
+        // Fetch fresh identity + run all async renders in parallel
+        const [identity] = await Promise.all([
+            apiFetch('/identity/profile'),
+            cached ? loadFutureSelf() : Promise.resolve()
+        ]);
+
+        cacheSet(CACHE_KEY, identity);
+        renderIdentityToProgress(identity);
+
+        // Run all secondary renders in parallel (non-blocking)
+        Promise.all([
+            renderMilestoneTimeline(identity),
+            renderPerformanceReports(identity),
+            renderSeasonalChallenges(),
+            cached ? Promise.resolve() : loadFutureSelf()
+        ]).catch(e => console.warn('Progress secondary render failed', e));
+
     } catch (err) {
         console.error('Failed to load progression hub data', err);
     }

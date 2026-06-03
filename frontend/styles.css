@@ -285,7 +285,7 @@ p { color: var(--text-secondary); font-size: 0.9375rem; }
     box-shadow: 0 0 15px rgba(10, 134, 255, 0.25), 0 6px 25px rgba(0, 0, 0, 0.35);
     border-radius: var(--radius-lg);
     padding: 1.5rem;
-    transition: transform var(--transition), border-color var(--transition), background var(--transition), box-shadow var(--transition);
+    transition: transform var(--transition-fast), border-color var(--transition-fast);
     z-index: 1;
 }
 
@@ -924,15 +924,10 @@ body.light-mode #forgot-form select {
     max-width: 1080px; 
     margin: 0 auto; 
     flex-direction: column;
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity var(--transition), transform var(--transition);
 }
 
 .view.active { 
     display: flex; 
-    opacity: 1;
-    transform: translateY(0);
 }
 
 /* Content */
