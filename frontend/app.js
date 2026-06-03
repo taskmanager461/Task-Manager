@@ -2347,6 +2347,13 @@ async function loadInsights() {
         
         // Also populate Today's Insights and Personal Records since they were moved here
         try {
+            const feedCacheKey = 'tm_todays_insights';
+            const feed = document.getElementById('dashboard-intelligence-feed');
+            if (feed) {
+                const cachedHtml = localStorage.getItem(feedCacheKey);
+                if (cachedHtml) feed.innerHTML = cachedHtml;
+            }
+
             const identity = await apiFetch('/identity/profile');
             const history = await apiFetch('/score/history?days=30');
             const todayStr = new Date().toISOString().split('T')[0];
@@ -2355,6 +2362,8 @@ async function loadInsights() {
                 body: JSON.stringify({ user_id: currentUser.user_id, day: todayStr })
             });
             generateDashboardIntelligence(identity, todayScore, history);
+            if (feed) localStorage.setItem(feedCacheKey, feed.innerHTML);
+            
             renderPersonalRecords(identity);
         } catch(e) {
             console.error('Failed to load insight feeds', e);
@@ -3436,7 +3445,19 @@ function renderGoals(goals) {
 
 async function loadIdentityProfile() {
     try {
+        // Fast path: load from localStorage cache first
+        if (!identityInitialized) {
+            const cachedIdStr = localStorage.getItem('tm_cached_identity');
+            if (cachedIdStr) {
+                try {
+                    const cachedId = JSON.parse(cachedIdStr);
+                    renderIdentity(cachedId);
+                } catch(e) {}
+            }
+        }
+
         const identity = await apiFetch('/identity/profile');
+        localStorage.setItem('tm_cached_identity', JSON.stringify(identity));
         if (identityInitialized) {
             if (identity.level > identitySnapshot.level) {
                 triggerLevelUpCelebration(identity.level);
@@ -4394,73 +4415,71 @@ async function renderDashboardCalendar() {
     const startStr = firstDay.toISOString().split('T')[0];
     const endStr = lastDay.toISOString().split('T')[0];
 
-    let monthTasks = [];
-    try {
-        monthTasks = await apiFetch(`/tasks/range?start_date=${startStr}&end_date=${endStr}`);
-    } catch (err) {
-        console.error('Failed to load month tasks for calendar', err);
-    }
-
-    // If another month change occurred while fetching, ignore this outdated response
-    if (currentRequestId !== dashboardCalendarRequestId) {
-        return;
-    }
-
-    grid.innerHTML = '';
-
-    // Days Labels
-    const days = [t('mon'), t('tue'), t('wed'), t('thu'), t('fri'), t('sat'), t('sun')];
-    days.forEach(d => grid.innerHTML += `<div class="calendar-day-label">${d}</div>`);
-
-    // Determine active days: days with at least one completed task
-    const activeDays = new Set();
-    monthTasks.forEach(task => {
-        if (task.status === 'completed') {
-            activeDays.add(task.date);
-        }
-    });
-
     const firstDayIdx = (firstDay.getDay() + 6) % 7; // Monday start
     const daysInMonth = lastDay.getDate();
     const todayStr = new Date().toISOString().split('T')[0];
 
-    // Padding for previous month
-    for (let i = 0; i < firstDayIdx; i++) {
-        grid.innerHTML += `<div class="calendar-day other-month"></div>`;
-    }
+    const renderGridWithTasks = (tasks) => {
+        grid.innerHTML = '';
+        const days = [t('mon'), t('tue'), t('wed'), t('thu'), t('fri'), t('sat'), t('sun')];
+        days.forEach(d => grid.innerHTML += `<div class="calendar-day-label">${d}</div>`);
 
-    // Days in current month
-    for (let d = 1; d <= daysInMonth; d++) {
-        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-        const isToday = dateStr === todayStr;
-        const isActive = activeDays.has(dateStr);
-        const hasTasks = monthTasks.some(t => t.date === dateStr);
-
-        // Streak connection detection
-        let streakClass = '';
-        if (isActive) {
-            const prevDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d - 1).padStart(2, '0')}`;
-            const nextDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d + 1).padStart(2, '0')}`;
-            const prevActive = d > 1 && activeDays.has(prevDateStr);
-            const nextActive = d < daysInMonth && activeDays.has(nextDateStr);
-
-            if (prevActive && nextActive) {
-                streakClass = 'streak-mid';
-            } else if (prevActive) {
-                streakClass = 'streak-end';
-            } else if (nextActive) {
-                streakClass = 'streak-start';
-            } else {
-                streakClass = 'streak-single';
+        const activeDays = new Set();
+        tasks.forEach(task => {
+            if (task.status === 'completed') {
+                activeDays.add(task.date);
             }
+        });
+
+        for (let i = 0; i < firstDayIdx; i++) {
+            grid.innerHTML += `<div class="calendar-day other-month"></div>`;
         }
 
-        const dayEl = document.createElement('div');
-        dayEl.className = `calendar-day ${isToday ? 'today' : ''} ${isActive ? 'active-day' : ''} ${streakClass}`;
-        dayEl.textContent = d;
-        dayEl.onclick = () => renderDayTasks(dateStr);
-        grid.appendChild(dayEl);
+        for (let d = 1; d <= daysInMonth; d++) {
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            const isToday = dateStr === todayStr;
+            const isActive = activeDays.has(dateStr);
+            let streakClass = '';
+            if (isActive) {
+                const prevDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d - 1).padStart(2, '0')}`;
+                const nextDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d + 1).padStart(2, '0')}`;
+                const prevActive = d > 1 && activeDays.has(prevDateStr);
+                const nextActive = d < daysInMonth && activeDays.has(nextDateStr);
+                if (prevActive && nextActive) streakClass = 'streak-mid';
+                else if (prevActive) streakClass = 'streak-end';
+                else if (nextActive) streakClass = 'streak-start';
+                else streakClass = 'streak-single';
+            }
+
+            const dayEl = document.createElement('div');
+            dayEl.className = `calendar-day ${isToday ? 'today' : ''} ${isActive ? 'active-day' : ''} ${streakClass}`;
+            dayEl.textContent = d;
+            dayEl.onclick = () => renderDayTasks(dateStr);
+            grid.appendChild(dayEl);
+        }
+    };
+
+    const cacheKey = `tm_cal_${year}_${month}`;
+    const cachedTasksStr = localStorage.getItem(cacheKey);
+    if (cachedTasksStr) {
+        try { renderGridWithTasks(JSON.parse(cachedTasksStr)); } catch(e) { renderGridWithTasks([]); }
+    } else {
+        renderGridWithTasks([]);
     }
+
+    let monthTasks = [];
+    try {
+        monthTasks = await apiFetch(`/tasks/range?start_date=${startStr}&end_date=${endStr}`);
+        localStorage.setItem(cacheKey, JSON.stringify(monthTasks));
+    } catch (err) {
+        console.error('Failed to load month tasks for calendar', err);
+    }
+
+    if (currentRequestId !== dashboardCalendarRequestId) {
+        return;
+    }
+
+    renderGridWithTasks(monthTasks);
 }
 
 function changeDashboardMonth(delta) {
@@ -4586,6 +4605,41 @@ async function renderPersonalRecords(identity) {
     let highestTrust = identity.trust_score;
     let maxTasksDay = 0;
 
+    const cacheKey = 'tm_personal_records';
+    const cachedRecordsStr = localStorage.getItem(cacheKey);
+
+    const renderList = (hTrust, mTasksDay) => {
+        const records = [
+            { label: 'Longest Streak', val: `${currentStreak} Days`, icon: '🔥' },
+            { label: 'Highest Trust Score', val: hTrust.toFixed(1), icon: '🛡️' },
+            { label: 'Highest XP Achieved', val: identity.total_xp.toLocaleString(), icon: '⭐' },
+            { label: 'Max Tasks In A Day', val: `${Math.max(mTasksDay, totalTasksCount > 0 ? 1 : 0)} Tasks`, icon: '📋' },
+            { label: 'Total Tasks Completed', val: `${totalTasksCount} Tasks`, icon: '✅' },
+            { label: 'Total Goals Achieved', val: `${totalGoalsCount} Goals`, icon: '🎯' }
+        ];
+
+        list.innerHTML = records.map(r => `
+            <div class="record-item">
+                <div class="record-icon-wrap">${r.icon}</div>
+                <div class="record-info">
+                    <span class="record-lbl">${r.label}</span>
+                    <span class="record-val">${r.val}</span>
+                </div>
+            </div>
+        `).join('');
+    };
+
+    if (cachedRecordsStr) {
+        try {
+            const cachedData = JSON.parse(cachedRecordsStr);
+            highestTrust = Math.max(cachedData.highestTrust || 0, highestTrust);
+            maxTasksDay = cachedData.maxTasksDay || 0;
+            renderList(highestTrust, maxTasksDay);
+        } catch(e) {}
+    } else {
+        renderList(highestTrust, maxTasksDay);
+    }
+
     try {
         const history = await apiFetch('/score/history');
         if (history && history.length > 0) {
@@ -4600,28 +4654,12 @@ async function renderPersonalRecords(identity) {
             }
         });
         maxTasksDay = Math.max(...Object.values(dayCounts), 0);
+        
+        localStorage.setItem(cacheKey, JSON.stringify({ highestTrust, maxTasksDay }));
+        renderList(highestTrust, maxTasksDay);
     } catch (e) {
         console.error('Error fetching records details', e);
     }
-
-    const records = [
-        { label: 'Longest Streak', val: `${currentStreak} Days`, icon: '🔥' },
-        { label: 'Highest Trust Score', val: highestTrust.toFixed(1), icon: '🛡️' },
-        { label: 'Highest XP Achieved', val: identity.total_xp.toLocaleString(), icon: '⭐' },
-        { label: 'Max Tasks In A Day', val: `${Math.max(maxTasksDay, totalTasksCount > 0 ? 1 : 0)} Tasks`, icon: '📋' },
-        { label: 'Total Tasks Completed', val: `${totalTasksCount} Tasks`, icon: '✅' },
-        { label: 'Total Goals Achieved', val: `${totalGoalsCount} Goals`, icon: '🎯' }
-    ];
-
-    list.innerHTML = records.map(r => `
-        <div class="record-item">
-            <div class="record-icon-wrap">${r.icon}</div>
-            <div class="record-info">
-                <span class="record-lbl">${r.label}</span>
-                <span class="record-val">${r.val}</span>
-            </div>
-        </div>
-    `).join('');
 }
 
 async function renderMilestoneTimeline(identity) {
