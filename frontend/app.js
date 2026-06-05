@@ -1063,15 +1063,53 @@ async function updateProfile(name, username) {
     return result;
 }
 
-function showView(viewId) {
+const _viewOrder = ['tasks', 'reports', 'insights', 'progress', 'me'];
+let _prevView = null;
+
+function showView(viewId, direction) {
+    const prevViewId = currentView;
     currentView = viewId;
     localStorage.setItem('tm_last_view', viewId);
-    
-    // UI Update
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+
+    // Determine slide direction if not explicitly given
+    if (!direction) {
+        const prevIdx = _viewOrder.indexOf(prevViewId);
+        const nextIdx = _viewOrder.indexOf(viewId);
+        if (prevIdx !== -1 && nextIdx !== -1) {
+            direction = nextIdx > prevIdx ? 'forward' : 'back';
+        } else {
+            direction = 'forward';
+        }
+    }
+
+    const inClass  = direction === 'forward' ? 'slide-in-right' : 'slide-in-left';
+
+    // Hide old view cleanly
+    const prevEl = document.getElementById(`view-${prevViewId}`);
+    if (prevEl && prevViewId !== viewId) {
+        prevEl.classList.remove('active', 'slide-in-right', 'slide-in-left', 'swipe-dragging');
+        prevEl.style.transform = '';
+        prevEl.style.opacity = '';
+        prevEl.style.display = 'none';
+    }
+
+    // Prepare new view with entry animation
     const target = document.getElementById(`view-${viewId}`);
-    if (target) target.classList.add('active');
-    
+    if (target) {
+        target.classList.remove('active', 'slide-in-right', 'slide-in-left', 'swipe-dragging');
+        target.style.transform = '';
+        target.style.opacity = '';
+        target.classList.add(inClass);
+        // Force reflow so transition fires
+        target.offsetHeight; // eslint-disable-line no-unused-expressions
+        target.classList.add('active');
+        // Clean up animation class after transition
+        setTimeout(() => {
+            target.classList.remove('slide-in-right', 'slide-in-left');
+        }, 360);
+    }
+
+    // Nav items
     document.querySelectorAll('.nav-item').forEach(item => {
         const onClickAttr = item.getAttribute('onclick');
         if (onClickAttr && onClickAttr.includes(viewId)) {
@@ -1091,7 +1129,6 @@ function showView(viewId) {
         const topBar = document.querySelector('.top-bar');
         if (topBar) topBar.classList.remove('hidden');
         updateScrollProgress(content);
-        // Attach scroll listener once
         if (!content.dataset.scrollBound) {
             content.addEventListener('scroll', handleContentScroll);
             content.dataset.scrollBound = "true";
@@ -1103,13 +1140,12 @@ function showView(viewId) {
         document.body.dataset.windowScrollBound = "true";
     }
 
-    // Load Data with caching (Instant loading)
+    // Load Data with caching
     const now = Date.now();
-    const CACHE_TTL = 30000; // 30 seconds
+    const CACHE_TTL = 30000;
     if (!window.viewCacheTime) window.viewCacheTime = {};
-    
     if (window.viewCacheTime[viewId] && (now - window.viewCacheTime[viewId]) < CACHE_TTL) {
-        return; // Skip network requests, UI already updated!
+        return;
     }
     window.viewCacheTime[viewId] = now;
 
@@ -1123,7 +1159,7 @@ function showView(viewId) {
     }
     if (viewId === 'goals') loadGoals();
     if (viewId === 'insights') loadInsights();
-    if (viewId === 'settings') applyTheme(); // Sync theme switch state
+    if (viewId === 'settings') applyTheme();
 }
 
 // Invalidate caches when actions happen
@@ -1911,6 +1947,23 @@ async function loadReports() {
             const cachedHtml = localStorage.getItem('tm_hero_metrics_html');
             if (cachedHtml) {
                 container.innerHTML = cachedHtml;
+            } else {
+                // Show skeleton while loading
+                container.innerHTML = `
+                    <div class="skeleton-card">
+                        <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:1rem;">
+                            <div class="skeleton skeleton-circle"></div>
+                            <div style="flex:1"><div class="skeleton skeleton-line lg"></div><div class="skeleton skeleton-line sm"></div></div>
+                        </div>
+                        <div class="skeleton skeleton-line xl"></div>
+                        <div class="skeleton skeleton-line"></div>
+                        <div class="skeleton skeleton-line sm"></div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton skeleton-line lg"></div>
+                        <div class="skeleton skeleton-line"></div>
+                        <div class="skeleton skeleton-line sm"></div>
+                    </div>`;
             }
         }
 
@@ -1950,6 +2003,19 @@ async function loadReports() {
 
 async function loadMe() {
     try {
+        // Show skeleton immediately in key containers
+        const identitySection = document.getElementById('identity-section');
+        if (identitySection && !identitySection.querySelector('.identity-header')) {
+            identitySection.innerHTML = `
+                <div class="skeleton-card">
+                    <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:1rem;">
+                        <div class="skeleton skeleton-circle"></div>
+                        <div style="flex:1"><div class="skeleton skeleton-line lg"></div><div class="skeleton skeleton-line sm"></div></div>
+                    </div>
+                    <div class="skeleton skeleton-line"></div>
+                    <div class="skeleton skeleton-line sm"></div>
+                </div>`;
+        }
         renderProfileCard();
         
         const today = new Date().toISOString().split('T')[0];
@@ -4227,52 +4293,179 @@ function toggleTaskForm() {
     }
 }
 
-// === Swipe Navigation (Mobile Only) ===
+// === Swipe Navigation (Mobile Only) — Real-time finger tracking ===
 (function() {
+    const viewOrder = ['tasks', 'reports', 'insights', 'progress', 'me'];
+    const SWIPE_THRESHOLD = 72;   // px to commit
+    const SWIPE_DIR_RATIO = 2.2;  // how much more horizontal than vertical
+
     let touchStartX = 0;
     let touchStartY = 0;
-    let touchEndX = 0;
-    let touchEndY = 0;
+    let touchCurX   = 0;
+    let isDragging  = false;
+    let isHorizontal = null; // null = undecided, true = horiz, false = vert
     let startedOnBottomNav = false;
-    
-    const viewOrder = ['tasks', 'reports', 'insights', 'progress', 'me'];
-    
+    let activeEl  = null; // the current view DOM element
+    let neighborEl = null; // the next/prev view
+    let swipeDir   = null; // 'left' | 'right'
+
     document.addEventListener('touchstart', e => {
         startedOnBottomNav = Boolean(e.target && e.target.closest && e.target.closest('.bottom-nav'));
-        touchStartX = e.changedTouches[0].screenX;
-        touchStartY = e.changedTouches[0].screenY;
-    }, { passive: true });
-    
-    document.addEventListener('touchend', e => {
-        touchEndX = e.changedTouches[0].screenX;
-        touchEndY = e.changedTouches[0].screenY;
-        handleSwipe();
-    }, { passive: true });
-    
-    function handleSwipe() {
-        const isMobile = window.innerWidth <= 768;
-        if (!isMobile) return;
         if (startedOnBottomNav) return;
-        
-        const diffX = touchEndX - touchStartX;
-        const diffY = touchEndY - touchStartY;
-        
-        // Only handle swipes that are mostly horizontal
-        if (Math.abs(diffX) > Math.abs(diffY) * 2 && Math.abs(diffX) > 50) {
-            const currentIndex = viewOrder.indexOf(currentView);
-            let targetIndex;
-            
-            if (diffX < 0) {
-                // Swipe left - next view
-                targetIndex = (currentIndex + 1) % viewOrder.length;
-            } else {
-                // Swipe right - previous view
-                targetIndex = (currentIndex - 1 + viewOrder.length) % viewOrder.length;
-            }
-            
-            showView(viewOrder[targetIndex]);
+        touchStartX = e.changedTouches[0].clientX;
+        touchStartY = e.changedTouches[0].clientY;
+        touchCurX   = touchStartX;
+        isDragging  = false;
+        isHorizontal = null;
+        swipeDir = null;
+        activeEl = document.getElementById(`view-${currentView}`);
+        neighborEl = null;
+    }, { passive: true });
+
+    document.addEventListener('touchmove', e => {
+        if (startedOnBottomNav || window.innerWidth > 768) return;
+        const x = e.changedTouches[0].clientX;
+        const y = e.changedTouches[0].clientY;
+        const diffX = x - touchStartX;
+        const diffY = y - touchStartY;
+
+        // Decide direction once after minimal movement
+        if (isHorizontal === null && (Math.abs(diffX) > 6 || Math.abs(diffY) > 6)) {
+            isHorizontal = Math.abs(diffX) > Math.abs(diffY) * SWIPE_DIR_RATIO;
         }
-    }
+
+        if (!isHorizontal || !activeEl) return;
+
+        touchCurX = x;
+        isDragging = true;
+        const currentIdx = viewOrder.indexOf(currentView);
+
+        // Determine neighbor
+        if (!swipeDir) {
+            if (diffX < 0 && currentIdx < viewOrder.length - 1) {
+                swipeDir = 'left';
+                neighborEl = document.getElementById(`view-${viewOrder[currentIdx + 1]}`);
+            } else if (diffX > 0 && currentIdx > 0) {
+                swipeDir = 'right';
+                neighborEl = document.getElementById(`view-${viewOrder[currentIdx - 1]}`);
+            } else {
+                return; // edge of list — no drag
+            }
+        }
+
+        const maxDrag = window.innerWidth * 0.45;
+        const drag = Math.max(-maxDrag, Math.min(maxDrag, diffX));
+        const resistance = 0.72; // rubber-band feel
+        const finalDrag = drag * resistance;
+
+        // Move current view with dragging
+        activeEl.classList.add('swipe-dragging');
+        activeEl.style.transform = `translateX(${finalDrag}px)`;
+        activeEl.style.opacity = `${1 - Math.abs(finalDrag) / (maxDrag * 1.5)}`;
+
+        // Peek the neighbor
+        if (neighborEl) {
+            const neighborOffset = swipeDir === 'left' ? window.innerWidth : -window.innerWidth;
+            neighborEl.classList.add('swipe-dragging');
+            neighborEl.style.display = 'flex';
+            neighborEl.style.position = 'absolute';
+            neighborEl.style.width = '100%';
+            neighborEl.style.transform = `translateX(${neighborOffset + finalDrag}px)`;
+            neighborEl.style.opacity = `${Math.abs(finalDrag) / (maxDrag * 1.2)}`;
+            neighborEl.style.pointerEvents = 'none';
+        }
+    }, { passive: true });
+
+    document.addEventListener('touchend', e => {
+        if (startedOnBottomNav || !isDragging || !isHorizontal) {
+            isDragging = false;
+            isHorizontal = null;
+            return;
+        }
+        isDragging = false;
+        isHorizontal = null;
+
+        const diffX = touchCurX - touchStartX;
+        const committed = Math.abs(diffX) >= SWIPE_THRESHOLD && swipeDir !== null;
+
+        // Clean up neighbor peek styles
+        if (neighborEl) {
+            neighborEl.classList.remove('swipe-dragging');
+            neighborEl.style.position = '';
+            neighborEl.style.width = '';
+            neighborEl.style.pointerEvents = '';
+            if (!committed) {
+                // Spring back
+                neighborEl.style.transition = 'transform 0.32s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.32s ease';
+                neighborEl.style.transform = `translateX(${swipeDir === 'left' ? '100vw' : '-100vw'})`;
+                neighborEl.style.opacity = '0';
+                setTimeout(() => {
+                    if (neighborEl) {
+                        neighborEl.style.display = '';
+                        neighborEl.style.transform = '';
+                        neighborEl.style.opacity = '';
+                        neighborEl.style.transition = '';
+                    }
+                }, 340);
+            } else {
+                neighborEl.style.transform = '';
+                neighborEl.style.opacity = '';
+                neighborEl.style.display = '';
+                neighborEl.style.transition = '';
+            }
+        }
+
+        if (activeEl) {
+            activeEl.classList.remove('swipe-dragging');
+            if (!committed) {
+                // Spring back current view
+                activeEl.style.transition = 'transform 0.32s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.32s ease';
+                activeEl.style.transform = 'translateX(0)';
+                activeEl.style.opacity = '1';
+                setTimeout(() => {
+                    if (activeEl) {
+                        activeEl.style.transform = '';
+                        activeEl.style.opacity = '';
+                        activeEl.style.transition = '';
+                    }
+                }, 340);
+            } else {
+                activeEl.style.transform = '';
+                activeEl.style.opacity = '';
+                activeEl.style.transition = '';
+            }
+        }
+
+        if (committed) {
+            const currentIdx = viewOrder.indexOf(currentView);
+            const dir = diffX < 0 ? 'forward' : 'back';
+            const targetIdx = diffX < 0 ? currentIdx + 1 : currentIdx - 1;
+            if (targetIdx >= 0 && targetIdx < viewOrder.length) {
+                showView(viewOrder[targetIdx], dir);
+            }
+        }
+
+        // Reset
+        neighborEl = null;
+        activeEl   = null;
+        swipeDir   = null;
+    }, { passive: true });
+})();
+
+// === Ripple effect on buttons ===
+(function() {
+    document.addEventListener('pointerdown', e => {
+        const btn = e.target.closest('.btn, .nav-item, .task-action-btn, .fab');
+        if (!btn) return;
+        btn.classList.add('ripple-container');
+        const circle = document.createElement('span');
+        circle.classList.add('ripple-circle');
+        const rect = btn.getBoundingClientRect();
+        circle.style.left = `${e.clientX - rect.left}px`;
+        circle.style.top  = `${e.clientY - rect.top}px`;
+        btn.appendChild(circle);
+        setTimeout(() => circle.remove(), 600);
+    });
 })();
 
 async function forceUpdateApp() {
@@ -4662,19 +4855,27 @@ function getTrustScoreTier(score) {
 // Loads all data for the Progress view from /identity/profile
 async function loadProgressHub() {
     try {
+        // Show skeleton placeholders while data loads
+        const rankNameEl = document.getElementById('progress-rank-name');
+        if (rankNameEl && rankNameEl.textContent === 'Explorer') {
+            const xpTextEl  = document.getElementById('progress-xp-text');
+            const trustVal  = document.getElementById('progress-trust-value');
+            if (xpTextEl)  { xpTextEl.innerHTML  = '<span class="skeleton skeleton-line sm" style="width:80px;display:inline-block;"></span>'; }
+            if (trustVal)  { trustVal.innerHTML   = '<span class="skeleton skeleton-line xl" style="width:60px;display:inline-block;"></span>'; }
+        }
+
         const identity = await apiFetch('/identity/profile');
         
         // Render Rank & Level
-        const rankNameEl = document.getElementById('progress-rank-name');
         const levelBadgeEl = document.getElementById('progress-level-badge');
         if (rankNameEl) rankNameEl.textContent = getRankName(identity.level);
         if (levelBadgeEl) levelBadgeEl.innerHTML = `<i class="fas fa-star"></i> Level ${identity.level}`;
 
         // Render XP
-        const xpTextEl = document.getElementById('progress-xp-text');
         const xpFillEl = document.getElementById('progress-xp-fill');
         const totalXpEl = document.getElementById('progress-total-xp');
-        if (xpTextEl) xpTextEl.textContent = `XP ${identity.xp_into_current_level} / ${identity.xp_for_next_level}`;
+        const xpTextElReal = document.getElementById('progress-xp-text');
+        if (xpTextElReal) xpTextElReal.textContent = `XP ${identity.xp_into_current_level} / ${identity.xp_for_next_level}`;
         if (xpFillEl) xpFillEl.style.width = `${identity.level_progress_percent || 0}%`;
         if (totalXpEl) totalXpEl.textContent = `Total XP: ${identity.total_xp.toLocaleString()}`;
 
