@@ -2804,13 +2804,12 @@ body.light-mode .ach-filter-btn {
         gap: 0.45rem;
     }
     
-    /* Make achievement cards shorter and tight to edges */
+    /* Make achievement cards square on mobile */
     .ach-card {
-        padding: 0.35rem; /* Very minimal padding to move content close to edges */
+        padding: 0.3rem; /* Very minimal padding to move content close to edges */
         gap: 0.15rem;
-        border-radius: 10px;
-        min-height: 70px; /* Shorter card height */
-        max-height: 80px;
+        border-radius: 8px;
+        aspect-ratio: 1 / 1; /* Force perfect square shape */
         display: flex;
         flex-direction: column;
         align-items: flex-start; /* Move content to left */
@@ -2826,9 +2825,13 @@ body.light-mode .ach-filter-btn {
         gap: 0.25rem;
     }
     
-    /* Hide description to keep cards compact at the shorter height */
+    /* Show description but make it smaller to fit mobile */
     .ach-card-desc {
-        display: none !important;
+        display: block !important;
+        font-size: 0.58rem !important;
+        line-height: 1.05;
+        margin: 0;
+        text-align: left;
     }
     
     .ach-unlock-date {
