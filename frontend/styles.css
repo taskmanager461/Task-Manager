@@ -3345,20 +3345,77 @@ body.light-mode .ach-progress-track { background: rgba(0, 0, 0, 0.07); }
     font-size: 0.78rem;
 }
 
-.goal-link-control {
-    border: 1.2px solid rgba(10, 134, 255, 0.45);
-    box-shadow: 0 0 8px rgba(10, 134, 255, 0.18);
-    border-radius: 12px;
-    padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.02);
+/* ====== Premium Link Controls ====== */
+.link-controls {
+    margin-bottom: 0.25rem;
 }
 
-.goal-link-toggle {
-    display: flex;
-    align-items: center;
+.link-toggle-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 0.5rem;
-    margin-bottom: 0.5rem;
-    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+}
+
+.link-toggle-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.65rem 0.4rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-size: 0.72rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.link-toggle-btn i {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    transition: color 0.18s ease;
+}
+
+.link-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.link-toggle-btn.selected-goal {
+    background: rgba(10, 134, 255, 0.15);
+    border-color: rgba(10, 134, 255, 0.7);
+    color: #60a5fa;
+    box-shadow: 0 0 14px rgba(10, 134, 255, 0.25);
+}
+.link-toggle-btn.selected-goal i { color: #60a5fa; }
+
+.link-toggle-btn.selected-habit {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.7);
+    color: #34d399;
+    box-shadow: 0 0 14px rgba(16, 185, 129, 0.25);
+}
+.link-toggle-btn.selected-habit i { color: #34d399; }
+
+.link-badge {
+    font-size: 0.6rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff;
+    padding: 1px 5px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+}
+
+.link-panel {
+    animation: fadeSlideDown 0.18s ease;
+}
+.link-panel select {
+    width: 100%;
 }
 
 /* Share Modal Content */

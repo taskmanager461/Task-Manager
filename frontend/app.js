@@ -3016,9 +3016,7 @@ async function addTask(title, category, difficulty, date, time, startTime) {
     const priority = document.getElementById('task-priority').value;
     const recurring = document.getElementById('task-recurring').value;
     const dueDate = document.getElementById('task-due-date').value;
-    const linkGoal = document.getElementById('task-link-goal-checkbox').checked;
-    const goalIdRaw = document.getElementById('task-goal-select').value;
-    const goalId = linkGoal && goalIdRaw ? Number(goalIdRaw) : null;
+
 
     const submitBtn = document.querySelector('#add-task-form button[type="submit"]');
     const originalText = submitBtn.innerHTML;
@@ -3028,6 +3026,14 @@ async function addTask(title, category, difficulty, date, time, startTime) {
     
     try {
         const taskDate = date || new Date().toISOString().split('T')[0];
+        // Read goal / habit link
+        const goalId = (_currentTaskLink === 'goal')
+            ? (document.getElementById('task-goal-select')?.value ? Number(document.getElementById('task-goal-select').value) : null)
+            : null;
+        const habitIdForTask = (_currentTaskLink === 'habit')
+            ? (document.getElementById('task-habit-select')?.value ? Number(document.getElementById('task-habit-select').value) : null)
+            : null;
+
         const newTask = await apiFetch('/tasks', {
             method: 'POST',
             body: JSON.stringify({ 
@@ -3038,7 +3044,8 @@ async function addTask(title, category, difficulty, date, time, startTime) {
                 date: taskDate,
                 time: time || null,
                 start_time: startTime || null,
-                goal_id: goalId
+                goal_id: goalId,
+                habit_id: habitIdForTask
             })
         });
         smartPersonalizationCache = { timestamp: 0, data: null };
@@ -3046,7 +3053,7 @@ async function addTask(title, category, difficulty, date, time, startTime) {
         
         // Optimistic UI update: skip the GET request and just push the new task
         if (newTask && newTask.id) {
-            cachedTasks.unshift(newTask); // Add to the top
+            cachedTasks.unshift(newTask);
             renderTasks(cachedTasks);
         } else {
             loadTasks();
@@ -3087,6 +3094,7 @@ async function handleTaskUpdate(taskId, status, btnEl) {
                 <span>${status === 'completed' ? t('completed') + ' ✔' : t('failed') + ' ✖'}</span>
             </div>
         `;
+
         showToast(t('task_updated'), 'success');
         
         // Motivation feedback
@@ -3110,15 +3118,84 @@ async function handleTaskUpdate(taskId, status, btnEl) {
     }
 }
 
-function toggleTaskGoalLink(isEnabled) {
+// ======= Task Link Helpers =======
+
+// Updates min attribute on Start/Finish time inputs dynamically
+function updateTaskTimeConstraints() {
+    const dateInput    = document.getElementById('task-date');
+    const startInput   = document.getElementById('task-start-time');
+    const finishInput  = document.getElementById('task-time');
+    if (!dateInput || !startInput || !finishInput) return;
+
+    const todayStr = new Date().toLocaleDateString('en-CA');
+    const isToday  = dateInput.value === todayStr;
+
+    if (isToday) {
+        const now  = new Date();
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        const hrs  = String(now.getHours()).padStart(2, '0');
+        const nowStr = `${hrs}:${mins}`;
+        startInput.min  = nowStr;
+        finishInput.min = startInput.value || nowStr;
+    } else {
+        startInput.min  = '';
+        finishInput.min = '';
+    }
+
+    // When start changes, update finish min
+    startInput.onchange = function() {
+        if (startInput.value) {
+            finishInput.min = startInput.value;
+            if (finishInput.value && finishInput.value < startInput.value) {
+                finishInput.value = startInput.value;
+            }
+        }
+    };
+}
+
+let _currentTaskLink = 'none'; // 'none' | 'goal' | 'habit'
+
+function setTaskLink(type) {
+    _currentTaskLink = type;
+    const btnGoal   = document.getElementById('btn-link-goal');
+    const btnHabit  = document.getElementById('btn-link-habit');
+    const btnNone   = document.getElementById('btn-link-none');
+    const goalPanel  = document.getElementById('link-goal-panel');
+    const habitPanel = document.getElementById('link-habit-panel');
+
+    // Reset all buttons
+    [btnGoal, btnHabit, btnNone].forEach(b => b && b.classList.remove('selected-goal', 'selected-habit', 'active-selected'));
+
+    if (type === 'goal') {
+        btnGoal && btnGoal.classList.add('selected-goal');
+        if (goalPanel) goalPanel.style.display = 'block';
+        if (habitPanel) habitPanel.style.display = 'none';
+        populateGoalOptions();
+    } else if (type === 'habit') {
+        btnHabit && btnHabit.classList.add('selected-habit');
+        if (goalPanel) goalPanel.style.display = 'none';
+        if (habitPanel) habitPanel.style.display = 'block';
+        populateHabitOptions();
+    } else {
+        if (goalPanel) goalPanel.style.display = 'none';
+        if (habitPanel) habitPanel.style.display = 'none';
+    }
+}
+
+function populateHabitOptions() {
+    const select = document.getElementById('task-habit-select');
+    if (!select) return;
+    const activeHabits = cachedHabits.filter(h => h.title);
+    select.innerHTML = `<option value="">Select habit</option>` +
+        activeHabits.map(h => `<option value="${h.id}">${h.title}</option>`).join('');
+}
+
+
+function populateGoalOptions() {
     const select = document.getElementById('task-goal-select');
     if (!select) return;
-    select.disabled = !isEnabled;
-    if (!isEnabled) {
-        select.value = '';
-    } else if (cachedGoals.length === 0) {
-        loadGoals();
-    }
+    const activeGoals = cachedGoals.filter(g => g.status === 'active');
+    select.innerHTML = `<option value="">Select goal</option>` + activeGoals.map(g => `<option value="${g.id}">${g.title}</option>`).join('');
 }
 
 async function loadGoals() {
@@ -3137,12 +3214,7 @@ async function loadGoals() {
     }
 }
 
-function populateGoalOptions() {
-    const select = document.getElementById('task-goal-select');
-    if (!select) return;
-    const activeGoals = cachedGoals.filter(g => g.status === 'active');
-    select.innerHTML = `<option value="">Select goal</option>` + activeGoals.map(g => `<option value="${g.id}">${g.title}</option>`).join('');
-}
+
 
 function renderGoals(goals) {
     const list = document.getElementById('goals-list');
@@ -4350,14 +4422,21 @@ function toggleTaskForm() {
     container.classList.toggle('active');
     document.getElementById('task-title').value = '';
     if (container.classList.contains('active')) {
-        populateGoalOptions();
-        const checkbox = document.getElementById('task-link-goal-checkbox');
-        checkbox.checked = false;
-        toggleTaskGoalLink(false);
-        
+        // Reset link state
+        _currentTaskLink = 'none';
+        setTaskLink('none');
+
         // Block past dates in HTML input
         const taskDateInput = document.getElementById('task-date');
-        if (taskDateInput) taskDateInput.min = new Date().toLocaleDateString('en-CA');
+        const todayStr = new Date().toLocaleDateString('en-CA');
+        if (taskDateInput) {
+            taskDateInput.min = todayStr;
+            // When the date changes, update time constraints
+            taskDateInput.onchange = function() {
+                updateTaskTimeConstraints();
+            };
+        }
+        updateTaskTimeConstraints();
     }
 }
 

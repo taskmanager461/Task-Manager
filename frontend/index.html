@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tobedone</title>
-    <link rel="stylesheet" href="styles.css?v=59.0.0">
+    <link rel="stylesheet" href="styles.css?v=60.0.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <link rel="stylesheet" href="/src/styles/logo.css?v=23.0.0">
@@ -814,7 +814,7 @@
                     <input type="time" id="task-start-time">
                 </div>
                 <div class="form-group">
-                    <label>Deadline</label>
+                    <label>Finish</label>
                     <input type="time" id="task-time" required>
                 </div>
             </div>
@@ -840,14 +840,33 @@
                 <input type="date" id="task-due-date">
             </div>
 
-            <div class="goal-link-control">
-                <label class="goal-link-toggle">
-                    <input type="checkbox" id="task-link-goal-checkbox" onchange="toggleTaskGoalLink(this.checked)">
-                    <span>Link this task to a goal</span>
-                </label>
-                <select id="task-goal-select" disabled>
-                    <option value="">Select goal</option>
-                </select>
+            <div class="link-controls">
+                <div class="link-toggle-group">
+                    <button type="button" class="link-toggle-btn" id="btn-link-goal" onclick="setTaskLink('goal')">
+                        <i class="fas fa-bullseye"></i>
+                        <span>Link to Goal</span>
+                        <span class="link-badge">+XP</span>
+                    </button>
+                    <button type="button" class="link-toggle-btn" id="btn-link-habit" onclick="setTaskLink('habit')">
+                        <i class="fas fa-repeat"></i>
+                        <span>Link to Habit</span>
+                        <span class="link-badge">+XP</span>
+                    </button>
+                    <button type="button" class="link-toggle-btn active-none" id="btn-link-none" onclick="setTaskLink('none')">
+                        <i class="fas fa-xmark"></i>
+                        <span>No Link</span>
+                    </button>
+                </div>
+                <div id="link-goal-panel" class="link-panel" style="display:none">
+                    <select id="task-goal-select">
+                        <option value="">Select a goal...</option>
+                    </select>
+                </div>
+                <div id="link-habit-panel" class="link-panel" style="display:none">
+                    <select id="task-habit-select">
+                        <option value="">Select a habit...</option>
+                    </select>
+                </div>
             </div>
 
             <div class="form-actions">
@@ -1062,7 +1081,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script src="assets.js?v=17.0.0"></script>
     <script src="badge_assets.js?v=36.0.0"></script>
-    <script src="app.js?v=25.0.0"></script>
+    <script src="app.js?v=26.0.0"></script>
     <script>
         // Logos are pre-sized; no JS resizing needed to avoid flicker.
         document.addEventListener('DOMContentLoaded', function() {
