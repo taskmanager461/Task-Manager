@@ -2800,8 +2800,8 @@ body.light-mode .ach-filter-btn {
 
 @media (max-width: 480px) {
     .achievements-grid {
-        grid-template-columns: repeat(2, 1fr); /* Exactly 2 per row on mobile */
-        gap: 0.45rem;
+        grid-template-columns: repeat(3, 1fr); /* 3 per row on mobile to shrink square boxes */
+        gap: 0.4rem;
     }
     
     /* Make achievement cards square on mobile */
