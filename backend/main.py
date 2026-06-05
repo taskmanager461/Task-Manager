@@ -29,12 +29,6 @@ from config.settings import get_settings
 
 scheduler = BackgroundScheduler()
 
-def _env_flag(name: str, default: bool) -> bool:
-    raw = os.getenv(name)
-    if raw is None:
-        return default
-    return raw.strip().lower() in {"1", "true", "yes", "on"}
-
 
 def scheduled_job_wrapper():
     db = SessionLocal()
@@ -48,40 +42,24 @@ def scheduled_job_wrapper():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    init_db_on_startup = _env_flag("INIT_DB_ON_STARTUP", default=False)
-    enable_scheduler = _env_flag("ENABLE_SCHEDULER", default=False)
-
-    # Always ensure tables exist and schema is up to date on startup
-    logger.info("Startup: checking database tables and schema compatibility...")
+    # Startup: Initialize database
+    logger.info("Starting up and initializing database...")
     try:
         Base.metadata.create_all(bind=engine)
         ensure_schema_compatibility()
-        logger.info("Database tables verified and schema compatibility updated.")
+        logger.info("Database initialized successfully.")
     except Exception as e:
-        logger.error(f"Database verification/schema check failed: {e}")
+        logger.error(f"Database initialization failed: {e}")
 
-    if init_db_on_startup:
-        logger.info("Startup: initializing database...")
-        try:
-            Base.metadata.create_all(bind=engine)
-            logger.info("Database initialized successfully.")
-        except Exception as e:
-            logger.error(f"Database initialization failed: {e}")
-    else:
-        logger.info("Startup: skipping database initialization (INIT_DB_ON_STARTUP=false).")
-
-    if enable_scheduler:
-        scheduler.add_job(scheduled_job_wrapper, trigger=IntervalTrigger(minutes=1))
-        scheduler.start()
-        logger.info("Scheduler started.")
-    else:
-        logger.info("Startup: scheduler disabled (ENABLE_SCHEDULER=false).")
+    # Start scheduler
+    scheduler.add_job(scheduled_job_wrapper, trigger=IntervalTrigger(minutes=1))
+    scheduler.start()
+    logger.info("Scheduler started.")
 
     yield
 
     # Shutdown
-    if enable_scheduler:
-        scheduler.shutdown()
+    scheduler.shutdown()
     logger.info("Shutting down...")
 
 settings = get_settings()
@@ -159,22 +137,12 @@ async def get_icon512():
 @app.get("/styles.css")
 async def get_css():
     path = FRONTEND_DIR / "styles.css"
-    return FileResponse(path, headers={"Cache-Control": "public, max-age=31536000, immutable"}) if path.exists() else {"error": "styles.css not found"}
+    return FileResponse(path) if path.exists() else {"error": "styles.css not found"}
 
 @app.get("/app.js")
 async def get_js():
     path = FRONTEND_DIR / "app.js"
-    return FileResponse(path, headers={"Cache-Control": "public, max-age=31536000, immutable"}) if path.exists() else {"error": "app.js not found"}
-
-@app.get("/assets.js")
-async def get_assets_js():
-    path = FRONTEND_DIR / "assets.js"
-    return FileResponse(path, headers={"Cache-Control": "public, max-age=31536000, immutable"}) if path.exists() else {"error": "assets.js not found"}
-
-@app.get("/badge_assets.js")
-async def get_badge_assets_js():
-    path = FRONTEND_DIR / "badge_assets.js"
-    return FileResponse(path, headers={"Cache-Control": "public, max-age=31536000, immutable"}) if path.exists() else {"error": "badge_assets.js not found"}
+    return FileResponse(path) if path.exists() else {"error": "app.js not found"}
 
 def _serve_root_badge(filename: str) -> FileResponse:
     # Try STATIC_DIR first, then fall back to PROJECT_ROOT

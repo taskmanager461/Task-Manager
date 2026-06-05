@@ -56,6 +56,7 @@ class TaskCreate(BaseModel):
     recurring: Optional[Recurring] = "none"
     due_date: Optional[date] = None
     time: Optional[str] = None
+    start_time: Optional[str] = None
     goal_id: Optional[int] = None
     date: date
 
@@ -64,6 +65,7 @@ class TaskUpdate(BaseModel):
     status: Optional[TaskStatus] = None
     priority: Optional[Priority] = None
     time: Optional[str] = None
+    start_time: Optional[str] = None
     goal_id: Optional[int] = None
 
 
@@ -80,6 +82,7 @@ class TaskResponse(BaseModel):
     recurring: Recurring
     due_date: Optional[date]
     time: Optional[str]
+    start_time: Optional[str]
     status: TaskStatus
     date: date
     created_at: datetime

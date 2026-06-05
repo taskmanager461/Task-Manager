@@ -21,7 +21,8 @@ class Task(Base):
     recurring: Mapped[str] = mapped_column(String(20), default="none", nullable=False)
     xp_awarded: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     due_date: Mapped[date] = mapped_column(Date, nullable=True)
-    time: Mapped[str] = mapped_column(String(10), nullable=True) # HH:MM format
+    time: Mapped[str] = mapped_column(String(10), nullable=True) # Used as deadline time
+    start_time: Mapped[str] = mapped_column(String(10), nullable=True) # HH:MM format
     date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
 
