@@ -1084,25 +1084,27 @@ function showView(viewId, direction) {
 
     const inClass  = direction === 'forward' ? 'slide-in-right' : 'slide-in-left';
 
-    // Hide old view cleanly
-    const prevEl = document.getElementById(`view-${prevViewId}`);
-    if (prevEl && prevViewId !== viewId) {
-        prevEl.classList.remove('active', 'slide-in-right', 'slide-in-left', 'swipe-dragging');
-        prevEl.style.transform = '';
-        prevEl.style.opacity = '';
-        prevEl.style.display = ''; // Reset, let CSS handle it
-        prevEl.style.position = '';
-        prevEl.style.width = '';
-        prevEl.style.pointerEvents = '';
-    }
+    const target = document.getElementById(`view-${viewId}`);
+
+    // Strictly hide all views except target
+    document.querySelectorAll('.view').forEach(v => {
+        if (v !== target) {
+            v.classList.remove('active', 'slide-in-right', 'slide-in-left', 'swipe-dragging');
+            v.style.transform = '';
+            v.style.opacity = '';
+            v.style.display = 'none'; // strictly hidden
+            v.style.position = '';
+            v.style.width = '';
+            v.style.pointerEvents = '';
+        }
+    });
 
     // Prepare new view with entry animation
-    const target = document.getElementById(`view-${viewId}`);
     if (target) {
         target.classList.remove('active', 'slide-in-right', 'slide-in-left', 'swipe-dragging');
         target.style.transform = '';
         target.style.opacity = '';
-        target.style.display = ''; // Reset
+        target.style.display = ''; // Let CSS handle it (.active gives display: flex)
         target.style.position = '';
         target.style.width = '';
         target.style.pointerEvents = '';
