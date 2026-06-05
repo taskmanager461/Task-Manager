@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tobedone</title>
-    <link rel="stylesheet" href="styles.css?v=45.0.0">
+    <link rel="stylesheet" href="styles.css?v=46.0.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <link rel="stylesheet" href="/src/styles/logo.css?v=23.0.0">
@@ -543,30 +543,41 @@
                         </div>
                     </div>
 
-                    <div class="achievements-search-wrap">
-                        <i class="fas fa-search achievements-search-icon"></i>
-                        <input type="text" id="achievements-search" class="achievements-search" placeholder="Search achievements...">
+                    <!-- Toggle Button to Show/Hide achievements content -->
+                    <div style="margin-top: 1rem; text-align: center;">
+                        <button id="toggle-achievements-btn" class="btn primary" onclick="toggleAchievementsVisibility()" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 700; letter-spacing: 0.05em; padding: 0.65rem 1rem;">
+                            <span>View Achievements</span>
+                            <i class="fas fa-chevron-down" id="toggle-achievements-chevron"></i>
+                        </button>
                     </div>
 
-                    <div class="achievements-filters" id="achievements-filters">
-                        <button class="ach-filter-btn active" data-filter="All" onclick="filterAchievements('All', this)">All</button>
-                        <button class="ach-filter-btn" data-filter="Tasks" onclick="filterAchievements('Tasks', this)">📋 Tasks</button>
-                        <button class="ach-filter-btn" data-filter="Goals" onclick="filterAchievements('Goals', this)">🎯 Goals</button>
-                        <button class="ach-filter-btn" data-filter="Habits" onclick="filterAchievements('Habits', this)">⚡ Habits</button>
-                        <button class="ach-filter-btn" data-filter="Streaks" onclick="filterAchievements('Streaks', this)">🔥 Streaks</button>
-                        <button class="ach-filter-btn" data-filter="Trust" onclick="filterAchievements('Trust', this)">🛡️ Trust</button>
-                        <button class="ach-filter-btn" data-filter="XP" onclick="filterAchievements('XP', this)">⭐ XP</button>
-                        <button class="ach-filter-btn" data-filter="Calendar" onclick="filterAchievements('Calendar', this)">📅 Calendar</button>
-                        <button class="ach-filter-btn" data-filter="Rare" onclick="filterAchievements('Rare', this)">💎 Rare</button>
-                        <button class="ach-filter-btn" data-filter="Legendary" onclick="filterAchievements('Legendary', this)">👑 Legendary</button>
-                        <button class="ach-filter-btn" data-filter="unlocked" onclick="filterAchievements('unlocked', this)">✅ Unlocked</button>
-                        <button class="ach-filter-btn" data-filter="locked" onclick="filterAchievements('locked', this)">🔒 Locked</button>
-                    </div>
+                    <!-- Toggleable wrapper (collapsed by default) -->
+                    <div id="achievements-collapse-wrapper" style="display: none; margin-top: 1.25rem;">
+                        <div class="achievements-search-wrap">
+                            <i class="fas fa-search achievements-search-icon"></i>
+                            <input type="text" id="achievements-search" class="achievements-search" placeholder="Search achievements...">
+                        </div>
 
-                    <div id="achievements-grid" class="achievements-grid">
-                        <div class="achievements-loading">
-                            <i class="fas fa-spinner fa-spin"></i>
-                            <span>Loading achievements...</span>
+                        <div class="achievements-filters" id="achievements-filters">
+                            <button class="ach-filter-btn active" data-filter="All" onclick="filterAchievements('All', this)">All</button>
+                            <button class="ach-filter-btn" data-filter="Tasks" onclick="filterAchievements('Tasks', this)">📋 Tasks</button>
+                            <button class="ach-filter-btn" data-filter="Goals" onclick="filterAchievements('Goals', this)">🎯 Goals</button>
+                            <button class="ach-filter-btn" data-filter="Habits" onclick="filterAchievements('Habits', this)">⚡ Habits</button>
+                            <button class="ach-filter-btn" data-filter="Streaks" onclick="filterAchievements('Streaks', this)">🔥 Streaks</button>
+                            <button class="ach-filter-btn" data-filter="Trust" onclick="filterAchievements('Trust', this)">🛡️ Trust</button>
+                            <button class="ach-filter-btn" data-filter="XP" onclick="filterAchievements('XP', this)">⭐ XP</button>
+                            <button class="ach-filter-btn" data-filter="Calendar" onclick="filterAchievements('Calendar', this)">📅 Calendar</button>
+                            <button class="ach-filter-btn" data-filter="Rare" onclick="filterAchievements('Rare', this)">💎 Rare</button>
+                            <button class="ach-filter-btn" data-filter="Legendary" onclick="filterAchievements('Legendary', this)">👑 Legendary</button>
+                            <button class="ach-filter-btn" data-filter="unlocked" onclick="filterAchievements('unlocked', this)">✅ Unlocked</button>
+                            <button class="ach-filter-btn" data-filter="locked" onclick="filterAchievements('locked', this)">🔒 Locked</button>
+                        </div>
+
+                        <div id="achievements-grid" class="achievements-grid">
+                            <div class="achievements-loading">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <span>Loading achievements...</span>
+                            </div>
                         </div>
                     </div>
                 </div>

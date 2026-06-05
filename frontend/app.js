@@ -5252,3 +5252,19 @@ function generateDashboardIntelligence(identity, todayScore, history) {
         </div>
     `;
 }
+
+function toggleAchievementsVisibility() {
+    const wrapper = document.getElementById('achievements-collapse-wrapper');
+    const button = document.getElementById('toggle-achievements-btn');
+    const chevron = document.getElementById('toggle-achievements-chevron');
+    
+    if (wrapper.style.display === 'none' || !wrapper.style.display) {
+        wrapper.style.display = 'block';
+        button.querySelector('span').textContent = 'Hide Achievements';
+        chevron.className = 'fas fa-chevron-up';
+    } else {
+        wrapper.style.display = 'none';
+        button.querySelector('span').textContent = 'View Achievements';
+        chevron.className = 'fas fa-chevron-down';
+    }
+}
