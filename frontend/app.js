@@ -1,6 +1,5 @@
 // Configuration
 const API_BASE_URL = window.location.origin;
-const APP_BUILD = '18.3.0';
 const SUPABASE_URL = 'https://hngljslkwyzzlcugiiqz.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_YTyCF9SfOoh-5TaFLUVxmw_NYk3_jiO';
 const supabaseClient = window.supabase?.createClient
@@ -13,47 +12,6 @@ const supabaseClient = window.supabase?.createClient
         }
     })
     : null;
-
-let chartJsPromise = null;
-function ensureChartJs() {
-    if (window.Chart) return Promise.resolve();
-    if (chartJsPromise) return chartJsPromise;
-    chartJsPromise = new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
-        script.async = true;
-        script.onload = () => resolve();
-        script.onerror = () => reject(new Error('Chart.js failed to load'));
-        document.head.appendChild(script);
-    });
-    return chartJsPromise;
-}
-
-function migrateClientCaches() {
-    const prev = localStorage.getItem('tm_app_build');
-    if (prev === APP_BUILD) return;
-    localStorage.setItem('tm_app_build', APP_BUILD);
-}
-
-function cacheGet(key, maxAgeMs) {
-    try {
-        const raw = localStorage.getItem(key);
-        if (!raw) return null;
-        const parsed = JSON.parse(raw);
-        if (!parsed || typeof parsed !== 'object') return null;
-        const t = parsed.t;
-        if (!t || (Date.now() - t) > maxAgeMs) return null;
-        return parsed.v ?? null;
-    } catch (e) {
-        return null;
-    }
-}
-
-function cacheSet(key, value) {
-    try {
-        localStorage.setItem(key, JSON.stringify({ t: Date.now(), v: value }));
-    } catch (e) {}
-}
 
 // State Management
 let currentUser = null;
@@ -191,8 +149,7 @@ const translations = {
         july: "July", august: "August", september: "September", october: "October", november: "November", december: "December",
         mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun",
         progress: "Progress",
-        dashboard: "Dashboard",
-        weekly_trend: "Weekly Trend"
+        dashboard: "Dashboard"
     },
     el: {
         app_title: "Tobedone",
@@ -297,9 +254,7 @@ const translations = {
         task_starting: "Η εργασία ξεκινά σύντομα!",
         january: "Ιανουάριος", february: "Φεβρουάριος", march: "Μάρτιος", april: "Απρίλιος", may: "Μάιος", june: "Ιούνιος",
         july: "Ιούλιος", august: "Αύγουστος", september: "Σεπτέμβριος", october: "Οκτώβριος", november: "Νοέμβριος", december: "Δεκέμβριος",
-        mon: "Δευ", tue: "Τρι", wed: "Τετ", thu: "Πεμ", fri: "Παρ", sat: "Σαβ", sun: "Κυρ",
-        progress: "Πρόοδος",
-        weekly_trend: "Εβδομαδιαία Τάση"
+        mon: "Δευ", tue: "Τρι", wed: "Τετ", thu: "Πεμ", fri: "Παρ", sat: "Σαβ", sun: "Κυρ"
     },
     es: {
         app_title: "Tobedone",
@@ -344,9 +299,7 @@ const translations = {
         session_expired: "Sesión expirada",
         task_added: "¡Tarea añadida!",
         task_updated: "¡Tarea actualizada!",
-        error_occurred: "Ocurrió un error",
-        progress: "Progreso",
-        weekly_trend: "Tendencia Semanal"
+        error_occurred: "Ocurrió un error"
     },
     fr: {
         app_title: "Tobedone",
@@ -391,9 +344,7 @@ const translations = {
         session_expired: "Session expirée",
         task_added: "Tâche ajoutée !",
         task_updated: "Tâche mise à jour !",
-        error_occurred: "Une erreur est survenue",
-        progress: "Progression",
-        weekly_trend: "Tendance Hebdomadaire"
+        error_occurred: "Une erreur est survenue"
     },
     de: {
         app_title: "Tobedone",
@@ -438,9 +389,7 @@ const translations = {
         session_expired: "Sitzung abgelaufen",
         task_added: "Aufgabe hinzugefügt!",
         task_updated: "Aufgabe aktualisiert!",
-        error_occurred: "Fehler aufgetreten",
-        progress: "Fortschritt",
-        weekly_trend: "Wöchentlicher Trend"
+        error_occurred: "Fehler aufgetreten"
     },
     it: {
         app_title: "Tobedone",
@@ -485,9 +434,7 @@ const translations = {
         session_expired: "Sessione scaduta",
         task_added: "Compito aggiunto!",
         task_updated: "Compito aggiornato!",
-        error_occurred: "Errore verificato",
-        progress: "Progresso",
-        weekly_trend: "Andamento Settimanale"
+        error_occurred: "Errore verificato"
     },
     pt: {
         app_title: "Tobedone",
@@ -532,9 +479,7 @@ const translations = {
         session_expired: "Sessão expirada",
         task_added: "Tarefa adicionada!",
         task_updated: "Tarefa atualizada!",
-        error_occurred: "Ocorreu um erro",
-        progress: "Progresso",
-        weekly_trend: "Tendência Semanal"
+        error_occurred: "Ocorreu um erro"
     }
 };
 
@@ -555,14 +500,9 @@ function updateUILanguage() {
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
-    migrateClientCaches();
     initTheme();
     initLanguage();
-    if ('requestIdleCallback' in window) {
-        requestIdleCallback(() => processAllLogos(), { timeout: 1500 });
-    } else {
-        setTimeout(() => processAllLogos(), 0);
-    }
+    processAllLogos(); // Run immediately so logos start processing/fade in right away
     checkAuth();
     setupEventListeners();
     initBottomNavDragSwitch();
@@ -619,7 +559,7 @@ function applyTheme() {
         if (currentView === 'me') {
             renderProfileCard();
             if (cachedWeeklyTrendHistory && document.getElementById('weekly-trend-chart')) {
-                if (window.Chart) updateTrendChart(cachedWeeklyTrendHistory);
+                updateTrendChart(cachedWeeklyTrendHistory);
             }
             if (cachedTasksForChart && document.getElementById('task-pie-chart')) {
                 updateTaskChart(cachedTasksForChart);
@@ -828,8 +768,7 @@ async function handleAuthSessionChange(event, session) {
 }
 
 async function checkAuth() {
-    let loadingTimer = null;
-    loadingTimer = setTimeout(() => showLoading(true), 250);
+    showLoading(true);
     try {
         if (!supabaseClient) {
             renderLogin();
@@ -850,6 +789,7 @@ async function checkAuth() {
             supabaseAccessToken = null;
             renderLogin();
             setAuthView('login');
+            showLoading(false);
             
             // Set up listener for subsequent auth state changes
             supabaseClient.auth.onAuthStateChange(async (event, session) => {
@@ -872,7 +812,6 @@ async function checkAuth() {
         setAuthView('login');
         showAuthError('Auth unavailable. Check Supabase URL/keys and Redirect URLs.');
     } finally {
-        if (loadingTimer) clearTimeout(loadingTimer);
         showLoading(false);
     }
 }
@@ -1164,30 +1103,26 @@ function showView(viewId) {
         document.body.dataset.windowScrollBound = "true";
     }
 
-    // Instant optimistic tab switching: we show the container immediately.
-    // Fetch fresh data in the background unless cached within 5 minutes (300,000 ms)
+    // Load Data with caching (Instant loading)
     const now = Date.now();
-    const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+    const CACHE_TTL = 30000; // 30 seconds
     if (!window.viewCacheTime) window.viewCacheTime = {};
-
-    const isCached = window.viewCacheTime[viewId] && (now - window.viewCacheTime[viewId]) < CACHE_TTL;
     
-    // In background, fetch fresh data if cache is older than TTL
-    if (!isCached) {
-        window.viewCacheTime[viewId] = now;
-        setTimeout(() => {
-            if (viewId === 'reports') loadReports();
-            if (viewId === 'me') loadMe();
-            if (viewId === 'progress') loadProgressHub();
-            if (viewId === 'tasks') {
-                if (currentTasksGoalsTab === 'habits') loadHabits();
-                else if (currentTasksGoalsTab === 'goals') loadGoals();
-                else loadTasks();
-            }
-            if (viewId === 'goals') loadGoals();
-            if (viewId === 'insights') loadInsights();
-        }, 0);
+    if (window.viewCacheTime[viewId] && (now - window.viewCacheTime[viewId]) < CACHE_TTL) {
+        return; // Skip network requests, UI already updated!
     }
+    window.viewCacheTime[viewId] = now;
+
+    if (viewId === 'reports') loadReports();
+    if (viewId === 'me') loadMe();
+    if (viewId === 'progress') loadProgressHub();
+    if (viewId === 'tasks') {
+        if (currentTasksGoalsTab === 'habits') loadHabits();
+        else if (currentTasksGoalsTab === 'goals') loadGoals();
+        else loadTasks();
+    }
+    if (viewId === 'goals') loadGoals();
+    if (viewId === 'insights') loadInsights();
     if (viewId === 'settings') applyTheme(); // Sync theme switch state
 }
 
@@ -1399,20 +1334,12 @@ async function loadInsights() {
         if (currentUser.user_id && Number.isInteger(currentUser.user_id)) {
             url += `&user_id=${currentUser.user_id}`;
         }
-        // INSTANT: show cached history right away
-        const cacheKey = 'tm_cache_score_history_30';
-        const cached = cacheGet(cacheKey, 10 * 60 * 1000);
-        if (cached && Array.isArray(cached)) renderInsights(cached);
-
-        // Refresh in background
         const history = await apiFetch(url);
-        cacheSet(cacheKey, history);
         renderInsights(history);
     } catch (err) {
         console.error('Insights load failed', err);
     }
 }
-
 
 function renderInsights(history) {
     // 1. Pattern Detection Logic
@@ -1979,36 +1906,27 @@ function getBadgeImageSrc(scoreClass) {
 // --- Reports & Me Logic ---
 async function loadReports() {
     try {
-        const today = new Date().toISOString().split('T')[0];
-
-        // INSTANT: Show cached metrics immediately
         const container = document.getElementById('dashboard-hero-metrics');
         if (container) {
             const cachedHtml = localStorage.getItem('tm_hero_metrics_html');
-            if (cachedHtml) container.innerHTML = cachedHtml;
-        }
-        const cachedScore = cacheGet(`tm_cache_score_daily_${today}`, 2 * 60 * 1000);
-        if (cachedScore) {
-            cachedDailyScore = cachedScore;
-            renderHeroMetrics(cachedScore); // no await - fire and forget for instant UI
-            const progressFill = document.getElementById('daily-progress-fill');
-            if (progressFill) progressFill.style.width = `${(cachedScore.success_rate || 0) * 100}%`;
+            if (cachedHtml) {
+                container.innerHTML = cachedHtml;
+            }
         }
 
-        // Kick off ALL network requests in parallel
-        const [score] = await Promise.all([
-            apiFetch('/score/daily', {
-                method: 'POST',
-                body: JSON.stringify({ user_id: currentUser.user_id, day: today })
-            }),
-            renderDashboardCalendar(),
-            loadWeeklySummary(),
-            loadTodayHabits()
-        ]);
+        const today = new Date().toISOString().split('T')[0];
 
-        cachedDailyScore = score;
-        cacheSet(`tm_cache_score_daily_${today}`, score);
-        renderHeroMetrics(score); // no await - update metrics in background
+        const scorePromise = apiFetch('/score/daily', {
+            method: 'POST',
+            body: JSON.stringify({ user_id: currentUser.user_id, day: today })
+        });
+
+        const calendarPromise = renderDashboardCalendar();
+
+        const score = await scorePromise;
+        await calendarPromise;
+
+        await renderHeroMetrics(score);
 
         const progressFill = document.getElementById('daily-progress-fill');
         if (progressFill) progressFill.style.width = `${score.success_rate * 100}%`;
@@ -2023,6 +1941,8 @@ async function loadReports() {
             }
         }
 
+        await Promise.all([loadWeeklySummary(), loadTodayHabits()]);
+
     } catch (err) {
         console.error('Reports load failed', err);
     }
@@ -2034,13 +1954,12 @@ async function loadMe() {
         
         const today = new Date().toISOString().split('T')[0];
         
-        // Parallelize everything including insights (non-blocking)
+        // Parallelize everything
         const promises = [
             loadIdentityProfile(),
             loadDashboardPersonalization(),
             loadScoreComparison(),
-            loadMissedTasks(),
-            loadMeInsights().catch(e => console.warn('Me insights failed', e))
+            loadMissedTasks()
         ];
 
         const pieEl = document.getElementById('task-pie-chart');
@@ -2053,27 +1972,25 @@ async function loadMe() {
         }
 
         const trendEl = document.getElementById('weekly-trend-chart');
-        if (trendEl) promises.push(loadWeeklyTrend());
+        if (trendEl) {
+            promises.push(loadWeeklyTrend());
+        }
 
         await Promise.all(promises);
+
+        // Load embedded Me-Insights section (non-critical)
+        try {
+            await loadMeInsights();
+        } catch(e) { console.warn('Me insights failed', e); }
 
     } catch (err) {
         console.error('Me load failed', err);
     }
 }
 
-
 async function loadMeInsights() {
     // Fetch 30-day score history
-    let history = cacheGet('tm_cache_score_history_30', 10 * 60 * 1000);
-    if (!history || !Array.isArray(history)) {
-        history = await apiFetch('/score/history?days=30');
-        cacheSet('tm_cache_score_history_30', history);
-    } else {
-        apiFetch('/score/history?days=30').then(fresh => {
-            if (fresh && Array.isArray(fresh)) cacheSet('tm_cache_score_history_30', fresh);
-        }).catch(() => {});
-    }
+    const history = await apiFetch('/score/history?days=30');
     
     // Best Day
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -2118,11 +2035,6 @@ async function loadMeInsights() {
     // Mini weekly trend chart for Me
     const meTrendEl = document.getElementById('me-weekly-trend-chart');
     if (meTrendEl && history.length > 0) {
-        try {
-            await ensureChartJs();
-        } catch (e) {
-            return;
-        }
         const last7 = history.slice(-7);
         const ctx = meTrendEl.getContext('2d');
         if (window._meTrendChart) window._meTrendChart.destroy();
@@ -2535,19 +2447,11 @@ async function loadInsights() {
 
 async function loadWeeklyTrend() {
     try {
-        const cached = cacheGet('tm_cache_score_history_7', 5 * 60 * 1000);
-        if (cached && Array.isArray(cached) && document.getElementById('weekly-trend-chart') && window.Chart) {
-            cachedWeeklyTrendHistory = cached;
-            updateTrendChart(cached);
-        }
         let url = `/score/history?days=7`;
         if (currentUser.user_id && Number.isInteger(currentUser.user_id)) {
             url += `&user_id=${currentUser.user_id}`;
         }
         const scores = await apiFetch(url);
-        cachedWeeklyTrendHistory = scores;
-        cacheSet('tm_cache_score_history_7', scores);
-        await ensureChartJs();
         updateTrendChart(scores);
     } catch (err) {
         console.error('Trend load failed', err);
@@ -2633,13 +2537,8 @@ function updateTrendChart(history) {
     });
 }
 
-async function updateTaskChart(tasks) {
+function updateTaskChart(tasks) {
     cachedTasksForChart = tasks;
-    try {
-        await ensureChartJs();
-    } catch (e) {
-        return;
-    }
     const counts = {
         completed: tasks.filter(t => t.status === 'completed').length,
         failed: tasks.filter(t => t.status === 'failed').length,
@@ -2710,29 +2609,11 @@ async function loadTasks() {
     if (cachedTasks.length > 0) {
         renderTasks(cachedTasks);
     } else if (list.innerHTML === '' || list.querySelector('.empty-state')) {
-        try {
-            const today = new Date().toISOString().split('T')[0];
-            const priority = document.getElementById('filter-priority')?.value || '';
-            const status = document.getElementById('filter-status')?.value || '';
-            const cacheKey = `tm_cache_tasks_${today}_${priority}_${status}`;
-            const cached = cacheGet(cacheKey, 5 * 60 * 1000);
-            if (cached && Array.isArray(cached)) {
-                cachedTasks = cached;
-                renderTasks(cached);
-            } else {
-                list.innerHTML = `
-                    <div class="task-card skeleton" style="height: 80px; opacity: 0.6;"></div>
-                    <div class="task-card skeleton" style="height: 80px; opacity: 0.4;"></div>
-                    <div class="task-card skeleton" style="height: 80px; opacity: 0.2;"></div>
-                `;
-            }
-        } catch (e) {
-            list.innerHTML = `
-                <div class="task-card skeleton" style="height: 80px; opacity: 0.6;"></div>
-                <div class="task-card skeleton" style="height: 80px; opacity: 0.4;"></div>
-                <div class="task-card skeleton" style="height: 80px; opacity: 0.2;"></div>
-            `;
-        }
+        list.innerHTML = `
+            <div class="task-card skeleton" style="height: 80px; opacity: 0.6;"></div>
+            <div class="task-card skeleton" style="height: 80px; opacity: 0.4;"></div>
+            <div class="task-card skeleton" style="height: 80px; opacity: 0.2;"></div>
+        `;
     }
 
     try {
@@ -2749,8 +2630,6 @@ async function loadTasks() {
 
         const tasks = await apiFetch(url);
         cachedTasks = tasks;
-        const cacheKey = `tm_cache_tasks_${today}_${priority || ''}_${status || ''}`;
-        cacheSet(cacheKey, tasks);
         renderTasks(tasks);
     } catch (err) {
         console.error('Tasks load failed', err);
@@ -2813,15 +2692,8 @@ function renderHabits(habits) {
 
 async function loadHabits() {
     try {
-        const cached = cacheGet('tm_cache_habits', 5 * 60 * 1000);
-        if (cached && Array.isArray(cached)) {
-            cachedHabits = cached;
-            renderHabits(cached);
-            if (currentView === 'reports') renderTodayHabits(cached);
-        }
         const habits = await apiFetch('/habits');
         cachedHabits = habits;
-        cacheSet('tm_cache_habits', habits);
         renderHabits(habits);
         if (currentView === 'reports') renderTodayHabits(habits);
     } catch (err) {
@@ -3162,15 +3034,8 @@ function toggleTaskGoalLink(isEnabled) {
 async function loadGoals() {
     const list = document.getElementById('goals-list');
     try {
-        const cached = cacheGet('tm_cache_goals', 5 * 60 * 1000);
-        if (cached && Array.isArray(cached)) {
-            cachedGoals = cached;
-            populateGoalOptions();
-            if (list) renderGoals(cached);
-        }
         const goals = await apiFetch('/goals');
         cachedGoals = goals;
-        cacheSet('tm_cache_goals', goals);
         populateGoalOptions();
         if (list) {
             renderGoals(goals);
@@ -4456,17 +4321,9 @@ function showLoading(show) {
 // --- PWA Service Worker Registration ---
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        let refreshing = false;
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-            if (refreshing) return;
-            refreshing = true;
-            window.location.reload();
-        });
-
         navigator.serviceWorker.register('/sw.js')
             .then(reg => {
                 console.log('SW registered');
-                reg.update().catch(() => {});
                 
                 // Check for updates
                 reg.onupdatefound = () => {
@@ -4474,12 +4331,11 @@ if ('serviceWorker' in navigator) {
                     installingWorker.onstatechange = () => {
                         if (installingWorker.state === 'installed') {
                             if (navigator.serviceWorker.controller) {
-                                showToast("Updating...", "info");
-                                if (reg.waiting) {
-                                    reg.waiting.postMessage({ type: "SKIP_WAITING" });
-                                } else {
+                                // New content is available, show toast
+                                showToast("New version available! Refreshing...", "info");
+                                setTimeout(() => {
                                     window.location.reload();
-                                }
+                                }, 2000);
                             }
                         }
                     };
@@ -4805,16 +4661,16 @@ function getTrustScoreTier(score) {
 
 // Loads all data for the Progress view from /identity/profile
 async function loadProgressHub() {
-    // INSTANT RENDER: Show cached identity immediately, fetch fresh in background
-    const CACHE_KEY = 'tm_cache_identity_profile';
-    const cached = cacheGet(CACHE_KEY, 5 * 60 * 1000);
-
-    function renderIdentityToProgress(identity) {
+    try {
+        const identity = await apiFetch('/identity/profile');
+        
+        // Render Rank & Level
         const rankNameEl = document.getElementById('progress-rank-name');
         const levelBadgeEl = document.getElementById('progress-level-badge');
         if (rankNameEl) rankNameEl.textContent = getRankName(identity.level);
         if (levelBadgeEl) levelBadgeEl.innerHTML = `<i class="fas fa-star"></i> Level ${identity.level}`;
 
+        // Render XP
         const xpTextEl = document.getElementById('progress-xp-text');
         const xpFillEl = document.getElementById('progress-xp-fill');
         const totalXpEl = document.getElementById('progress-total-xp');
@@ -4822,6 +4678,7 @@ async function loadProgressHub() {
         if (xpFillEl) xpFillEl.style.width = `${identity.level_progress_percent || 0}%`;
         if (totalXpEl) totalXpEl.textContent = `Total XP: ${identity.total_xp.toLocaleString()}`;
 
+        // Render Trust Progress Card
         const trustValEl = document.getElementById('progress-trust-value');
         const trustTierEl = document.getElementById('progress-trust-tier');
         if (trustValEl) trustValEl.textContent = identity.trust_score.toFixed(1);
@@ -4830,31 +4687,20 @@ async function loadProgressHub() {
             trustTierEl.textContent = tier.text;
             trustTierEl.className = `priority-badge ${tier.class}`;
         }
+
+        // Render Achievements Grid in Progress Hub
         renderAchievements(identity.badges);
+
+        // Dynamically compute Timeline
+        await renderMilestoneTimeline(identity);
+        await renderPerformanceReports(identity);
+        await renderSeasonalChallenges();
+
+        // Mastery Score
         computeAndRenderMastery(identity);
-    }
 
-    // Show cached data immediately
-    if (cached) renderIdentityToProgress(cached);
-
-    try {
-        // Fetch fresh identity + run all async renders in parallel
-        const [identity] = await Promise.all([
-            apiFetch('/identity/profile'),
-            cached ? loadFutureSelf() : Promise.resolve()
-        ]);
-
-        cacheSet(CACHE_KEY, identity);
-        renderIdentityToProgress(identity);
-
-        // Run all secondary renders in parallel (non-blocking)
-        Promise.all([
-            renderMilestoneTimeline(identity),
-            renderPerformanceReports(identity),
-            renderSeasonalChallenges(),
-            cached ? Promise.resolve() : loadFutureSelf()
-        ]).catch(e => console.warn('Progress secondary render failed', e));
-
+        // Future Self
+        await loadFutureSelf();
     } catch (err) {
         console.error('Failed to load progression hub data', err);
     }
@@ -5347,7 +5193,7 @@ function generateSmartInsightCards(identity, history = []) {
     }
 
     // Level milestone
-    const nextRankThresholds = [10, 20, 30, 40, 50];
+    const nextRankThresholds = [6, 11, 21, 36, 50];
     const nextThreshold = nextRankThresholds.find(t => t > level);
     if (nextThreshold) {
         const diff = nextThreshold - level;

@@ -285,7 +285,7 @@ p { color: var(--text-secondary); font-size: 0.9375rem; }
     box-shadow: 0 0 15px rgba(10, 134, 255, 0.25), 0 6px 25px rgba(0, 0, 0, 0.35);
     border-radius: var(--radius-lg);
     padding: 1.5rem;
-    transition: transform var(--transition-fast), border-color var(--transition-fast);
+    transition: transform var(--transition), border-color var(--transition), background var(--transition), box-shadow var(--transition);
     z-index: 1;
 }
 
@@ -659,21 +659,20 @@ body.light-mode .scroll-progress-track {
 .top-bar-left {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
-    border-radius: 20px;
-    padding: 0.35rem 0.85rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    transition: all 0.3s ease;
+    gap: 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 0.4rem 0.8rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(8px);
+    transition: border-color 0.3s ease;
 }
 
 body.light-mode .top-bar-left {
-    background: rgba(0, 0, 0, 0.04);
-    border: 1.5px solid rgba(0, 0, 0, 0.12);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .app-logo-small {
@@ -924,10 +923,15 @@ body.light-mode #forgot-form select {
     max-width: 1080px; 
     margin: 0 auto; 
     flex-direction: column;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity var(--transition), transform var(--transition);
 }
 
 .view.active { 
     display: flex; 
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* Content */
@@ -2814,35 +2818,17 @@ body.light-mode .ach-filter-btn {
         display: none;
     }
     
-    /* Center the card top content and hide rarity pill */
-    .ach-card-top {
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 0.15rem;
-    }
-    .ach-rarity-pill {
-        display: none;
-    }
-    
-    /* Make icon smaller and add padding to avoid cropping */
+    /* Make icon smaller */
     .ach-icon-wrap {
-        width: 34px;
-        height: 34px;
-        font-size: 1.1rem;
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
         border-radius: 8px;
-        padding: 0.35rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-sizing: border-box;
     }
     
     /* Adjust label and reward */
     .ach-card-label {
-        font-size: 0.68rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        font-size: 0.7rem;
     }
     .ach-reward-chip {
         font-size: 0.58rem;
