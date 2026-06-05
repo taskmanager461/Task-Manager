@@ -4235,7 +4235,7 @@ function toggleTaskForm() {
     let touchEndY = 0;
     let startedOnBottomNav = false;
     
-    const viewOrder = ['tasks', 'reports', 'insights', 'me'];
+    const viewOrder = ['tasks', 'reports', 'insights', 'progress', 'me'];
     
     document.addEventListener('touchstart', e => {
         startedOnBottomNav = Boolean(e.target && e.target.closest && e.target.closest('.bottom-nav'));
