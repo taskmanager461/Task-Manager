@@ -2804,16 +2804,17 @@ body.light-mode .ach-filter-btn {
         gap: 0.45rem;
     }
     
-    /* Make achievement cards much shorter in height, align up and left */
+    /* Make achievement cards taller, bring content tight to top-left edges */
     .ach-card {
-        padding: 0.4rem 0.4rem 0.3rem 0.4rem;
-        gap: 0.25rem;
+        padding: 0.3rem 0.3rem 0.25rem 0.3rem; /* Very small padding to move content close to edges */
+        gap: 0.2rem;
         border-radius: 10px;
-        max-height: 90px; /* Limit maximum height */
+        max-height: 105px; /* Increased height of the boxes */
+        height: 105px; /* Force larger height for the boxes */
         display: flex;
         flex-direction: column;
-        align-items: flex-start; /* Align content to the left */
-        justify-content: flex-start; /* Align content to the top */
+        align-items: flex-start; /* Move content to left */
+        justify-content: flex-start; /* Move content to top */
     }
     
     /* Ensure card-top doesn't push elements right, keep it aligned left */
@@ -2822,7 +2823,7 @@ body.light-mode .ach-filter-btn {
         display: flex;
         justify-content: flex-start; /* Left align */
         align-items: center;
-        gap: 0.3rem;
+        gap: 0.25rem;
     }
     
     /* Hide description and unlock date to save height */
@@ -2831,22 +2832,22 @@ body.light-mode .ach-filter-btn {
         display: none;
     }
     
-    /* Make icon smaller and left-aligned */
+    /* Make icon slightly smaller */
     .ach-icon-wrap {
-        width: 26px;
-        height: 26px;
-        font-size: 0.9rem;
-        border-radius: 6px;
+        width: 25px;
+        height: 25px;
+        font-size: 0.85rem;
+        border-radius: 5px;
     }
 
     .ach-rarity-pill {
-        font-size: 0.48rem;
-        padding: 0.1rem 0.3rem;
+        font-size: 0.45rem;
+        padding: 0.08rem 0.25rem;
     }
     
-    /* Adjust label and reward - align left */
+    /* Adjust label and reward - align left, slightly smaller font */
     .ach-card-label {
-        font-size: 0.68rem;
+        font-size: 0.65rem; /* Slightly smaller content size */
         text-align: left;
         width: 100%;
         white-space: nowrap;
@@ -2854,8 +2855,8 @@ body.light-mode .ach-filter-btn {
         text-overflow: ellipsis;
     }
     .ach-reward-chip {
-        font-size: 0.55rem;
-        padding: 0.08rem 0.3rem;
+        font-size: 0.52rem; /* Slightly smaller reward text */
+        padding: 0.06rem 0.25rem;
         margin-right: auto; /* Push to the left */
     }
     
@@ -2863,10 +2864,11 @@ body.light-mode .ach-filter-btn {
     .ach-progress-track {
         height: 3px;
         width: 100%;
+        margin-top: auto; /* Push to the bottom of the taller card */
     }
     .ach-progress-meta {
-        font-size: 0.55rem;
-        margin-bottom: 0.15rem;
+        font-size: 0.52rem; /* Slightly smaller progress text */
+        margin-bottom: 0.1rem;
         width: 100%;
         display: flex;
         justify-content: space-between;
