@@ -2800,15 +2800,15 @@ body.light-mode .ach-filter-btn {
 
 @media (max-width: 480px) {
     .achievements-grid {
-        grid-template-columns: repeat(3, 1fr); /* 3 per row on mobile to shrink square boxes */
-        gap: 0.25rem; /* Reduced gap to allow boxes to grow slightly wider */
+        grid-template-columns: repeat(2, 1fr); /* Exactly 2 per row on mobile to make them larger */
+        gap: 0.5rem;
     }
     
-    /* Make achievement cards square on mobile and utilize available space */
+    /* Make achievement cards square, larger, and tight to edges */
     .ach-card {
-        padding: 0.25rem; /* Tighter padding to maximize content area */
-        gap: 0.1rem;
-        border-radius: 6px;
+        padding: 0.35rem; /* Tighter padding to move content close to edges */
+        gap: 0.2rem;
+        border-radius: 8px;
         aspect-ratio: 1 / 1; /* Force perfect square shape */
         display: flex;
         flex-direction: column;
@@ -2822,70 +2822,57 @@ body.light-mode .ach-filter-btn {
         display: flex;
         justify-content: flex-start; /* Left align */
         align-items: center;
-        gap: 0.15rem;
+        gap: 0.3rem;
     }
     
     /* Show description but make it smaller to fit mobile */
     .ach-card-desc {
         display: block !important;
-        font-size: 0.45rem !important; /* Scaled down for perfect fit */
-        line-height: 1.05;
+        font-size: 0.6rem !important;
+        line-height: 1.1;
         margin: 0;
         text-align: left;
-        width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box !important;
-        -webkit-line-clamp: 2; /* Limit to 2 lines maximum */
-        -webkit-box-orient: vertical;
     }
     
     .ach-unlock-date {
         display: none;
     }
     
-    /* Make icon slightly smaller */
+    /* Make icon size restored */
     .ach-icon-wrap {
-        width: 20px;
-        height: 20px;
-        font-size: 0.75rem;
-        border-radius: 4px;
+        width: 26px;
+        height: 26px;
+        font-size: 0.9rem;
+        border-radius: 6px;
     }
 
     .ach-rarity-pill {
-        font-size: 0.38rem;
-        padding: 0.04rem 0.15rem;
-        letter-spacing: 0.01em;
+        font-size: 0.48rem;
+        padding: 0.06rem 0.25rem;
     }
     
-    /* Adjust label and reward - align left, smaller font to prevent overflow */
+    /* Adjust label and reward - align left, normal legible size */
     .ach-card-label {
-        font-size: 0.55rem;
+        font-size: 0.72rem;
         text-align: left;
         width: 100%;
         font-weight: 700;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
     .ach-reward-chip {
-        font-size: 0.42rem;
-        padding: 0.04rem 0.15rem;
+        font-size: 0.55rem;
+        padding: 0.08rem 0.3rem;
         margin-right: auto; /* Push to the left */
-        display: inline-flex;
-        align-items: center;
-        gap: 0.1rem;
     }
     
     /* Adjust progress */
     .ach-progress-track {
-        height: 2px;
+        height: 3px;
         width: 100%;
         margin-top: auto; /* Push to the bottom of the card */
     }
     .ach-progress-meta {
-        font-size: 0.42rem;
-        margin-bottom: 0.05rem;
+        font-size: 0.52rem;
+        margin-bottom: 0.08rem;
         width: 100%;
         display: flex;
         justify-content: space-between;
