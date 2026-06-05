@@ -4878,9 +4878,9 @@ async function renderSeasonalChallenges() {
         {
             id: 'consistency_30',
             title: '🔥 30 Day Consistency',
-            desc: 'Maintain a streak of 10 days.',
-            target: 10,
-            current: Math.min(identity.streak, 10),
+            desc: 'Maintain a streak of 30 days.',
+            target: 30,
+            current: Math.min(identity.streak, 30),
             xp: 1500
         }
     ];
