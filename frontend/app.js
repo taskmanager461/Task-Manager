@@ -1090,7 +1090,10 @@ function showView(viewId, direction) {
         prevEl.classList.remove('active', 'slide-in-right', 'slide-in-left', 'swipe-dragging');
         prevEl.style.transform = '';
         prevEl.style.opacity = '';
-        prevEl.style.display = 'none';
+        prevEl.style.display = ''; // Reset, let CSS handle it
+        prevEl.style.position = '';
+        prevEl.style.width = '';
+        prevEl.style.pointerEvents = '';
     }
 
     // Prepare new view with entry animation
@@ -1099,6 +1102,10 @@ function showView(viewId, direction) {
         target.classList.remove('active', 'slide-in-right', 'slide-in-left', 'swipe-dragging');
         target.style.transform = '';
         target.style.opacity = '';
+        target.style.display = ''; // Reset
+        target.style.position = '';
+        target.style.width = '';
+        target.style.pointerEvents = '';
         target.classList.add(inClass);
         // Force reflow so transition fires
         target.offsetHeight; // eslint-disable-line no-unused-expressions
@@ -1106,7 +1113,7 @@ function showView(viewId, direction) {
         // Clean up animation class after transition
         setTimeout(() => {
             target.classList.remove('slide-in-right', 'slide-in-left');
-        }, 360);
+        }, 200);
     }
 
     // Nav items
@@ -4405,13 +4412,19 @@ function toggleTaskForm() {
                         neighborEl.style.transform = '';
                         neighborEl.style.opacity = '';
                         neighborEl.style.transition = '';
+                        neighborEl.style.position = '';
+                        neighborEl.style.width = '';
+                        neighborEl.style.pointerEvents = '';
                     }
-                }, 340);
+                }, 200);
             } else {
                 neighborEl.style.transform = '';
                 neighborEl.style.opacity = '';
                 neighborEl.style.display = '';
                 neighborEl.style.transition = '';
+                neighborEl.style.position = '';
+                neighborEl.style.width = '';
+                neighborEl.style.pointerEvents = '';
             }
         }
 
@@ -4428,7 +4441,7 @@ function toggleTaskForm() {
                         activeEl.style.opacity = '';
                         activeEl.style.transition = '';
                     }
-                }, 340);
+                }, 200);
             } else {
                 activeEl.style.transform = '';
                 activeEl.style.opacity = '';
