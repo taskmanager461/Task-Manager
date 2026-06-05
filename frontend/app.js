@@ -2881,7 +2881,7 @@ async function addHabit() {
         showToast('Select at least one day for weekly habit', 'error');
         return;
     }
-    await apiFetch('/habits', {
+    const newHabit = await apiFetch('/habits', {
         method: 'POST',
         body: JSON.stringify({
             title,
@@ -2893,7 +2893,14 @@ async function addHabit() {
     });
     smartPersonalizationCache = { timestamp: 0, data: null };
     toggleHabitForm();
-    await loadHabits();
+    
+    // Optimistic UI update
+    if (newHabit && newHabit.id) {
+        cachedHabits.unshift(newHabit);
+        renderHabits(cachedHabits);
+    } else {
+        await loadHabits();
+    }
     showToast('Habit created', 'success');
 }
 
@@ -3021,7 +3028,7 @@ async function addTask(title, category, difficulty, date, time, startTime) {
     
     try {
         const taskDate = date || new Date().toISOString().split('T')[0];
-        await apiFetch('/tasks', {
+        const newTask = await apiFetch('/tasks', {
             method: 'POST',
             body: JSON.stringify({ 
                 user_id: currentUser.user_id,
@@ -3036,7 +3043,14 @@ async function addTask(title, category, difficulty, date, time, startTime) {
         });
         smartPersonalizationCache = { timestamp: 0, data: null };
         toggleTaskForm();
-        loadTasks();
+        
+        // Optimistic UI update: skip the GET request and just push the new task
+        if (newTask && newTask.id) {
+            cachedTasks.unshift(newTask); // Add to the top
+            renderTasks(cachedTasks);
+        } else {
+            loadTasks();
+        }
         if (goalId) loadGoals();
         showToast(t('task_added'), 'success');
     } catch (err) {
@@ -3175,6 +3189,10 @@ function toggleGoalForm() {
         document.getElementById('goal-category').value = 'General';
         document.getElementById('goal-type').value = 'two_weeks';
         handleGoalTypeChange();
+        
+        // Block past dates in custom deadline input
+        const customDeadlineInput = document.getElementById('goal-deadline-custom');
+        if (customDeadlineInput) customDeadlineInput.min = new Date().toLocaleDateString('en-CA');
     }
 }
 
@@ -3467,13 +3485,20 @@ async function addGoal(title, category) {
     const deadline = resolveGoalDeadline();
     const goalType = document.getElementById('goal-type').value;
     
-    await apiFetch('/goals', {
+    const newGoal = await apiFetch('/goals', {
         method: 'POST',
         body: JSON.stringify({ title, category, deadline, goal_type: goalType })
     });
     smartPersonalizationCache = { timestamp: 0, data: null };
     toggleGoalForm();
-    await loadGoals();
+    
+    // Optimistic UI update
+    if (newGoal && newGoal.id) {
+        cachedGoals.unshift(newGoal);
+        renderGoals(cachedGoals);
+    } else {
+        await loadGoals();
+    }
     showToast('Goal created', 'success');
 }
 
@@ -4329,6 +4354,10 @@ function toggleTaskForm() {
         const checkbox = document.getElementById('task-link-goal-checkbox');
         checkbox.checked = false;
         toggleTaskGoalLink(false);
+        
+        // Block past dates in HTML input
+        const taskDateInput = document.getElementById('task-date');
+        if (taskDateInput) taskDateInput.min = new Date().toLocaleDateString('en-CA');
     }
 }
 
