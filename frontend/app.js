@@ -3005,7 +3005,7 @@ function renderTasks(tasks) {
     });
 }
 
-async function addTask(title, category, difficulty, date, time) {
+async function addTask(title, category, difficulty, date, time, startTime) {
     const priority = document.getElementById('task-priority').value;
     const recurring = document.getElementById('task-recurring').value;
     const dueDate = document.getElementById('task-due-date').value;
@@ -3030,6 +3030,7 @@ async function addTask(title, category, difficulty, date, time) {
                 due_date: dueDate || null,
                 date: taskDate,
                 time: time || null,
+                start_time: startTime || null,
                 goal_id: goalId
             })
         });
@@ -4090,7 +4091,30 @@ function setupEventListeners() {
             const difficulty = document.getElementById('task-difficulty').value;
             const date = document.getElementById('task-date') ? document.getElementById('task-date').value : null;
             const time = document.getElementById('task-time') ? document.getElementById('task-time').value : null;
-            addTask(title, category, difficulty, date, time);
+            const startTime = document.getElementById('task-start-time') ? document.getElementById('task-start-time').value : null;
+
+            // VALIDATION: Prevent past dates
+            if (date) {
+                const todayStr = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD local time
+                if (date < todayStr) {
+                    showToast('Cannot select a date in the past.', 'error');
+                    return;
+                }
+                
+                // VALIDATION: Prevent past start time if today
+                if (date === todayStr && startTime) {
+                    const now = new Date();
+                    const currentHours = String(now.getHours()).padStart(2, '0');
+                    const currentMinutes = String(now.getMinutes()).padStart(2, '0');
+                    const currentTimeStr = `${currentHours}:${currentMinutes}`;
+                    if (startTime < currentTimeStr) {
+                        showToast('Start time cannot be in the past.', 'error');
+                        return;
+                    }
+                }
+            }
+
+            addTask(title, category, difficulty, date, time, startTime);
         });
     }
 
@@ -4262,9 +4286,15 @@ function setupEventListeners() {
     // Set default date/time in form
     const taskDateInput = document.getElementById('task-date');
     const taskTimeInput = document.getElementById('task-time');
-    if (taskDateInput) taskDateInput.value = new Date().toISOString().split('T')[0];
+    const taskStartTimeInput = document.getElementById('task-start-time');
+    if (taskDateInput) taskDateInput.value = new Date().toLocaleDateString('en-CA');
+    if (taskStartTimeInput) {
+        const now = new Date();
+        taskStartTimeInput.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    }
     if (taskTimeInput) {
         const now = new Date();
+        now.setHours(now.getHours() + 1); // Default deadline is 1 hour later
         taskTimeInput.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
     }
 
