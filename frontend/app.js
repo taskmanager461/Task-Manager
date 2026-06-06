@@ -1917,6 +1917,16 @@ function logout() {
             supabaseSession = null;
             supabaseAccessToken = null;
             pendingVerificationEmail = null;
+            
+            // Clear all user-specific cache keys from localStorage on logout
+            for (let i = localStorage.length - 1; i >= 0; i--) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('tm_') && !['tm_dark_mode', 'tm_lang', 'tm_last_view'].includes(key)) {
+                    localStorage.removeItem(key);
+                }
+            }
+            localStorage.removeItem('seasonal_challenges_claimed');
+
             resetUiToDefaults();
             clearUrlTokens();
             renderLogin();
@@ -4911,7 +4921,7 @@ async function renderDashboardCalendar() {
         }
     };
 
-    const cacheKey = `tm_cal_${year}_${month}`;
+    const cacheKey = `tm_cal_${currentUser?.user_id || 'guest'}_${year}_${month}`;
     const cachedTasksStr = localStorage.getItem(cacheKey);
     if (cachedTasksStr) {
         try { renderGridWithTasks(JSON.parse(cachedTasksStr)); } catch(e) { renderGridWithTasks([]); }
@@ -5071,7 +5081,7 @@ async function renderPersonalRecords(identity) {
     let highestTrust = identity.trust_score;
     let maxTasksDay = 0;
 
-    const cacheKey = 'tm_personal_records';
+    const cacheKey = `tm_personal_records_${currentUser?.user_id || 'guest'}`;
     const cachedRecordsStr = localStorage.getItem(cacheKey);
 
     const renderList = (hTrust, mTasksDay) => {
