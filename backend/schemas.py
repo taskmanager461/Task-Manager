@@ -57,6 +57,7 @@ class TaskCreate(BaseModel):
     due_date: Optional[date] = None
     time: Optional[str] = None
     start_time: Optional[str] = None
+    habit_id: Optional[int] = None
     goal_id: Optional[int] = None
     date: date
 
@@ -66,6 +67,7 @@ class TaskUpdate(BaseModel):
     priority: Optional[Priority] = None
     time: Optional[str] = None
     start_time: Optional[str] = None
+    habit_id: Optional[int] = None
     goal_id: Optional[int] = None
 
 
@@ -83,6 +85,7 @@ class TaskResponse(BaseModel):
     due_date: Optional[date]
     time: Optional[str]
     start_time: Optional[str]
+    habit_id: Optional[int]
     status: TaskStatus
     date: date
     created_at: datetime

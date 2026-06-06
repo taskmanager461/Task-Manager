@@ -19,9 +19,9 @@ from backend.services.habit_service import (
     is_habit_due_on,
 )
 from backend.services.identity_service import apply_habit_impact
+from backend.services.cache_service import HABITS_CACHE, invalidate_habits_cache, invalidate_score_cache
 
 router = APIRouter(tags=["habits"])
-HABITS_CACHE: dict[tuple[int, date], dict] = {}
 HABITS_CACHE_TTL_SECONDS = 60
 
 
@@ -50,7 +50,8 @@ def create_habit(
     )
     db.add(habit)
     db.commit()
-    db.refresh(habit)
+    invalidate_habits_cache(current_user.id)
+    invalidate_score_cache(current_user.id)
     return HabitResponse(
         id=habit.id,
         title=habit.title,
@@ -217,6 +218,8 @@ def track_habit(
         )
 
     db.commit()
+    invalidate_habits_cache(current_user.id)
+    invalidate_score_cache(current_user.id)
     return {
         "habit_id": habit.id,
         "date": target_day,

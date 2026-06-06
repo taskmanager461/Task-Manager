@@ -18,13 +18,11 @@ from backend.services.auth_service import get_current_user
 from backend.services.goal_service import compute_goal_task_counts, refresh_goal_status
 from backend.services.habit_service import compute_consistency_score, is_habit_due_on
 from backend.services.identity_service import recompute_streak
+from backend.services.cache_service import DAILY_SCORE_CACHE, WEEKLY_SUMMARY_CACHE, SMART_INSIGHTS_CACHE
 
 router = APIRouter(tags=["score"])
-SMART_INSIGHTS_CACHE: dict[int, dict] = {}
 SMART_CACHE_TTL_SECONDS = 600
-DAILY_SCORE_CACHE: dict[tuple[int, date], dict] = {}
 DAILY_SCORE_CACHE_TTL_SECONDS = 60
-WEEKLY_SUMMARY_CACHE: dict[int, dict] = {}
 WEEKLY_SUMMARY_CACHE_TTL_SECONDS = 600
 
 

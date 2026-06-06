@@ -12,9 +12,9 @@ from backend.schemas import TaskCreate, TaskResponse, TaskUpdate
 from backend.services.auth_service import get_current_user
 from backend.services.goal_service import refresh_goal_status_by_id
 from backend.services.identity_service import award_task_completion_xp
+from backend.services.cache_service import TASKS_CACHE, invalidate_tasks_cache, invalidate_score_cache
 
 router = APIRouter(tags=["tasks"])
-TASKS_CACHE: dict[tuple[int, date, str | None, str | None, str | None], dict] = {}
 TASKS_CACHE_TTL_SECONDS = 60
 
 
@@ -98,6 +98,7 @@ def create_task(payload: TaskCreate, current_user: User = Depends(get_current_us
     task = Task(
         user_id=target_user_id,
         goal_id=payload.goal_id,
+        habit_id=payload.habit_id,
         title=payload.title,
         description=payload.description,
         category=(payload.category or "general").lower(),
@@ -106,6 +107,7 @@ def create_task(payload: TaskCreate, current_user: User = Depends(get_current_us
         recurring=payload.recurring or "none",
         due_date=payload.due_date,
         time=payload.time,
+        start_time=payload.start_time,
         status="pending",
         date=payload.date,
     )
@@ -115,6 +117,15 @@ def create_task(payload: TaskCreate, current_user: User = Depends(get_current_us
         refresh_goal_status_by_id(db, task.goal_id)
         db.commit()
     db.refresh(task)
+
+    invalidate_tasks_cache(target_user_id)
+    invalidate_score_cache(target_user_id)
+    if payload.goal_id:
+        from backend.services.cache_service import invalidate_goals_cache
+        invalidate_goals_cache(target_user_id)
+    if payload.habit_id:
+        from backend.services.cache_service import invalidate_habits_cache
+        invalidate_habits_cache(target_user_id)
 
     return task
 
@@ -171,5 +182,14 @@ def update_task_status(
         db.commit()
 
     db.refresh(task)
+
+    invalidate_tasks_cache(current_user.id)
+    invalidate_score_cache(current_user.id)
+    if previous_goal_id or task.goal_id or task.habit_id:
+        from backend.services.cache_service import invalidate_goals_cache, invalidate_habits_cache
+        if previous_goal_id or task.goal_id:
+            invalidate_goals_cache(current_user.id)
+        if task.habit_id:
+            invalidate_habits_cache(current_user.id)
 
     return task

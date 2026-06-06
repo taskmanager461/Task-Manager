@@ -27,3 +27,4 @@ class Habit(Base):
 
     user = relationship("User", back_populates="habits")
     logs = relationship("HabitLog", back_populates="habit", cascade="all, delete-orphan")
+    tasks = relationship("Task", foreign_keys="Task.habit_id", back_populates="habit")

@@ -11,9 +11,9 @@ from backend.schemas import GoalAnalyticsResponse, GoalCreate, GoalResponse, Goa
 from backend.services.auth_service import get_current_user
 from backend.services.goal_service import compute_goal_task_counts, refresh_goal_status, get_days_remaining
 from backend.services.identity_service import award_goal_completion_xp
+from backend.services.cache_service import GOALS_CACHE, invalidate_goals_cache, invalidate_score_cache
 
 router = APIRouter(tags=["goals"])
-GOALS_CACHE: dict[int, dict] = {}
 GOALS_CACHE_TTL_SECONDS = 10
 
 
@@ -128,7 +128,8 @@ def create_goal(
     )
     db.add(goal)
     db.commit()
-    db.refresh(goal)
+    invalidate_goals_cache(current_user.id)
+    invalidate_score_cache(current_user.id)
     return GoalResponse(
         id=goal.id,
         user_id=goal.user_id,
@@ -189,6 +190,8 @@ def update_goal(
     counts = counts_map.get(goal.id, {"total": 0, "completed": 0})
     progress = (counts["completed"] / counts["total"] * 100) if counts["total"] > 0 else 0.0
     
+    invalidate_goals_cache(current_user.id)
+    invalidate_score_cache(current_user.id)
     return GoalResponse(
         id=goal.id,
         user_id=goal.user_id,
@@ -226,6 +229,8 @@ def delete_goal(
         
     db.delete(goal)
     db.commit()
+    invalidate_goals_cache(current_user.id)
+    invalidate_score_cache(current_user.id)
     return {"message": "Goal deleted successfully"}
 
 
