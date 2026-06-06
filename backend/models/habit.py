@@ -11,6 +11,7 @@ class Habit(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True, nullable=False)
+    goal_id: Mapped[int | None] = mapped_column(ForeignKey("goals.id"), nullable=True)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     category: Mapped[str] = mapped_column(String(50), default="general", nullable=False)
     frequency_type: Mapped[str] = mapped_column(String(20), default="daily", nullable=False)

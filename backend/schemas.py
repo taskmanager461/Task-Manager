@@ -145,6 +145,7 @@ class HabitCreate(BaseModel):
     frequency_type: HabitFrequencyType = "daily"
     frequency_days: Optional[list[int]] = None
     preferred_time: Optional[str] = None
+    goal_id: Optional[int] = None
 
 
 class HabitTrackRequest(BaseModel):
@@ -159,6 +160,7 @@ class HabitResponse(BaseModel):
     frequency_type: HabitFrequencyType
     frequency_days: list[int]
     preferred_time: Optional[str]
+    goal_id: Optional[int]
     streak: int
     best_streak: int
     consistency_score: float

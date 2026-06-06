@@ -47,6 +47,7 @@ def create_habit(
         frequency_type=payload.frequency_type,
         frequency_days=encoded_days,
         preferred_time=payload.preferred_time,
+        goal_id=payload.goal_id,
     )
     db.add(habit)
     db.commit()
@@ -59,6 +60,7 @@ def create_habit(
         frequency_type=habit.frequency_type,
         frequency_days=sorted(decode_frequency_days(habit.frequency_days)),
         preferred_time=habit.preferred_time,
+        goal_id=habit.goal_id,
         streak=habit.streak,
         best_streak=habit.best_streak,
         consistency_score=0.0,
@@ -121,6 +123,7 @@ def list_habits(
                 frequency_type=habit.frequency_type,
                 frequency_days=sorted(decode_frequency_days(habit.frequency_days)),
                 preferred_time=habit.preferred_time,
+                goal_id=habit.goal_id,
                 streak=habit.streak,
                 best_streak=habit.best_streak,
                 consistency_score=consistency_score,
