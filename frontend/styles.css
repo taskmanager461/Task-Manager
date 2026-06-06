@@ -4367,6 +4367,114 @@ input[type="date"]:disabled {
 }
 
 /* ═══════════════════════════════════════════════════
+   EMPTY STATE STYLES (Tasks/Goals/Habits)
+   ═══════════════════════════════════════════════════ */
+.empty-state {
+    position: relative;
+    background: linear-gradient(180deg, rgba(10, 134, 255, 0.03), rgba(0, 0, 0, 0.15));
+    border: 1px solid rgba(10, 134, 255, 0.12);
+    border-radius: 16px;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    overflow: hidden;
+    margin: 1rem 0;
+}
+
+body.light-mode .empty-state {
+    background: linear-gradient(180deg, rgba(10, 134, 255, 0.03), rgba(0, 0, 0, 0.02));
+    border-color: rgba(10, 134, 255, 0.15);
+}
+
+/* Dotted pattern pseudo-elements */
+.empty-state::before, .empty-state::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 150px;
+    opacity: 0.25;
+    pointer-events: none;
+    background-image: radial-gradient(circle at center, var(--primary) 1.5px, transparent 1.5px);
+    background-size: 14px 14px;
+}
+
+.empty-state::before {
+    left: -10px;
+    mask-image: linear-gradient(to right, black, transparent);
+    -webkit-mask-image: linear-gradient(to right, black, transparent);
+}
+
+.empty-state::after {
+    right: -10px;
+    mask-image: linear-gradient(to left, black, transparent);
+    -webkit-mask-image: linear-gradient(to left, black, transparent);
+}
+
+.empty-state-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(10, 134, 255, 0.1);
+    border: 2px solid rgba(10, 134, 255, 0.4);
+    box-shadow: 0 0 25px rgba(10, 134, 255, 0.3), inset 0 0 15px rgba(10, 134, 255, 0.2);
+    font-size: 1.8rem;
+    color: var(--primary);
+    margin-bottom: 1.25rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Glowing ring around the icon */
+.empty-state-icon::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 1px dashed rgba(10, 134, 255, 0.3);
+    animation: spin 15s linear infinite;
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+
+.empty-state-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 0.5rem 0;
+    position: relative;
+    z-index: 1;
+}
+
+.empty-state-text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    max-width: 320px;
+    margin: 0 auto 1.5rem auto;
+    line-height: 1.4;
+    position: relative;
+    z-index: 1;
+}
+
+.empty-state .btn {
+    border-radius: 99px;
+    padding: 0.65rem 1.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    font-size: 0.8rem;
+    box-shadow: 0 4px 15px rgba(10, 134, 255, 0.3);
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ═══════════════════════════════════════════════════
    HISTORY MODAL SYSTEM
    ═══════════════════════════════════════════════════ */
 

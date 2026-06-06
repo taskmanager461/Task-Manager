@@ -2685,6 +2685,18 @@ function updateTaskChart(tasks) {
     });
 }
 
+// Check if a specific history type has any items to show/hide the history button
+async function checkHistoryAvailability(type) {
+    try {
+        const data = await apiFetch(`/history?type=${type}&limit=1`);
+        const btn = document.getElementById(`${type}-history-btn`);
+        if (btn && btn.parentElement) {
+            btn.parentElement.style.display = data.total > 0 ? 'block' : 'none';
+        }
+    } catch (err) {
+        console.error(`Failed to check history availability for ${type}`, err);
+    }
+}
 
 // --- Tasks Logic ---
 async function loadTasks() {
@@ -2718,6 +2730,7 @@ async function loadTasks() {
         const tasks = await apiFetch(url);
         cachedTasks = tasks;
         renderTasks(tasks);
+        checkHistoryAvailability('tasks');
     } catch (err) {
         console.error('Tasks load failed', err);
         if (cachedTasks.length === 0) {
@@ -2738,10 +2751,10 @@ function renderHabits(habits) {
     if (!habits || habits.length === 0) {
         list.innerHTML = `
             <div class="empty-state">
-                <span class="empty-state-icon">🧠</span>
+                <span class="empty-state-icon"><i class="fas fa-brain"></i></span>
                 <h3 class="empty-state-title">No habits yet</h3>
                 <p class="empty-state-text">Build consistency with your first recurring habit.</p>
-                <button onclick="toggleHabitForm()" class="btn primary">CREATE HABIT</button>
+                <button onclick="toggleHabitForm()" class="btn primary"><i class="fas fa-plus-circle"></i> CREATE HABIT</button>
             </div>
         `;
         return;
@@ -2962,10 +2975,10 @@ function renderTasks(tasks) {
     if (!tasks || tasks.length === 0) {
         list.innerHTML = `
             <div class="empty-state">
-                <span class="empty-state-icon">📝</span>
+                <span class="empty-state-icon"><i class="fas fa-list-check"></i></span>
                 <h3 class="empty-state-title">No tasks yet</h3>
                 <p class="empty-state-text">Create your first task to stay organized and productive.</p>
-                <button onclick="toggleCurrentForm()" class="btn primary">CREATE TASK</button>
+                <button onclick="toggleCurrentForm()" class="btn primary"><i class="fas fa-plus-circle"></i> CREATE TASK</button>
             </div>
         `;
         return;
@@ -3264,10 +3277,10 @@ function renderGoals(goals) {
     if (!goals || goals.length === 0) {
         list.innerHTML = `
             <div class="empty-state">
-                <span class="empty-state-icon">🎯</span>
+                <span class="empty-state-icon"><i class="fas fa-bullseye"></i></span>
                 <h3 class="empty-state-title">No goals yet</h3>
                 <p class="empty-state-text">Create your first goal to track long-term progress.</p>
-                <button onclick="toggleGoalForm()" class="btn primary">CREATE GOAL</button>
+                <button onclick="toggleGoalForm()" class="btn primary"><i class="fas fa-plus-circle"></i> CREATE GOAL</button>
             </div>
         `;
         return;
@@ -3529,18 +3542,23 @@ function switchTasksGoalsTab(tab) {
     document.getElementById('smart-suggestion-container').style.display = tab === 'tasks' ? 'block' : 'none';
     
     const titleEl = document.getElementById('tasks-goals-title');
-    const addBtn = document.getElementById('tasks-goals-add-btn');
+    const subtitleEl = document.getElementById('tasks-goals-subtitle');
+    const addBtnText = document.getElementById('tasks-goals-add-text');
+    
     if (tab === 'tasks') {
-        titleEl.textContent = t('tasks');
-        addBtn.textContent = '+ Add Task';
+        titleEl.textContent = 'Tasks';
+        if(subtitleEl) subtitleEl.textContent = 'Focus on what matters today.';
+        if(addBtnText) addBtnText.textContent = 'New Task';
         loadTasks();
     } else if (tab === 'goals') {
         titleEl.textContent = 'Goals';
-        addBtn.textContent = '+ New Goal';
+        if(subtitleEl) subtitleEl.textContent = 'Set goals. Stay focused. Achieve more.';
+        if(addBtnText) addBtnText.textContent = 'New Goal';
         loadGoals();
     } else {
         titleEl.textContent = 'Habits';
-        addBtn.textContent = '+ New Habit';
+        if(subtitleEl) subtitleEl.textContent = 'Build consistency with your recurring habits.';
+        if(addBtnText) addBtnText.textContent = 'New Habit';
         loadHabits();
     }
 }

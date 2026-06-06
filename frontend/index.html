@@ -674,9 +674,14 @@
 
             <!-- Tasks View -->
             <section id="view-tasks" class="view active">
-                <div class="view-header">
-                    <h1 id="tasks-goals-title" data-i18n="tasks">TASKS</h1>
-                    <button id="tasks-goals-add-btn" onclick="toggleCurrentForm()" class="btn primary" data-i18n="add_new_task">+ Add Task</button>
+                <div class="card premium-header-card" style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;">
+                    <div>
+                        <h1 id="tasks-goals-title" style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;">Tasks</h1>
+                        <p id="tasks-goals-subtitle" style="margin: 0.25rem 0 0 0; font-size: 0.85rem; color: var(--text-secondary);">Focus on what matters today.</p>
+                    </div>
+                    <button id="tasks-goals-add-btn" onclick="toggleCurrentForm()" class="btn primary" style="border-radius: 12px; padding: 0.65rem 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 0.4rem; box-shadow: 0 4px 15px rgba(10, 134, 255, 0.25);">
+                        <i class="fas fa-plus-circle" style="font-size: 1.1em;"></i> <span id="tasks-goals-add-text">New Task</span>
+                    </button>
                 </div>
 
                 <div class="card" style="margin-bottom: 1.5rem;">
