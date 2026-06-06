@@ -1969,8 +1969,8 @@ body.light-mode .toast {
     
     background: linear-gradient(
         135deg,
-        var(--text-primary) 0%,
-        var(--text-primary) 45%,
+        var(--primary) 0%,
+        var(--primary) 45%,
         transparent 55%,
         transparent 100%
     );
