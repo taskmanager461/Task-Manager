@@ -3162,7 +3162,15 @@ function updateTaskTimeConstraints() {
         startInput.min  = '';
     }
 
-    // Function to calculate finish min based on start
+    // Strict enforcement functions
+    const enforceStartMin = () => {
+        if (startInput.min && startInput.value && startInput.value < startInput.min) {
+            startInput.value = startInput.min;
+            showToast(t('start_time_past') || 'Start time cannot be in the past.', 'error');
+        }
+        updateFinishMin();
+    };
+
     const updateFinishMin = () => {
         if (startInput.value) {
             const [h, m] = startInput.value.split(':').map(Number);
@@ -3171,18 +3179,27 @@ function updateTaskTimeConstraints() {
             const fh = String(finishDate.getHours()).padStart(2, '0');
             const fm = String(finishDate.getMinutes()).padStart(2, '0');
             finishInput.min = `${fh}:${fm}`;
-            if (finishInput.value && finishInput.value < finishInput.min) {
-                finishInput.value = finishInput.min;
-            }
         } else {
             finishInput.min = '';
+        }
+        enforceFinishMin();
+    };
+
+    const enforceFinishMin = () => {
+        if (finishInput.min && finishInput.value && finishInput.value < finishInput.min) {
+            finishInput.value = finishInput.min;
+            showToast(t('finish_time_invalid') || 'Finish time must be after start time.', 'error');
         }
     };
 
     updateFinishMin();
 
-    // When start changes, update finish min
-    startInput.onchange = updateFinishMin;
+    // Attach strict listeners
+    startInput.onchange = enforceStartMin;
+    startInput.oninput = enforceStartMin;
+    
+    finishInput.onchange = enforceFinishMin;
+    finishInput.oninput = enforceFinishMin;
 }
 
 let _taskLinks = { goal: false, habit: false };
