@@ -3162,15 +3162,7 @@ function updateTaskTimeConstraints() {
         startInput.min  = '';
     }
 
-    // Strict enforcement functions
-    const enforceStartMin = () => {
-        if (startInput.min && startInput.value && startInput.value < startInput.min) {
-            startInput.value = startInput.min;
-            showToast(t('start_time_past') || 'Start time cannot be in the past.', 'error');
-        }
-        updateFinishMin();
-    };
-
+    // Function to calculate finish min based on start
     const updateFinishMin = () => {
         if (startInput.value) {
             const [h, m] = startInput.value.split(':').map(Number);
@@ -3179,27 +3171,18 @@ function updateTaskTimeConstraints() {
             const fh = String(finishDate.getHours()).padStart(2, '0');
             const fm = String(finishDate.getMinutes()).padStart(2, '0');
             finishInput.min = `${fh}:${fm}`;
+            if (finishInput.value && finishInput.value < finishInput.min) {
+                finishInput.value = finishInput.min;
+            }
         } else {
             finishInput.min = '';
-        }
-        enforceFinishMin();
-    };
-
-    const enforceFinishMin = () => {
-        if (finishInput.min && finishInput.value && finishInput.value < finishInput.min) {
-            finishInput.value = finishInput.min;
-            showToast(t('finish_time_invalid') || 'Finish time must be after start time.', 'error');
         }
     };
 
     updateFinishMin();
 
-    // Attach strict listeners
-    startInput.onchange = enforceStartMin;
-    startInput.oninput = enforceStartMin;
-    
-    finishInput.onchange = enforceFinishMin;
-    finishInput.oninput = enforceFinishMin;
+    // When start changes, update finish min
+    startInput.onchange = updateFinishMin;
 }
 
 let _taskLinks = { goal: false, habit: false };
@@ -5678,3 +5661,228 @@ function toggleAchievementsVisibility() {
         chevron.className = 'fas fa-chevron-down';
     }
 }
+
+// ════════════════════════════════════════════════════
+// HISTORY SYSTEM
+// ════════════════════════════════════════════════════
+
+let _historyState = {
+    page: 1,
+    limit: 10,
+    total: 0,
+    hasMore: false,
+    activeType: null,    // 'tasks' | 'goals' | 'habits' | null
+    searchDebounce: null,
+};
+
+function openHistory(type) {
+    const modal = document.getElementById('history-modal');
+    if (!modal) return;
+
+    // Pre-set the type filter if a specific type was passed
+    const typeFilter = document.getElementById('history-type-filter');
+    if (typeFilter && type) {
+        typeFilter.value = type;
+    }
+
+    // Update modal title
+    const titleMap = { tasks: 'Task History', goals: 'Goal History', habits: 'Habit History' };
+    const title = document.getElementById('history-modal-title');
+    if (title) title.textContent = titleMap[type] || 'Completed History';
+
+    // Clear state and list
+    _historyState.page = 1;
+    _historyState.total = 0;
+    _historyState.hasMore = false;
+
+    const list = document.getElementById('history-list');
+    if (list) list.innerHTML = `
+        <div class="history-empty">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>Loading history...</span>
+        </div>`;
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    // Reset search
+    const searchInput = document.getElementById('history-search');
+    if (searchInput) searchInput.value = '';
+
+    loadHistory(true);
+}
+
+function closeHistory() {
+    const modal = document.getElementById('history-modal');
+    if (modal) modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+async function loadHistory(reset = false) {
+    if (reset) {
+        _historyState.page = 1;
+    }
+
+    const typeFilter   = document.getElementById('history-type-filter')?.value  || '';
+    const sortFilter   = document.getElementById('history-sort-filter')?.value   || 'completed_at';
+    const searchQuery  = document.getElementById('history-search')?.value?.trim() || '';
+
+    const params = new URLSearchParams({
+        page:  _historyState.page,
+        limit: _historyState.limit,
+        sort_by: sortFilter,
+    });
+    if (typeFilter)   params.set('type', typeFilter);
+    if (searchQuery)  params.set('search', searchQuery);
+
+    try {
+        const data = await apiFetch(`/history?${params.toString()}`);
+        _historyState.total   = data.total;
+        _historyState.hasMore = data.has_more;
+
+        // Update total label
+        const label = document.getElementById('history-total-label');
+        if (label) label.textContent = `${data.total} item${data.total !== 1 ? 's' : ''} found`;
+
+        renderHistoryItems(data.items, reset);
+        updateHistoryFooter(data);
+    } catch (err) {
+        const list = document.getElementById('history-list');
+        if (list) list.innerHTML = `
+            <div class="history-empty">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Failed to load history. Please try again.</span>
+            </div>`;
+    }
+}
+
+function renderHistoryItems(items, reset = false) {
+    const list = document.getElementById('history-list');
+    if (!list) return;
+
+    if (reset) list.innerHTML = '';
+
+    if (items.length === 0 && reset) {
+        list.innerHTML = `
+            <div class="history-empty">
+                <i class="fas fa-clock-rotate-left"></i>
+                <span>No history found</span>
+                <small style="font-size:0.75rem; opacity:0.6; margin-top:0.25rem;">Completed items appear here after 24 hours</small>
+            </div>`;
+        return;
+    }
+
+    const typeIconMap = {
+        task:  { icon: 'fas fa-check-square', cls: 'task-icon',  label: 'Task'  },
+        goal:  { icon: 'fas fa-bullseye',      cls: 'goal-icon',  label: 'Goal'  },
+        habit: { icon: 'fas fa-repeat',        cls: 'habit-icon', label: 'Habit' },
+    };
+
+    items.forEach((item, idx) => {
+        const typeInfo = typeIconMap[item.item_type] || { icon: 'fas fa-circle', cls: 'task-icon', label: item.item_type };
+
+        const completedAtStr = item.completed_at
+            ? new Date(item.completed_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+            : '—';
+
+        const itemDateStr = item.date
+            ? new Date(item.date).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })
+            : null;
+
+        const statusCls = item.status === 'completed' ? 'completed'
+                        : item.status === 'achieved'  ? 'achieved'
+                        : item.status === 'failed'    ? 'failed'
+                        : 'archived';
+
+        const statusLabel = item.status === 'achieved' ? '✦ Achieved'
+                          : item.status === 'completed' ? '✔ Completed'
+                          : item.status === 'failed'    ? '✖ Failed'
+                          : '🗄 Archived';
+
+        const streakEl = (item.item_type === 'habit' && item.best_streak != null)
+            ? `<span class="history-type-dot">🔥 ${item.best_streak} best streak</span>` : '';
+
+        const card = document.createElement('div');
+        card.className = 'history-item-card';
+        card.style.animationDelay = `${idx * 0.03}s`;
+        card.innerHTML = `
+            <div class="history-item-icon ${typeInfo.cls}">
+                <i class="${typeInfo.icon}"></i>
+            </div>
+            <div class="history-item-body">
+                <div class="history-item-title" title="${item.title}">${item.title}</div>
+                <div class="history-item-meta">
+                    <span class="history-badge ${statusCls}">${statusLabel}</span>
+                    <span class="history-type-dot">${typeInfo.label}</span>
+                    ${item.category ? `<span class="history-type-dot">${item.category}</span>` : ''}
+                    ${streakEl}
+                    <span title="Completed / Archived">🕐 ${completedAtStr}</span>
+                    ${itemDateStr ? `<span>📅 ${itemDateStr}</span>` : ''}
+                </div>
+            </div>
+        `;
+        list.appendChild(card);
+    });
+}
+
+function updateHistoryFooter(data) {
+    const footer = document.getElementById('history-footer');
+    const pageInfo = document.getElementById('history-page-info');
+    const loadMoreBtn = document.getElementById('history-load-more-btn');
+
+    if (!footer) return;
+
+    const showing = Math.min(_historyState.page * _historyState.limit, data.total);
+
+    if (data.total === 0) {
+        footer.style.display = 'none';
+        return;
+    }
+
+    footer.style.display = 'flex';
+    if (pageInfo) pageInfo.textContent = `Showing ${showing} of ${data.total}`;
+    if (loadMoreBtn) {
+        if (data.has_more) {
+            loadMoreBtn.style.display = 'flex';
+        } else {
+            loadMoreBtn.style.display = 'none';
+        }
+    }
+}
+
+async function loadMoreHistory() {
+    _historyState.page += 1;
+    const btn = document.getElementById('history-load-more-btn');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+    }
+    await loadHistory(false);
+    if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-chevron-down"></i> Load More';
+    }
+}
+
+function resetAndLoadHistory() {
+    _historyState.page = 1;
+    const list = document.getElementById('history-list');
+    if (list) list.innerHTML = '';
+    loadHistory(true);
+}
+
+function debounceHistorySearch() {
+    if (_historyState.searchDebounce) clearTimeout(_historyState.searchDebounce);
+    _historyState.searchDebounce = setTimeout(() => {
+        resetAndLoadHistory();
+    }, 400);
+}
+
+// Close history modal on backdrop click
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('history-modal');
+    if (modal && modal.classList.contains('active') && e.target === modal) {
+        closeHistory();
+    }
+});
+

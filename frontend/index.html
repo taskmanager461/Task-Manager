@@ -710,13 +710,28 @@
                     <div id="task-list" class="task-list">
                         <!-- Tasks injected here -->
                     </div>
+                    <div style="text-align:center; margin-top: 0.5rem; margin-bottom: 1rem;">
+                        <button class="btn secondary history-btn" onclick="openHistory('tasks')" style="width:100%; font-size:0.85rem; gap:0.5rem;">
+                            <i class="fas fa-clock-rotate-left"></i> View Completed History
+                        </button>
+                    </div>
                 </div>
 
                 <div id="goals-only-container" style="display: none;">
                     <div id="goals-list" class="task-list"></div>
+                    <div style="text-align:center; margin-top: 0.5rem; margin-bottom: 1rem;">
+                        <button class="btn secondary history-btn" onclick="openHistory('goals')" style="width:100%; font-size:0.85rem; gap:0.5rem;">
+                            <i class="fas fa-clock-rotate-left"></i> View Goals History
+                        </button>
+                    </div>
                 </div>
                 <div id="habits-only-container" style="display: none;">
                     <div id="habits-list" class="task-list"></div>
+                    <div style="text-align:center; margin-top: 0.5rem; margin-bottom: 1rem;">
+                        <button class="btn secondary history-btn" onclick="openHistory('habits')" style="width:100%; font-size:0.85rem; gap:0.5rem;">
+                            <i class="fas fa-clock-rotate-left"></i> View Habits History
+                        </button>
+                    </div>
                 </div>
             </section>
 
@@ -1079,11 +1094,64 @@
 
 
     
+    <!-- History Modal -->
+    <div id="history-modal" class="task-form-modal history-modal-wide">
+        <div class="history-modal-inner">
+            <!-- Header -->
+            <div class="history-modal-header">
+                <div class="history-modal-title-group">
+                    <div class="history-icon-wrap"><i class="fas fa-clock-rotate-left"></i></div>
+                    <div>
+                        <h3 id="history-modal-title">Completed History</h3>
+                        <p id="history-total-label" style="margin:0; font-size:0.75rem; opacity:0.6;">Loading...</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeHistory()" class="icon-btn" aria-label="Close history">
+                    <i class="fas fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Search & Filters -->
+            <div class="history-search-row">
+                <div class="history-search-wrap">
+                    <i class="fas fa-search history-search-icon"></i>
+                    <input type="text" id="history-search" class="history-search-input" placeholder="Search history..." oninput="debounceHistorySearch()">
+                </div>
+            </div>
+            <div class="history-filters-row">
+                <select id="history-type-filter" onchange="resetAndLoadHistory()">
+                    <option value="">All Types</option>
+                    <option value="tasks">Tasks</option>
+                    <option value="goals">Goals</option>
+                    <option value="habits">Habits</option>
+                </select>
+                <select id="history-sort-filter" onchange="resetAndLoadHistory()">
+                    <option value="completed_at">Sort: Completion Date</option>
+                    <option value="date">Sort: Item Date</option>
+                    <option value="title">Sort: Title (A–Z)</option>
+                </select>
+            </div>
+
+            <!-- Items List -->
+            <div id="history-list" class="history-list">
+                <!-- Injected by JS -->
+            </div>
+
+            <!-- Pagination Footer -->
+            <div id="history-footer" class="history-footer" style="display:none;">
+                <p id="history-page-info" class="history-page-info"></p>
+                <button id="history-load-more-btn" class="btn primary" onclick="loadMoreHistory()" style="width:100%;">
+                    <i class="fas fa-chevron-down"></i> Load More
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script src="assets.js?v=17.0.0"></script>
     <script src="badge_assets.js?v=36.0.0"></script>
-    <script src="app.js?v=27.0.0"></script>
+    <script src="app.js?v=28.0.0"></script>
     <script>
         // Logos are pre-sized; no JS resizing needed to avoid flicker.
         document.addEventListener('DOMContentLoaded', function() {
