@@ -4295,3 +4295,74 @@ body.light-mode .report-stat-box {
     margin-top: 0.15rem;
 }
 
+/* Habit Days Picker - Aesthetic Pills */
+.habit-days-picker.aesthetic {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.35rem;
+    margin-top: 0.5rem;
+}
+
+.habit-days-picker.aesthetic .day-pill {
+    position: relative;
+    cursor: pointer;
+    flex: 1;
+    text-align: center;
+}
+
+.habit-days-picker.aesthetic .day-pill input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.habit-days-picker.aesthetic .day-pill span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    width: 100%;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+}
+
+body.light-mode .habit-days-picker.aesthetic .day-pill span {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.08);
+    color: var(--text-secondary);
+}
+
+.habit-days-picker.aesthetic .day-pill:hover span {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+body.light-mode .habit-days-picker.aesthetic .day-pill:hover span {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.habit-days-picker.aesthetic .day-pill input[type="checkbox"]:checked ~ span {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px var(--primary-glow);
+    transform: translateY(-2px);
+}
+
+/* Disable input styling for time constraint visual */
+input[type="time"]:disabled,
+input[type="time"]:invalid,
+input[type="date"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(120, 120, 130, 0.1);
+}
+

@@ -2877,6 +2877,14 @@ function toggleHabitForm() {
         document.getElementById('habit-time').value = '';
         document.getElementById('habit-frequency').value = 'daily';
         document.querySelectorAll('#habit-days-group input[type="checkbox"]').forEach(el => { el.checked = false; });
+        
+        // Populate habit-goal-select
+        const habitGoalSelect = document.getElementById('habit-goal-select');
+        if (habitGoalSelect) {
+            const activeGoals = cachedGoals.filter(g => g.status === 'active');
+            habitGoalSelect.innerHTML = `<option value="">No Link</option>` + activeGoals.map(g => `<option value="${g.id}">${g.title}</option>`).join('');
+        }
+        
         toggleHabitDaysSelector('daily');
     }
 }
@@ -2891,6 +2899,9 @@ async function addHabit() {
         showToast('Select at least one day for weekly habit', 'error');
         return;
     }
+    const goalSelect = document.getElementById('habit-goal-select');
+    const goalId = goalSelect && goalSelect.value ? Number(goalSelect.value) : null;
+
     const newHabit = await apiFetch('/habits', {
         method: 'POST',
         body: JSON.stringify({
@@ -2899,6 +2910,7 @@ async function addHabit() {
             frequency_type: frequency,
             frequency_days: frequencyDays,
             preferred_time: preferredTime,
+            goal_id: goalId,
         }),
     });
     smartPersonalizationCache = { timestamp: 0, data: null };
@@ -3037,10 +3049,10 @@ async function addTask(title, category, difficulty, date, time, startTime) {
     try {
         const taskDate = date || new Date().toISOString().split('T')[0];
         // Read goal / habit link
-        const goalId = (_currentTaskLink === 'goal')
+        const goalId = _taskLinks.goal
             ? (document.getElementById('task-goal-select')?.value ? Number(document.getElementById('task-goal-select').value) : null)
             : null;
-        const habitIdForTask = (_currentTaskLink === 'habit')
+        const habitIdForTask = _taskLinks.habit
             ? (document.getElementById('task-habit-select')?.value ? Number(document.getElementById('task-habit-select').value) : null)
             : null;
 
@@ -3146,47 +3158,65 @@ function updateTaskTimeConstraints() {
         const hrs  = String(now.getHours()).padStart(2, '0');
         const nowStr = `${hrs}:${mins}`;
         startInput.min  = nowStr;
-        finishInput.min = startInput.value || nowStr;
     } else {
         startInput.min  = '';
-        finishInput.min = '';
     }
 
-    // When start changes, update finish min
-    startInput.onchange = function() {
+    // Function to calculate finish min based on start
+    const updateFinishMin = () => {
         if (startInput.value) {
-            finishInput.min = startInput.value;
-            if (finishInput.value && finishInput.value < startInput.value) {
-                finishInput.value = startInput.value;
+            const [h, m] = startInput.value.split(':').map(Number);
+            const finishDate = new Date();
+            finishDate.setHours(h, m + 1);
+            const fh = String(finishDate.getHours()).padStart(2, '0');
+            const fm = String(finishDate.getMinutes()).padStart(2, '0');
+            finishInput.min = `${fh}:${fm}`;
+            if (finishInput.value && finishInput.value < finishInput.min) {
+                finishInput.value = finishInput.min;
             }
+        } else {
+            finishInput.min = '';
         }
     };
+
+    updateFinishMin();
+
+    // When start changes, update finish min
+    startInput.onchange = updateFinishMin;
 }
 
-let _currentTaskLink = 'none'; // 'none' | 'goal' | 'habit'
+let _taskLinks = { goal: false, habit: false };
 
-function setTaskLink(type) {
-    _currentTaskLink = type;
+function toggleTaskLink(type) {
     const btnGoal   = document.getElementById('btn-link-goal');
     const btnHabit  = document.getElementById('btn-link-habit');
-    const btnNone   = document.getElementById('btn-link-none');
     const goalPanel  = document.getElementById('link-goal-panel');
     const habitPanel = document.getElementById('link-habit-panel');
 
-    // Reset all buttons
-    [btnGoal, btnHabit, btnNone].forEach(b => b && b.classList.remove('selected-goal', 'selected-habit', 'active-selected'));
-
     if (type === 'goal') {
-        btnGoal && btnGoal.classList.add('selected-goal');
-        if (goalPanel) goalPanel.style.display = 'block';
-        if (habitPanel) habitPanel.style.display = 'none';
-        populateGoalOptions();
+        _taskLinks.goal = !_taskLinks.goal;
+        if (_taskLinks.goal) {
+            btnGoal && btnGoal.classList.add('selected-goal');
+            if (goalPanel) goalPanel.style.display = 'block';
+            populateGoalOptions();
+        } else {
+            btnGoal && btnGoal.classList.remove('selected-goal');
+            if (goalPanel) goalPanel.style.display = 'none';
+        }
     } else if (type === 'habit') {
-        btnHabit && btnHabit.classList.add('selected-habit');
-        if (goalPanel) goalPanel.style.display = 'none';
-        if (habitPanel) habitPanel.style.display = 'block';
-        populateHabitOptions();
-    } else {
+        _taskLinks.habit = !_taskLinks.habit;
+        if (_taskLinks.habit) {
+            btnHabit && btnHabit.classList.add('selected-habit');
+            if (habitPanel) habitPanel.style.display = 'block';
+            populateHabitOptions();
+        } else {
+            btnHabit && btnHabit.classList.remove('selected-habit');
+            if (habitPanel) habitPanel.style.display = 'none';
+        }
+    } else if (type === 'none') {
+        _taskLinks = { goal: false, habit: false };
+        btnGoal && btnGoal.classList.remove('selected-goal');
+        btnHabit && btnHabit.classList.remove('selected-habit');
         if (goalPanel) goalPanel.style.display = 'none';
         if (habitPanel) habitPanel.style.display = 'none';
     }
@@ -4433,8 +4463,7 @@ function toggleTaskForm() {
     document.getElementById('task-title').value = '';
     if (container.classList.contains('active')) {
         // Reset link state
-        _currentTaskLink = 'none';
-        setTaskLink('none');
+        toggleTaskLink('none');
 
         // Block past dates in HTML input
         const taskDateInput = document.getElementById('task-date');

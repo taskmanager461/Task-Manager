@@ -841,28 +841,22 @@
             </div>
 
             <div class="link-controls">
-                <div class="link-toggle-group">
-                    <button type="button" class="link-toggle-btn" id="btn-link-goal" onclick="setTaskLink('goal')">
+                <div class="link-toggle-group" style="display: flex; gap: 0.5rem;">
+                    <button type="button" class="link-toggle-btn" id="btn-link-goal" onclick="toggleTaskLink('goal')" style="flex: 1;">
                         <i class="fas fa-bullseye"></i>
-                        <span>Link to Goal</span>
-                        <span class="link-badge">+XP</span>
+                        <span>Goal Link</span>
                     </button>
-                    <button type="button" class="link-toggle-btn" id="btn-link-habit" onclick="setTaskLink('habit')">
+                    <button type="button" class="link-toggle-btn" id="btn-link-habit" onclick="toggleTaskLink('habit')" style="flex: 1;">
                         <i class="fas fa-repeat"></i>
-                        <span>Link to Habit</span>
-                        <span class="link-badge">+XP</span>
-                    </button>
-                    <button type="button" class="link-toggle-btn active-none" id="btn-link-none" onclick="setTaskLink('none')">
-                        <i class="fas fa-xmark"></i>
-                        <span>No Link</span>
+                        <span>Habit Link</span>
                     </button>
                 </div>
-                <div id="link-goal-panel" class="link-panel" style="display:none">
+                <div id="link-goal-panel" class="link-panel" style="display:none; margin-top: 0.5rem;">
                     <select id="task-goal-select">
                         <option value="">Select a goal...</option>
                     </select>
                 </div>
-                <div id="link-habit-panel" class="link-panel" style="display:none">
+                <div id="link-habit-panel" class="link-panel" style="display:none; margin-top: 0.5rem;">
                     <select id="task-habit-select">
                         <option value="">Select a habit...</option>
                     </select>
@@ -938,6 +932,14 @@
                 </div>
             </div>
             <div class="form-row">
+                <div class="form-group" style="width: 100%;">
+                    <label><i class="fas fa-bullseye"></i> Link to Goal</label>
+                    <select id="habit-goal-select">
+                        <option value="">No Link</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
                 <div class="form-group">
                     <label>Frequency</label>
                     <select id="habit-frequency" onchange="toggleHabitDaysSelector(this.value)">
@@ -947,14 +949,14 @@
                 </div>
                 <div id="habit-days-group" class="form-group" style="display:none;">
                     <label>Days</label>
-                    <div class="habit-days-picker">
-                        <label><input type="checkbox" value="0">Mon</label>
-                        <label><input type="checkbox" value="1">Tue</label>
-                        <label><input type="checkbox" value="2">Wed</label>
-                        <label><input type="checkbox" value="3">Thu</label>
-                        <label><input type="checkbox" value="4">Fri</label>
-                        <label><input type="checkbox" value="5">Sat</label>
-                        <label><input type="checkbox" value="6">Sun</label>
+                    <div class="habit-days-picker aesthetic">
+                        <label class="day-pill"><input type="checkbox" value="0"><span>M</span></label>
+                        <label class="day-pill"><input type="checkbox" value="1"><span>T</span></label>
+                        <label class="day-pill"><input type="checkbox" value="2"><span>W</span></label>
+                        <label class="day-pill"><input type="checkbox" value="3"><span>T</span></label>
+                        <label class="day-pill"><input type="checkbox" value="4"><span>F</span></label>
+                        <label class="day-pill"><input type="checkbox" value="5"><span>S</span></label>
+                        <label class="day-pill"><input type="checkbox" value="6"><span>S</span></label>
                     </div>
                 </div>
             </div>
