@@ -1954,27 +1954,33 @@ body.light-mode .toast {
     pointer-events: none;
 }
 
-.animated-loading-logo {
-    display: block;
+.loading-logo-shape {
+    width: 128px;
+    height: 128px;
     margin: 0 auto 1.5rem auto;
+    -webkit-mask-image: url('/assets/logo_auth.png?v=23');
+    -webkit-mask-size: contain;
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    mask-image: url('/assets/logo_auth.png?v=23');
+    mask-size: contain;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    
+    background: linear-gradient(
+        135deg,
+        var(--text-primary) 0%,
+        var(--text-primary) 45%,
+        transparent 55%,
+        transparent 100%
+    );
+    background-size: 300% 300%;
+    animation: sweepReveal 1.6s ease-in-out infinite alternate;
 }
 
-.animated-logo-path {
-    fill: none;
-    stroke: var(--text-primary);
-    stroke-width: 8;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-dasharray: 220;
-    stroke-dashoffset: 220;
-    animation: drawStroke 1.4s ease-in-out infinite;
-}
-
-@keyframes drawStroke {
-    0% { stroke-dashoffset: 220; }
-    40% { stroke-dashoffset: 0; }
-    60% { stroke-dashoffset: 0; }
-    100% { stroke-dashoffset: -220; }
+@keyframes sweepReveal {
+    0% { background-position: 100% 100%; }
+    100% { background-position: 0% 0%; }
 }
 /* Calendar Styling */
 .calendar-container { padding: 2rem; }
