@@ -4371,17 +4371,17 @@ input[type="date"]:disabled {
    ═══════════════════════════════════════════════════ */
 .empty-state {
     position: relative;
-    background: linear-gradient(180deg, rgba(10, 134, 255, 0.03), rgba(0, 0, 0, 0.15));
+    background: #000000 !important;
     border: 1px solid rgba(10, 134, 255, 0.12);
     border-radius: 16px;
-    padding: 3rem 1.5rem;
+    padding: 1.75rem 1.5rem;
     text-align: center;
     overflow: hidden;
     margin: 1rem 0;
 }
 
 body.light-mode .empty-state {
-    background: linear-gradient(180deg, rgba(10, 134, 255, 0.03), rgba(0, 0, 0, 0.02));
+    background: #ffffff !important;
     border-color: rgba(10, 134, 255, 0.15);
 }
 
@@ -4392,10 +4392,10 @@ body.light-mode .empty-state {
     top: 0;
     bottom: 0;
     width: 150px;
-    opacity: 0.25;
+    opacity: 0.85; /* Highly increased intensity for blue dots */
     pointer-events: none;
-    background-image: radial-gradient(circle at center, var(--primary) 1.5px, transparent 1.5px);
-    background-size: 14px 14px;
+    background-image: radial-gradient(circle at center, rgb(10, 134, 255) 2px, transparent 2px);
+    background-size: 16px 16px;
 }
 
 .empty-state::before {
