@@ -2795,6 +2795,7 @@ async function loadHabits() {
         const habits = await apiFetch('/habits');
         cachedHabits = habits;
         renderHabits(habits);
+        checkHistoryAvailability('habits');
         if (currentView === 'reports') renderTodayHabits(habits);
     } catch (err) {
         const list = document.getElementById('habits-list');
@@ -3261,6 +3262,7 @@ async function loadGoals() {
         populateGoalOptions();
         if (list) {
             renderGoals(goals);
+            checkHistoryAvailability('goals');
         }
     } catch (err) {
         if (list) {
