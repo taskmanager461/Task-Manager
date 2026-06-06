@@ -20,6 +20,7 @@ from backend.routes.auth import router as auth_router
 from backend.routes.future_self import router as future_self_router
 from backend.routes.goals import router as goals_router
 from backend.routes.habits import router as habits_router
+from backend.routes.history import router as history_router
 from backend.routes.identity import router as identity_router
 from backend.routes.score import router as score_router
 from backend.routes.tasks import router as tasks_router
@@ -96,6 +97,7 @@ app.include_router(auth_router, prefix="/api")
 app.include_router(tasks_router, prefix="/api")
 app.include_router(goals_router, prefix="/api")
 app.include_router(habits_router, prefix="/api")
+app.include_router(history_router, prefix="/api")
 app.include_router(score_router, prefix="/api")
 app.include_router(identity_router, prefix="/api")
 app.include_router(push_router, prefix="/api")

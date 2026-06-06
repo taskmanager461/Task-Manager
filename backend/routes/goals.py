@@ -1,7 +1,8 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from time import time
 
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from backend.database import get_db
@@ -26,9 +27,18 @@ def get_goals(
     if cached and (time() - cached.get("timestamp", 0)) < GOALS_CACHE_TTL_SECONDS:
         return cached["payload"]
     
+    cutoff = datetime.utcnow() - timedelta(hours=24)
+
     goals = (
         db.query(Goal)
         .filter(Goal.user_id == current_user.id)
+        .filter(
+            or_(
+                Goal.status == "active",
+                Goal.completed_at == None,
+                Goal.completed_at >= cutoff,
+            )
+        )
         .order_by(Goal.deadline.asc(), Goal.created_at.desc())
         .all()
     )

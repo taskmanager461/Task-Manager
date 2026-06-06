@@ -25,6 +25,7 @@ class Task(Base):
     start_time: Mapped[str] = mapped_column(String(10), nullable=True) # start time
     habit_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("habits.id"), nullable=True)
     date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
 
     user = relationship("User", back_populates="tasks")

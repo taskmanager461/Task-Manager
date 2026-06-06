@@ -1,7 +1,8 @@
-from datetime import date
+from datetime import date, datetime, timedelta
 from time import time
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from backend.database import get_db
@@ -16,6 +17,8 @@ from backend.services.cache_service import TASKS_CACHE, invalidate_tasks_cache, 
 
 router = APIRouter(tags=["tasks"])
 TASKS_CACHE_TTL_SECONDS = 60
+
+ARCHIVE_AFTER_HOURS = 24
 
 
 @router.get("/tasks", response_model=list[TaskResponse])
@@ -37,6 +40,8 @@ def get_tasks(
     if cached and (time() - cached.get("timestamp", 0)) < TASKS_CACHE_TTL_SECONDS:
         return cached["payload"]
 
+    cutoff = datetime.utcnow() - timedelta(hours=ARCHIVE_AFTER_HOURS)
+
     query = db.query(Task).filter(Task.user_id == target_user_id, Task.date == day)
     
     if category:
@@ -45,6 +50,15 @@ def get_tasks(
         query = query.filter(Task.priority == priority)
     if status:
         query = query.filter(Task.status == status)
+
+    # Exclude completed/failed tasks that were completed more than 24h ago
+    query = query.filter(
+        or_(
+            Task.status == "pending",
+            Task.completed_at == None,
+            Task.completed_at >= cutoff,
+        )
+    )
 
     tasks = query.order_by(Task.created_at.asc()).all()
     
@@ -150,6 +164,11 @@ def update_task_status(
         if payload.status not in {"completed", "failed", "pending"}:
             raise HTTPException(status_code=400, detail="Invalid task status")
         task.status = payload.status
+        # Track completion timestamp for archiving
+        if payload.status in {"completed", "failed"} and task.completed_at is None:
+            task.completed_at = datetime.utcnow()
+        elif payload.status == "pending":
+            task.completed_at = None
     
     if payload.priority:
         if payload.priority not in {"low", "medium", "high"}:

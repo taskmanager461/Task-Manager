@@ -60,11 +60,18 @@ def ensure_schema_compatibility() -> None:
                 connection.execute(text("ALTER TABLE tasks ADD COLUMN start_time VARCHAR(10)"))
             if "habit_id" not in task_columns:
                 connection.execute(text("ALTER TABLE tasks ADD COLUMN habit_id INTEGER"))
+            if "completed_at" not in task_columns:
+                connection.execute(text("ALTER TABLE tasks ADD COLUMN completed_at DATETIME"))
 
         if "goals" in table_names:
             goal_columns = {col["name"] for col in inspector.get_columns("goals")}
             if "xp_awarded" not in goal_columns:
                 connection.execute(text("ALTER TABLE goals ADD COLUMN xp_awarded BOOLEAN NOT NULL DEFAULT 0"))
+
+        if "habits" in table_names:
+            habit_columns = {col["name"] for col in inspector.get_columns("habits")}
+            if "goal_id" not in habit_columns:
+                connection.execute(text("ALTER TABLE habits ADD COLUMN goal_id INTEGER"))
 
         if "users" in table_names:
             user_columns = {col["name"] for col in inspector.get_columns("users")}

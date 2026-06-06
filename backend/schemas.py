@@ -69,6 +69,7 @@ class TaskUpdate(BaseModel):
     start_time: Optional[str] = None
     habit_id: Optional[int] = None
     goal_id: Optional[int] = None
+    completed_at: Optional[datetime] = None
 
 
 class TaskResponse(BaseModel):
@@ -88,6 +89,7 @@ class TaskResponse(BaseModel):
     habit_id: Optional[int]
     status: TaskStatus
     date: date
+    completed_at: Optional[datetime] = None
     created_at: datetime
 
 

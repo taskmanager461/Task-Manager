@@ -1,7 +1,8 @@
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from time import time
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from backend.database import get_db
@@ -23,6 +24,7 @@ from backend.services.cache_service import HABITS_CACHE, invalidate_habits_cache
 
 router = APIRouter(tags=["habits"])
 HABITS_CACHE_TTL_SECONDS = 60
+ARCHIVE_AFTER_HOURS = 24
 
 
 @router.post("/habits", response_model=HabitResponse)
@@ -85,9 +87,18 @@ def list_habits(
         if isinstance(cached.get("timestamp"), (int, float)) and (time() - cached["timestamp"]) < HABITS_CACHE_TTL_SECONDS:
             return cached["payload"]
     
+    cutoff = datetime.utcnow() - timedelta(hours=ARCHIVE_AFTER_HOURS)
+
     habits = (
         db.query(Habit)
-        .filter(Habit.user_id == current_user.id, Habit.is_active.is_(True))
+        .filter(
+            Habit.user_id == current_user.id,
+            or_(
+                Habit.is_active.is_(True),
+                # Inactive habits still visible if archived within 24h
+                (Habit.is_active.is_(False)) & (Habit.updated_at >= cutoff),
+            )
+        )
         .order_by(Habit.created_at.desc())
         .all()
     )
