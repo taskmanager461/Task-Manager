@@ -4514,30 +4514,52 @@ function toggleTaskForm() {
 // === Swipe Navigation (Mobile Only) — Real-time finger tracking ===
 (function() {
     const viewOrder = ['tasks', 'reports', 'insights', 'progress', 'me'];
-    const SWIPE_THRESHOLD = 72;   // px to commit
-    const SWIPE_DIR_RATIO = 2.2;  // how much more horizontal than vertical
+    const SWIPE_THRESHOLD = 40;   // px to commit (was 72 — much lower = snappier)
+    const SWIPE_DIR_LOCK  = 4;    // px before deciding horiz vs vert (was 6)
+    const SWIPE_DIR_RATIO = 1.5;  // horiz/vert ratio to lock in (was 2.2)
 
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let touchCurX   = 0;
-    let isDragging  = false;
-    let isHorizontal = null; // null = undecided, true = horiz, false = vert
+    let touchStartX  = 0;
+    let touchStartY  = 0;
+    let touchCurX    = 0;
+    let isDragging   = false;
+    let isHorizontal = null;
     let startedOnBottomNav = false;
-    let activeEl  = null; // the current view DOM element
-    let neighborEl = null; // the next/prev view
-    let swipeDir   = null; // 'left' | 'right'
+    let activeEl   = null;
+    let neighborEl = null;
+    let swipeDir   = null;
+    let rafId      = null; // requestAnimationFrame handle
+
+    function applyDragFrame(diffX) {
+        if (!activeEl) return;
+
+        // 1:1 tracking — no resistance, just clamp at screen edge
+        const maxDrag = window.innerWidth;
+        const drag = Math.max(-maxDrag, Math.min(maxDrag, diffX));
+
+        // Fade out current view proportionally
+        const progress = Math.abs(drag) / window.innerWidth;
+        activeEl.style.transform = `translateX(${drag}px)`;
+        activeEl.style.opacity   = `${Math.max(0.3, 1 - progress * 1.2)}`;
+
+        if (neighborEl) {
+            const neighborStart = swipeDir === 'left' ? window.innerWidth : -window.innerWidth;
+            neighborEl.style.transform = `translateX(${neighborStart + drag}px)`;
+            neighborEl.style.opacity   = `${Math.min(1, progress * 1.4)}`;
+        }
+    }
 
     document.addEventListener('touchstart', e => {
-        startedOnBottomNav = Boolean(e.target && e.target.closest && e.target.closest('.bottom-nav'));
+        startedOnBottomNav = Boolean(e.target?.closest?.('.bottom-nav'));
         if (startedOnBottomNav) return;
-        touchStartX = e.changedTouches[0].clientX;
-        touchStartY = e.changedTouches[0].clientY;
-        touchCurX   = touchStartX;
-        isDragging  = false;
+        touchStartX  = e.changedTouches[0].clientX;
+        touchStartY  = e.changedTouches[0].clientY;
+        touchCurX    = touchStartX;
+        isDragging   = false;
         isHorizontal = null;
-        swipeDir = null;
-        activeEl = document.getElementById(`view-${currentView}`);
-        neighborEl = null;
+        swipeDir     = null;
+        neighborEl   = null;
+        activeEl     = document.getElementById(`view-${currentView}`);
+        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
     }, { passive: true });
 
     document.addEventListener('touchmove', e => {
@@ -4547,129 +4569,116 @@ function toggleTaskForm() {
         const diffX = x - touchStartX;
         const diffY = y - touchStartY;
 
-        // Decide direction once after minimal movement
-        if (isHorizontal === null && (Math.abs(diffX) > 6 || Math.abs(diffY) > 6)) {
+        // Lock in direction once we've moved enough
+        if (isHorizontal === null && (Math.abs(diffX) > SWIPE_DIR_LOCK || Math.abs(diffY) > SWIPE_DIR_LOCK)) {
             isHorizontal = Math.abs(diffX) > Math.abs(diffY) * SWIPE_DIR_RATIO;
         }
-
         if (!isHorizontal || !activeEl) return;
 
         touchCurX = x;
         isDragging = true;
         const currentIdx = viewOrder.indexOf(currentView);
 
-        // Determine neighbor
+        // Set up neighbor on first horizontal move
         if (!swipeDir) {
             if (diffX < 0 && currentIdx < viewOrder.length - 1) {
-                swipeDir = 'left';
+                swipeDir   = 'left';
                 neighborEl = document.getElementById(`view-${viewOrder[currentIdx + 1]}`);
             } else if (diffX > 0 && currentIdx > 0) {
-                swipeDir = 'right';
+                swipeDir   = 'right';
                 neighborEl = document.getElementById(`view-${viewOrder[currentIdx - 1]}`);
             } else {
-                return; // edge of list — no drag
+                return;
             }
+            // Prepare neighbor for display
+            if (neighborEl) {
+                neighborEl.classList.add('swipe-dragging');
+                neighborEl.style.display       = 'flex';
+                neighborEl.style.position      = 'absolute';
+                neighborEl.style.width         = '100%';
+                neighborEl.style.pointerEvents = 'none';
+                neighborEl.style.opacity       = '0';
+                const initOffset = swipeDir === 'left' ? window.innerWidth : -window.innerWidth;
+                neighborEl.style.transform = `translateX(${initOffset}px)`;
+            }
+            activeEl.classList.add('swipe-dragging');
         }
 
-        const maxDrag = window.innerWidth * 0.45;
-        const drag = Math.max(-maxDrag, Math.min(maxDrag, diffX));
-        const resistance = 0.72; // rubber-band feel
-        const finalDrag = drag * resistance;
-
-        // Move current view with dragging
-        activeEl.classList.add('swipe-dragging');
-        activeEl.style.transform = `translateX(${finalDrag}px)`;
-        activeEl.style.opacity = `${1 - Math.abs(finalDrag) / (maxDrag * 1.5)}`;
-
-        // Peek the neighbor
-        if (neighborEl) {
-            const neighborOffset = swipeDir === 'left' ? window.innerWidth : -window.innerWidth;
-            neighborEl.classList.add('swipe-dragging');
-            neighborEl.style.display = 'flex';
-            neighborEl.style.position = 'absolute';
-            neighborEl.style.width = '100%';
-            neighborEl.style.transform = `translateX(${neighborOffset + finalDrag}px)`;
-            neighborEl.style.opacity = `${Math.abs(finalDrag) / (maxDrag * 1.2)}`;
-            neighborEl.style.pointerEvents = 'none';
-        }
+        // Schedule paint via rAF
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => applyDragFrame(diffX));
     }, { passive: true });
 
     document.addEventListener('touchend', e => {
+        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
         if (startedOnBottomNav || !isDragging || !isHorizontal) {
-            isDragging = false;
+            isDragging   = false;
             isHorizontal = null;
             return;
         }
-        isDragging = false;
+        isDragging   = false;
         isHorizontal = null;
 
-        const diffX = touchCurX - touchStartX;
+        const diffX     = touchCurX - touchStartX;
         const committed = Math.abs(diffX) >= SWIPE_THRESHOLD && swipeDir !== null;
+        const snapDur   = committed ? '220ms' : '200ms';
+        const snapEase  = 'cubic-bezier(0.25, 0.46, 0.45, 0.94)';
 
-        // Clean up neighbor peek styles
-        if (neighborEl) {
-            neighborEl.classList.remove('swipe-dragging');
-            neighborEl.style.position = '';
-            neighborEl.style.width = '';
-            neighborEl.style.pointerEvents = '';
-            if (!committed) {
-                // Spring back
-                neighborEl.style.transition = 'transform 0.32s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.32s ease';
-                neighborEl.style.transform = `translateX(${swipeDir === 'left' ? '100vw' : '-100vw'})`;
-                neighborEl.style.opacity = '0';
-                setTimeout(() => {
-                    if (neighborEl) {
-                        neighborEl.style.display = '';
-                        neighborEl.style.transform = '';
-                        neighborEl.style.opacity = '';
-                        neighborEl.style.transition = '';
-                        neighborEl.style.position = '';
-                        neighborEl.style.width = '';
-                        neighborEl.style.pointerEvents = '';
-                    }
-                }, 200);
-            } else {
-                neighborEl.style.transform = '';
-                neighborEl.style.opacity = '';
-                neighborEl.style.display = '';
-                neighborEl.style.transition = '';
-                neighborEl.style.position = '';
-                neighborEl.style.width = '';
-                neighborEl.style.pointerEvents = '';
-            }
-        }
-
+        // Animate active view out or back
         if (activeEl) {
             activeEl.classList.remove('swipe-dragging');
-            if (!committed) {
-                // Spring back current view
-                activeEl.style.transition = 'transform 0.32s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.32s ease';
-                activeEl.style.transform = 'translateX(0)';
-                activeEl.style.opacity = '1';
-                setTimeout(() => {
-                    if (activeEl) {
-                        activeEl.style.transform = '';
-                        activeEl.style.opacity = '';
-                        activeEl.style.transition = '';
-                    }
-                }, 200);
+            activeEl.style.transition = `transform ${snapDur} ${snapEase}, opacity ${snapDur} ease`;
+            if (committed) {
+                const exitX = swipeDir === 'left' ? '-100vw' : '100vw';
+                activeEl.style.transform = `translateX(${exitX})`;
+                activeEl.style.opacity   = '0';
             } else {
-                activeEl.style.transform = '';
-                activeEl.style.opacity = '';
-                activeEl.style.transition = '';
+                activeEl.style.transform = 'translateX(0)';
+                activeEl.style.opacity   = '1';
             }
+            setTimeout(() => {
+                if (activeEl) {
+                    activeEl.style.transform  = '';
+                    activeEl.style.opacity    = '';
+                    activeEl.style.transition = '';
+                }
+            }, 250);
+        }
+
+        // Animate neighbor in or back
+        if (neighborEl) {
+            neighborEl.classList.remove('swipe-dragging');
+            neighborEl.style.transition = `transform ${snapDur} ${snapEase}, opacity ${snapDur} ease`;
+            if (committed) {
+                neighborEl.style.transform = 'translateX(0)';
+                neighborEl.style.opacity   = '1';
+            } else {
+                const retreatX = swipeDir === 'left' ? '100vw' : '-100vw';
+                neighborEl.style.transform = `translateX(${retreatX})`;
+                neighborEl.style.opacity   = '0';
+            }
+            setTimeout(() => {
+                if (neighborEl) {
+                    neighborEl.style.display      = '';
+                    neighborEl.style.transform    = '';
+                    neighborEl.style.opacity      = '';
+                    neighborEl.style.transition   = '';
+                    neighborEl.style.position     = '';
+                    neighborEl.style.width        = '';
+                    neighborEl.style.pointerEvents = '';
+                }
+            }, 250);
         }
 
         if (committed) {
             const currentIdx = viewOrder.indexOf(currentView);
-            const dir = diffX < 0 ? 'forward' : 'back';
-            const targetIdx = diffX < 0 ? currentIdx + 1 : currentIdx - 1;
+            const dir        = diffX < 0 ? 'forward' : 'back';
+            const targetIdx  = diffX < 0 ? currentIdx + 1 : currentIdx - 1;
             if (targetIdx >= 0 && targetIdx < viewOrder.length) {
                 showView(viewOrder[targetIdx], dir);
             }
         }
 
-        // Reset
         neighborEl = null;
         activeEl   = null;
         swipeDir   = null;
