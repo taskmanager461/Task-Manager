@@ -147,15 +147,17 @@
             <button id="top-install-btn" class="icon-btn install-trigger" style="display: none;" aria-label="Install App">
                 <i class="fas fa-download"></i>
             </button>
-            <button class="icon-btn settings-trigger" onclick="showView('settings')" aria-label="Settings">
+            <button class="icon-btn settings-trigger" onclick="toggleSettings()" aria-label="Settings">
                 <i class="fas fa-cog"></i>
             </button>
         </div>
 
         <main id="content">            <!-- Dashboard View (formerly Reports) -->
             <section id="view-reports" class="view">
-                <div class="view-header">
-                    <h1 data-i18n="dashboard">Dashboard</h1>
+                <div class="premium-header-card" style="width: 95%; margin: 0 auto 1.5rem auto; display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: transparent; border: none; box-shadow: none;">
+                    <div>
+                        <h1 style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;" data-i18n="dashboard">Dashboard</h1>
+                    </div>
                 </div>
                 
                 <!-- Monthly Calendar (moved near the top) -->
@@ -198,8 +200,10 @@
 
             <!-- Me View -->
             <section id="view-me" class="view">
-                <div class="view-header">
-                    <h1 data-i18n="me">Me</h1>
+                <div class="premium-header-card" style="width: 95%; margin: 0 auto 1.5rem auto; display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: transparent; border: none; box-shadow: none;">
+                    <div>
+                        <h1 style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;" data-i18n="me">Me</h1>
+                    </div>
                 </div>
 
                 <div class="card" style="margin-bottom: 1.5rem;">
@@ -353,8 +357,10 @@
 
             <!-- Insights View (Analytics Only) -->
             <section id="view-insights" class="view">
-                <div class="view-header">
-                    <h1 data-i18n="insights">Insights</h1>
+                <div class="premium-header-card" style="width: 95%; margin: 0 auto 1.5rem auto; display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: transparent; border: none; box-shadow: none;">
+                    <div>
+                        <h1 style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;" data-i18n="insights">Insights</h1>
+                    </div>
                 </div>
                 
                 <div id="smart-insights-container" class="insights-container" style="margin-bottom: 2rem;">
@@ -426,8 +432,10 @@
 
             <!-- Progress View (NEW HUB) -->
             <section id="view-progress" class="view">
-                <div class="view-header">
-                    <h1>Progression Hub</h1>
+                <div class="premium-header-card" style="width: 95%; margin: 0 auto 1.5rem auto; display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: transparent; border: none; box-shadow: none;">
+                    <div>
+                        <h1 style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;">Progression Hub</h1>
+                    </div>
                 </div>
 
                 <!-- Mastery Progress Card -->
@@ -735,9 +743,14 @@
             </section>
 
             <!-- Settings View -->
-            <section id="view-settings" class="view">
-                <div class="view-header">
-                    <h1 data-i18n="settings">Settings</h1>
+            <section id="view-settings" class="view" style="max-width: 500px; margin: 0 auto;">
+                <div class="premium-header-card" style="width: 100%; margin: 0 auto 1.5rem auto; display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; background: transparent; border: none; box-shadow: none;">
+                    <div>
+                        <h1 style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;" data-i18n="settings">Settings</h1>
+                    </div>
+                    <button onclick="toggleSettings()" class="btn secondary" style="border-radius: 50%; width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
                 
                 <div class="card" style="margin-bottom: 1.25rem;">

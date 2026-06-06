@@ -1065,6 +1065,16 @@ async function updateProfile(name, username) {
 
 const _viewOrder = ['tasks', 'reports', 'insights', 'progress', 'me'];
 let _prevView = null;
+let previousViewBeforeSettings = null;
+
+function toggleSettings() {
+    if (currentView === 'settings') {
+        showView(previousViewBeforeSettings || 'tasks');
+    } else {
+        previousViewBeforeSettings = currentView;
+        showView('settings');
+    }
+}
 
 function showView(viewId, direction) {
     const prevViewId = currentView;
