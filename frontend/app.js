@@ -2739,7 +2739,7 @@ function renderHabits(habits) {
                 <span class="empty-state-icon">🧠</span>
                 <h3 class="empty-state-title">No habits yet</h3>
                 <p class="empty-state-text">Build consistency with your first recurring habit.</p>
-                <button onclick="toggleHabitForm()" class="btn primary">Create Habit</button>
+                <button onclick="toggleHabitForm()" class="btn primary">CREATE HABIT</button>
             </div>
         `;
         return;
@@ -2961,9 +2961,9 @@ function renderTasks(tasks) {
         list.innerHTML = `
             <div class="empty-state">
                 <span class="empty-state-icon">📝</span>
-                <h3 class="empty-state-title">${t('no_tasks')}</h3>
-                <p class="empty-state-text">Start by adding your first task for today.</p>
-                <button onclick="toggleTaskForm()" class="btn primary">${t('add_new_task')}</button>
+                <h3 class="empty-state-title">No tasks yet</h3>
+                <p class="empty-state-text">Create your first task to stay organized and productive.</p>
+                <button onclick="toggleCurrentForm()" class="btn primary">CREATE TASK</button>
             </div>
         `;
         return;
@@ -3265,7 +3265,7 @@ function renderGoals(goals) {
                 <span class="empty-state-icon">🎯</span>
                 <h3 class="empty-state-title">No goals yet</h3>
                 <p class="empty-state-text">Create your first goal to track long-term progress.</p>
-                <button onclick="toggleGoalForm()" class="btn primary">Create Goal</button>
+                <button onclick="toggleGoalForm()" class="btn primary">CREATE GOAL</button>
             </div>
         `;
         return;
