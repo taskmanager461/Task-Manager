@@ -949,6 +949,11 @@ body.light-mode #forgot-form select {
     transform: translateX(0);
 }
 
+/* Settings view: narrower card-like layout */
+#view-settings {
+    max-width: 520px !important;
+}
+
 /* Slide-in from right (navigating forward) */
 .view.slide-in-right {
     display: flex;
