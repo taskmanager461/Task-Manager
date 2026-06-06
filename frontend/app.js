@@ -5663,111 +5663,67 @@ function toggleAchievementsVisibility() {
 }
 
 // ════════════════════════════════════════════════════
-// HISTORY SYSTEM
+// INLINE HISTORY SYSTEM
 // ════════════════════════════════════════════════════
 
-let _historyState = {
-    page: 1,
-    limit: 10,
-    total: 0,
-    hasMore: false,
-    activeType: null,    // 'tasks' | 'goals' | 'habits' | null
-    searchDebounce: null,
+const _inlineHistoryState = {
+    tasks: { page: 0, hasMore: true },
+    goals: { page: 0, hasMore: true },
+    habits: { page: 0, hasMore: true }
 };
 
-function openHistory(type) {
-    const modal = document.getElementById('history-modal');
-    if (!modal) return;
+async function loadInlineHistory(type) {
+    const state = _inlineHistoryState[type];
+    if (!state.hasMore) return;
 
-    // Pre-set the type filter if a specific type was passed
-    const typeFilter = document.getElementById('history-type-filter');
-    if (typeFilter && type) {
-        typeFilter.value = type;
+    const btn = document.getElementById(`${type}-history-btn`);
+    const list = document.getElementById(`${type}-history-list`);
+    
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
     }
 
-    // Update modal title
-    const titleMap = { tasks: 'Task History', goals: 'Goal History', habits: 'Habit History' };
-    const title = document.getElementById('history-modal-title');
-    if (title) title.textContent = titleMap[type] || 'Completed History';
-
-    // Clear state and list
-    _historyState.page = 1;
-    _historyState.total = 0;
-    _historyState.hasMore = false;
-
-    const list = document.getElementById('history-list');
-    if (list) list.innerHTML = `
-        <div class="history-empty">
-            <i class="fas fa-spinner fa-spin"></i>
-            <span>Loading history...</span>
-        </div>`;
-
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-
-    // Reset search
-    const searchInput = document.getElementById('history-search');
-    if (searchInput) searchInput.value = '';
-
-    loadHistory(true);
-}
-
-function closeHistory() {
-    const modal = document.getElementById('history-modal');
-    if (modal) modal.classList.remove('active');
-    document.body.style.overflow = '';
-}
-
-async function loadHistory(reset = false) {
-    if (reset) {
-        _historyState.page = 1;
-    }
-
-    const typeFilter   = document.getElementById('history-type-filter')?.value  || '';
-    const sortFilter   = document.getElementById('history-sort-filter')?.value   || 'completed_at';
-    const searchQuery  = document.getElementById('history-search')?.value?.trim() || '';
-
-    const params = new URLSearchParams({
-        page:  _historyState.page,
-        limit: _historyState.limit,
-        sort_by: sortFilter,
-    });
-    if (typeFilter)   params.set('type', typeFilter);
-    if (searchQuery)  params.set('search', searchQuery);
+    state.page += 1;
 
     try {
+        const params = new URLSearchParams({
+            page: state.page,
+            limit: 10,
+            type: type,
+            sort_by: 'completed_at'
+        });
+
         const data = await apiFetch(`/history?${params.toString()}`);
-        _historyState.total   = data.total;
-        _historyState.hasMore = data.has_more;
+        state.hasMore = data.has_more;
 
-        // Update total label
-        const label = document.getElementById('history-total-label');
-        if (label) label.textContent = `${data.total} item${data.total !== 1 ? 's' : ''} found`;
+        renderInlineHistoryItems(type, data.items);
 
-        renderHistoryItems(data.items, reset);
-        updateHistoryFooter(data);
+        if (btn) {
+            btn.disabled = false;
+            if (state.hasMore) {
+                btn.innerHTML = '<i class="fas fa-chevron-down"></i> Load More History';
+            } else {
+                btn.style.display = 'none'; // Hide when no more
+            }
+        }
     } catch (err) {
-        const list = document.getElementById('history-list');
-        if (list) list.innerHTML = `
-            <div class="history-empty">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span>Failed to load history. Please try again.</span>
-            </div>`;
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Failed to load. Try again.';
+        }
     }
 }
 
-function renderHistoryItems(items, reset = false) {
-    const list = document.getElementById('history-list');
+function renderInlineHistoryItems(type, items) {
+    const list = document.getElementById(`${type}-history-list`);
     if (!list) return;
 
-    if (reset) list.innerHTML = '';
-
-    if (items.length === 0 && reset) {
+    if (items.length === 0 && _inlineHistoryState[type].page === 1) {
         list.innerHTML = `
-            <div class="history-empty">
-                <i class="fas fa-clock-rotate-left"></i>
+            <div class="history-empty" style="padding: 1.5rem; text-align: center; color: var(--text-secondary); opacity: 0.7;">
+                <i class="fas fa-clock-rotate-left" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
                 <span>No history found</span>
-                <small style="font-size:0.75rem; opacity:0.6; margin-top:0.25rem;">Completed items appear here after 24 hours</small>
             </div>`;
         return;
     }
@@ -5785,10 +5741,6 @@ function renderHistoryItems(items, reset = false) {
             ? new Date(item.completed_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
             : '—';
 
-        const itemDateStr = item.date
-            ? new Date(item.date).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })
-            : null;
-
         const statusCls = item.status === 'completed' ? 'completed'
                         : item.status === 'achieved'  ? 'achieved'
                         : item.status === 'failed'    ? 'failed'
@@ -5799,11 +5751,9 @@ function renderHistoryItems(items, reset = false) {
                           : item.status === 'failed'    ? '✖ Failed'
                           : '🗄 Archived';
 
-        const streakEl = (item.item_type === 'habit' && item.best_streak != null)
-            ? `<span class="history-type-dot">🔥 ${item.best_streak} best streak</span>` : '';
-
         const card = document.createElement('div');
         card.className = 'history-item-card';
+        card.style.animation = `fadeInCard 0.25s ease both`;
         card.style.animationDelay = `${idx * 0.03}s`;
         card.innerHTML = `
             <div class="history-item-icon ${typeInfo.cls}">
@@ -5813,76 +5763,11 @@ function renderHistoryItems(items, reset = false) {
                 <div class="history-item-title" title="${item.title}">${item.title}</div>
                 <div class="history-item-meta">
                     <span class="history-badge ${statusCls}">${statusLabel}</span>
-                    <span class="history-type-dot">${typeInfo.label}</span>
-                    ${item.category ? `<span class="history-type-dot">${item.category}</span>` : ''}
-                    ${streakEl}
                     <span title="Completed / Archived">🕐 ${completedAtStr}</span>
-                    ${itemDateStr ? `<span>📅 ${itemDateStr}</span>` : ''}
                 </div>
             </div>
         `;
         list.appendChild(card);
     });
 }
-
-function updateHistoryFooter(data) {
-    const footer = document.getElementById('history-footer');
-    const pageInfo = document.getElementById('history-page-info');
-    const loadMoreBtn = document.getElementById('history-load-more-btn');
-
-    if (!footer) return;
-
-    const showing = Math.min(_historyState.page * _historyState.limit, data.total);
-
-    if (data.total === 0) {
-        footer.style.display = 'none';
-        return;
-    }
-
-    footer.style.display = 'flex';
-    if (pageInfo) pageInfo.textContent = `Showing ${showing} of ${data.total}`;
-    if (loadMoreBtn) {
-        if (data.has_more) {
-            loadMoreBtn.style.display = 'flex';
-        } else {
-            loadMoreBtn.style.display = 'none';
-        }
-    }
-}
-
-async function loadMoreHistory() {
-    _historyState.page += 1;
-    const btn = document.getElementById('history-load-more-btn');
-    if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-    }
-    await loadHistory(false);
-    if (btn) {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-chevron-down"></i> Load More';
-    }
-}
-
-function resetAndLoadHistory() {
-    _historyState.page = 1;
-    const list = document.getElementById('history-list');
-    if (list) list.innerHTML = '';
-    loadHistory(true);
-}
-
-function debounceHistorySearch() {
-    if (_historyState.searchDebounce) clearTimeout(_historyState.searchDebounce);
-    _historyState.searchDebounce = setTimeout(() => {
-        resetAndLoadHistory();
-    }, 400);
-}
-
-// Close history modal on backdrop click
-document.addEventListener('click', function(e) {
-    const modal = document.getElementById('history-modal');
-    if (modal && modal.classList.contains('active') && e.target === modal) {
-        closeHistory();
-    }
-});
 
