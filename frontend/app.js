@@ -2703,8 +2703,10 @@ async function loadTasks() {
 
     try {
         const today = new Date().toISOString().split('T')[0];
-        const priority = document.getElementById('filter-priority').value;
-        const status = document.getElementById('filter-status').value;
+        const priorityElem = document.getElementById('filter-priority');
+        const statusElem = document.getElementById('filter-status');
+        const priority = priorityElem ? priorityElem.value : null;
+        const status = statusElem ? statusElem.value : null;
         
         let url = `/tasks?day=${today}`;
         if (currentUser.user_id && Number.isInteger(currentUser.user_id)) {
