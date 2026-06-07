@@ -1965,23 +1965,48 @@ body.dark-mode .loading-overlay {
 
 .logo-draw-loader {
     position: relative;
-    width: min(42vw, 220px);
+    width: min(38vw, 180px);
     aspect-ratio: 1;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.logo-draw-canvas {
+.logo-modern-mark {
+    position: relative;
     width: 100%;
     height: 100%;
     display: block;
-    image-rendering: auto;
-    filter: drop-shadow(0 0 18px rgba(10, 134, 255, 0.16));
+    object-fit: contain;
+    opacity: 0;
+    transform: scale(0.94) translateY(6px);
+    filter: blur(8px);
+    animation: logoModernReveal 2.85s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+    will-change: transform, opacity, filter;
+    backface-visibility: hidden;
 }
 
-.logo-draw-source {
-    display: none;
+@keyframes logoModernReveal {
+    0% {
+        opacity: 0;
+        transform: scale(0.94) translateY(6px);
+        filter: blur(10px);
+    }
+    24% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0);
+    }
+    74% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.985) translateY(-2px);
+        filter: blur(6px);
+    }
 }
 /* Calendar Styling */
 .calendar-container { padding: 2rem; }
