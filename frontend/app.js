@@ -4747,20 +4747,23 @@ function showLoading(show) {
             loadingHideTimeoutId = null;
         }
 
-        // On first call: if overlay already has loading-sequence from HTML, don't touch it
-        const alreadyRunning = overlay.classList.contains('active') && overlay.classList.contains('loading-sequence');
-        if (!_loadingInitialized && alreadyRunning) {
+        // First call: overlay already active from HTML — just track time, never touch loading-sequence
+        if (!_loadingInitialized) {
             _loadingInitialized = true;
             loadingVisibleSince = Date.now();
+            // Ensure active is set, but DO NOT touch loading-sequence (animation already running)
+            overlay.classList.add('active');
+            overlay.style.opacity = '1';
+            overlay.style.pointerEvents = 'all';
             return;
         }
-        _loadingInitialized = true;
 
+        // Subsequent calls (e.g. profile save, forceUpdate): show overlay but never restart animation
         loadingVisibleSince = Date.now();
         overlay.classList.add('active');
-        overlay.classList.add('loading-sequence');
         overlay.style.opacity = '1';
         overlay.style.pointerEvents = 'all';
+        // DO NOT add/remove loading-sequence here — avoids animation restart
     } else {
         const elapsed = Date.now() - loadingVisibleSince;
         const remaining = Math.max(0, MIN_LOADING_DURATION_MS - elapsed);
@@ -4771,7 +4774,7 @@ function showLoading(show) {
 
         loadingHideTimeoutId = setTimeout(() => {
             overlay.classList.remove('active');
-            overlay.classList.remove('loading-sequence');
+            // DO NOT remove loading-sequence — so if shown again, animation is already in forwards state
             overlay.style.opacity = '0';
             overlay.style.pointerEvents = 'none';
             loadingHideTimeoutId = null;
