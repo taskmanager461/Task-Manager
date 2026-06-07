@@ -1978,63 +1978,57 @@ body.dark-mode .loading-overlay {
     height: 100%;
     display: block;
     object-fit: contain;
-    opacity: 0;
-    transform: scale(0.9) translateY(10px);
-    filter: brightness(0.96) drop-shadow(0 0 0 rgba(255, 255, 255, 0));
+    /* Start in the 0% keyframe state immediately - no flash */
+    opacity: 0.12;
+    transform: translateZ(0) scale(0.94);
+    filter: brightness(1) drop-shadow(0 0 6px rgba(10, 134, 255, 0.2));
     will-change: transform, opacity, filter;
     backface-visibility: hidden;
 }
 
 .loading-overlay.loading-sequence .logo-modern-mark {
-    animation: logoModernReveal 1200ms cubic-bezier(0.22, 1, 0.36, 1) 1 forwards;
-}
-
-body.light-mode .logo-modern-mark {
-    filter: none;
-}
-
-@keyframes logoModernReveal {
-    0% {
-        opacity: 0;
-        transform: scale(0.82);
-        filter: brightness(1) drop-shadow(0 0 0 transparent);
-    }
-    65% {
-        opacity: 1;
-        transform: scale(1.08);
-        filter: brightness(1.45) drop-shadow(0 0 32px var(--primary)) drop-shadow(0 0 60px var(--primary-glow));
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1);
-        filter: brightness(1.2) drop-shadow(0 0 16px var(--primary-glow));
-    }
+    /* 'both' applies 0% keyframe immediately before start - no flash */
+    animation: logoModernReveal 1500ms ease-in-out 1 both;
 }
 
 body.light-mode .loading-overlay.loading-sequence .logo-modern-mark {
     animation-name: logoModernRevealLight;
 }
 
-@keyframes logoModernRevealLight {
+@keyframes logoModernReveal {
     0% {
-        opacity: 0;
-        transform: scale(0.82);
-        filter: brightness(0.96) drop-shadow(0 0 0 transparent);
+        opacity: 0.12;
+        transform: translateZ(0) scale(0.94);
+        filter: brightness(1) drop-shadow(0 0 6px rgba(10, 134, 255, 0.2));
     }
-    65% {
+    55% {
         opacity: 1;
-        transform: scale(1.08);
-        filter: brightness(1.15) drop-shadow(0 0 32px rgba(10, 134, 255, 0.6)) drop-shadow(0 0 60px rgba(10, 134, 255, 0.3));
+        transform: translateZ(0) scale(1.04);
+        filter: brightness(1.4) drop-shadow(0 0 26px var(--primary)) drop-shadow(0 0 48px var(--primary-glow));
     }
     100% {
         opacity: 1;
-        transform: scale(1);
-        filter: brightness(1.05) drop-shadow(0 0 16px rgba(10, 134, 255, 0.35));
+        transform: translateZ(0) scale(1);
+        filter: brightness(1.18) drop-shadow(0 0 14px var(--primary-glow));
     }
 }
 
-.loading-overlay:not(.active) .logo-modern-mark {
-    opacity: 0;
+@keyframes logoModernRevealLight {
+    0% {
+        opacity: 0.12;
+        transform: translateZ(0) scale(0.94);
+        filter: brightness(1) drop-shadow(0 0 6px rgba(10, 134, 255, 0.15));
+    }
+    55% {
+        opacity: 1;
+        transform: translateZ(0) scale(1.04);
+        filter: brightness(1.12) drop-shadow(0 0 26px rgba(10, 134, 255, 0.55)) drop-shadow(0 0 48px rgba(10, 134, 255, 0.25));
+    }
+    100% {
+        opacity: 1;
+        transform: translateZ(0) scale(1);
+        filter: brightness(1.04) drop-shadow(0 0 14px rgba(10, 134, 255, 0.3));
+    }
 }
 /* Calendar Styling */
 .calendar-container { padding: 2rem; }
