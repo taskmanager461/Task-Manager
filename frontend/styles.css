@@ -1993,14 +1993,15 @@ body.light-mode .logo-draw-loader::before {
 }
 
 .logo-draw-loader::after {
-    inset: 10%;
-    background: linear-gradient(110deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.03) 40%, rgba(255, 255, 255, 0.22) 50%, rgba(255, 255, 255, 0.04) 60%, rgba(255, 255, 255, 0) 100%);
+    inset: 12%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.08) 34%, rgba(255, 255, 255, 0) 72%);
     opacity: 0;
-    transform: translateX(-155%) skewX(-18deg);
+    transform: scale(0.82);
 }
 
 body.light-mode .logo-draw-loader::after {
-    background: linear-gradient(110deg, rgba(255, 255, 255, 0) 0%, rgba(10, 134, 255, 0.015) 40%, rgba(10, 134, 255, 0.08) 50%, rgba(10, 134, 255, 0.02) 60%, rgba(255, 255, 255, 0) 100%);
+    background: radial-gradient(circle, rgba(10, 134, 255, 0.16) 0%, rgba(10, 134, 255, 0.06) 34%, rgba(10, 134, 255, 0) 72%);
 }
 
 .logo-modern-mark {
@@ -2025,25 +2026,29 @@ body.light-mode .logo-draw-loader::after {
 }
 
 .loading-overlay.loading-sequence .logo-draw-loader::after {
-    animation: logoSubtleSweep 1250ms cubic-bezier(0.22, 1, 0.36, 1) 1 both;
+    animation: logoBrightPulse 1250ms cubic-bezier(0.22, 1, 0.36, 1) 1 both;
 }
 
 @keyframes logoModernReveal {
     0% {
         opacity: 0;
         transform: scale(0.9) translateY(12px);
+        filter: brightness(0.92);
     }
     34% {
         opacity: 1;
         transform: scale(1) translateY(0);
+        filter: brightness(1);
     }
     70% {
         opacity: 1;
         transform: scale(1) translateY(0);
+        filter: brightness(1.08);
     }
     100% {
         opacity: 0;
         transform: scale(1.015) translateY(-3px);
+        filter: brightness(1.02);
     }
 }
 
@@ -2066,23 +2071,24 @@ body.light-mode .logo-draw-loader::after {
     }
 }
 
-@keyframes logoSubtleSweep {
+@keyframes logoBrightPulse {
     0%,
-    30% {
+    26% {
         opacity: 0;
-        transform: translateX(-155%) skewX(-18deg);
+        transform: scale(0.82);
     }
-    46% {
-        opacity: 0.24;
+    44% {
+        opacity: 0.34;
+        transform: scale(1);
     }
     68% {
-        opacity: 0.1;
-        transform: translateX(26%) skewX(-18deg);
+        opacity: 0.18;
+        transform: scale(1.08);
     }
     82%,
     100% {
         opacity: 0;
-        transform: translateX(124%) skewX(-18deg);
+        transform: scale(1.14);
     }
 }
 
