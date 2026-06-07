@@ -34,9 +34,7 @@
     <style>
         html, body {
             margin: 0; padding: 0;
-            background: #000000;
         }
-        body.light-mode-pre { background: #ffffff !important; }
         #loading-overlay {
             position: fixed; inset: 0;
             background: #000000;
@@ -45,14 +43,12 @@
             align-items: center;
             justify-content: center;
         }
-        body.light-mode-pre #loading-overlay { background: #ffffff !important; }
     </style>
     <script>
         (function() {
             var isDark = localStorage.getItem('tm_dark_mode') !== '0';
             var bg = isDark ? '#000000' : '#ffffff';
-            document.documentElement.style.background = bg;
-            document.write('<style>#loading-overlay{background:' + bg + '}</style>');
+            document.write('<style>#loading-overlay{background:' + bg + ' !important;}</style>');
         })();
     </script>
 </head>
@@ -817,16 +813,10 @@
                     </select>
                 </div>
 
-                <!-- Instructions for New Users -->
-                <div class="card" style="margin-bottom: 1.25rem;">
-                    <h3 style="margin-bottom: 1rem;"><i class="fas fa-book-open" style="color: var(--primary); margin-right: 0.5rem;"></i>Οδηγίες για Νέους Χρήστες</h3>
-                    <ul style="padding-left: 1.2rem; color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; margin: 0;">
-                        <li style="margin-bottom: 0.5rem;"><strong>Tasks:</strong> Προσθέστε καθημερινές εργασίες, ορίστε προτεραιότητες και κατηγορίες. Πατήστε στο κουτάκι για ολοκλήρωση.</li>
-                        <li style="margin-bottom: 0.5rem;"><strong>Dashboard & Insights:</strong> Παρακολουθήστε την παραγωγικότητά σας με διαγράμματα και στατιστικά.</li>
-                        <li style="margin-bottom: 0.5rem;"><strong>Progress:</strong> Κερδίστε πόντους, ανεβείτε επίπεδα (levels) και ξεκλειδώστε μοναδικά badges ολοκληρώνοντας εργασίες!</li>
-                        <li><strong>Πλοήγηση:</strong> Σύρετε την οθόνη (swipe) δεξιά-αριστερά για γρήγορη μετάβαση ανάμεσα στις σελίδες.</li>
-                    </ul>
-                </div>
+                <!-- Instructions Button -->
+                <button onclick="openInstructionsModal()" class="btn secondary" style="width: 100%; margin-bottom: 1.25rem; display: flex; justify-content: center; align-items: center; gap: 0.5rem; font-weight: 600;">
+                    <i class="fas fa-book-open" style="color: var(--primary);"></i> Οδηγίες για Νέους Χρήστες
+                </button>
 
                 <div class="card">
                     <h3 data-i18n="app_info" style="margin-bottom: 1rem;">App Info</h3>
@@ -1154,7 +1144,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script src="assets.js?v=17.0.0"></script>
     <script src="badge_assets.js?v=36.0.0"></script>
-    <script src="app.js?v=33.0.0"></script>
+    <script src="app.js?v=34.0.0"></script>
     <script>
         // Logos are pre-sized; no JS resizing needed to avoid flicker.
         document.addEventListener('DOMContentLoaded', function() {

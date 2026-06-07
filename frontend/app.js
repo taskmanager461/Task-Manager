@@ -4887,6 +4887,16 @@ function closeShareModal() {
     modal.classList.remove('active');
 }
 
+function openInstructionsModal() {
+    const modal = document.getElementById('instructions-modal');
+    if (modal) modal.classList.add('active');
+}
+
+function closeInstructionsModal() {
+    const modal = document.getElementById('instructions-modal');
+    if (modal) modal.classList.remove('active');
+}
+
 async function downloadShareCard() {
     try {
         const shareCard = document.getElementById('share-card');
