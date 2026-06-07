@@ -20,7 +20,7 @@
     <meta property="twitter:image" content="/assets/app-logo-20260501.png">
     
     <title>Tobedone - The Ultimate Smart Task Manager</title>
-    <link rel="stylesheet" href="styles.css?v=72">
+    <link rel="stylesheet" href="styles.css?v=73">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <link rel="stylesheet" href="/src/styles/logo.css?v=23.0.0">
@@ -782,14 +782,14 @@
             <section id="view-settings" class="view">
                 <div class="premium-header-card" style="width: 100%; margin: 0 auto 1.5rem auto; display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; background: transparent; border: none; box-shadow: none;">
                     <div>
-                        <h1 style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;" data-i18n="settings">Settings</h1>
+                        <h1 style="margin: 0; font-size: 1.8rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;" data-i18n="settings">Settings</h1>
                     </div>
-                    <button onclick="toggleSettings()" class="btn secondary" style="border-radius: 50%; width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-times"></i>
+                    <button onclick="toggleSettings()" class="settings-close-btn" aria-label="Close Settings">
+                        <i class="fas fa-times" style="font-size: 0.9rem;"></i>
                     </button>
                 </div>
                 
-                <div class="card" style="margin-bottom: 1.25rem;">
+                <div class="card settings-styled-card">
                     <h3 data-i18n="theme" style="margin-bottom: 1rem;">Theme</h3>
                     <div class="settings-row">
                         <span data-i18n="toggle_dark">Toggle Dark Mode</span>
@@ -800,9 +800,9 @@
                     </div>
                 </div>
 
-                <div class="card" style="margin-bottom: 1.25rem;">
+                <div class="card settings-styled-card">
                     <h3 data-i18n="language" style="margin-bottom: 1rem;">Language</h3>
-                    <select id="lang-selector" onchange="changeLanguage(this.value)">
+                    <select id="lang-selector" onchange="changeLanguage(this.value)" style="width: 100%; padding: 0.6rem 1rem; border-radius: 8px; border: 1px solid rgba(10,134,255,0.4); background: var(--surface); color: var(--text-primary); font-family: inherit; font-size: 0.95rem;">
                         <option value="en">English</option>
                         <option value="el">Ελληνικά</option>
                         <option value="es">Español</option>
@@ -814,16 +814,16 @@
                 </div>
 
                 <!-- Instructions Button -->
-                <button onclick="openInstructionsModal()" class="btn secondary" style="width: 100%; margin-bottom: 1.25rem; display: flex; justify-content: center; align-items: center; gap: 0.5rem; font-weight: 600;">
+                <button onclick="openInstructionsModal()" class="settings-action-btn">
                     <i class="fas fa-book-open" style="color: var(--primary);"></i> Οδηγίες για Νέους Χρήστες
                 </button>
 
-                <div class="card">
+                <div class="card settings-styled-card">
                     <h3 data-i18n="app_info" style="margin-bottom: 1rem;">App Info</h3>
-                    <p style="margin-bottom: 1rem;"><span data-i18n="version">Version</span>: 4.0.0</p>
-                    <button onclick="forceUpdateApp()" class="btn secondary" style="width: 100%; margin-bottom: 1rem;">Force Update App</button>
-                    <button id="install-btn" class="btn secondary full-width" style="display:none; margin-bottom: 1rem;">Install App</button>
-                    <button onclick="logout()" class="btn logout-btn full-width">
+                    <p style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem;"><span data-i18n="version">Version</span>: 4.0.0</p>
+                    <button onclick="forceUpdateApp()" class="settings-action-btn">Force Update App</button>
+                    <button id="install-btn" class="settings-action-btn" style="display:none;">Install App</button>
+                    <button onclick="logout()" class="settings-logout-btn">
                         <i class="fas fa-sign-out-alt" style="margin-right: 0.5rem;"></i>
                         <span data-i18n="logout">Logout</span>
                     </button>
@@ -1129,6 +1129,40 @@
         </div>
     </div>
 
+    <!-- Instructions Modal -->
+    <div id="instructions-modal" class="modal">
+        <div class="modal-content glass-card" style="max-width: 450px; padding: 2rem;">
+            <div class="modal-header" style="margin-bottom: 1.5rem; text-align: center;">
+                <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(10, 134, 255, 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                    <i class="fas fa-book-open" style="color: var(--primary); font-size: 1.5rem;"></i>
+                </div>
+                <h3 style="font-size: 1.4rem; margin-bottom: 0.5rem;">Οδηγίες Χρήσης</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">Όλα όσα πρέπει να ξέρετε για το Tobedone</p>
+            </div>
+            <div class="instructions-content" style="max-height: 50vh; overflow-y: auto; padding-right: 0.5rem; text-align: left;">
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-tasks" style="color: var(--primary);"></i> Tasks (Εργασίες)</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin: 0;">Δημιουργήστε νέες εργασίες πατώντας το '+'. Μπορείτε να ορίσετε προτεραιότητα και κατηγορία. Όταν τελειώσετε, πατήστε το κυκλικό κουτάκι για να την ολοκληρώσετε και να κερδίσετε πόντους.</p>
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-chart-line" style="color: var(--primary);"></i> Dashboard</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin: 0;">Εδώ βλέπετε την πρόοδό σας. Παρακολουθήστε πόσες εργασίες ολοκληρώσατε την εβδομάδα και δείτε τα διαγράμματα παραγωγικότητας.</p>
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-crown" style="color: var(--primary);"></i> Progress & Badges</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin: 0;">Κάθε εργασία σας δίνει XP. Συγκεντρώστε XP για να ανεβείτε επίπεδο (Level Up). Ξεκλειδώστε συλλεκτικά Badges καθώς πετυχαίνετε νέους στόχους!</p>
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-hand-pointer" style="color: var(--primary);"></i> Gestures & Πλοήγηση</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin: 0;">Κάντε Swipe (σύρετε την οθόνη) αριστερά ή δεξιά για να μεταβείτε γρήγορα στις υπόλοιπες σελίδες της εφαρμογής.</p>
+                </div>
+            </div>
+            <div class="form-actions" style="margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+                <button type="button" onclick="closeInstructionsModal()" class="btn primary" style="width: 100%;">Κατάλαβα</button>
+            </div>
+        </div>
+    </div>
+
     <div id="loading-overlay" class="loading-overlay active loading-sequence">
         <div class="loading-content" aria-hidden="true">
             <div class="logo-draw-loader">
@@ -1144,7 +1178,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script src="assets.js?v=17.0.0"></script>
     <script src="badge_assets.js?v=36.0.0"></script>
-    <script src="app.js?v=34.0.0"></script>
+    <script src="app.js?v=35.0.0"></script>
     <script>
         // Logos are pre-sized; no JS resizing needed to avoid flicker.
         document.addEventListener('DOMContentLoaded', function() {

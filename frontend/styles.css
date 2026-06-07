@@ -4866,3 +4866,59 @@ body.light-mode .history-footer {
 .history-btn:hover {
     opacity: 1;
 }
+/* Settings Page Custom Styling */
+.settings-styled-card {
+    background: var(--surface);
+    border: 1px solid rgba(10, 134, 255, 0.4) !important;
+    box-shadow: 0 8px 24px rgba(10, 134, 255, 0.15) !important;
+    border-radius: 16px !important;
+    margin-bottom: 1.25rem;
+}
+body.dark-mode .settings-styled-card {
+    border: 1px solid rgba(10, 134, 255, 0.3) !important;
+    box-shadow: 0 8px 24px rgba(10, 134, 255, 0.1) !important;
+}
+
+.settings-close-btn {
+    background: #e5e7eb !important;
+    color: #1f2937 !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 50% !important;
+    width: 36px !important; height: 36px !important;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s ease;
+}
+body.dark-mode .settings-close-btn {
+    background: #374151 !important; color: #f3f4f6 !important; border-color: #4b5563 !important;
+}
+
+.settings-action-btn {
+    background: #e5e7eb !important;
+    color: #111827 !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 20px !important;
+    padding: 0.8rem 1.5rem !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    width: 100% !important;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    cursor: pointer; transition: all 0.2s;
+    margin-bottom: 1rem;
+}
+body.dark-mode .settings-action-btn {
+    background: #374151 !important; color: #f3f4f6 !important; border-color: #4b5563 !important;
+}
+
+.settings-logout-btn {
+    background: #ef4444 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 20px !important;
+    padding: 0.8rem 1.5rem !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    width: 100% !important;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3) !important;
+    cursor: pointer; transition: all 0.2s;
+}
