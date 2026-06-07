@@ -1970,10 +1970,48 @@ body.dark-mode .loading-overlay {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+}
+
+.logo-draw-loader::before,
+.logo-draw-loader::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+}
+
+.logo-draw-loader::before {
+    inset: 18%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 34%, rgba(255, 255, 255, 0) 72%);
+    filter: blur(14px);
+    opacity: 0;
+    transform: scale(0.9);
+    animation: logoAmbientPulse 2.85s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+body.light-mode .logo-draw-loader::before {
+    background: radial-gradient(circle, rgba(15, 23, 42, 0.08) 0%, rgba(15, 23, 42, 0.035) 34%, rgba(15, 23, 42, 0) 72%);
+}
+
+.logo-draw-loader::after {
+    inset: 10%;
+    background: linear-gradient(110deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.06) 38%, rgba(255, 255, 255, 0.42) 50%, rgba(255, 255, 255, 0.07) 62%, rgba(255, 255, 255, 0) 100%);
+    filter: blur(10px);
+    opacity: 0;
+    transform: translateX(-155%) skewX(-18deg);
+    mix-blend-mode: screen;
+    animation: logoSubtleSweep 2.85s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+body.light-mode .logo-draw-loader::after {
+    background: linear-gradient(110deg, rgba(255, 255, 255, 0) 0%, rgba(10, 134, 255, 0.025) 38%, rgba(10, 134, 255, 0.14) 50%, rgba(10, 134, 255, 0.03) 62%, rgba(255, 255, 255, 0) 100%);
+    mix-blend-mode: multiply;
 }
 
 .logo-modern-mark {
     position: relative;
+    z-index: 1;
     width: 100%;
     height: 100%;
     display: block;
@@ -2006,6 +2044,45 @@ body.dark-mode .loading-overlay {
         opacity: 0;
         transform: scale(0.985) translateY(-2px);
         filter: blur(6px);
+    }
+}
+
+@keyframes logoAmbientPulse {
+    0% {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+    24% {
+        opacity: 0.85;
+        transform: scale(1);
+    }
+    74% {
+        opacity: 0.42;
+        transform: scale(1.06);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.1);
+    }
+}
+
+@keyframes logoSubtleSweep {
+    0%,
+    22% {
+        opacity: 0;
+        transform: translateX(-155%) skewX(-18deg);
+    }
+    34% {
+        opacity: 0.55;
+    }
+    56% {
+        opacity: 0.38;
+        transform: translateX(6%) skewX(-18deg);
+    }
+    74%,
+    100% {
+        opacity: 0;
+        transform: translateX(118%) skewX(-18deg);
     }
 }
 /* Calendar Styling */
