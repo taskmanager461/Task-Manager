@@ -4772,35 +4772,16 @@ function createLoadingLogoAnimator(canvas, source) {
     maskCanvas.width = canvas.width;
     maskCanvas.height = canvas.height;
     const maskCtx = maskCanvas.getContext('2d');
+    const analysisCanvas = document.createElement('canvas');
+    analysisCanvas.width = canvas.width;
+    analysisCanvas.height = canvas.height;
+    const analysisCtx = analysisCanvas.getContext('2d', { willReadFrequently: true });
 
-    const duration = 2400;
-    const holdRatio = 0.16;
-    const fadeRatio = 0.14;
-    const points = [
-        [0.18, 0.52],
-        [0.28, 0.36],
-        [0.42, 0.23],
-        [0.56, 0.30],
-        [0.68, 0.47],
-        [0.61, 0.67],
-        [0.46, 0.78],
-        [0.29, 0.72],
-        [0.20, 0.58],
-        [0.35, 0.49],
-        [0.47, 0.43],
-        [0.56, 0.51],
-        [0.51, 0.61],
-        [0.40, 0.65],
-        [0.32, 0.59],
-        [0.48, 0.54],
-        [0.62, 0.43],
-        [0.73, 0.32],
-        [0.79, 0.40],
-        [0.70, 0.56],
-        [0.57, 0.70],
-        [0.41, 0.80],
-        [0.25, 0.76]
-    ].map(([x, y]) => ({ x: x * canvas.width, y: y * canvas.height }));
+    const duration = 3100;
+    const holdRatio = 0.12;
+    const fadeRatio = 0.1;
+    const paintPlan = buildLogoPaintPlan();
+    const totalPaintPoints = paintPlan.reduce((sum, segment) => sum + segment.length, 0);
 
     let rafId = null;
     let startedAt = 0;
@@ -4819,49 +4800,147 @@ function createLoadingLogoAnimator(canvas, source) {
             };
     }
 
-    function interpolatePath(path, progress) {
-        const clamped = Math.max(0, Math.min(progress, 1));
-        const segments = path.length - 1;
-        const scaled = clamped * segments;
-        const index = Math.min(Math.floor(scaled), segments - 1);
-        const local = scaled - index;
-        const from = path[index];
-        const to = path[index + 1];
-        return {
-            x: from.x + (to.x - from.x) * local,
-            y: from.y + (to.y - from.y) * local
-        };
+    function buildLogoPaintPlan() {
+        analysisCtx.clearRect(0, 0, analysisCanvas.width, analysisCanvas.height);
+        analysisCtx.drawImage(source, 0, 0, analysisCanvas.width, analysisCanvas.height);
+
+        const { data, width, height } = analysisCtx.getImageData(0, 0, analysisCanvas.width, analysisCanvas.height);
+        const sampleX = 3;
+        const sampleY = 2;
+        const alphaThreshold = 14;
+        const segments = [];
+        let snakeDown = true;
+
+        function pixelHasAlpha(x, y) {
+            const safeX = Math.max(0, Math.min(width - 1, x));
+            const safeY = Math.max(0, Math.min(height - 1, y));
+            return data[(safeY * width + safeX) * 4 + 3] > alphaThreshold;
+        }
+
+        for (let x = 0; x < width; x += sampleX) {
+            const ranges = [];
+            let rangeStart = null;
+
+            for (let y = 0; y < height; y += 1) {
+                let opaque = false;
+                for (let dx = 0; dx < sampleX && !opaque; dx += 1) {
+                    opaque = pixelHasAlpha(x + dx, y);
+                }
+
+                if (opaque && rangeStart === null) {
+                    rangeStart = y;
+                } else if (!opaque && rangeStart !== null) {
+                    ranges.push([rangeStart, y - 1]);
+                    rangeStart = null;
+                }
+            }
+
+            if (rangeStart !== null) {
+                ranges.push([rangeStart, height - 1]);
+            }
+
+            const orderedRanges = snakeDown ? ranges : [...ranges].reverse();
+            for (const [start, end] of orderedRanges) {
+                const segment = [];
+                if (snakeDown) {
+                    for (let y = start; y <= end; y += sampleY) {
+                        segment.push({ x: x + sampleX * 0.5, y });
+                    }
+                    if (segment.length === 0 || segment[segment.length - 1].y !== end) {
+                        segment.push({ x: x + sampleX * 0.5, y: end });
+                    }
+                } else {
+                    for (let y = end; y >= start; y -= sampleY) {
+                        segment.push({ x: x + sampleX * 0.5, y });
+                    }
+                    if (segment.length === 0 || segment[segment.length - 1].y !== start) {
+                        segment.push({ x: x + sampleX * 0.5, y: start });
+                    }
+                }
+
+                if (segment.length > 0) {
+                    segments.push(segment);
+                }
+            }
+
+            if (ranges.length > 0) {
+                snakeDown = !snakeDown;
+            }
+        }
+
+        return segments.length > 0 ? segments : [[
+            { x: width * 0.25, y: height * 0.6 },
+            { x: width * 0.45, y: height * 0.3 },
+            { x: width * 0.7, y: height * 0.55 }
+        ]];
+    }
+
+    function easeInOutCubic(value) {
+        return value < 0.5
+            ? 4 * value * value * value
+            : 1 - Math.pow(-2 * value + 2, 3) / 2;
+    }
+
+    function strokeSmoothSegment(targetCtx, visiblePoints) {
+        if (visiblePoints.length === 0) return;
+
+        if (visiblePoints.length === 1) {
+            targetCtx.beginPath();
+            targetCtx.arc(visiblePoints[0].x, visiblePoints[0].y, targetCtx.lineWidth * 0.32, 0, Math.PI * 2);
+            targetCtx.fill();
+            return;
+        }
+
+        targetCtx.beginPath();
+        targetCtx.moveTo(visiblePoints[0].x, visiblePoints[0].y);
+
+        if (visiblePoints.length === 2) {
+            targetCtx.lineTo(visiblePoints[1].x, visiblePoints[1].y);
+            targetCtx.stroke();
+            return;
+        }
+
+        for (let i = 1; i < visiblePoints.length - 1; i += 1) {
+            const current = visiblePoints[i];
+            const next = visiblePoints[i + 1];
+            const midX = (current.x + next.x) * 0.5;
+            const midY = (current.y + next.y) * 0.5;
+            targetCtx.quadraticCurveTo(current.x, current.y, midX, midY);
+        }
+
+        const penultimate = visiblePoints[visiblePoints.length - 2];
+        const last = visiblePoints[visiblePoints.length - 1];
+        targetCtx.quadraticCurveTo(penultimate.x, penultimate.y, last.x, last.y);
+        targetCtx.stroke();
     }
 
     function drawMask(pathProgress) {
-        const revealRadius = canvas.width * 0.075;
-        const detailRadius = canvas.width * 0.042;
+        const revealRadius = canvas.width * 0.043;
+        const detailRadius = canvas.width * 0.018;
         maskCtx.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
         maskCtx.fillStyle = '#ffffff';
         maskCtx.strokeStyle = '#ffffff';
         maskCtx.lineCap = 'round';
         maskCtx.lineJoin = 'round';
-        maskCtx.lineWidth = revealRadius * 1.55;
+        maskCtx.lineWidth = revealRadius * 1.28;
 
-        const visibleSegments = Math.max(1, Math.floor((points.length - 1) * pathProgress));
-        maskCtx.beginPath();
-        maskCtx.moveTo(points[0].x, points[0].y);
-        for (let i = 1; i <= visibleSegments; i += 1) {
-            maskCtx.lineTo(points[i].x, points[i].y);
-        }
-        const currentPoint = interpolatePath(points, pathProgress);
-        maskCtx.lineTo(currentPoint.x, currentPoint.y);
-        maskCtx.stroke();
+        let remainingPoints = Math.max(1, Math.floor(totalPaintPoints * pathProgress));
+        let currentPoint = paintPlan[0][0];
 
-        for (let i = 0; i <= visibleSegments; i += 1) {
+        for (const segment of paintPlan) {
+            if (remainingPoints <= 0) break;
+            const visibleCount = Math.min(segment.length, remainingPoints);
+            const visiblePoints = segment.slice(0, visibleCount);
+            currentPoint = visiblePoints[visiblePoints.length - 1];
+
+            strokeSmoothSegment(maskCtx, visiblePoints);
+
             maskCtx.beginPath();
-            maskCtx.arc(points[i].x, points[i].y, detailRadius, 0, Math.PI * 2);
+            maskCtx.arc(currentPoint.x, currentPoint.y, revealRadius, 0, Math.PI * 2);
             maskCtx.fill();
-        }
 
-        maskCtx.beginPath();
-        maskCtx.arc(currentPoint.x, currentPoint.y, revealRadius, 0, Math.PI * 2);
-        maskCtx.fill();
+            remainingPoints -= visibleCount;
+        }
 
         return currentPoint;
     }
@@ -4881,22 +4960,8 @@ function createLoadingLogoAnimator(canvas, source) {
         }
 
         if (cycle < drawWindow) {
-            const drawProgress = Math.min(1, cycle / drawWindow);
+            const drawProgress = easeInOutCubic(Math.min(1, cycle / drawWindow));
             const brushPoint = drawMask(drawProgress);
-
-            ctx.save();
-            ctx.globalAlpha = Math.min(0.28, drawProgress * 0.24);
-            ctx.strokeStyle = colors.sketch;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.lineWidth = canvas.width * 0.028;
-            ctx.beginPath();
-            ctx.moveTo(points[0].x, points[0].y);
-            for (let i = 1; i < points.length; i += 1) {
-                ctx.lineTo(points[i].x, points[i].y);
-            }
-            ctx.stroke();
-            ctx.restore();
 
             ctx.save();
             ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
@@ -4910,14 +4975,14 @@ function createLoadingLogoAnimator(canvas, source) {
                 0,
                 brushPoint.x,
                 brushPoint.y,
-                canvas.width * 0.11
+                canvas.width * 0.082
             );
             glow.addColorStop(0, colors.flare);
             glow.addColorStop(0.35, colors.brush);
             glow.addColorStop(1, 'rgba(10, 134, 255, 0)');
             ctx.fillStyle = glow;
             ctx.beginPath();
-            ctx.arc(brushPoint.x, brushPoint.y, canvas.width * 0.11, 0, Math.PI * 2);
+            ctx.arc(brushPoint.x, brushPoint.y, canvas.width * 0.082, 0, Math.PI * 2);
             ctx.fill();
         } else if (cycle < drawWindow + holdRatio) {
             const holdProgress = (cycle - drawWindow) / holdRatio;
