@@ -517,7 +517,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initTheme() {
-    // Pro Tech Style: Always dark mode unless explicitly changed
     if (localStorage.getItem('tm_dark_mode') === null) {
         isDarkMode = true;
         localStorage.setItem('tm_dark_mode', '1');
@@ -527,9 +526,11 @@ function initTheme() {
 }
 
 function applyTheme() {
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
     if (isDarkMode) {
         document.body.classList.add('dark-mode');
         document.body.classList.remove('light-mode');
+        if (themeColorMeta) themeColorMeta.setAttribute('content', '#000000');
         document.documentElement.style.setProperty('--trust-bg', 'radial-gradient(circle at bottom right, #005c99 0%, #004a7a 20%, #003761 40%, #002542 60%, #001221 80%, #000000 100%)');
         document.documentElement.style.setProperty('--streak-bg', 'radial-gradient(circle at bottom right, #993d00 0%, #7a3100 20%, #5c2700 40%, #3d1a00 60%, #1f0d00 80%, #000000 100%)');
         document.documentElement.style.setProperty('--success-bg', 'radial-gradient(circle at bottom right, #009952 0%, #007a42 20%, #005c34 40%, #003d27 60%, #001f1a 80%, #000000 100%)');
@@ -538,6 +539,7 @@ function applyTheme() {
     } else {
         document.body.classList.remove('dark-mode');
         document.body.classList.add('light-mode');
+        if (themeColorMeta) themeColorMeta.setAttribute('content', '#ffffff');
         document.documentElement.style.setProperty('--trust-bg', 'linear-gradient(135deg, #bfdbfe 0%, #2563eb 30%, #1e293b 100%)');
         document.documentElement.style.setProperty('--streak-bg', 'linear-gradient(135deg, #fed7aa 0%, #ea580c 30%, #451a03 100%)');
         document.documentElement.style.setProperty('--success-bg', 'linear-gradient(135deg, #bbf7d0 0%, #16a34a 30%, #052e16 100%)');
@@ -5042,21 +5044,18 @@ async function processAllLogos() {
     const logoSelectors = [
         '.auth-logo',       // auth page logo
         '.app-logo-small',  // top bar logo
-        '.share-logo',      // share modal logo
-        '.loading-content img' // loading overlay logo
+        '.share-logo'       // share modal logo
     ];
 
     console.log('Found logo selectors for parallel processing:', logoSelectors);
-    const promises = logoSelectors.map(async (selector) => {
-        const img = document.querySelector(selector);
-        if (img && img.src) {
-            try {
-                await processSingleLogo(img);
-            } catch (err) {
-                console.error(`Failed to process logo ${selector}`, err);
-            }
+    const promises = logoSelectors.flatMap((selector) => Array.from(document.querySelectorAll(selector)).map(async (img) => {
+        if (!img || !img.src) return;
+        try {
+            await processSingleLogo(img);
+        } catch (err) {
+            console.error(`Failed to process logo ${selector}`, err);
         }
-    });
+    }));
     await Promise.all(promises);
 }
 
@@ -5811,4 +5810,3 @@ function renderInlineHistoryItems(type, items) {
         list.appendChild(card);
     });
 }
-

@@ -75,9 +75,10 @@
 
 .loading-content {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
 }
 
 .loading-logo {
@@ -1939,7 +1940,7 @@ body.light-mode .toast {
 .loading-overlay {
     position: fixed;
     inset: 0;
-    background: var(--background);
+    background: #000000;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1949,47 +1950,153 @@ body.light-mode .toast {
     transition: opacity 0.3s;
 }
 
+body.light-mode .loading-overlay {
+    background: #ffffff;
+}
+
+body.dark-mode .loading-overlay {
+    background: #000000;
+}
+
 .loading-overlay:not(.active) {
     opacity: 0;
     pointer-events: none;
 }
 
-.logo-reveal-container {
+.logo-draw-loader {
     position: relative;
-    width: 128px;
-    height: 128px;
-    margin: 0 auto 1.5rem auto;
+    display: grid;
+    place-items: center;
+    width: min(42vw, 220px);
+    aspect-ratio: 1;
 }
 
-.logo-base {
+.logo-draw-shell {
+    position: relative;
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    opacity: 0.05;
-    filter: brightness(0) invert(var(--logo-invert, 0));
+    --logo-mask: url("/assets/logo_small.png?v=26");
+    animation: logoFloat 2.8s ease-in-out infinite;
 }
 
-.logo-color-sweep {
+.logo-draw-shell::before,
+.logo-draw-shell::after {
+    content: "";
     position: absolute;
     inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    animation: wipeReveal 2.2s ease-in-out infinite;
+    -webkit-mask-image: var(--logo-mask);
+    mask-image: var(--logo-mask);
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
 }
 
-.logo-colored {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    /* Force exactly primary blue */
-    filter: brightness(0) saturate(100%) invert(20%) sepia(90%) saturate(2300%) hue-rotate(205deg) brightness(95%) contrast(105%);
+.logo-draw-shell::before {
+    background: rgba(255, 255, 255, 0.12);
+    transform: scale(0.985);
+    filter: blur(0.6px);
 }
 
-@keyframes wipeReveal {
-    0% { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); }
-    50% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
-    100% { clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%); }
+body.light-mode .logo-draw-shell::before {
+    background: rgba(15, 23, 42, 0.16);
+}
+
+.logo-draw-shell::after {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(10, 134, 255, 0) 0%,
+            rgba(10, 134, 255, 0.16) 10%,
+            rgba(10, 134, 255, 0.92) 44%,
+            rgba(124, 197, 255, 1) 58%,
+            rgba(10, 134, 255, 1) 74%,
+            rgba(10, 134, 255, 0.28) 100%
+        );
+    clip-path: inset(0 100% 0 0);
+    filter: drop-shadow(0 0 10px rgba(10, 134, 255, 0.28));
+    animation: logoDraw 2.45s cubic-bezier(0.77, 0, 0.18, 1) infinite;
+}
+
+.logo-draw-trace {
+    position: absolute;
+    top: 18%;
+    left: 0;
+    width: 22%;
+    height: 64%;
+    border-radius: 999px;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(124, 197, 255, 0.2) 30%,
+            rgba(124, 197, 255, 0.95) 68%,
+            rgba(255, 255, 255, 0.88) 100%
+        );
+    filter: blur(8px);
+    opacity: 0;
+    mix-blend-mode: screen;
+    animation: logoTrace 2.45s cubic-bezier(0.77, 0, 0.18, 1) infinite;
+}
+
+body.light-mode .logo-draw-trace {
+    mix-blend-mode: multiply;
+    opacity: 0.85;
+}
+
+@keyframes logoDraw {
+    0% {
+        clip-path: inset(0 100% 0 0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    62% {
+        clip-path: inset(0 0 0 0);
+        opacity: 1;
+    }
+    82% {
+        clip-path: inset(0 0 0 0);
+        opacity: 1;
+    }
+    100% {
+        clip-path: inset(0 100% 0 0);
+        opacity: 0;
+    }
+}
+
+@keyframes logoTrace {
+    0% {
+        transform: translateX(-16%) scaleX(0.72);
+        opacity: 0;
+    }
+    8% {
+        opacity: 0.9;
+    }
+    62% {
+        transform: translateX(435%) scaleX(1);
+        opacity: 0.85;
+    }
+    82% {
+        transform: translateX(435%) scaleX(1);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(-16%) scaleX(0.72);
+        opacity: 0;
+    }
+}
+
+@keyframes logoFloat {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-3px) scale(1.01);
+    }
 }
 /* Calendar Styling */
 .calendar-container { padding: 2rem; }

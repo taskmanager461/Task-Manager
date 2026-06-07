@@ -15,7 +15,13 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="dark-mode"> <!-- Default to dark mode for pro feel -->
+<body>
+    <script>
+        (function () {
+            var prefersDark = localStorage.getItem('tm_dark_mode');
+            document.body.classList.add(prefersDark === '0' ? 'light-mode' : 'dark-mode');
+        })();
+    </script>
     <div class="bg-lines-container">
         <div class="bg-line bg-line-1"></div>
         <div class="bg-line bg-line-2"></div>
@@ -1082,14 +1088,12 @@
     </div>
 
     <div id="loading-overlay" class="loading-overlay active">
-        <div class="loading-content">
-            <div class="logo-reveal-container">
-                <img class="logo-base" src="/assets/logo_auth.png?v=25" alt="Tobedone">
-                <div class="logo-color-sweep">
-                    <img class="logo-colored" src="/assets/logo_auth.png?v=25" alt="Tobedone">
+        <div class="loading-content" aria-hidden="true">
+            <div class="logo-draw-loader">
+                <div class="logo-draw-shell">
+                    <span class="logo-draw-trace"></span>
                 </div>
             </div>
-            <h2 class="loading-title"><span class="brand-t">T</span><span class="brand-rest">obedone</span></h2>
         </div>
     </div>
 
