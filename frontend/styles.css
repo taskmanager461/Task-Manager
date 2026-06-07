@@ -1987,12 +1987,16 @@ body.dark-mode .loading-overlay {
 }
 
 .loading-overlay.loading-sequence .logo-modern-mark {
-    /* 'both' applies 0% keyframe immediately before start - no flash */
-    animation: logoModernReveal 1500ms ease-in-out 1 both;
+    /* Reveal once, then pulse gently forever */
+    animation:
+        logoModernReveal 1200ms ease-out 1 forwards,
+        logoPulse 2200ms ease-in-out 1200ms infinite;
 }
 
 body.light-mode .loading-overlay.loading-sequence .logo-modern-mark {
-    animation-name: logoModernRevealLight;
+    animation:
+        logoModernRevealLight 1200ms ease-out 1 forwards,
+        logoPulseLight 2200ms ease-in-out 1200ms infinite;
 }
 
 @keyframes logoModernReveal {
@@ -2030,7 +2034,22 @@ body.light-mode .loading-overlay.loading-sequence .logo-modern-mark {
         filter: brightness(1.04) drop-shadow(0 0 14px rgba(10, 134, 255, 0.3));
     }
 }
-/* Calendar Styling */
+
+/* Subtle breathing pulse after reveal - dark mode */
+@keyframes logoPulse {
+    0%   { transform: translateZ(0) scale(1);    filter: brightness(1.18) drop-shadow(0 0 14px var(--primary-glow)); }
+    50%  { transform: translateZ(0) scale(1.03); filter: brightness(1.35) drop-shadow(0 0 22px var(--primary)) drop-shadow(0 0 40px var(--primary-glow)); }
+    100% { transform: translateZ(0) scale(1);    filter: brightness(1.18) drop-shadow(0 0 14px var(--primary-glow)); }
+}
+
+/* Subtle breathing pulse after reveal - light mode */
+@keyframes logoPulseLight {
+    0%   { transform: translateZ(0) scale(1);    filter: brightness(1.04) drop-shadow(0 0 14px rgba(10,134,255,0.3)); }
+    50%  { transform: translateZ(0) scale(1.03); filter: brightness(1.1)  drop-shadow(0 0 22px rgba(10,134,255,0.5)) drop-shadow(0 0 40px rgba(10,134,255,0.2)); }
+    100% { transform: translateZ(0) scale(1);    filter: brightness(1.04) drop-shadow(0 0 14px rgba(10,134,255,0.3)); }
+}
+
+
 .calendar-container { padding: 2rem; }
 .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
 .calendar-header h2 { text-transform: capitalize; margin: 0; }
