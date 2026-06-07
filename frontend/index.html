@@ -771,7 +771,7 @@
                     <div id="habits-history-list" class="task-list" style="margin-top: 1.5rem;"></div>
                     <div style="text-align:center; margin-top: 0.5rem; margin-bottom: 1rem;">
                         <button class="btn primary" id="habits-history-btn" onclick="loadInlineHistory('habits')" style="width:100%; font-size:0.85rem; gap:0.5rem;">
-                            <i class="fas fa-clock-rotate-left"></i> View Habits History
+                            <i class="fas fa-clock-rotate-left"></i> <span data-i18n="view_habits_history">View Habits History</span>
                         </button>
                     </div>
                 </div>
@@ -810,19 +810,23 @@
                         <option value="de">Deutsch</option>
                         <option value="it">Italiano</option>
                         <option value="pt">Português</option>
+                        <option value="ru">Русский</option>
+                        <option value="ja">日本語</option>
+                        <option value="zh">中文</option>
+                        <option value="ar">العربية</option>
                     </select>
                 </div>
 
                 <!-- Instructions Button -->
                 <button onclick="openInstructionsModal()" class="settings-action-btn">
-                    <i class="fas fa-book-open" style="color: var(--primary);"></i> Οδηγίες για Νέους Χρήστες
+                    <i class="fas fa-book-open" style="color: var(--primary);"></i> <span data-i18n="instructions_btn">Οδηγίες για Νέους Χρήστες</span>
                 </button>
 
                 <div class="card settings-styled-card">
                     <h3 data-i18n="app_info" style="margin-bottom: 1rem;">App Info</h3>
                     <p style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem;"><span data-i18n="version">Version</span>: 4.0.0</p>
-                    <button onclick="forceUpdateApp()" class="settings-action-btn">Force Update App</button>
-                    <button id="install-btn" class="settings-action-btn" style="display:none;">Install App</button>
+                    <button onclick="forceUpdateApp()" class="settings-action-btn" data-i18n="force_update">Force Update App</button>
+                    <button id="install-btn" class="settings-action-btn" style="display:none;" data-i18n="install_app">Install App</button>
                     <button onclick="logout()" class="settings-logout-btn">
                         <i class="fas fa-sign-out-alt" style="margin-right: 0.5rem;"></i>
                         <span data-i18n="logout">Logout</span>
@@ -1136,29 +1140,29 @@
                 <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(10, 134, 255, 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
                     <i class="fas fa-book-open" style="color: var(--primary); font-size: 1.5rem;"></i>
                 </div>
-                <h3 style="font-size: 1.4rem; margin-bottom: 0.5rem;">Οδηγίες Χρήσης</h3>
-                <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">Όλα όσα πρέπει να ξέρετε για το Tobedone</p>
+                <h3 style="font-size: 1.4rem; margin-bottom: 0.5rem;" data-i18n="inst_title">Οδηγίες Χρήσης</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;" data-i18n="inst_subtitle">Όλα όσα πρέπει να ξέρετε για το Tobedone</p>
             </div>
             <div class="instructions-content" style="max-height: 50vh; overflow-y: auto; padding-right: 0.5rem; text-align: left;">
                 <div style="margin-bottom: 1.5rem;">
-                    <h4 style="color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-tasks" style="color: var(--primary);"></i> Tasks (Εργασίες)</h4>
-                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin: 0;">Δημιουργήστε νέες εργασίες πατώντας το '+'. Μπορείτε να ορίσετε προτεραιότητα και κατηγορία. Όταν τελειώσετε, πατήστε το κυκλικό κουτάκι για να την ολοκληρώσετε και να κερδίσετε πόντους.</p>
+                    <h4 style="color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-tasks" style="color: var(--primary);"></i> <span data-i18n="inst_tasks_title">Tasks (Εργασίες)</span></h4>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin: 0;" data-i18n="inst_tasks_desc">Δημιουργήστε νέες εργασίες πατώντας το '+'. Μπορείτε να ορίσετε προτεραιότητα και κατηγορία. Όταν τελειώσετε, πατήστε το κυκλικό κουτάκι για να την ολοκληρώσετε και να κερδίσετε πόντους.</p>
                 </div>
                 <div style="margin-bottom: 1.5rem;">
-                    <h4 style="color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-chart-line" style="color: var(--primary);"></i> Dashboard</h4>
-                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin: 0;">Εδώ βλέπετε την πρόοδό σας. Παρακολουθήστε πόσες εργασίες ολοκληρώσατε την εβδομάδα και δείτε τα διαγράμματα παραγωγικότητας.</p>
+                    <h4 style="color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-chart-line" style="color: var(--primary);"></i> <span data-i18n="inst_dash_title">Dashboard</span></h4>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin: 0;" data-i18n="inst_dash_desc">Εδώ βλέπετε την πρόοδό σας. Παρακολουθήστε πόσες εργασίες ολοκληρώσατε την εβδομάδα και δείτε τα διαγράμματα παραγωγικότητας.</p>
                 </div>
                 <div style="margin-bottom: 1.5rem;">
-                    <h4 style="color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-crown" style="color: var(--primary);"></i> Progress & Badges</h4>
-                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin: 0;">Κάθε εργασία σας δίνει XP. Συγκεντρώστε XP για να ανεβείτε επίπεδο (Level Up). Ξεκλειδώστε συλλεκτικά Badges καθώς πετυχαίνετε νέους στόχους!</p>
+                    <h4 style="color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-crown" style="color: var(--primary);"></i> <span data-i18n="inst_prog_title">Progress & Badges</span></h4>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin: 0;" data-i18n="inst_prog_desc">Κάθε εργασία σας δίνει XP. Συγκεντρώστε XP για να ανεβείτε επίπεδο (Level Up). Ξεκλειδώστε συλλεκτικά Badges καθώς πετυχαίνετε νέους στόχους!</p>
                 </div>
                 <div style="margin-bottom: 1.5rem;">
-                    <h4 style="color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-hand-pointer" style="color: var(--primary);"></i> Gestures & Πλοήγηση</h4>
-                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin: 0;">Κάντε Swipe (σύρετε την οθόνη) αριστερά ή δεξιά για να μεταβείτε γρήγορα στις υπόλοιπες σελίδες της εφαρμογής.</p>
+                    <h4 style="color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-hand-pointer" style="color: var(--primary);"></i> <span data-i18n="inst_gestures_title">Gestures & Πλοήγηση</span></h4>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin: 0;" data-i18n="inst_gestures_desc">Κάντε Swipe (σύρετε την οθόνη) αριστερά ή δεξιά για να μεταβείτε γρήγορα στις υπόλοιπες σελίδες της εφαρμογής.</p>
                 </div>
             </div>
             <div class="form-actions" style="margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
-                <button type="button" onclick="closeInstructionsModal()" class="btn primary" style="width: 100%;">Κατάλαβα</button>
+                <button type="button" onclick="closeInstructionsModal()" class="btn primary" style="width: 100%;" data-i18n="got_it">Κατάλαβα</button>
             </div>
         </div>
     </div>
@@ -1178,7 +1182,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script src="assets.js?v=17.0.0"></script>
     <script src="badge_assets.js?v=36.0.0"></script>
-    <script src="app.js?v=36.0.0"></script>
+    <script src="app.js?v=37.0.0"></script>
     <script>
         // Logos are pre-sized; no JS resizing needed to avoid flicker.
         document.addEventListener('DOMContentLoaded', function() {
