@@ -1965,210 +1965,23 @@ body.dark-mode .loading-overlay {
 
 .logo-draw-loader {
     position: relative;
-    display: grid;
-    place-items: center;
     width: min(42vw, 220px);
     aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.logo-draw-base,
-.logo-draw-color,
-.logo-draw-shell {
-    position: relative;
+.logo-draw-canvas {
     width: 100%;
     height: 100%;
+    display: block;
+    image-rendering: auto;
+    filter: drop-shadow(0 0 18px rgba(10, 134, 255, 0.16));
 }
 
-.logo-draw-base,
-.logo-draw-color {
-    position: absolute;
-    inset: 0;
-    object-fit: contain;
-    user-select: none;
-    -webkit-user-drag: none;
-}
-
-.logo-draw-base {
-    opacity: 0;
-    filter: brightness(0) invert(1);
-    animation: logoBaseReveal 2.45s cubic-bezier(0.77, 0, 0.18, 1) infinite;
-}
-
-body.light-mode .logo-draw-base {
-    filter: brightness(0);
-}
-
-.logo-draw-reveal {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    clip-path: inset(0 100% 0 0);
-    animation: logoDraw 2.45s cubic-bezier(0.77, 0, 0.18, 1) infinite;
-}
-
-.logo-draw-color {
-    filter: saturate(1.08) brightness(1.02);
-    opacity: 0;
-    animation: logoColorReveal 2.45s cubic-bezier(0.77, 0, 0.18, 1) infinite;
-}
-
-.logo-draw-shell {
-    position: absolute;
-    inset: 0;
-    animation: logoFloat 2.8s ease-in-out infinite;
-}
-
-.logo-draw-shell::before {
-    content: "";
-    position: absolute;
-    inset: 8% 0;
-    background: rgba(255, 255, 255, 0.12);
-    filter: blur(28px);
-    opacity: 0.12;
-}
-
-body.light-mode .logo-draw-shell::before {
-    background: rgba(15, 23, 42, 0.12);
-}
-
-.logo-draw-trace {
-    position: absolute;
-    top: 14%;
-    left: -8%;
-    width: 28%;
-    height: 72%;
-    border-radius: 999px;
-    background:
-        linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0) 0%,
-            rgba(124, 197, 255, 0.2) 30%,
-            rgba(124, 197, 255, 0.95) 68%,
-            rgba(255, 255, 255, 0.88) 100%
-        );
-    filter: blur(8px);
-    opacity: 0;
-    mix-blend-mode: screen;
-    animation: logoTrace 2.45s cubic-bezier(0.77, 0, 0.18, 1) infinite;
-}
-
-body.light-mode .logo-draw-trace {
-    mix-blend-mode: multiply;
-    opacity: 0.85;
-}
-
-@keyframes logoDraw {
-    0% {
-        clip-path: inset(0 100% 0 0);
-        opacity: 0;
-    }
-    8% {
-        opacity: 1;
-    }
-    58% {
-        clip-path: inset(0 0 0 0);
-        opacity: 1;
-    }
-    78% {
-        clip-path: inset(0 0 0 0);
-        opacity: 1;
-    }
-    100% {
-        clip-path: inset(0 100% 0 0);
-        opacity: 0;
-    }
-}
-
-@keyframes logoBaseReveal {
-    0%,
-    16% {
-        opacity: 0;
-    }
-    38% {
-        opacity: 0.08;
-    }
-    58% {
-        opacity: 0.18;
-    }
-    78% {
-        opacity: 0.18;
-    }
-    100% {
-        opacity: 0;
-    }
-}
-
-body.light-mode .logo-draw-base {
-    animation-name: logoBaseRevealLight;
-}
-
-@keyframes logoBaseRevealLight {
-    0%,
-    16% {
-        opacity: 0;
-    }
-    38% {
-        opacity: 0.07;
-    }
-    58% {
-        opacity: 0.14;
-    }
-    78% {
-        opacity: 0.14;
-    }
-    100% {
-        opacity: 0;
-    }
-}
-
-@keyframes logoColorReveal {
-    0%,
-    10% {
-        opacity: 0;
-    }
-    18% {
-        opacity: 0.38;
-    }
-    42% {
-        opacity: 0.92;
-    }
-    78% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-    }
-}
-
-@keyframes logoTrace {
-    0% {
-        transform: translateX(-16%) scaleX(0.72);
-        opacity: 0;
-    }
-    10% {
-        opacity: 0.9;
-    }
-    58% {
-        transform: translateX(400%) scaleX(1);
-        opacity: 0.85;
-    }
-    78% {
-        transform: translateX(400%) scaleX(1);
-        opacity: 0;
-    }
-    100% {
-        transform: translateX(-16%) scaleX(0.72);
-        opacity: 0;
-    }
-}
-
-@keyframes logoFloat {
-    0%, 100% {
-        transform: translateY(0) scale(1);
-    }
-    50% {
-        transform: translateY(-3px) scale(1.01);
-    }
+.logo-draw-source {
+    display: none;
 }
 /* Calendar Styling */
 .calendar-container { padding: 2rem; }

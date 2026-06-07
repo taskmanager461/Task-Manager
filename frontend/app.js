@@ -502,6 +502,7 @@ function updateUILanguage() {
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initLanguage();
+    initLoadingLogoAnimation();
     processAllLogos(); // Run immediately so logos start processing/fade in right away
     checkAuth();
     setupEventListeners();
@@ -4744,6 +4745,204 @@ function showLoading(show) {
         overlay.style.opacity = '0';
         overlay.style.pointerEvents = 'none';
     }
+}
+
+let loadingLogoAnimator = null;
+
+function initLoadingLogoAnimation() {
+    const canvas = document.getElementById('logo-draw-canvas');
+    const source = document.getElementById('logo-draw-source');
+    if (!canvas || !source) return;
+
+    const startAnimation = () => {
+        loadingLogoAnimator = createLoadingLogoAnimator(canvas, source);
+        loadingLogoAnimator.start();
+    };
+
+    if (source.complete) {
+        startAnimation();
+    } else {
+        source.addEventListener('load', startAnimation, { once: true });
+    }
+}
+
+function createLoadingLogoAnimator(canvas, source) {
+    const ctx = canvas.getContext('2d');
+    const maskCanvas = document.createElement('canvas');
+    maskCanvas.width = canvas.width;
+    maskCanvas.height = canvas.height;
+    const maskCtx = maskCanvas.getContext('2d');
+
+    const duration = 2400;
+    const holdRatio = 0.16;
+    const fadeRatio = 0.14;
+    const points = [
+        [0.18, 0.52],
+        [0.28, 0.36],
+        [0.42, 0.23],
+        [0.56, 0.30],
+        [0.68, 0.47],
+        [0.61, 0.67],
+        [0.46, 0.78],
+        [0.29, 0.72],
+        [0.20, 0.58],
+        [0.35, 0.49],
+        [0.47, 0.43],
+        [0.56, 0.51],
+        [0.51, 0.61],
+        [0.40, 0.65],
+        [0.32, 0.59],
+        [0.48, 0.54],
+        [0.62, 0.43],
+        [0.73, 0.32],
+        [0.79, 0.40],
+        [0.70, 0.56],
+        [0.57, 0.70],
+        [0.41, 0.80],
+        [0.25, 0.76]
+    ].map(([x, y]) => ({ x: x * canvas.width, y: y * canvas.height }));
+
+    let rafId = null;
+    let startedAt = 0;
+
+    function getThemeColors() {
+        return isDarkMode
+            ? {
+                sketch: 'rgba(255, 255, 255, 0.14)',
+                brush: 'rgba(124, 197, 255, 0.95)',
+                flare: 'rgba(255, 255, 255, 0.9)'
+            }
+            : {
+                sketch: 'rgba(15, 23, 42, 0.12)',
+                brush: 'rgba(10, 134, 255, 0.95)',
+                flare: 'rgba(255, 255, 255, 0.72)'
+            };
+    }
+
+    function interpolatePath(path, progress) {
+        const clamped = Math.max(0, Math.min(progress, 1));
+        const segments = path.length - 1;
+        const scaled = clamped * segments;
+        const index = Math.min(Math.floor(scaled), segments - 1);
+        const local = scaled - index;
+        const from = path[index];
+        const to = path[index + 1];
+        return {
+            x: from.x + (to.x - from.x) * local,
+            y: from.y + (to.y - from.y) * local
+        };
+    }
+
+    function drawMask(pathProgress) {
+        const revealRadius = canvas.width * 0.075;
+        const detailRadius = canvas.width * 0.042;
+        maskCtx.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
+        maskCtx.fillStyle = '#ffffff';
+        maskCtx.strokeStyle = '#ffffff';
+        maskCtx.lineCap = 'round';
+        maskCtx.lineJoin = 'round';
+        maskCtx.lineWidth = revealRadius * 1.55;
+
+        const visibleSegments = Math.max(1, Math.floor((points.length - 1) * pathProgress));
+        maskCtx.beginPath();
+        maskCtx.moveTo(points[0].x, points[0].y);
+        for (let i = 1; i <= visibleSegments; i += 1) {
+            maskCtx.lineTo(points[i].x, points[i].y);
+        }
+        const currentPoint = interpolatePath(points, pathProgress);
+        maskCtx.lineTo(currentPoint.x, currentPoint.y);
+        maskCtx.stroke();
+
+        for (let i = 0; i <= visibleSegments; i += 1) {
+            maskCtx.beginPath();
+            maskCtx.arc(points[i].x, points[i].y, detailRadius, 0, Math.PI * 2);
+            maskCtx.fill();
+        }
+
+        maskCtx.beginPath();
+        maskCtx.arc(currentPoint.x, currentPoint.y, revealRadius, 0, Math.PI * 2);
+        maskCtx.fill();
+
+        return currentPoint;
+    }
+
+    function renderFrame(now) {
+        if (!startedAt) startedAt = now;
+        const elapsed = (now - startedAt) % duration;
+        const cycle = elapsed / duration;
+        const drawWindow = 1 - holdRatio - fadeRatio;
+        const colors = getThemeColors();
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (cycle < 0.06) {
+            rafId = requestAnimationFrame(renderFrame);
+            return;
+        }
+
+        if (cycle < drawWindow) {
+            const drawProgress = Math.min(1, cycle / drawWindow);
+            const brushPoint = drawMask(drawProgress);
+
+            ctx.save();
+            ctx.globalAlpha = Math.min(0.28, drawProgress * 0.24);
+            ctx.strokeStyle = colors.sketch;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.lineWidth = canvas.width * 0.028;
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i += 1) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+            ctx.stroke();
+            ctx.restore();
+
+            ctx.save();
+            ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'destination-in';
+            ctx.drawImage(maskCanvas, 0, 0);
+            ctx.restore();
+
+            const glow = ctx.createRadialGradient(
+                brushPoint.x,
+                brushPoint.y,
+                0,
+                brushPoint.x,
+                brushPoint.y,
+                canvas.width * 0.11
+            );
+            glow.addColorStop(0, colors.flare);
+            glow.addColorStop(0.35, colors.brush);
+            glow.addColorStop(1, 'rgba(10, 134, 255, 0)');
+            ctx.fillStyle = glow;
+            ctx.beginPath();
+            ctx.arc(brushPoint.x, brushPoint.y, canvas.width * 0.11, 0, Math.PI * 2);
+            ctx.fill();
+        } else if (cycle < drawWindow + holdRatio) {
+            const holdProgress = (cycle - drawWindow) / holdRatio;
+            ctx.save();
+            ctx.globalAlpha = 1 - holdProgress * 0.08;
+            ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
+            ctx.restore();
+        } else {
+            const fadeProgress = (cycle - drawWindow - holdRatio) / fadeRatio;
+            ctx.save();
+            ctx.globalAlpha = Math.max(0, 1 - fadeProgress);
+            ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
+            ctx.restore();
+        }
+
+        rafId = requestAnimationFrame(renderFrame);
+    }
+
+    return {
+        start() {
+            if (rafId) cancelAnimationFrame(rafId);
+            startedAt = 0;
+            rafId = requestAnimationFrame(renderFrame);
+        }
+    };
 }
 
 // --- PWA Service Worker Registration ---
