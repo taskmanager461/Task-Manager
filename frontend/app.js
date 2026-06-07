@@ -1,4 +1,11 @@
 // Configuration
+// Fix Timezone Bug: Get YYYY-MM-DD in the user's local timezone
+Date.prototype.toLocalISOString = function() {
+    const d = new Date(this);
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().split('T')[0];
+};
+
 const API_BASE_URL = window.location.origin;
 const SUPABASE_URL = 'https://hngljslkwyzzlcugiiqz.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_YTyCF9SfOoh-5TaFLUVxmw_NYk3_jiO';
@@ -1459,8 +1466,8 @@ async function renderCalendar() {
     const lastDay = new Date(year, month + 1, 0);
     
     // ISO format for API
-    const startStr = firstDay.toISOString().split('T')[0];
-    const endStr = lastDay.toISOString().split('T')[0];
+    const startStr = firstDay.toLocalISOString();
+    const endStr = lastDay.toLocalISOString();
     
     try {
         calendarTasks = await apiFetch(`/tasks/range?start_date=${startStr}&end_date=${endStr}`);
@@ -1470,7 +1477,7 @@ async function renderCalendar() {
 
     const firstDayIdx = (firstDay.getDay() + 6) % 7; // Monday start
     const daysInMonth = lastDay.getDate();
-    const todayStr = new Date().toISOString().split('T')[0];
+    const todayStr = new Date().toLocalISOString();
 
     // Padding for previous month
     for (let i = 0; i < firstDayIdx; i++) {
@@ -1998,7 +2005,7 @@ async function loadReports() {
             }
         }
 
-        const today = new Date().toISOString().split('T')[0];
+        const today = new Date().toLocalISOString();
 
         const scorePromise = apiFetch('/score/daily', {
             method: 'POST',
@@ -2049,7 +2056,7 @@ async function loadMe() {
         }
         renderProfileCard();
         
-        const today = new Date().toISOString().split('T')[0];
+        const today = new Date().toLocalISOString();
         
         // Parallelize everything
         const promises = [
@@ -2341,8 +2348,8 @@ async function loadDashboardPersonalization() {
 async function loadScoreComparison() {
     try {
         const history = await apiFetch('/score/history');
-        const today = new Date().toISOString().split('T')[0];
-        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+        const today = new Date().toLocalISOString();
+        const yesterday = new Date(Date.now() - 86400000).toLocalISOString();
         
         const todayScore = history.find(h => h.date === today);
         const yesterdayScore = history.find(h => h.date === yesterday);
@@ -2382,7 +2389,7 @@ async function loadMissedTasks() {
             alertEl.style.display = 'block';
             let message = `You missed ${data.count} task${data.count > 1 ? 's' : ''}`;
             
-            const today = new Date().toISOString().split('T')[0];
+            const today = new Date().toLocalISOString();
             let url = `/tasks?day=${today}`;
             if (currentUser.user_id && Number.isInteger(currentUser.user_id)) {
                 url += `&user_id=${currentUser.user_id}`;
@@ -2510,8 +2517,8 @@ async function loadInsights() {
 
         const end = new Date();
         const start = new Date(Date.now() - 120 * 86400000);
-        const startStr = start.toISOString().split('T')[0];
-        const endStr = end.toISOString().split('T')[0];
+        const startStr = start.toLocalISOString();
+        const endStr = end.toLocalISOString();
         
         apiFetch(`/tasks/range?start_date=${startStr}&end_date=${endStr}`).then(tasks => {
             renderRealInsights(tasks);
@@ -2523,7 +2530,7 @@ async function loadInsights() {
         try {
             const identity = await apiFetch('/identity/profile');
             const history = await apiFetch('/score/history?days=30');
-            const todayStr = new Date().toISOString().split('T')[0];
+            const todayStr = new Date().toLocalISOString();
             const todayScore = await apiFetch('/score/daily', {
                 method: 'POST',
                 body: JSON.stringify({ user_id: currentUser.user_id, day: todayStr })
@@ -2726,7 +2733,7 @@ async function loadTasks() {
     }
 
     try {
-        const today = new Date().toISOString().split('T')[0];
+        const today = new Date().toLocalISOString();
         const priorityElem = document.getElementById('filter-priority');
         const statusElem = document.getElementById('filter-status');
         const priority = priorityElem ? priorityElem.value : null;
@@ -3075,7 +3082,7 @@ async function addTask(title, category, difficulty, date, time, startTime) {
     submitBtn.innerHTML = '<span>⏳</span> Processing...';
     
     try {
-        const taskDate = date || new Date().toISOString().split('T')[0];
+        const taskDate = date || new Date().toLocalISOString();
         // Read goal / habit link
         const goalId = _taskLinks.goal
             ? (document.getElementById('task-goal-select')?.value ? Number(document.getElementById('task-goal-select').value) : null)
@@ -3499,8 +3506,8 @@ function restrictCustomDeadline() {
         const maxDate = new Date(today);
         maxDate.setDate(today.getDate() + range.max);
         
-        customInput.min = minDate.toISOString().split('T')[0];
-        customInput.max = maxDate.toISOString().split('T')[0];
+        customInput.min = minDate.toLocalISOString();
+        customInput.max = maxDate.toLocalISOString();
     }
 }
 
@@ -3542,7 +3549,7 @@ function resolveGoalDeadline() {
     } else if (preset === 'one_year_plus') {
         base.setFullYear(base.getFullYear() + 2);
     }
-    return base.toISOString().split('T')[0];
+    return base.toLocalISOString();
 }
 
 function switchTasksGoalsTab(tab) {
@@ -4992,12 +4999,12 @@ async function renderDashboardCalendar() {
     // Get all tasks for the month to check active days
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
-    const startStr = firstDay.toISOString().split('T')[0];
-    const endStr = lastDay.toISOString().split('T')[0];
+    const startStr = firstDay.toLocalISOString();
+    const endStr = lastDay.toLocalISOString();
 
     const firstDayIdx = (firstDay.getDay() + 6) % 7; // Monday start
     const daysInMonth = lastDay.getDate();
-    const todayStr = new Date().toISOString().split('T')[0];
+    const todayStr = new Date().toLocalISOString();
 
     const renderGridWithTasks = (tasks) => {
         grid.innerHTML = '';
