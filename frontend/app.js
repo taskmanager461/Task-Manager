@@ -4732,17 +4732,56 @@ async function forceUpdateApp() {
     }
 }
 
+const MIN_LOADING_DURATION_MS = 1400;
+const LOADING_SEQUENCE_MS = 1200;
+let loadingVisibleSince = 0;
+let loadingHideTimeoutId = null;
+let loadingSequenceTimeoutId = null;
+
+function restartLoadingSequence(overlay) {
+    overlay.classList.remove('loading-sequence');
+    void overlay.offsetWidth;
+    overlay.classList.add('loading-sequence');
+
+    if (loadingSequenceTimeoutId) {
+        clearTimeout(loadingSequenceTimeoutId);
+    }
+
+    loadingSequenceTimeoutId = setTimeout(() => {
+        overlay.classList.remove('loading-sequence');
+    }, LOADING_SEQUENCE_MS);
+}
+
 function showLoading(show) {
     const overlay = document.getElementById('loading-overlay');
     if (!overlay) return;
+
     if (show) {
+        if (loadingHideTimeoutId) {
+            clearTimeout(loadingHideTimeoutId);
+            loadingHideTimeoutId = null;
+        }
+
+        loadingVisibleSince = Date.now();
         overlay.classList.add('active');
         overlay.style.opacity = '1';
         overlay.style.pointerEvents = 'all';
+        restartLoadingSequence(overlay);
     } else {
-        overlay.classList.remove('active');
-        overlay.style.opacity = '0';
-        overlay.style.pointerEvents = 'none';
+        const elapsed = Date.now() - loadingVisibleSince;
+        const remaining = Math.max(0, MIN_LOADING_DURATION_MS - elapsed);
+
+        if (loadingHideTimeoutId) {
+            clearTimeout(loadingHideTimeoutId);
+        }
+
+        loadingHideTimeoutId = setTimeout(() => {
+            overlay.classList.remove('active');
+            overlay.classList.remove('loading-sequence');
+            overlay.style.opacity = '0';
+            overlay.style.pointerEvents = 'none';
+            loadingHideTimeoutId = null;
+        }, remaining);
     }
 }
 

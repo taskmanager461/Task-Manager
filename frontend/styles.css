@@ -1947,7 +1947,7 @@ body.light-mode .toast {
     z-index: 9999;
     opacity: 1;
     pointer-events: all;
-    transition: opacity 0.3s;
+    transition: opacity 0.35s ease;
 }
 
 body.light-mode .loading-overlay {
@@ -1983,30 +1983,24 @@ body.dark-mode .loading-overlay {
 .logo-draw-loader::before {
     inset: 18%;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 34%, rgba(255, 255, 255, 0) 72%);
-    filter: blur(14px);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 38%, rgba(255, 255, 255, 0) 72%);
     opacity: 0;
     transform: scale(0.9);
-    animation: logoAmbientPulse 2.85s cubic-bezier(0.22, 1, 0.36, 1) infinite;
 }
 
 body.light-mode .logo-draw-loader::before {
-    background: radial-gradient(circle, rgba(15, 23, 42, 0.08) 0%, rgba(15, 23, 42, 0.035) 34%, rgba(15, 23, 42, 0) 72%);
+    background: radial-gradient(circle, rgba(15, 23, 42, 0.06) 0%, rgba(15, 23, 42, 0.025) 38%, rgba(15, 23, 42, 0) 72%);
 }
 
 .logo-draw-loader::after {
     inset: 10%;
-    background: linear-gradient(110deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.06) 38%, rgba(255, 255, 255, 0.42) 50%, rgba(255, 255, 255, 0.07) 62%, rgba(255, 255, 255, 0) 100%);
-    filter: blur(10px);
+    background: linear-gradient(110deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.03) 40%, rgba(255, 255, 255, 0.22) 50%, rgba(255, 255, 255, 0.04) 60%, rgba(255, 255, 255, 0) 100%);
     opacity: 0;
     transform: translateX(-155%) skewX(-18deg);
-    mix-blend-mode: screen;
-    animation: logoSubtleSweep 2.85s cubic-bezier(0.22, 1, 0.36, 1) infinite;
 }
 
 body.light-mode .logo-draw-loader::after {
-    background: linear-gradient(110deg, rgba(255, 255, 255, 0) 0%, rgba(10, 134, 255, 0.025) 38%, rgba(10, 134, 255, 0.14) 50%, rgba(10, 134, 255, 0.03) 62%, rgba(255, 255, 255, 0) 100%);
-    mix-blend-mode: multiply;
+    background: linear-gradient(110deg, rgba(255, 255, 255, 0) 0%, rgba(10, 134, 255, 0.015) 40%, rgba(10, 134, 255, 0.08) 50%, rgba(10, 134, 255, 0.02) 60%, rgba(255, 255, 255, 0) 100%);
 }
 
 .logo-modern-mark {
@@ -2017,73 +2011,99 @@ body.light-mode .logo-draw-loader::after {
     display: block;
     object-fit: contain;
     opacity: 0;
-    transform: scale(0.94) translateY(6px);
-    filter: blur(8px);
-    animation: logoModernReveal 2.85s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-    will-change: transform, opacity, filter;
+    transform: scale(0.965) translateY(4px);
+    will-change: transform, opacity;
     backface-visibility: hidden;
+}
+
+.loading-overlay.active .logo-modern-mark {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+}
+
+.loading-overlay.loading-sequence .logo-modern-mark {
+    animation: logoModernReveal 1050ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.loading-overlay.loading-sequence .logo-draw-loader::before {
+    animation: logoAmbientPulse 1050ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.loading-overlay.loading-sequence .logo-draw-loader::after {
+    animation: logoSubtleSweep 1150ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes logoModernReveal {
     0% {
         opacity: 0;
-        transform: scale(0.94) translateY(6px);
-        filter: blur(10px);
+        transform: scale(0.92) translateY(10px);
     }
-    24% {
+    48% {
         opacity: 1;
         transform: scale(1) translateY(0);
-        filter: blur(0);
     }
-    74% {
+    82% {
         opacity: 1;
         transform: scale(1) translateY(0);
-        filter: blur(0);
     }
     100% {
-        opacity: 0;
-        transform: scale(0.985) translateY(-2px);
-        filter: blur(6px);
+        opacity: 1;
+        transform: scale(1) translateY(0);
     }
 }
 
 @keyframes logoAmbientPulse {
     0% {
         opacity: 0;
-        transform: scale(0.92);
+        transform: scale(0.84);
     }
-    24% {
-        opacity: 0.85;
+    40% {
+        opacity: 0.48;
         transform: scale(1);
     }
-    74% {
-        opacity: 0.42;
-        transform: scale(1.06);
+    82% {
+        opacity: 0.18;
+        transform: scale(1.03);
     }
     100% {
         opacity: 0;
-        transform: scale(1.1);
+        transform: scale(1.06);
     }
 }
 
 @keyframes logoSubtleSweep {
     0%,
-    22% {
+    38% {
         opacity: 0;
         transform: translateX(-155%) skewX(-18deg);
     }
-    34% {
-        opacity: 0.55;
+    52% {
+        opacity: 0.3;
     }
-    56% {
-        opacity: 0.38;
-        transform: translateX(6%) skewX(-18deg);
+    72% {
+        opacity: 0.14;
+        transform: translateX(24%) skewX(-18deg);
     }
-    74%,
+    86%,
     100% {
         opacity: 0;
-        transform: translateX(118%) skewX(-18deg);
+        transform: translateX(124%) skewX(-18deg);
     }
+}
+
+.loading-overlay.active:not(.loading-sequence) .logo-draw-loader::before {
+    opacity: 0.16;
+    transform: scale(1.02);
+}
+
+.loading-overlay.active:not(.loading-sequence) .logo-draw-loader::after {
+    opacity: 0;
+}
+
+.loading-overlay:not(.active) .logo-modern-mark,
+.loading-overlay:not(.active) .logo-draw-loader::before,
+.loading-overlay:not(.active) .logo-draw-loader::after {
+    opacity: 0;
 }
 /* Calendar Styling */
 .calendar-container { padding: 2rem; }
