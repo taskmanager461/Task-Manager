@@ -1947,7 +1947,7 @@ body.light-mode .toast {
     z-index: 9999;
     opacity: 1;
     pointer-events: all;
-    transition: opacity 0.35s ease;
+    transition: opacity 0.28s ease;
 }
 
 body.light-mode .loading-overlay {
@@ -2011,93 +2011,79 @@ body.light-mode .logo-draw-loader::after {
     display: block;
     object-fit: contain;
     opacity: 0;
-    transform: scale(0.965) translateY(4px);
+    transform: scale(0.9) translateY(10px);
     will-change: transform, opacity;
     backface-visibility: hidden;
 }
 
-.loading-overlay.active .logo-modern-mark {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-}
-
 .loading-overlay.loading-sequence .logo-modern-mark {
-    animation: logoModernReveal 1050ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: logoModernReveal 1250ms cubic-bezier(0.22, 1, 0.36, 1) 1 both;
 }
 
 .loading-overlay.loading-sequence .logo-draw-loader::before {
-    animation: logoAmbientPulse 1050ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: logoAmbientPulse 1250ms cubic-bezier(0.22, 1, 0.36, 1) 1 both;
 }
 
 .loading-overlay.loading-sequence .logo-draw-loader::after {
-    animation: logoSubtleSweep 1150ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: logoSubtleSweep 1250ms cubic-bezier(0.22, 1, 0.36, 1) 1 both;
 }
 
 @keyframes logoModernReveal {
     0% {
         opacity: 0;
-        transform: scale(0.92) translateY(10px);
+        transform: scale(0.9) translateY(12px);
     }
-    48% {
+    34% {
         opacity: 1;
         transform: scale(1) translateY(0);
     }
-    82% {
+    70% {
         opacity: 1;
         transform: scale(1) translateY(0);
     }
     100% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
+        opacity: 0;
+        transform: scale(1.015) translateY(-3px);
     }
 }
 
 @keyframes logoAmbientPulse {
     0% {
         opacity: 0;
-        transform: scale(0.84);
+        transform: scale(0.78);
     }
-    40% {
-        opacity: 0.48;
+    34% {
+        opacity: 0.3;
         transform: scale(1);
     }
-    82% {
-        opacity: 0.18;
-        transform: scale(1.03);
+    70% {
+        opacity: 0.14;
+        transform: scale(1.05);
     }
     100% {
         opacity: 0;
-        transform: scale(1.06);
+        transform: scale(1.12);
     }
 }
 
 @keyframes logoSubtleSweep {
     0%,
-    38% {
+    30% {
         opacity: 0;
         transform: translateX(-155%) skewX(-18deg);
     }
-    52% {
-        opacity: 0.3;
+    46% {
+        opacity: 0.24;
     }
-    72% {
-        opacity: 0.14;
-        transform: translateX(24%) skewX(-18deg);
+    68% {
+        opacity: 0.1;
+        transform: translateX(26%) skewX(-18deg);
     }
-    86%,
+    82%,
     100% {
         opacity: 0;
         transform: translateX(124%) skewX(-18deg);
     }
-}
-
-.loading-overlay.active:not(.loading-sequence) .logo-draw-loader::before {
-    opacity: 0.16;
-    transform: scale(1.02);
-}
-
-.loading-overlay.active:not(.loading-sequence) .logo-draw-loader::after {
-    opacity: 0;
 }
 
 .loading-overlay:not(.active) .logo-modern-mark,

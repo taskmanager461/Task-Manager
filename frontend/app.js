@@ -4732,24 +4732,14 @@ async function forceUpdateApp() {
     }
 }
 
-const MIN_LOADING_DURATION_MS = 1400;
-const LOADING_SEQUENCE_MS = 1200;
+const MIN_LOADING_DURATION_MS = 1600;
 let loadingVisibleSince = 0;
 let loadingHideTimeoutId = null;
-let loadingSequenceTimeoutId = null;
 
 function restartLoadingSequence(overlay) {
     overlay.classList.remove('loading-sequence');
     void overlay.offsetWidth;
     overlay.classList.add('loading-sequence');
-
-    if (loadingSequenceTimeoutId) {
-        clearTimeout(loadingSequenceTimeoutId);
-    }
-
-    loadingSequenceTimeoutId = setTimeout(() => {
-        overlay.classList.remove('loading-sequence');
-    }, LOADING_SEQUENCE_MS);
 }
 
 function showLoading(show) {
