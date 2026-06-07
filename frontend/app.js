@@ -4735,6 +4735,8 @@ async function forceUpdateApp() {
 const MIN_LOADING_DURATION_MS = 1600;
 let loadingVisibleSince = 0;
 let loadingHideTimeoutId = null;
+// Track if this is the very first showLoading(true) call (page just loaded with overlay already visible)
+let _loadingInitialized = false;
 
 function restartLoadingSequence(overlay) {
     overlay.classList.remove('loading-sequence');
@@ -4751,6 +4753,16 @@ function showLoading(show) {
             clearTimeout(loadingHideTimeoutId);
             loadingHideTimeoutId = null;
         }
+
+        // If overlay is already visible & animation already running (initial page load),
+        // just record the timestamp - don't restart the animation (avoids double-flicker)
+        const alreadyActive = overlay.classList.contains('active') && overlay.classList.contains('loading-sequence');
+        if (!_loadingInitialized && alreadyActive) {
+            _loadingInitialized = true;
+            loadingVisibleSince = Date.now();
+            return;
+        }
+        _loadingInitialized = true;
 
         loadingVisibleSince = Date.now();
         overlay.classList.add('active');
