@@ -1971,61 +1971,70 @@ body.dark-mode .loading-overlay {
     aspect-ratio: 1;
 }
 
+.logo-draw-base,
+.logo-draw-color,
 .logo-draw-shell {
     position: relative;
     width: 100%;
     height: 100%;
-    --logo-mask: url("/assets/logo_small.png?v=26");
+}
+
+.logo-draw-base,
+.logo-draw-color {
+    position: absolute;
+    inset: 0;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.logo-draw-base {
+    opacity: 0.18;
+    filter: brightness(0) invert(1);
+}
+
+body.light-mode .logo-draw-base {
+    filter: brightness(0);
+    opacity: 0.14;
+}
+
+.logo-draw-reveal {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    clip-path: inset(0 100% 0 0);
+    animation: logoDraw 2.45s cubic-bezier(0.77, 0, 0.18, 1) infinite;
+}
+
+.logo-draw-color {
+    filter: saturate(1.08) brightness(1.02);
+}
+
+.logo-draw-shell {
+    position: absolute;
+    inset: 0;
     animation: logoFloat 2.8s ease-in-out infinite;
 }
 
-.logo-draw-shell::before,
-.logo-draw-shell::after {
+.logo-draw-shell::before {
     content: "";
     position: absolute;
-    inset: 0;
-    -webkit-mask-image: var(--logo-mask);
-    mask-image: var(--logo-mask);
-    -webkit-mask-position: center;
-    mask-position: center;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-size: contain;
-    mask-size: contain;
-}
-
-.logo-draw-shell::before {
+    inset: 8% 0;
     background: rgba(255, 255, 255, 0.12);
-    transform: scale(0.985);
-    filter: blur(0.6px);
+    filter: blur(28px);
+    opacity: 0.12;
 }
 
 body.light-mode .logo-draw-shell::before {
-    background: rgba(15, 23, 42, 0.16);
-}
-
-.logo-draw-shell::after {
-    background:
-        linear-gradient(
-            90deg,
-            rgba(10, 134, 255, 0) 0%,
-            rgba(10, 134, 255, 0.16) 10%,
-            rgba(10, 134, 255, 0.92) 44%,
-            rgba(124, 197, 255, 1) 58%,
-            rgba(10, 134, 255, 1) 74%,
-            rgba(10, 134, 255, 0.28) 100%
-        );
-    clip-path: inset(0 100% 0 0);
-    filter: drop-shadow(0 0 10px rgba(10, 134, 255, 0.28));
-    animation: logoDraw 2.45s cubic-bezier(0.77, 0, 0.18, 1) infinite;
+    background: rgba(15, 23, 42, 0.12);
 }
 
 .logo-draw-trace {
     position: absolute;
-    top: 18%;
-    left: 0;
-    width: 22%;
-    height: 64%;
+    top: 14%;
+    left: -8%;
+    width: 28%;
+    height: 72%;
     border-radius: 999px;
     background:
         linear-gradient(
@@ -2077,11 +2086,11 @@ body.light-mode .logo-draw-trace {
         opacity: 0.9;
     }
     62% {
-        transform: translateX(435%) scaleX(1);
+        transform: translateX(400%) scaleX(1);
         opacity: 0.85;
     }
     82% {
-        transform: translateX(435%) scaleX(1);
+        transform: translateX(400%) scaleX(1);
         opacity: 0;
     }
     100% {
