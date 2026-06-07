@@ -1947,7 +1947,7 @@ body.light-mode .toast {
     z-index: 9999;
     opacity: 1;
     pointer-events: all;
-    transition: opacity 0.28s ease;
+    transition: opacity 0.5s ease;
 }
 
 body.light-mode .loading-overlay {
@@ -1986,28 +1986,28 @@ body.dark-mode .loading-overlay {
 }
 
 .loading-overlay.loading-sequence .logo-modern-mark {
-    animation: logoModernReveal 2000ms cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    animation: logoModernReveal 1200ms cubic-bezier(0.22, 1, 0.36, 1) 1 forwards;
 }
 
 body.light-mode .logo-modern-mark {
-    filter: brightness(1) drop-shadow(0 0 0 rgba(10, 134, 255, 0));
+    filter: none;
 }
 
 @keyframes logoModernReveal {
     0% {
-        opacity: 0.2;
-        transform: scale(0.92);
-        filter: brightness(1) drop-shadow(0 0 4px var(--primary));
+        opacity: 0;
+        transform: scale(0.82);
+        filter: brightness(1) drop-shadow(0 0 0 transparent);
     }
-    50% {
+    65% {
         opacity: 1;
-        transform: scale(1.06);
-        filter: brightness(1.4) drop-shadow(0 0 28px var(--primary)) drop-shadow(0 0 50px var(--primary-glow));
+        transform: scale(1.08);
+        filter: brightness(1.45) drop-shadow(0 0 32px var(--primary)) drop-shadow(0 0 60px var(--primary-glow));
     }
     100% {
-        opacity: 0.2;
-        transform: scale(0.92);
-        filter: brightness(1) drop-shadow(0 0 4px var(--primary));
+        opacity: 1;
+        transform: scale(1);
+        filter: brightness(1.2) drop-shadow(0 0 16px var(--primary-glow));
     }
 }
 
@@ -2017,19 +2017,19 @@ body.light-mode .loading-overlay.loading-sequence .logo-modern-mark {
 
 @keyframes logoModernRevealLight {
     0% {
-        opacity: 0.2;
-        transform: scale(0.92);
-        filter: brightness(0.96) drop-shadow(0 0 4px rgba(10, 134, 255, 0.25));
+        opacity: 0;
+        transform: scale(0.82);
+        filter: brightness(0.96) drop-shadow(0 0 0 transparent);
     }
-    50% {
+    65% {
         opacity: 1;
-        transform: scale(1.06);
-        filter: brightness(1.15) drop-shadow(0 0 28px rgba(10, 134, 255, 0.55)) drop-shadow(0 0 50px rgba(10, 134, 255, 0.25));
+        transform: scale(1.08);
+        filter: brightness(1.15) drop-shadow(0 0 32px rgba(10, 134, 255, 0.6)) drop-shadow(0 0 60px rgba(10, 134, 255, 0.3));
     }
     100% {
-        opacity: 0.2;
-        transform: scale(0.92);
-        filter: brightness(0.96) drop-shadow(0 0 4px rgba(10, 134, 255, 0.25));
+        opacity: 1;
+        transform: scale(1);
+        filter: brightness(1.05) drop-shadow(0 0 16px rgba(10, 134, 255, 0.35));
     }
 }
 
