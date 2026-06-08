@@ -1,4 +1,4 @@
-﻿// Configuration
+// Configuration
 // Fix Timezone Bug: Get YYYY-MM-DD in the user's local timezone
 Date.prototype.toLocalISOString = function() {
     const d = new Date(this);
