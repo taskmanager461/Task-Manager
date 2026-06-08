@@ -597,18 +597,18 @@ def plot_category_success(category_stats: pd.DataFrame, dark_mode: bool) -> go.F
 
 def get_score_label(score: float) -> str:
     if score > 75.0:
-        return "Excellent"
+        return t("score_excellent")
     elif score > 50.0:
-        return "Good"
+        return t("score_good")
     elif score > 20.0:
-        return "Average"
+        return t("score_average")
     else:
-        return "Low"
+        return t("score_low")
 
 
 @st.fragment
 def render_habits_section(client: APIClient, selected_day: date, user_id: int):
-    st.markdown(f"<div class='section-title'>Today's Habits</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='section-title'>{t('habits_today')}</div>", unsafe_allow_html=True)
     habits, habit_err = call_api(cached_get_habits, user_id, selected_day, client)
     if habit_err:
         st.warning(habit_err)
@@ -619,25 +619,25 @@ def render_habits_section(client: APIClient, selected_day: date, user_id: int):
                 habit_card(habit)
                 col1, col2, _ = st.columns([1, 1, 2])
                 with col1:
-                    if st.button(f"✔ Done", key=f"habit_done_{habit['id']}"):
+                    if st.button(t("habit_done"), key=f"habit_done_{habit['id']}"):
                         call_api(client.track_habit, habit_id=habit["id"], status="completed", day=selected_day)
                         st.cache_data.clear()
                         st.rerun()
                 with col2:
-                    if st.button(f"⏭ Skip", key=f"habit_skip_{habit['id']}"):
+                    if st.button(t("habit_skip"), key=f"habit_skip_{habit['id']}"):
                         call_api(client.track_habit, habit_id=habit["id"], status="skipped", day=selected_day)
                         st.cache_data.clear()
                         st.rerun()
         else:
-            st.info("No habits scheduled for this day.")
+            st.info(t("no_habits_scheduled"))
     else:
-        st.info("No habits created yet.")
+        st.info(t("no_habits_created"))
 
 
 @st.fragment
 def render_reports_charts(selected_day: date, tasks, client: APIClient, user_id: int):
     # 3. Trust Score Table (Score over time & Status Mix)
-    st.markdown(f"<div class='section-title'>Trust Score Table</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='section-title'>{t('trust_score_table')}</div>", unsafe_allow_html=True)
     history, history_err = call_api(cached_score_history, user_id, client)
     if history_err:
         st.warning(history_err)
@@ -680,7 +680,7 @@ def reports_page(client: APIClient, user_id: int) -> None:
 
 @st.fragment
 def render_weekly_summary(client: APIClient, user_id: int):
-    st.markdown(f"<div class='section-title'>Weekly Summary</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='section-title'>{t('weekly_summary')}</div>", unsafe_allow_html=True)
     weekly_summary, summary_err = call_api(cached_weekly_summary, user_id, client)
     if summary_err:
         st.warning(summary_err)
@@ -690,17 +690,17 @@ def render_weekly_summary(client: APIClient, user_id: int):
 
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            metric_card("📋", "Total Tasks", str(current_week["total_tasks"]))
+            metric_card("📋", t("total_tasks"), str(current_week["total_tasks"]))
         with col2:
-            metric_card("✅", "Completed", str(current_week["completed_tasks"]))
+            metric_card("✅", t("completed"), str(current_week["completed_tasks"]))
         with col3:
-            metric_card("📈", "Success Rate", f"{current_week['success_rate']}%")
+            metric_card("📈", t("success_rate"), f"{current_week['success_rate']}%")
         with col4:
             metric_card("🔥", "Streak", str(current_week["streak"]))
 
         if success_change != 0:
-            change_label = f"+{success_change}% improvement" if success_change > 0 else f"{success_change}% drop"
-            st.info(f"Compared to last week: {change_label}")
+            change_label = f"+{success_change}% {t('success_change_improvement')}" if success_change > 0 else f"{success_change}% {t('success_change_drop')}"
+            st.info(t("compared_last_week", change=change_label))
 
 
 @st.fragment
@@ -717,7 +717,7 @@ def render_me_hero(score, tasks, client: APIClient):
     )
 
     # 2. Today's Progress
-    st.markdown(f"<div class='section-title'>Daily Progress</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='section-title'>{t('daily_progress')}</div>", unsafe_allow_html=True)
     completed = sum(1 for task in tasks if task["status"] == "completed")
     modern_progress(t("today_completion"), (completed / len(tasks)) if tasks else 0.0, tone="auto")
 
@@ -753,7 +753,7 @@ def me_page(client: APIClient, user_id: int) -> None:
             <div style="color: #64748b; font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem;">@{username}</div>
             <div style="display: flex; justify-content: center; gap: 1rem;">
                 <div class="badge" style="background: rgba(10, 134, 255, 0.1); color: #0a86ff; padding: 8px 16px; font-size: 0.9rem; border-radius: 99px; font-weight: 700;">
-                    <i class="fa-solid fa-user-check" style="margin-right: 6px;"></i> Verified Profile
+                    <i class="fa-solid fa-user-check" style="margin-right: 6px;"></i> {t('verified_profile')}
                 </div>
             </div>
         </div>
@@ -762,11 +762,11 @@ def me_page(client: APIClient, user_id: int) -> None:
     )
 
     # Edit Profile Section (Expander)
-    with st.expander("⚙️ Edit Profile Settings", expanded=False):
+    with st.expander(t('edit_profile_settings'), expanded=False):
         with st.form("edit_profile_form"):
-            new_name = st.text_input("Full Name", value=user_name)
-            new_username = st.text_input("Username", value=username)
-            submit_profile = st.form_submit_button("Update Profile", type="primary")
+            new_name = st.text_input(t("full_name"), value=user_name)
+            new_username = st.text_input(t("username"), value=username)
+            submit_profile = st.form_submit_button(t("update_profile"), type="primary")
             if submit_profile:
                 if new_name.strip() and new_username.strip():
                     data, err = call_api(client.update_profile, name=new_name.strip(), username=new_username.strip())
@@ -775,10 +775,10 @@ def me_page(client: APIClient, user_id: int) -> None:
                     else:
                         st.session_state.name = data["name"]
                         st.session_state.username = data["username"]
-                        st.toast("Profile updated successfully!")
+                        st.toast(t("profile_updated"))
                         st.rerun()
                 else:
-                    st.error("Name and username cannot be empty")
+                    st.error(t("name_username_empty"))
 
     st.markdown("---")
     
@@ -790,7 +790,7 @@ def me_page(client: APIClient, user_id: int) -> None:
     assert score is not None and tasks is not None
 
     # Get missed tasks
-    missed, missed_err = call_api(cached_get_missed_tasks, user_id, client, fallback_message="Could not load missed tasks")
+    missed, missed_err = call_api(cached_get_missed_tasks, user_id, client, fallback_message=t("could_not_load_missed_tasks"))
     missed_count = missed.get("count", 0) if missed else 0
 
     # Render Hero and Progress
@@ -798,9 +798,9 @@ def me_page(client: APIClient, user_id: int) -> None:
 
     # Missed tasks feedback
     if missed_count > 0:
-        warning_msg = f"You missed {missed_count} task{'' if missed_count == 1 else 's'}"
+        warning_msg = t("you_missed", count=str(missed_count), plural="" if missed_count == 1 else "s")
         if score["streak"] > 0:
-            warning_msg += ". You are at risk of losing your streak!"
+            warning_msg += t("risk_losing_streak")
         st.warning(warning_msg)
 
     # Render Achievements and Notifications
@@ -819,54 +819,54 @@ def render_weekly_insights(client: APIClient, theme, user_id: int):
 
     # --- 1. FAILURE ANALYSIS ---
     if smart_insights.get("failure_analysis"):
-        st.markdown(f"<div class='section-title'>🔍 Failure Analysis</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='section-title'>{t('failure_analysis')}</div>", unsafe_allow_html=True)
         failure_analysis = smart_insights["failure_analysis"]
         if failure_analysis["top_failure_categories"] or failure_analysis["failure_hours"]:
             col1, col2 = st.columns(2)
             with col1:
                 if failure_analysis["top_failure_categories"]:
-                    st.markdown("**Categories with Highest Failure Rate**")
+                    st.markdown(f"**{t('top_failure_categories')}**")
                     for item in failure_analysis["top_failure_categories"][:3]:
-                        st.markdown(f"**{item['category']}**: {item['rate']}% failure rate")
+                        st.markdown(f"**{item['category']}**: {item['rate']}{t('failure_rate')}")
             with col2:
                 if failure_analysis["failure_hours"]:
-                    st.markdown("**Most Common Failure Hours**")
+                    st.markdown(f"**{t('most_common_failure_hours')}**")
                     for hour, count in failure_analysis["failure_hours"][:3]:
-                        st.markdown(f"{hour:02d}:00 - {count} failed tasks")
-            st.info("💡 Understanding when and where you fail helps you adjust your schedule and expectations!")
+                        st.markdown(t("failure_hours_format", hour=f"{hour:02d}", count=str(count)))
+            st.info(t("failure_insight_tip"))
             st.markdown("---")
     
     # --- 2. SUCCESS PATTERNS ---
     if smart_insights.get("success_analysis"):
-        st.markdown(f"<div class='section-title'>✨ Success Patterns</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='section-title'>{t('success_patterns')}</div>", unsafe_allow_html=True)
         success_analysis = smart_insights["success_analysis"]
         if success_analysis["top_success_categories"] or success_analysis["success_hours"]:
             col1, col2 = st.columns(2)
             with col1:
                 if success_analysis["top_success_categories"]:
-                    st.markdown("**Your Strongest Categories**")
+                    st.markdown(f"**{t('strongest_categories')}**")
                     for item in success_analysis["top_success_categories"][:3]:
-                        st.markdown(f"**{item['category']}**: {item['rate']}% success rate")
+                        st.markdown(f"**{item['category']}**: {item['rate']}{t('success_rate_label')}")
             with col2:
                 if success_analysis["success_hours"]:
-                    st.markdown("**Most Productive Hours**")
+                    st.markdown(f"**{t('most_productive_hours')}**")
                     for hour, count in success_analysis["success_hours"][:3]:
-                        st.markdown(f"{hour:02d}:00 - {count} completed tasks")
-            st.info("💡 Build on your strengths! Schedule important tasks during your productive hours!")
+                        st.markdown(t("success_hours_format", hour=f"{hour:02d}", count=str(count)))
+            st.info(t("success_insight_tip"))
             st.markdown("---")
 
     # --- 7. KEY INSIGHTS ---
-    st.markdown(f"<div class='section-title'>🔑 Key Insights & Recommendations</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='section-title'>{t('key_insights')}</div>", unsafe_allow_html=True)
     insights = smart_insights.get("insights", [])
     suggestions = smart_insights.get("suggestions", [])
     if insights:
-        st.markdown("**What your data is telling you:**")
+        st.markdown(f"**{t('data_telling_you')}**")
         for insight_text in insights[:4]:
-            st.markdown(f"• {insight_text}")
+            st.markdown(f"{t('insight_prefix')}{insight_text}")
     if suggestions:
-        st.markdown("**Recommendations:**")
+        st.markdown(f"**{t('recommendations')}**")
         for suggestion in suggestions[:4]:
-            st.markdown(f"• 💡 {suggestion}")
+            st.markdown(f"{t('recommendation_prefix')}{suggestion}")
 
 
 def weekly_report_page(client: APIClient, user_id: int) -> None:
@@ -994,22 +994,22 @@ def tasks_analytics_page(client: APIClient, user_id: int) -> None:
     
     # Initialize active tab in session state if not exists
     if "tasks_goals_tab" not in st.session_state:
-        st.session_state.tasks_goals_tab = "Tasks"
+        st.session_state.tasks_goals_tab = t("tab_tasks")
     
     # Create tab buttons with styling
     tab1, tab2 = st.columns(2)
     with tab1:
-        if st.button("📋 Tasks", key="tab_tasks", use_container_width=True, type="primary" if st.session_state.tasks_goals_tab == "Tasks" else "secondary"):
-            st.session_state.tasks_goals_tab = "Tasks"
+        if st.button(t("tab_tasks"), key="tab_tasks", use_container_width=True, type="primary" if st.session_state.tasks_goals_tab == t("tab_tasks") else "secondary"):
+            st.session_state.tasks_goals_tab = t("tab_tasks")
             st.rerun()
     with tab2:
-        if st.button("🎯 Goals", key="tab_goals", use_container_width=True, type="primary" if st.session_state.tasks_goals_tab == "Goals" else "secondary"):
-            st.session_state.tasks_goals_tab = "Goals"
+        if st.button(t("tab_goals"), key="tab_goals", use_container_width=True, type="primary" if st.session_state.tasks_goals_tab == t("tab_goals") else "secondary"):
+            st.session_state.tasks_goals_tab = t("tab_goals")
             st.rerun()
     
     st.markdown("---")
     
-    if st.session_state.tasks_goals_tab == "Tasks":
+    if st.session_state.tasks_goals_tab == t("tab_tasks"):
         selected_day = st.date_input(t("task_day"), value=date.today(), key="task_day")
 
         with st.form("add_task"):
