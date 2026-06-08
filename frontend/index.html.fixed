@@ -78,7 +78,7 @@
             <h1 class="main-title">
                 <span class="main-title-t">T</span><span class="main-title-rest">obedone</span>
             </h1>
-            <p class="brand-tagline"><span data-i18n="tagline">Plan it. Do it. Done.</span></p>
+            <p class="brand-tagline">Plan it. Do it. Done.</p>
             <div class="tabs">
                 <button id="tab-login" class="tab active" onclick="switchAuthTab('login')">
                     <i class="fas fa-user"></i>
@@ -230,13 +230,13 @@
                 <div class="card habits-today-card" style="margin-bottom: 1.5rem;">
                     <div class="identity-header">
                         <h3 data-i18n="today_habits">Today's Habits</h3>
-                        <span class="priority-badge priority-medium" data-i18n="consistency">Consistency</span>
+                        <span class="priority-badge priority-medium">Consistency</span>
                     </div>
                     <div id="today-habits-list" class="habit-list"></div>
                 </div>
 
                 <div id="weekly-summary" class="card" style="margin-top: 1.5rem; display: none;">
-                    <h3><span data-i18n="weekly_summary">Weekly Summary</span></h3>
+                    <h3>Weekly Summary</h3>
                     <div id="weekly-summary-content"></div>
                 </div>
             </section>
@@ -289,8 +289,8 @@
                         </div>
                         <div class="form-actions" style="margin-top: 2rem;">
                             <div style="display:flex; gap: 1rem; width: 100%;">
-                                <button id="profile-cancel-btn" type="button" class="btn secondary" style="flex: 1;" disabled data-i18n="cancel">Cancel</button>
-                                <button id="profile-save-btn" type="submit" class="btn primary" style="flex: 1;" disabled data-i18n="save_changes">Save Changes</button>
+                                <button id="profile-cancel-btn" type="button" class="btn secondary" style="flex: 1;" disabled>Cancel</button>
+                                <button id="profile-save-btn" type="submit" class="btn primary" style="flex: 1;" disabled>Save Changes</button>
                             </div>
                         </div>
                     </form>
@@ -325,7 +325,7 @@
                     </div>
 
                     <div class="identity-trust-score-row" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02); padding:0.75rem 1rem; border-radius:12px; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.05);">
-                        <span style="font-size:0.9rem; font-weight:600; color:var(--text-secondary);" data-i18n="trust_score">Self Trust Score</span>
+                        <span style="font-size:0.9rem; font-weight:600; color:var(--text-secondary);">Self Trust Score</span>
                         <span id="identity-trust-value" style="font-size:1.4rem; font-weight:900; color:#fbbf24;">0.0</span>
                     </div>
 
@@ -336,8 +336,8 @@
 
                 <div class="card for-you-card" style="margin-bottom: 1.5rem;">
                     <div class="identity-header">
-                        <h3><span data-i18n="for_you">For You</span></h3>
-                        <span id="for-you-pressure" class="priority-badge priority-low" data-i18n="adaptive">Adaptive</span>
+                        <h3>For You</h3>
+                        <span id="for-you-pressure" class="priority-badge priority-low">Adaptive</span>
                     </div>
                     <div id="for-you-list" class="for-you-list"></div>
                 </div>
@@ -354,22 +354,22 @@
                 <div class="card" style="margin-bottom: 1.5rem;">
                     <div class="identity-header" style="margin-bottom:1rem;">
                         <h3><i class="fas fa-chart-line" style="margin-right:0.5rem; color:var(--primary);"></i>Your Analytics</h3>
-                        <button onclick="showView('insights')" class="btn secondary" style="font-size:0.7rem; padding:0.3rem 0.7rem;" data-i18n="full_report">Full Report</button>
+                        <button onclick="showView('insights')" class="btn secondary" style="font-size:0.7rem; padding:0.3rem 0.7rem;">Full Report</button>
                     </div>
                     <div id="me-smart-insights" class="insights-container" style="margin-bottom:1rem;">
                         <!-- Smart insights mini-feed injected by JS -->
                     </div>
                     <div class="weekly-summary-stats" style="margin-bottom:1rem;">
                         <div class="weekly-summary-stat">
-                            <span class="label" data-i18n="best_day">Best Day</span>
+                            <span class="label">Best Day</span>
                             <span id="me-insight-best-day" class="value">—</span>
                         </div>
                         <div class="weekly-summary-stat">
-                            <span class="label" data-i18n="goal_rate">Goal Rate</span>
+                            <span class="label">Goal Rate</span>
                             <span id="me-goal-completion-rate" class="value">0%</span>
                         </div>
                         <div class="weekly-summary-stat">
-                            <span class="label" data-i18n="tasks_30d">Tasks (30d)</span>
+                            <span class="label">Tasks (30d)</span>
                             <span id="me-tasks-30d" class="value">0</span>
                         </div>
                     </div>
@@ -414,15 +414,15 @@
                     <h3 style="margin-bottom: 1rem;">Goal Analytics</h3>
                     <div class="weekly-summary-stats">
                         <div class="weekly-summary-stat">
-                            <span class="label" data-i18n="completion_rate">Completion Rate</span>
+                            <span class="label">Completion Rate</span>
                             <span id="goal-completion-rate" class="value">0%</span>
                         </div>
                         <div class="weekly-summary-stat">
-                            <span class="label" data-i18n="achieved_failed">Achieved / Failed</span>
+                            <span class="label">Achieved / Failed</span>
                             <span id="goal-achieved-failed" class="value">0 / 0</span>
                         </div>
                         <div class="weekly-summary-stat">
-                            <span class="label" data-i18n="avg_completion_time">Avg Completion Time</span>
+                            <span class="label">Avg Completion Time</span>
                             <span id="goal-average-time" class="value">0d</span>
                         </div>
                     </div>
@@ -433,21 +433,21 @@
                         <span class="icon"><i class="fas fa-lightbulb"></i></span>
                         <div class="insight-content">
                             <h4 data-i18n="productive_day">Most Productive Day</h4>
-                            <p id="insight-best-day" data-i18n="analyzing_patterns">Analyzing patterns...</p>
+                            <p id="insight-best-day">Analyzing patterns...</p>
                         </div>
                     </div>
                     <div class="insight-card">
                         <span class="icon"><i class="fas fa-bolt"></i></span>
                         <div class="insight-content">
                             <h4 data-i18n="productive_hour">Most Productive Hour</h4>
-                            <p id="insight-best-hour" data-i18n="analyzing_patterns">Analyzing patterns...</p>
+                            <p id="insight-best-hour">Analyzing patterns...</p>
                         </div>
                     </div>
                     <div class="insight-card" style="border-left: 4px solid var(--error);">
                         <span class="icon"><i class="fas fa-exclamation-triangle"></i></span>
                         <div class="insight-content">
                             <h4 data-i18n="failure_patterns">Failure Patterns</h4>
-                            <p id="insight-failure-pattern" data-i18n="analyzing_patterns">Analyzing patterns...</p>
+                            <p id="insight-failure-pattern">Analyzing patterns...</p>
                         </div>
                     </div>
                 </div>
@@ -455,7 +455,7 @@
                 <!-- Personal Records Card -->
                 <div class="card personal-records-card" style="margin-bottom: 1.5rem;">
                     <div class="identity-header">
-                        <h3>🏆 <span data-i18n="personal_records">Personal Records</span></h3>
+                        <h3>🏆 Personal Records</h3>
                     </div>
                     <div id="personal-records-list" class="records-grid" style="margin-top: 1rem;">
                         <!-- Records dynamically loaded by JS -->
@@ -489,8 +489,8 @@
                                 <i class="fas fa-chart-line" style="color: #ffffff !important; font-size: 1.1rem;"></i>
                             </div>
                             <div>
-                                <h3><span data-i18n="mastery_progress">Mastery Progress</span></h3>
-                                <p id="mastery-rank-label" style="font-size:0.72rem; color:var(--text-secondary); margin:0;" data-i18n="calculating">Calculating...</p>
+                                <h3>Mastery Progress</h3>
+                                <p id="mastery-rank-label" style="font-size:0.72rem; color:var(--text-secondary); margin:0;">Calculating...</p>
                             </div>
                         </div>
                         <span id="mastery-percent-badge" class="identity-level-pill" style="font-size:1rem; padding:0.4rem 0.9rem;">0%</span>
@@ -512,7 +512,7 @@
                             <span class="rank-badge-icon"><i class="fas fa-crown"></i></span>
                             <div>
                                 <h3 id="progress-rank-name" class="rank-name">Explorer</h3>
-                                <p class="rank-subtitle" data-i18n="permanent_rank_system">Permanent Rank System</p>
+                                <p class="rank-subtitle">Permanent Rank System</p>
                             </div>
                         </div>
                         <span id="progress-level-badge" class="identity-level-pill">
@@ -523,7 +523,7 @@
                     <div class="xp-progress-wrap" style="margin-top: 1.5rem;">
                         <div class="xp-progress-meta">
                             <span id="progress-xp-text" style="font-weight: 700;">XP 0 / 100</span>
-                            <span class="next-level-indicator" data-i18n="next_level">Next Level</span>
+                            <span class="next-level-indicator">Next Level</span>
                         </div>
                         <div class="progress-bar identity-progress-bar">
                             <div id="progress-xp-fill" class="identity-xp-fill" style="width: 0%"></div>
@@ -539,9 +539,9 @@
                             <div class="identity-avatar-icon" style="background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%); border: 2.2px solid rgba(0, 198, 255, 0.45); box-shadow: 0 4px 14px rgba(0, 114, 255, 0.35);">
                                 <i class="fas fa-shield-halved" style="color: #ffffff !important; font-size: 1.1rem;"></i>
                             </div>
-                            <h3><span data-i18n="self_trust_score">Self Trust Score</span></h3>
+                            <h3>Self Trust Score</h3>
                         </div>
-                        <span id="progress-trust-tier" class="priority-badge priority-medium" data-i18n="average">Average</span>
+                        <span id="progress-trust-tier" class="priority-badge priority-medium">Average</span>
                     </div>
                     <div class="trust-progress-details" style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
                         <span id="progress-trust-value" style="font-size: 2.2rem; font-weight: 900; color: #fbbf24;">0.0</span>
@@ -562,8 +562,8 @@
                                 <i class="fas fa-trophy"></i>
                             </div>
                             <div>
-                                <h3><span data-i18n="achievements_title">Achievements</span></h3>
-                                <p id="achievements-subtitle" class="achievements-subtitle" data-i18n="loading">Loading...</p>
+                                <h3>Achievements</h3>
+                                <p id="achievements-subtitle" class="achievements-subtitle">Loading...</p>
                             </div>
                         </div>
                         <div id="achievements-completion-ring" class="achievements-ring">
@@ -578,7 +578,7 @@
                     <div class="achievements-stats-bar">
                         <div class="ach-stat ach-stat-common">
                             <span id="ach-count-common" class="ach-stat-value">0</span>
-                            <span class="ach-stat-label" data-i18n="common">Common</span>
+                            <span class="ach-stat-label">Common</span>
                         </div>
                         <div class="ach-stat ach-stat-rare">
                             <span id="ach-count-rare" class="ach-stat-value">0</span>
@@ -586,18 +586,18 @@
                         </div>
                         <div class="ach-stat ach-stat-epic">
                             <span id="ach-count-epic" class="ach-stat-value">0</span>
-                            <span class="ach-stat-label" data-i18n="epic">Epic</span>
+                            <span class="ach-stat-label">Epic</span>
                         </div>
                         <div class="ach-stat ach-stat-legendary">
                             <span id="ach-count-legendary" class="ach-stat-value">0</span>
-                            <span class="ach-stat-label" data-i18n="legendary">Legendary</span>
+                            <span class="ach-stat-label">Legendary</span>
                         </div>
                     </div>
 
                     <!-- Toggle Button to Show/Hide achievements content -->
                     <div style="margin-top: 1rem; text-align: center;">
                         <button id="toggle-achievements-btn" class="btn primary" onclick="toggleAchievementsVisibility()" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 700; letter-spacing: 0.05em; padding: 0.65rem 1rem;">
-                            <span data-i18n="view_achievements">View Achievements</span>
+                            <span>View Achievements</span>
                             <i class="fas fa-chevron-down" id="toggle-achievements-chevron"></i>
                         </button>
                     </div>
@@ -616,18 +616,18 @@
                             <button class="ach-filter-btn" data-filter="Habits" onclick="filterAchievements('Habits', this)">⚡ <span data-i18n="habits">Habits</span></button>
                             <button class="ach-filter-btn" data-filter="Streaks" onclick="filterAchievements('Streaks', this)">🔥 <span data-i18n="streak">Streaks</span></button>
                             <button class="ach-filter-btn" data-filter="Trust" onclick="filterAchievements('Trust', this)">🛡️ <span data-i18n="trust_score">Trust</span></button>
-                            <button class="ach-filter-btn" data-filter="XP" onclick="filterAchievements(\'XP\', this)">⭐ <span data-i18n="xp">XP</span></button>
+                            <button class="ach-filter-btn" data-filter="XP" onclick="filterAchievements('XP', this)">⭐ XP</button>
                             <button class="ach-filter-btn" data-filter="Calendar" onclick="filterAchievements('Calendar', this)">📅 <span data-i18n="calendar">Calendar</span></button>
-                            <button class="ach-filter-btn" data-filter="Rare" onclick="filterAchievements(\'Rare\', this)">💎 <span data-i18n="rare">Rare</span></button>
-                            <button class="ach-filter-btn" data-filter="Legendary" onclick="filterAchievements(\'Legendary\', this)">👑 <span data-i18n="legendary" data-i18n="legendary">Legendary</span></button>
-                            <button class="ach-filter-btn" data-filter="unlocked" onclick="filterAchievements(\'unlocked\', this)">✅ <span data-i18n="unlocked">Unlocked</span></button>
-                            <button class="ach-filter-btn" data-filter="locked" onclick="filterAchievements(\'locked\', this)">🔒 <span data-i18n="locked">Locked</span></button>
+                            <button class="ach-filter-btn" data-filter="Rare" onclick="filterAchievements('Rare', this)">💎 Rare</button>
+                            <button class="ach-filter-btn" data-filter="Legendary" onclick="filterAchievements('Legendary', this)">👑 Legendary</button>
+                            <button class="ach-filter-btn" data-filter="unlocked" onclick="filterAchievements('unlocked', this)">✅ Unlocked</button>
+                            <button class="ach-filter-btn" data-filter="locked" onclick="filterAchievements('locked', this)">🔒 Locked</button>
                         </div>
 
                         <div id="achievements-grid" class="achievements-grid">
                             <div class="achievements-loading">
                                 <i class="fas fa-spinner fa-spin"></i>
-                                <span data-i18n="loading_achievements">Loading achievements...</span>
+                                <span>Loading achievements...</span>
                             </div>
                         </div>
                     </div>
@@ -636,7 +636,7 @@
                 <!-- Milestone Timeline Card -->
                 <div class="card milestone-timeline-card" style="margin-bottom: 1.5rem;">
                     <div class="identity-header">
-                        <h3>📅 <span data-i18n="milestone_timeline">Milestone Timeline</span></h3>
+                        <h3>📅 Milestone Timeline</h3>
                     </div>
                     <div id="milestone-timeline-list" class="timeline-list" style="margin-top: 1rem; position: relative;">
                         <!-- Timeline entries loaded dynamically -->
@@ -646,8 +646,8 @@
                 <!-- Weekly & Monthly Performance Reviews -->
                 <div class="card performance-reports-card" style="margin-bottom: 1.5rem;">
                     <div class="tabs" style="margin-bottom: 1.2rem;">
-                        <button id="tab-report-weekly" class="tab active" onclick="switchPerformanceReport('weekly')" data-i18n="weekly_report">Weekly Report</button>
-                        <button id="tab-report-monthly" class="tab" onclick="switchPerformanceReport('monthly')" data-i18n="monthly_review">Monthly Review</button>
+                        <button id="tab-report-weekly" class="tab active" onclick="switchPerformanceReport('weekly')">Weekly Report</button>
+                        <button id="tab-report-monthly" class="tab" onclick="switchPerformanceReport('monthly')">Monthly Review</button>
                     </div>
                     <div id="performance-report-content" class="report-content-body">
                         <!-- Loaded dynamically -->
@@ -657,8 +657,8 @@
                 <!-- Seasonal Challenges Card -->
                 <div class="card seasonal-challenges-card" style="margin-bottom: 1.5rem;">
                     <div class="identity-header">
-                        <h3>❄️ <span data-i18n="seasonal_challenges">Seasonal Challenges</span></h3>
-                        <span class="priority-badge priority-high" data-i18n="limited_time">Limited Time</span>
+                        <h3>❄️ Seasonal Challenges</h3>
+                        <span class="priority-badge priority-high">Limited Time</span>
                     </div>
                     <div id="seasonal-challenges-list" class="challenges-grid" style="margin-top: 1rem;">
                         <!-- Challenges loaded dynamically -->
@@ -673,14 +673,14 @@
                                 <i class="fas fa-envelope-open-text"></i>
                             </div>
                             <div>
-                                <h3><span data-i18n="future_self">Future Self</span></h3>
-                                <p style="font-size:0.72rem; color:var(--text-secondary); margin:0;" data-i18n="send_message_future">Send a message to your future self</p>
+                                <h3>Future Self</h3>
+                                <p style="font-size:0.72rem; color:var(--text-secondary); margin:0;">Send a message to your future self</p>
                             </div>
                         </div>
                         <div id="future-self-stats" class="future-self-stats-bar">
-                            <span id="fs-stat-sent"><span data-i18n="zero_sent">0 Sent</span></span>
-                            <span id="fs-stat-ready"><span data-i18n="zero_ready">0 Ready</span></span>
-                            <span id="fs-stat-opened"><span data-i18n="zero_opened">0 Opened</span></span>
+                            <span id="fs-stat-sent">0 Sent</span>
+                            <span id="fs-stat-ready">0 Ready</span>
+                            <span id="fs-stat-opened">0 Opened</span>
                         </div>
                     </div>
 
@@ -695,18 +695,18 @@
                             <textarea id="fs-message" placeholder="Write a message to your future self... goals, promises, predictions, reminders, or motivation." rows="4" style="width:100%; margin-bottom:0.75rem; padding:0.75rem; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-size:0.9rem; resize:vertical;"></textarea>
                             <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:0.75rem;">
                                 <select id="fs-delivery" style="flex:1; padding:0.6rem; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
-                                    <option value="1_week" data-i18n="open_1_week">📅 Open in 1 Week</option>
-                                    <option value="1_month" selected data-i18n="open_1_month">📅 Open in 1 Month</option>
-                                    <option value="3_months" data-i18n="open_3_months">📅 Open in 3 Months</option>
-                                    <option value="6_months" data-i18n="open_6_months">📅 Open in 6 Months</option>
-                                    <option value="1_year" data-i18n="open_1_year">📅 Open in 1 Year</option>
+                                    <option value="1_week">📅 Open in 1 Week</option>
+                                    <option value="1_month" selected>📅 Open in 1 Month</option>
+                                    <option value="3_months">📅 Open in 3 Months</option>
+                                    <option value="6_months">📅 Open in 6 Months</option>
+                                    <option value="1_year">📅 Open in 1 Year</option>
                                 </select>
                                 <select id="fs-category" style="flex:1; padding:0.6rem; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
-                                    <option value="goal" data-i18n="goal_cat">🎯 Goal</option>
-                                    <option value="promise" data-i18n="promise">🤝 Promise</option>
-                                    <option value="prediction" data-i18n="prediction">🔮 Prediction</option>
-                                    <option value="reminder" data-i18n="reminder_cat">🔔 Reminder</option>
-                                    <option value="motivational" selected data-i18n="motivational">💪 Motivational</option>
+                                    <option value="goal">🎯 Goal</option>
+                                    <option value="promise">🤝 Promise</option>
+                                    <option value="prediction">🔮 Prediction</option>
+                                    <option value="reminder">🔔 Reminder</option>
+                                    <option value="motivational" selected>💪 Motivational</option>
                                 </select>
                             </div>
                             <button onclick="submitFutureSelfMessage()" class="btn primary" style="width:100%;">
@@ -928,7 +928,7 @@
             </div>
 
             <div class="form-actions">
-                <button type="button" onclick="toggleTaskForm()" class="btn secondary" data-i18n="cancel" data-i18n="cancel">Cancel</button>
+                <button type="button" onclick="toggleTaskForm()" class="btn secondary" data-i18n="cancel">Cancel</button>
                 <button type="submit" class="btn primary" data-i18n="add_task">Add Task</button>
             </div>
         </form>
@@ -975,7 +975,7 @@
                 </div>
             </div>
             <div class="form-actions">
-                <button type="button" onclick="toggleGoalForm()" class="btn secondary" data-i18n="cancel">Cancel</button>
+                <button type="button" onclick="toggleGoalForm()" class="btn secondary">Cancel</button>
                 <button type="submit" class="btn primary">Create Goal</button>
             </div>
         </form>
@@ -1025,7 +1025,7 @@
                 </div>
             </div>
             <div class="form-actions">
-                <button type="button" onclick="toggleHabitForm()" class="btn secondary" data-i18n="cancel">Cancel</button>
+                <button type="button" onclick="toggleHabitForm()" class="btn secondary">Cancel</button>
                 <button type="submit" class="btn primary">Create Habit</button>
             </div>
         </form>
@@ -1127,7 +1127,7 @@
                 <img id="crop-image" src="" style="max-width: 100%; display: block;">
             </div>
             <div style="display: flex; gap: 1rem;">
-                <button type="button" id="crop-cancel-btn" class="btn secondary" style="flex: 1;" data-i18n="cancel">Cancel</button>
+                <button type="button" id="crop-cancel-btn" class="btn secondary" style="flex: 1;">Cancel</button>
                 <button type="button" id="crop-save-btn" class="btn primary" style="flex: 1;">Crop & Save</button>
             </div>
         </div>
