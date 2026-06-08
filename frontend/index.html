@@ -229,7 +229,7 @@
 
                 <div class="card habits-today-card" style="margin-bottom: 1.5rem;">
                     <div class="identity-header">
-                        <h3>Today's Habits</h3>
+                        <h3 data-i18n="today_habits">Today's Habits</h3>
                         <span class="priority-badge priority-medium">Consistency</span>
                     </div>
                     <div id="today-habits-list" class="habit-list"></div>
@@ -610,14 +610,14 @@
                         </div>
 
                         <div class="achievements-filters" id="achievements-filters">
-                            <button class="ach-filter-btn active" data-filter="All" onclick="filterAchievements('All', this)">All</button>
-                            <button class="ach-filter-btn" data-filter="Tasks" onclick="filterAchievements('Tasks', this)">📋 Tasks</button>
-                            <button class="ach-filter-btn" data-filter="Goals" onclick="filterAchievements('Goals', this)">🎯 Goals</button>
-                            <button class="ach-filter-btn" data-filter="Habits" onclick="filterAchievements('Habits', this)">⚡ Habits</button>
-                            <button class="ach-filter-btn" data-filter="Streaks" onclick="filterAchievements('Streaks', this)">🔥 Streaks</button>
-                            <button class="ach-filter-btn" data-filter="Trust" onclick="filterAchievements('Trust', this)">🛡️ Trust</button>
+                            <button class="ach-filter-btn active" data-filter="All" onclick="filterAchievements('All', this)" data-i18n="all">All</button>
+                            <button class="ach-filter-btn" data-filter="Tasks" onclick="filterAchievements('Tasks', this)">📋 <span data-i18n="tasks">Tasks</span></button>
+                            <button class="ach-filter-btn" data-filter="Goals" onclick="filterAchievements('Goals', this)">🎯 <span data-i18n="goals">Goals</span></button>
+                            <button class="ach-filter-btn" data-filter="Habits" onclick="filterAchievements('Habits', this)">⚡ <span data-i18n="habits">Habits</span></button>
+                            <button class="ach-filter-btn" data-filter="Streaks" onclick="filterAchievements('Streaks', this)">🔥 <span data-i18n="streak">Streaks</span></button>
+                            <button class="ach-filter-btn" data-filter="Trust" onclick="filterAchievements('Trust', this)">🛡️ <span data-i18n="trust_score">Trust</span></button>
                             <button class="ach-filter-btn" data-filter="XP" onclick="filterAchievements('XP', this)">⭐ XP</button>
-                            <button class="ach-filter-btn" data-filter="Calendar" onclick="filterAchievements('Calendar', this)">📅 Calendar</button>
+                            <button class="ach-filter-btn" data-filter="Calendar" onclick="filterAchievements('Calendar', this)">📅 <span data-i18n="calendar">Calendar</span></button>
                             <button class="ach-filter-btn" data-filter="Rare" onclick="filterAchievements('Rare', this)">💎 Rare</button>
                             <button class="ach-filter-btn" data-filter="Legendary" onclick="filterAchievements('Legendary', this)">👑 Legendary</button>
                             <button class="ach-filter-btn" data-filter="unlocked" onclick="filterAchievements('unlocked', this)">✅ Unlocked</button>
@@ -738,8 +738,8 @@
                 <div class="card" style="margin-bottom: 1.5rem;">
                     <div class="tabs" style="margin: 0;">
                         <button id="tab-tasks-only" class="tab active" onclick="switchTasksGoalsTab('tasks')" data-i18n="tasks">Tasks</button>
-                        <button id="tab-goals-only" class="tab" onclick="switchTasksGoalsTab('goals')">Goals</button>
-                        <button id="tab-habits-only" class="tab" onclick="switchTasksGoalsTab('habits')">Habits</button>
+                        <button id="tab-goals-only" class="tab" onclick="switchTasksGoalsTab('goals')" data-i18n="goals_tab">Goals</button>
+                        <button id="tab-habits-only" class="tab" onclick="switchTasksGoalsTab('habits')" data-i18n="habits_tab">Habits</button>
                     </div>
                 </div>
 
@@ -1182,7 +1182,7 @@
     <script charset='UTF-8' src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script charset='UTF-8' src="assets.js?v=17.0.0"></script>
     <script charset='UTF-8' src="badge_assets.js?v=36.0.0"></script>
-    <script charset='UTF-8' src="app.js?v=40.0.0"></script>
+    <script charset='UTF-8' src="app.js?v=41.0.0"></script>
     <script>
         // Logos are pre-sized; no JS resizing needed to avoid flicker.
         document.addEventListener('DOMContentLoaded', function() {

@@ -87,7 +87,8 @@ const translations = {
         inst_tasks_title: "Tasks", inst_tasks_desc: "Create new tasks by pressing '+'. Set priority and category. Check the circle to complete them and earn points.",
         inst_dash_title: "Dashboard", inst_dash_desc: "See your progress here. Track how many tasks you completed and view productivity charts.",
         inst_prog_title: "Progress & Badges", inst_prog_desc: "Each task gives you XP. Level up and unlock collectible badges as you achieve goals!",
-        inst_gestures_title: "Gestures & Navigation", inst_gestures_desc: "Swipe left or right to quickly switch between the app pages."
+        inst_gestures_title: "Gestures & Navigation", inst_gestures_desc: "Swipe left or right to quickly switch between the app pages.",
+        goals: "Goals", habits: "Habits", goals_tab: "Goals", habits_tab: "Habits", add_goal: "Add Goal", add_habit: "Add Habit", new_goal: "New Goal", new_habit: "New Habit", today_habits: "Today's Habits", goals_subtitle: "Milestones for the future.", habits_subtitle: "Small steps, big results.", reflect: "Reflect", reflection: "Reflection", check_in: "Check-in", save_goal: "Save Goal", save_habit: "Save Habit"
     },
     el: {
         app_title: "Tobedone",
@@ -128,7 +129,8 @@ const translations = {
         inst_tasks_title: "Εργασίες", inst_tasks_desc: "Δημιουργήστε νέες εργασίες πατώντας το '+'. Ορίστε προτεραιότητα και κατηγορία. Πατήστε το κυκλάκι για ολοκλήρωση.",
         inst_dash_title: "Dashboard", inst_dash_desc: "Εδώ βλέπετε την πρόοδό σας με διαγράμματα παραγωγικότητας.",
         inst_prog_title: "Progress & Badges", inst_prog_desc: "Κάθε εργασία δίνει XP. Ανεβείτε επίπεδο και ξεκλειδώστε badges!",
-        inst_gestures_title: "Πλοήγηση", inst_gestures_desc: "Σύρετε αριστερά-δεξιά για γρήγορη εναλλαγή σελίδων."
+        inst_gestures_title: "Πλοήγηση", inst_gestures_desc: "Σύρετε αριστερά-δεξιά για γρήγορη εναλλαγή σελίδων.",
+        goals: "Στόχοι", habits: "Συνήθειες", goals_tab: "Στόχοι", habits_tab: "Συνήθειες", add_goal: "Προσθήκη Στόχου", add_habit: "Προσθήκη Συνήθειας", new_goal: "Νέος Στόχος", new_habit: "Νέα Συνήθεια", today_habits: "Σημερινές Συνήθειες", goals_subtitle: "Ορόσημα για το μέλλον.", habits_subtitle: "Μικρά βήματα, μεγάλα αποτελέσματα.", reflect: "Αναστοχασμός", reflection: "Αναστοχασμός", check_in: "Έλεγχος", save_goal: "Αποθήκευση Στόχου", save_habit: "Αποθήκευση Συνήθειας"
     },
     es: {
         app_title: "Tobedone",
@@ -169,7 +171,8 @@ const translations = {
         inst_tasks_title: "Tareas", inst_tasks_desc: "Crea tareas con '+'. Obtén puntos al completarlas.",
         inst_dash_title: "Panel", inst_dash_desc: "Rastrea tu productividad con gráficos.",
         inst_prog_title: "Progreso", inst_prog_desc: "Gana XP y desbloquea insignias.",
-        inst_gestures_title: "Gestos", inst_gestures_desc: "Desliza para cambiar de página."
+        inst_gestures_title: "Gestos", inst_gestures_desc: "Desliza para cambiar de página.",
+        goals: "Metas", habits: "Hábitos", goals_tab: "Metas", habits_tab: "Hábitos", add_goal: "Añadir Meta", add_habit: "Añadir Hábito", new_goal: "Nueva Meta", new_habit: "Nuevo Hábito", today_habits: "Hábitos de Hoy", goals_subtitle: "Hitos para el futuro.", habits_subtitle: "Pequeños pasos, grandes resultados.", reflect: "Reflexionar", reflection: "Reflexión", check_in: "Registro", save_goal: "Guardar Meta", save_habit: "Guardar Hábito"
     },
     fr: {
         app_title: "Tobedone",
@@ -210,7 +213,8 @@ const translations = {
         inst_tasks_title: "Tâches", inst_tasks_desc: "Créez des tâches avec '+'. Obtenez des points.",
         inst_dash_title: "Tableau de bord", inst_dash_desc: "Suivez votre productivité.",
         inst_prog_title: "Progrès", inst_prog_desc: "Gagnez des XP et des badges.",
-        inst_gestures_title: "Gestes", inst_gestures_desc: "Glissez pour changer de page."
+        inst_gestures_title: "Gestes", inst_gestures_desc: "Glissez pour changer de page.",
+        goals: "Objectifs", habits: "Habitudes", goals_tab: "Objectifs", habits_tab: "Habitudes", add_goal: "Ajouter Objectif", add_habit: "Ajouter Habitude", new_goal: "Nouvel Objectif", new_habit: "Nouvelle Habitude", today_habits: "Habitudes du Jour", goals_subtitle: "Jalons pour l'avenir.", habits_subtitle: "Petits pas, grands résultats.", reflect: "Réfléchir", reflection: "Réflexion", check_in: "Point", save_goal: "Enregistrer Objectif", save_habit: "Enregistrer Habitude"
     },
     de: {
         app_title: "Tobedone",
@@ -251,7 +255,8 @@ const translations = {
         inst_tasks_title: "Aufgaben", inst_tasks_desc: "Erstellen Sie Aufgaben mit '+'. Verdienen Sie Punkte.",
         inst_dash_title: "Dashboard", inst_dash_desc: "Verfolgen Sie Ihre Produktivität.",
         inst_prog_title: "Fortschritt", inst_prog_desc: "Erhalten Sie XP und schalten Sie Abzeichen frei.",
-        inst_gestures_title: "Gesten", inst_gestures_desc: "Wischen zum Seitenwechsel."
+        inst_gestures_title: "Gesten", inst_gestures_desc: "Wischen zum Seitenwechsel.",
+        goals: "Ziele", habits: "Gewohnheiten", goals_tab: "Ziele", habits_tab: "Gewohnheiten", add_goal: "Ziel Hinzufügen", add_habit: "Gewohnheit Hinzufügen", new_goal: "Neues Ziel", new_habit: "Neue Gewohnheit", today_habits: "Heutige Gewohnheiten", goals_subtitle: "Meilensteine für die Zukunft.", habits_subtitle: "Kleine Schritte, große Ergebnisse.", reflect: "Reflektieren", reflection: "Reflexion", check_in: "Check-in", save_goal: "Ziel Speichern", save_habit: "Gewohnheit Speichern"
     },
     it: {
         app_title: "Tobedone",
@@ -292,7 +297,8 @@ const translations = {
         inst_tasks_title: "Compiti", inst_tasks_desc: "Crea con '+'. Guadagna punti completandoli.",
         inst_dash_title: "Pannello", inst_dash_desc: "Traccia la tua produttività.",
         inst_prog_title: "Progresso", inst_prog_desc: "Guadagna XP e sblocca badge.",
-        inst_gestures_title: "Gesti", inst_gestures_desc: "Scorri per cambiare pagina."
+        inst_gestures_title: "Gesti", inst_gestures_desc: "Scorri per cambiare pagina.",
+        goals: "Obiettivi", habits: "Abitudini", goals_tab: "Obiettivi", habits_tab: "Abitudini", add_goal: "Aggiungi Obiettivo", add_habit: "Aggiungi Abitudine", new_goal: "Nuovo Obiettivo", new_habit: "Nuova Abitudine", today_habits: "Abitudini di Oggi", goals_subtitle: "Traguardi per il futuro.", habits_subtitle: "Piccoli passi, grandi risultati.", reflect: "Riflettere", reflection: "Riflessione", check_in: "Controllo", save_goal: "Salva Obiettivo", save_habit: "Salva Abitudine"
     },
     pt: {
         app_title: "Tobedone",
@@ -333,7 +339,8 @@ const translations = {
         inst_tasks_title: "Tarefas", inst_tasks_desc: "Crie com '+'. Ganhe pontos.",
         inst_dash_title: "Painel", inst_dash_desc: "Acompanhe sua produtividade.",
         inst_prog_title: "Progresso", inst_prog_desc: "Ganhe XP e desbloqueie badges.",
-        inst_gestures_title: "Gestos", inst_gestures_desc: "Deslize para mudar de página."
+        inst_gestures_title: "Gestos", inst_gestures_desc: "Deslize para mudar de página.",
+        goals: "Objetivos", habits: "Hábitos", goals_tab: "Objetivos", habits_tab: "Hábitos", add_goal: "Adicionar Objetivo", add_habit: "Adicionar Hábito", new_goal: "Novo Objetivo", new_habit: "Novo Hábito", today_habits: "Hábitos de Hoje", goals_subtitle: "Marcos para o futuro.", habits_subtitle: "Pequenos passos, grandes resultados.", reflect: "Refletir", reflection: "Reflexão", check_in: "Check-in", save_goal: "Salvar Objetivo", save_habit: "Salvar Hábito"
     },
     ru: {
         app_title: "Tobedone",
@@ -374,7 +381,8 @@ const translations = {
         inst_tasks_title: "Задачи", inst_tasks_desc: "Создавайте задачи с '+'. Получайте очки за выполнение.",
         inst_dash_title: "Панель", inst_dash_desc: "Отслеживайте свою продуктивность.",
         inst_prog_title: "Прогресс", inst_prog_desc: "Получайте опыт и открывайте значки.",
-        inst_gestures_title: "Жесты", inst_gestures_desc: "Листайте для смены страниц."
+        inst_gestures_title: "Жесты", inst_gestures_desc: "Листайте для смены страниц.",
+        goals: "Цели", habits: "Привычки", goals_tab: "Цели", habits_tab: "Привычки", add_goal: "Добавить Цель", add_habit: "Добавить Привычку", new_goal: "Новая Цель", new_habit: "Новая Привычка", today_habits: "Привычки на Сегодня", goals_subtitle: "Вехи на будущее.", habits_subtitle: "Маленькие шаги, большие результаты.", reflect: "Рефлексия", reflection: "Рефлексия", check_in: "Отметка", save_goal: "Сохранить Цель", save_habit: "Сохранить Привычку"
     },
     ja: {
         app_title: "Tobedone",
@@ -415,7 +423,8 @@ const translations = {
         inst_tasks_title: "タスク", inst_tasks_desc: "「+」でタスクを作成。優先度とカテゴリを設定できます。円をタップして完了し、ポイントを獲得！",
         inst_dash_title: "ダッシュボード", inst_dash_desc: "生産性グラフで進捗を確認できます。",
         inst_prog_title: "進捗とバッジ", inst_prog_desc: "タスクを完了するとXPを獲得。レベルアップしてバッジをアンロック！",
-        inst_gestures_title: "ジェスチャー", inst_gestures_desc: "左右にスワイプしてページを切り替えられます。"
+        inst_gestures_title: "ジェスチャー", inst_gestures_desc: "左右にスワイプしてページを切り替えられます。",
+        goals: "目標", habits: "習慣", goals_tab: "目標", habits_tab: "習慣", add_goal: "目標を追加", add_habit: "習慣を追加", new_goal: "新しい目標", new_habit: "新しい習慣", today_habits: "今日の習慣", goals_subtitle: "未来へのマイルストーン。", habits_subtitle: "小さな一歩、大きな成果。", reflect: "振り返り", reflection: "振り返り", check_in: "チェックイン", save_goal: "目標を保存", save_habit: "習慣を保存"
     },
     zh: {
         app_title: "Tobedone",
@@ -456,7 +465,8 @@ const translations = {
         inst_tasks_title: "任务", inst_tasks_desc: "点击"+"创建任务。设置优先级和分类。点击圆圈完成任务并获得积分！",
         inst_dash_title: "仪表盘", inst_dash_desc: "通过图表查看您的生产力进度。",
         inst_prog_title: "进度与徽章", inst_prog_desc: "完成任务获取XP，升级并解锁收藏徽章！",
-        inst_gestures_title: "手势", inst_gestures_desc: "左右滑动可以快速切换应用页面。"
+        inst_gestures_title: "手势", inst_gestures_desc: "左右滑动可以快速切换应用页面。",
+        goals: "目标", habits: "习惯", goals_tab: "目标", habits_tab: "习惯", add_goal: "添加目标", add_habit: "添加习惯", new_goal: "新目标", new_habit: "新习惯", today_habits: "今日习惯", goals_subtitle: "未来的里程碑。", habits_subtitle: "每天一小步，成就一大步。", reflect: "反思", reflection: "反思", check_in: "打卡", save_goal: "保存目标", save_habit: "保存习惯"
     },
     ar: {
         app_title: "Tobedone",
@@ -497,7 +507,8 @@ const translations = {
         inst_tasks_title: "المهام", inst_tasks_desc: "أنشئ مهام جديدة بالنقر على '+'. اضبط الأولوية والفئة. انقر على الدائرة لإكمال المهمة وكسب النقاط!",
         inst_dash_title: "لوحة التحكم", inst_dash_desc: "تابع تقدمك من خلال الرسوم البيانية.",
         inst_prog_title: "التقدم والشارات", inst_prog_desc: "كل مهمة تمنحك XP. ارتقِ في المستويات وافتح شارات حصرية!",
-        inst_gestures_title: "الإيماءات", inst_gestures_desc: "اسحب يساراً أو يميناً للتنقل بين صفحات التطبيق."
+        inst_gestures_title: "الإيماءات", inst_gestures_desc: "اسحب يساراً أو يميناً للتنقل بين صفحات التطبيق.",
+        goals: "أهداف", habits: "عادات", goals_tab: "أهداف", habits_tab: "عادات", add_goal: "إضافة هدف", add_habit: "إضافة عادة", new_goal: "هدف جديد", new_habit: "عادة جديدة", today_habits: "عادات اليوم", goals_subtitle: "معالم للمستقبل.", habits_subtitle: "خطوات صغيرة، نتائج كبيرة.", reflect: "تأمل", reflection: "تأمل", check_in: "تسجيل", save_goal: "حفظ الهدف", save_habit: "حفظ العادة"
     }
 };
 
@@ -3576,19 +3587,19 @@ function switchTasksGoalsTab(tab) {
     const addBtnText = document.getElementById('tasks-goals-add-text');
     
     if (tab === 'tasks') {
-        titleEl.textContent = 'Tasks';
-        if(subtitleEl) subtitleEl.textContent = 'Focus on what matters today.';
-        if(addBtnText) addBtnText.textContent = 'New Task';
+        titleEl.textContent = t('tasks');
+        if(subtitleEl) subtitleEl.textContent = t('tasks_subtitle') || 'Focus on what matters today.';
+        if(addBtnText) addBtnText.textContent = t('new_task');
         loadTasks();
     } else if (tab === 'goals') {
-        titleEl.textContent = 'Goals';
-        if(subtitleEl) subtitleEl.textContent = 'Set goals. Stay focused. Achieve more.';
-        if(addBtnText) addBtnText.textContent = 'New Goal';
+        titleEl.textContent = t('goals');
+        if(subtitleEl) subtitleEl.textContent = t('goals_subtitle') || 'Set goals. Stay focused. Achieve more.';
+        if(addBtnText) addBtnText.textContent = t('new_goal');
         loadGoals();
     } else {
-        titleEl.textContent = 'Habits';
-        if(subtitleEl) subtitleEl.textContent = 'Build consistency with your recurring habits.';
-        if(addBtnText) addBtnText.textContent = 'New Habit';
+        titleEl.textContent = t('habits');
+        if(subtitleEl) subtitleEl.textContent = t('habits_subtitle') || 'Build consistency with your recurring habits.';
+        if(addBtnText) addBtnText.textContent = t('new_habit');
         loadHabits();
     }
 }
