@@ -1,4 +1,4 @@
-// Configuration
+﻿// Configuration
 // Fix Timezone Bug: Get YYYY-MM-DD in the user's local timezone
 Date.prototype.toLocalISOString = function() {
     const d = new Date(this);
@@ -87,122 +87,122 @@ const translations = {
     },
     el: {
         app_title: "Tobedone",
-        login: "Σύνδεση", signup: "Εγγραφή", continue_with_google: "Συνέχεια με Google", or: "ή",
-        username_email: "Όνομα χρήστη ή Email", username: "Όνομα χρήστη", password: "Κωδικός", forgot_password: "Ξεχάσατε τον κωδικό;",
-        forgot_password_note: "Εισάγετε το email σας για να στείλουμε σύνδεσμο επαναφοράς.", send_reset_link: "Αποστολή συνδέσμου",
-        back_to_login: "Πίσω στη σύνδεση", verify_email_title: "Επαληθεύστε το email σας", verify_email_body: "Ελέγξτε τα εισερχόμενά σας και κάντε κλικ στον σύνδεσμο.",
-        verification_code: "Κωδικός επαλήθευσης", verify_code: "Επαλήθευση κωδικού", reset_code: "Κωδικός επαναφοράς", use_code: "Χρήση κωδικού",
-        resend_verification: "Επαναποστολή email", reset_password_title: "Νέος κωδικός πρόσβασης", new_password: "Νέος κωδικός",
-        confirm_password: "Επιβεβαίωση κωδικού", update_password: "Ενημέρωση κωδικού", full_name: "Ονοματεπώνυμο", email: "Email",
-        change_name: "Αλλαγή Ονόματος", change_username: "Αλλαγή Username", create_account: "Δημιουργία Λογαριασμού", dashboard: "Ταμπλό",
-        reports: "Αναφορές", me: "Εγώ", tasks: "Εργασίες", insights: "Στατιστικά", progress: "Πρόοδος", settings: "Ρυθμίσεις", logout: "Αποσύνδεση",
-        trust_score: "Βαθμολογία", streak: "Σερί", success: "Επιτυχία", daily_progress: "Ημερήσια Πρόοδος", statistics: "Στατιστικά",
-        task_distribution: "Κατανομή Εργασιών", add_new_task: "Νέα Εργασία", new_task: "Νέα Εργασία", task_placeholder: "Τι πρέπει να γίνει;",
-        category: "Κατηγορία", difficulty: "Δυσκολία", easy: "Εύκολο", medium: "Μέτριο", hard: "Δύσκολο", cancel: "Ακύρωση", add_task: "Προσθήκη",
-        priority: "Προτεραιότητα", low: "Χαμηλή", high: "Υψηλή", recurring: "Επαναλαμβανόμενο", none: "Κανένα", daily: "Καθημερινά", weekly: "Εβδομαδιαία",
-        due_date: "Ημερομηνία", overdue: "Εκπρόθεσμα", all: "Όλα", filter_by: "Φίλτρο", productive_day: "Πιο παραγωγική μέρα",
-        productive_hour: "Πιο παραγωγική ώρα", trends: "Τάσεις", failure_patterns: "Μοτίβα αποτυχίας", achievements: "Επιτεύγματα",
-        well_done: "Μπράβο!", keep_going: "Συνέχισε έτσι!", streak_saved: "Το σερί διατηρήθηκε!", multiplier: "{value}x Ενίσχυση",
-        tasks_count: "{count} εργασίες σήμερα", smart_suggestion: "Έξυπνη Πρόταση", best_time_to_create: "Είσαι πολύ ενεργός τώρα! Καλή στιγμή για προγραμματισμό.",
-        suggest_simpler: "Αυτή η εργασία φαίνεται δύσκολη. Μήπως να τη σπάσεις σε μικρότερες;", high_risk: "Υψηλός κίνδυνος αποτυχίας βάσει του ιστορικού σου.",
-        optimal_time: "Ιδανική ώρα ολοκλήρωσης: ", most_productive_day: "Η πιο παραγωγική σου μέρα είναι ", most_productive_hour: "Ολοκληρώνεις περισσότερα γύρω στις ",
-        failure_pattern: "Συνήθως δυσκολεύεσαι με εργασίες στην κατηγορία ", theme: "Θέμα", toggle_dark: "Σκοτεινή Λειτουργία", language: "Γλώσσα",
-        app_info: "Πληροφορίες", version: "Έκδοση", completed: "Ολοκληρωμένα", failed: "Απέτυχαν", pending: "Εκκρεμή", no_tasks: "Καμία εργασία για σήμερα!",
-        session_expired: "Η συνεδρία έληξε", task_added: "Η εργασία προστέθηκε!", task_updated: "Η εργασία ενημερώθηκε!", error_occurred: "Σφάλμα",
-        calendar: "Ημερολόγιο", date: "Ημερομηνία", time: "Ώρα", reminder: "Υπενθύμιση",
-        view_habits_history: "Προβολή Ιστορικού", instructions_btn: "Οδηγίες για Νέους Χρήστες",
-        force_update: "Ενημέρωση Εφαρμογής", install_app: "Εγκατάσταση App", got_it: "Κατάλαβα",
-        inst_title: "Οδηγίες Χρήσης", inst_subtitle: "Όλα όσα πρέπει να ξέρετε για το Tobedone",
-        inst_tasks_title: "Tasks (Εργασίες)", inst_tasks_desc: "Δημιουργήστε νέες εργασίες πατώντας το '+'. Μπορείτε να ορίσετε προτεραιότητα και κατηγορία. Όταν τελειώσετε, πατήστε το κυκλικό κουτάκι για να την ολοκληρώσετε και να κερδίσετε πόντους.",
-        inst_dash_title: "Dashboard", inst_dash_desc: "Εδώ βλέπετε την πρόοδό σας. Παρακολουθήστε πόσες εργασίες ολοκληρώσατε την εβδομάδα και δείτε τα διαγράμματα παραγωγικότητας.",
-        inst_prog_title: "Progress & Badges", inst_prog_desc: "Κάθε εργασία σας δίνει XP. Συγκεντρώστε XP για να ανεβείτε επίπεδο (Level Up). Ξεκλειδώστε συλλεκτικά Badges καθώς πετυχαίνετε νέους στόχους!",
-        inst_gestures_title: "Gestures & Πλοήγηση", inst_gestures_desc: "Κάντε Swipe (σύρετε την οθόνη) αριστερά ή δεξιά για να μεταβείτε γρήγορα στις υπόλοιπες σελίδες της εφαρμογής."
+        login: "Ξ£ΟΞ½Ξ΄ΞµΟƒΞ·", signup: "Ξ•Ξ³Ξ³ΟΞ±Ο†Ξ®", continue_with_google: "Ξ£Ο…Ξ½Ξ­Ο‡ΞµΞΉΞ± ΞΌΞµ Google", or: "Ξ®",
+        username_email: "ΞΞ½ΞΏΞΌΞ± Ο‡ΟΞ®ΟƒΟ„Ξ· Ξ® Email", username: "ΞΞ½ΞΏΞΌΞ± Ο‡ΟΞ®ΟƒΟ„Ξ·", password: "ΞΟ‰Ξ΄ΞΉΞΊΟΟ‚", forgot_password: "ΞΞµΟ‡Ξ¬ΟƒΞ±Ο„Ξµ Ο„ΞΏΞ½ ΞΊΟ‰Ξ΄ΞΉΞΊΟ;",
+        forgot_password_note: "Ξ•ΞΉΟƒΞ¬Ξ³ΞµΟ„Ξµ Ο„ΞΏ email ΟƒΞ±Ο‚ Ξ³ΞΉΞ± Ξ½Ξ± ΟƒΟ„ΞµΞ―Ξ»ΞΏΟ…ΞΌΞµ ΟƒΟΞ½Ξ΄ΞµΟƒΞΌΞΏ ΞµΟ€Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬Ο‚.", send_reset_link: "Ξ‘Ο€ΞΏΟƒΟ„ΞΏΞ»Ξ® ΟƒΟ…Ξ½Ξ΄Ξ­ΟƒΞΌΞΏΟ…",
+        back_to_login: "Ξ Ξ―ΟƒΟ‰ ΟƒΟ„Ξ· ΟƒΟΞ½Ξ΄ΞµΟƒΞ·", verify_email_title: "Ξ•Ο€Ξ±Ξ»Ξ·ΞΈΞµΟΟƒΟ„Ξµ Ο„ΞΏ email ΟƒΞ±Ο‚", verify_email_body: "Ξ•Ξ»Ξ­Ξ³ΞΎΟ„Ξµ Ο„Ξ± ΞµΞΉΟƒΞµΟΟ‡ΟΞΌΞµΞ½Ξ¬ ΟƒΞ±Ο‚ ΞΊΞ±ΞΉ ΞΊΞ¬Ξ½Ο„Ξµ ΞΊΞ»ΞΉΞΊ ΟƒΟ„ΞΏΞ½ ΟƒΟΞ½Ξ΄ΞµΟƒΞΌΞΏ.",
+        verification_code: "ΞΟ‰Ξ΄ΞΉΞΊΟΟ‚ ΞµΟ€Ξ±Ξ»Ξ®ΞΈΞµΟ…ΟƒΞ·Ο‚", verify_code: "Ξ•Ο€Ξ±Ξ»Ξ®ΞΈΞµΟ…ΟƒΞ· ΞΊΟ‰Ξ΄ΞΉΞΊΞΏΟ", reset_code: "ΞΟ‰Ξ΄ΞΉΞΊΟΟ‚ ΞµΟ€Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬Ο‚", use_code: "Ξ§ΟΞ®ΟƒΞ· ΞΊΟ‰Ξ΄ΞΉΞΊΞΏΟ",
+        resend_verification: "Ξ•Ο€Ξ±Ξ½Ξ±Ο€ΞΏΟƒΟ„ΞΏΞ»Ξ® email", reset_password_title: "ΞΞ­ΞΏΟ‚ ΞΊΟ‰Ξ΄ΞΉΞΊΟΟ‚ Ο€ΟΟΟƒΞ²Ξ±ΟƒΞ·Ο‚", new_password: "ΞΞ­ΞΏΟ‚ ΞΊΟ‰Ξ΄ΞΉΞΊΟΟ‚",
+        confirm_password: "Ξ•Ο€ΞΉΞ²ΞµΞ²Ξ±Ξ―Ο‰ΟƒΞ· ΞΊΟ‰Ξ΄ΞΉΞΊΞΏΟ", update_password: "Ξ•Ξ½Ξ·ΞΌΞ­ΟΟ‰ΟƒΞ· ΞΊΟ‰Ξ΄ΞΉΞΊΞΏΟ", full_name: "ΞΞ½ΞΏΞΌΞ±Ο„ΞµΟ€ΟΞ½Ο…ΞΌΞΏ", email: "Email",
+        change_name: "Ξ‘Ξ»Ξ»Ξ±Ξ³Ξ® ΞΞ½ΟΞΌΞ±Ο„ΞΏΟ‚", change_username: "Ξ‘Ξ»Ξ»Ξ±Ξ³Ξ® Username", create_account: "Ξ”Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ± Ξ›ΞΏΞ³Ξ±ΟΞΉΞ±ΟƒΞΌΞΏΟ", dashboard: "Ξ¤Ξ±ΞΌΟ€Ξ»Ο",
+        reports: "Ξ‘Ξ½Ξ±Ο†ΞΏΟΞ­Ο‚", me: "Ξ•Ξ³Ο", tasks: "Ξ•ΟΞ³Ξ±ΟƒΞ―ΞµΟ‚", insights: "Ξ£Ο„Ξ±Ο„ΞΉΟƒΟ„ΞΉΞΊΞ¬", progress: "Ξ ΟΟΞΏΞ΄ΞΏΟ‚", settings: "Ξ΅Ο…ΞΈΞΌΞ―ΟƒΞµΞΉΟ‚", logout: "Ξ‘Ο€ΞΏΟƒΟΞ½Ξ΄ΞµΟƒΞ·",
+        trust_score: "Ξ’Ξ±ΞΈΞΌΞΏΞ»ΞΏΞ³Ξ―Ξ±", streak: "Ξ£ΞµΟΞ―", success: "Ξ•Ο€ΞΉΟ„Ο…Ο‡Ξ―Ξ±", daily_progress: "Ξ—ΞΌΞµΟΞ®ΟƒΞΉΞ± Ξ ΟΟΞΏΞ΄ΞΏΟ‚", statistics: "Ξ£Ο„Ξ±Ο„ΞΉΟƒΟ„ΞΉΞΊΞ¬",
+        task_distribution: "ΞΞ±Ο„Ξ±Ξ½ΞΏΞΌΞ® Ξ•ΟΞ³Ξ±ΟƒΞΉΟΞ½", add_new_task: "ΞΞ­Ξ± Ξ•ΟΞ³Ξ±ΟƒΞ―Ξ±", new_task: "ΞΞ­Ξ± Ξ•ΟΞ³Ξ±ΟƒΞ―Ξ±", task_placeholder: "Ξ¤ΞΉ Ο€ΟΞ­Ο€ΞµΞΉ Ξ½Ξ± Ξ³Ξ―Ξ½ΞµΞΉ;",
+        category: "ΞΞ±Ο„Ξ·Ξ³ΞΏΟΞ―Ξ±", difficulty: "Ξ”Ο…ΟƒΞΊΞΏΞ»Ξ―Ξ±", easy: "Ξ•ΟΞΊΞΏΞ»ΞΏ", medium: "ΞΞ­Ο„ΟΞΉΞΏ", hard: "Ξ”ΟΟƒΞΊΞΏΞ»ΞΏ", cancel: "Ξ‘ΞΊΟΟΟ‰ΟƒΞ·", add_task: "Ξ ΟΞΏΟƒΞΈΞ®ΞΊΞ·",
+        priority: "Ξ ΟΞΏΟ„ΞµΟΞ±ΞΉΟΟ„Ξ·Ο„Ξ±", low: "Ξ§Ξ±ΞΌΞ·Ξ»Ξ®", high: "Ξ¥ΟΞ·Ξ»Ξ®", recurring: "Ξ•Ο€Ξ±Ξ½Ξ±Ξ»Ξ±ΞΌΞ²Ξ±Ξ½ΟΞΌΞµΞ½ΞΏ", none: "ΞΞ±Ξ½Ξ­Ξ½Ξ±", daily: "ΞΞ±ΞΈΞ·ΞΌΞµΟΞΉΞ½Ξ¬", weekly: "Ξ•Ξ²Ξ΄ΞΏΞΌΞ±Ξ΄ΞΉΞ±Ξ―Ξ±",
+        due_date: "Ξ—ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ±", overdue: "Ξ•ΞΊΟ€ΟΟΞΈΞµΟƒΞΌΞ±", all: "ΞΞ»Ξ±", filter_by: "Ξ¦Ξ―Ξ»Ο„ΟΞΏ", productive_day: "Ξ ΞΉΞΏ Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³ΞΉΞΊΞ® ΞΌΞ­ΟΞ±",
+        productive_hour: "Ξ ΞΉΞΏ Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³ΞΉΞΊΞ® ΟΟΞ±", trends: "Ξ¤Ξ¬ΟƒΞµΞΉΟ‚", failure_patterns: "ΞΞΏΟ„Ξ―Ξ²Ξ± Ξ±Ο€ΞΏΟ„Ο…Ο‡Ξ―Ξ±Ο‚", achievements: "Ξ•Ο€ΞΉΟ„ΞµΟΞ³ΞΌΞ±Ο„Ξ±",
+        well_done: "ΞΟ€ΟΞ¬Ξ²ΞΏ!", keep_going: "Ξ£Ο…Ξ½Ξ­Ο‡ΞΉΟƒΞµ Ξ­Ο„ΟƒΞΉ!", streak_saved: "Ξ¤ΞΏ ΟƒΞµΟΞ― Ξ΄ΞΉΞ±Ο„Ξ·ΟΞ®ΞΈΞ·ΞΊΞµ!", multiplier: "{value}x Ξ•Ξ½Ξ―ΟƒΟ‡Ο…ΟƒΞ·",
+        tasks_count: "{count} ΞµΟΞ³Ξ±ΟƒΞ―ΞµΟ‚ ΟƒΞ®ΞΌΞµΟΞ±", smart_suggestion: "ΞΞΎΟ…Ο€Ξ½Ξ· Ξ ΟΟΟ„Ξ±ΟƒΞ·", best_time_to_create: "Ξ•Ξ―ΟƒΞ±ΞΉ Ο€ΞΏΞ»Ο ΞµΞ½ΞµΟΞ³ΟΟ‚ Ο„ΟΟΞ±! ΞΞ±Ξ»Ξ® ΟƒΟ„ΞΉΞ³ΞΌΞ® Ξ³ΞΉΞ± Ο€ΟΞΏΞ³ΟΞ±ΞΌΞΌΞ±Ο„ΞΉΟƒΞΌΟ.",
+        suggest_simpler: "Ξ‘Ο…Ο„Ξ® Ξ· ΞµΟΞ³Ξ±ΟƒΞ―Ξ± Ο†Ξ±Ξ―Ξ½ΞµΟ„Ξ±ΞΉ Ξ΄ΟΟƒΞΊΞΏΞ»Ξ·. ΞΞ®Ο€Ο‰Ο‚ Ξ½Ξ± Ο„Ξ· ΟƒΟ€Ξ¬ΟƒΞµΞΉΟ‚ ΟƒΞµ ΞΌΞΉΞΊΟΟΟ„ΞµΟΞµΟ‚;", high_risk: "Ξ¥ΟΞ·Ξ»ΟΟ‚ ΞΊΞ―Ξ½Ξ΄Ο…Ξ½ΞΏΟ‚ Ξ±Ο€ΞΏΟ„Ο…Ο‡Ξ―Ξ±Ο‚ Ξ²Ξ¬ΟƒΞµΞΉ Ο„ΞΏΟ… ΞΉΟƒΟ„ΞΏΟΞΉΞΊΞΏΟ ΟƒΞΏΟ….",
+        optimal_time: "Ξ™Ξ΄Ξ±Ξ½ΞΉΞΊΞ® ΟΟΞ± ΞΏΞ»ΞΏΞΊΞ»Ξ®ΟΟ‰ΟƒΞ·Ο‚: ", most_productive_day: "Ξ— Ο€ΞΉΞΏ Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³ΞΉΞΊΞ® ΟƒΞΏΟ… ΞΌΞ­ΟΞ± ΞµΞ―Ξ½Ξ±ΞΉ ", most_productive_hour: "ΞΞ»ΞΏΞΊΞ»Ξ·ΟΟΞ½ΞµΞΉΟ‚ Ο€ΞµΟΞΉΟƒΟƒΟΟ„ΞµΟΞ± Ξ³ΟΟΟ‰ ΟƒΟ„ΞΉΟ‚ ",
+        failure_pattern: "Ξ£Ο…Ξ½Ξ®ΞΈΟ‰Ο‚ Ξ΄Ο…ΟƒΞΊΞΏΞ»ΞµΟΞµΟƒΞ±ΞΉ ΞΌΞµ ΞµΟΞ³Ξ±ΟƒΞ―ΞµΟ‚ ΟƒΟ„Ξ·Ξ½ ΞΊΞ±Ο„Ξ·Ξ³ΞΏΟΞ―Ξ± ", theme: "ΞΞ­ΞΌΞ±", toggle_dark: "Ξ£ΞΊΞΏΟ„ΞµΞΉΞ½Ξ® Ξ›ΞµΞΉΟ„ΞΏΟ…ΟΞ³Ξ―Ξ±", language: "Ξ“Ξ»ΟΟƒΟƒΞ±",
+        app_info: "Ξ Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚", version: "ΞΞΊΞ΄ΞΏΟƒΞ·", completed: "ΞΞ»ΞΏΞΊΞ»Ξ·ΟΟ‰ΞΌΞ­Ξ½Ξ±", failed: "Ξ‘Ο€Ξ­Ο„Ο…Ο‡Ξ±Ξ½", pending: "Ξ•ΞΊΞΊΟΞµΞΌΞ®", no_tasks: "ΞΞ±ΞΌΞ―Ξ± ΞµΟΞ³Ξ±ΟƒΞ―Ξ± Ξ³ΞΉΞ± ΟƒΞ®ΞΌΞµΟΞ±!",
+        session_expired: "Ξ— ΟƒΟ…Ξ½ΞµΞ΄ΟΞ―Ξ± Ξ­Ξ»Ξ·ΞΎΞµ", task_added: "Ξ— ΞµΟΞ³Ξ±ΟƒΞ―Ξ± Ο€ΟΞΏΟƒΟ„Ξ­ΞΈΞ·ΞΊΞµ!", task_updated: "Ξ— ΞµΟΞ³Ξ±ΟƒΞ―Ξ± ΞµΞ½Ξ·ΞΌΞµΟΟΞΈΞ·ΞΊΞµ!", error_occurred: "Ξ£Ο†Ξ¬Ξ»ΞΌΞ±",
+        calendar: "Ξ—ΞΌΞµΟΞΏΞ»ΟΞ³ΞΉΞΏ", date: "Ξ—ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ±", time: "ΞΟΞ±", reminder: "Ξ¥Ο€ΞµΞ½ΞΈΟΞΌΞΉΟƒΞ·",
+        view_habits_history: "Ξ ΟΞΏΞ²ΞΏΞ»Ξ® Ξ™ΟƒΟ„ΞΏΟΞΉΞΊΞΏΟ", instructions_btn: "ΞΞ΄Ξ·Ξ³Ξ―ΞµΟ‚ Ξ³ΞΉΞ± ΞΞ­ΞΏΟ…Ο‚ Ξ§ΟΞ®ΟƒΟ„ΞµΟ‚",
+        force_update: "Ξ•Ξ½Ξ·ΞΌΞ­ΟΟ‰ΟƒΞ· Ξ•Ο†Ξ±ΟΞΌΞΏΞ³Ξ®Ο‚", install_app: "Ξ•Ξ³ΞΊΞ±Ο„Ξ¬ΟƒΟ„Ξ±ΟƒΞ· App", got_it: "ΞΞ±Ο„Ξ¬Ξ»Ξ±Ξ²Ξ±",
+        inst_title: "ΞΞ΄Ξ·Ξ³Ξ―ΞµΟ‚ Ξ§ΟΞ®ΟƒΞ·Ο‚", inst_subtitle: "ΞΞ»Ξ± ΟΟƒΞ± Ο€ΟΞ­Ο€ΞµΞΉ Ξ½Ξ± ΞΎΞ­ΟΞµΟ„Ξµ Ξ³ΞΉΞ± Ο„ΞΏ Tobedone",
+        inst_tasks_title: "Tasks (Ξ•ΟΞ³Ξ±ΟƒΞ―ΞµΟ‚)", inst_tasks_desc: "Ξ”Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ®ΟƒΟ„Ξµ Ξ½Ξ­ΞµΟ‚ ΞµΟΞ³Ξ±ΟƒΞ―ΞµΟ‚ Ο€Ξ±Ο„ΟΞ½Ο„Ξ±Ο‚ Ο„ΞΏ '+'. ΞΟ€ΞΏΟΞµΞ―Ο„Ξµ Ξ½Ξ± ΞΏΟΞ―ΟƒΞµΟ„Ξµ Ο€ΟΞΏΟ„ΞµΟΞ±ΞΉΟΟ„Ξ·Ο„Ξ± ΞΊΞ±ΞΉ ΞΊΞ±Ο„Ξ·Ξ³ΞΏΟΞ―Ξ±. ΞΟ„Ξ±Ξ½ Ο„ΞµΞ»ΞµΞΉΟΟƒΞµΟ„Ξµ, Ο€Ξ±Ο„Ξ®ΟƒΟ„Ξµ Ο„ΞΏ ΞΊΟ…ΞΊΞ»ΞΉΞΊΟ ΞΊΞΏΟ…Ο„Ξ¬ΞΊΞΉ Ξ³ΞΉΞ± Ξ½Ξ± Ο„Ξ·Ξ½ ΞΏΞ»ΞΏΞΊΞ»Ξ·ΟΟΟƒΞµΟ„Ξµ ΞΊΞ±ΞΉ Ξ½Ξ± ΞΊΞµΟΞ΄Ξ―ΟƒΞµΟ„Ξµ Ο€ΟΞ½Ο„ΞΏΟ…Ο‚.",
+        inst_dash_title: "Dashboard", inst_dash_desc: "Ξ•Ξ΄Ο Ξ²Ξ»Ξ­Ο€ΞµΟ„Ξµ Ο„Ξ·Ξ½ Ο€ΟΟΞΏΞ΄Ο ΟƒΞ±Ο‚. Ξ Ξ±ΟΞ±ΞΊΞΏΞ»ΞΏΟ…ΞΈΞ®ΟƒΟ„Ξµ Ο€ΟΟƒΞµΟ‚ ΞµΟΞ³Ξ±ΟƒΞ―ΞµΟ‚ ΞΏΞ»ΞΏΞΊΞ»Ξ·ΟΟΟƒΞ±Ο„Ξµ Ο„Ξ·Ξ½ ΞµΞ²Ξ΄ΞΏΞΌΞ¬Ξ΄Ξ± ΞΊΞ±ΞΉ Ξ΄ΞµΞ―Ο„Ξµ Ο„Ξ± Ξ΄ΞΉΞ±Ξ³ΟΞ¬ΞΌΞΌΞ±Ο„Ξ± Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³ΞΉΞΊΟΟ„Ξ·Ο„Ξ±Ο‚.",
+        inst_prog_title: "Progress & Badges", inst_prog_desc: "ΞΞ¬ΞΈΞµ ΞµΟΞ³Ξ±ΟƒΞ―Ξ± ΟƒΞ±Ο‚ Ξ΄Ξ―Ξ½ΞµΞΉ XP. Ξ£Ο…Ξ³ΞΊΞµΞ½Ο„ΟΟΟƒΟ„Ξµ XP Ξ³ΞΉΞ± Ξ½Ξ± Ξ±Ξ½ΞµΞ²ΞµΞ―Ο„Ξµ ΞµΟ€Ξ―Ο€ΞµΞ΄ΞΏ (Level Up). ΞΞµΞΊΞ»ΞµΞΉΞ΄ΟΟƒΟ„Ξµ ΟƒΟ…Ξ»Ξ»ΞµΞΊΟ„ΞΉΞΊΞ¬ Badges ΞΊΞ±ΞΈΟΟ‚ Ο€ΞµΟ„Ο…Ο‡Ξ±Ξ―Ξ½ΞµΟ„Ξµ Ξ½Ξ­ΞΏΟ…Ο‚ ΟƒΟ„ΟΟ‡ΞΏΟ…Ο‚!",
+        inst_gestures_title: "Gestures & Ξ Ξ»ΞΏΞ®Ξ³Ξ·ΟƒΞ·", inst_gestures_desc: "ΞΞ¬Ξ½Ο„Ξµ Swipe (ΟƒΟΟΞµΟ„Ξµ Ο„Ξ·Ξ½ ΞΏΞΈΟΞ½Ξ·) Ξ±ΟΞΉΟƒΟ„ΞµΟΞ¬ Ξ® Ξ΄ΞµΞΎΞΉΞ¬ Ξ³ΞΉΞ± Ξ½Ξ± ΞΌΞµΟ„Ξ±Ξ²ΞµΞ―Ο„Ξµ Ξ³ΟΞ®Ξ³ΞΏΟΞ± ΟƒΟ„ΞΉΟ‚ Ο…Ο€ΟΞ»ΞΏΞΉΟ€ΞµΟ‚ ΟƒΞµΞ»Ξ―Ξ΄ΞµΟ‚ Ο„Ξ·Ο‚ ΞµΟ†Ξ±ΟΞΌΞΏΞ³Ξ®Ο‚."
     },
     es: {
-        app_title: "Tobedone", login: "Iniciar sesión", signup: "Registrarse", continue_with_google: "Continuar con Google", or: "o",
-        username_email: "Usuario o Correo", username: "Usuario", password: "Contraseña", forgot_password: "¿Olvidaste tu contraseña?",
+        app_title: "Tobedone", login: "Iniciar sesiΓ³n", signup: "Registrarse", continue_with_google: "Continuar con Google", or: "o",
+        username_email: "Usuario o Correo", username: "Usuario", password: "ContraseΓ±a", forgot_password: "ΒΏOlvidaste tu contraseΓ±a?",
         forgot_password_note: "Ingresa tu correo y te enviaremos un enlace de restablecimiento.", send_reset_link: "Enviar enlace",
         back_to_login: "Volver al inicio", verify_email_title: "Verifica tu correo", verify_email_body: "Revisa tu bandeja de entrada y haz clic en el enlace.",
-        verification_code: "Código de verificación", verify_code: "Verificar código", reset_code: "Código de restablecimiento", use_code: "Usar código",
-        resend_verification: "Reenviar correo", reset_password_title: "Establecer nueva contraseña", new_password: "Nueva contraseña",
-        confirm_password: "Confirmar contraseña", update_password: "Actualizar", full_name: "Nombre completo", email: "Correo",
+        verification_code: "CΓ³digo de verificaciΓ³n", verify_code: "Verificar cΓ³digo", reset_code: "CΓ³digo de restablecimiento", use_code: "Usar cΓ³digo",
+        resend_verification: "Reenviar correo", reset_password_title: "Establecer nueva contraseΓ±a", new_password: "Nueva contraseΓ±a",
+        confirm_password: "Confirmar contraseΓ±a", update_password: "Actualizar", full_name: "Nombre completo", email: "Correo",
         change_name: "Cambiar nombre", change_username: "Cambiar usuario", create_account: "Crear Cuenta", dashboard: "Panel",
-        reports: "Informes", me: "Yo", tasks: "Tareas", insights: "Estadísticas", progress: "Progreso", settings: "Ajustes", logout: "Salir",
-        trust_score: "Confianza", streak: "Racha", success: "Éxito", daily_progress: "Progreso diario", statistics: "Estadísticas",
-        task_distribution: "Distribución de Tareas", add_new_task: "Nueva Tarea", new_task: "Nueva Tarea", task_placeholder: "¿Qué hay que hacer?",
-        category: "Categoría", difficulty: "Dificultad", easy: "Fácil", medium: "Medio", hard: "Difícil", cancel: "Cancelar", add_task: "Añadir",
+        reports: "Informes", me: "Yo", tasks: "Tareas", insights: "EstadΓ­sticas", progress: "Progreso", settings: "Ajustes", logout: "Salir",
+        trust_score: "Confianza", streak: "Racha", success: "Γ‰xito", daily_progress: "Progreso diario", statistics: "EstadΓ­sticas",
+        task_distribution: "DistribuciΓ³n de Tareas", add_new_task: "Nueva Tarea", new_task: "Nueva Tarea", task_placeholder: "ΒΏQuΓ© hay que hacer?",
+        category: "CategorΓ­a", difficulty: "Dificultad", easy: "FΓ΅cil", medium: "Medio", hard: "DifΓ­cil", cancel: "Cancelar", add_task: "AΓ±adir",
         priority: "Prioridad", low: "Baja", high: "Alta", recurring: "Recurrente", none: "Ninguno", daily: "Diario", weekly: "Semanal",
-        due_date: "Fecha", overdue: "Atrasado", all: "Todo", filter_by: "Filtrar por", productive_day: "Día más productivo",
-        productive_hour: "Hora más productiva", trends: "Tendencias", failure_patterns: "Patrones de fallo", achievements: "Logros",
-        well_done: "¡Bien hecho!", keep_going: "¡Sigue así!", streak_saved: "¡Racha mantenida!", multiplier: "{value}x Impulso",
-        tasks_count: "{count} tareas hoy", smart_suggestion: "Sugerencia Inteligente", best_time_to_create: "¡Estás muy activo ahora! Buen momento para planear.",
-        suggest_simpler: "Esta tarea parece compleja. ¿Intentas dividirla?", high_risk: "Alto riesgo de fallo según tu historial.",
-        optimal_time: "Hora óptima para completar esto: ", most_productive_day: "Tu día más productivo es ", most_productive_hour: "Haces más cosas alrededor de ",
+        due_date: "Fecha", overdue: "Atrasado", all: "Todo", filter_by: "Filtrar por", productive_day: "DΓ­a mΓ΅s productivo",
+        productive_hour: "Hora mΓ΅s productiva", trends: "Tendencias", failure_patterns: "Patrones de fallo", achievements: "Logros",
+        well_done: "Β΅Bien hecho!", keep_going: "Β΅Sigue asΓ­!", streak_saved: "Β΅Racha mantenida!", multiplier: "{value}x Impulso",
+        tasks_count: "{count} tareas hoy", smart_suggestion: "Sugerencia Inteligente", best_time_to_create: "Β΅EstΓ΅s muy activo ahora! Buen momento para planear.",
+        suggest_simpler: "Esta tarea parece compleja. ΒΏIntentas dividirla?", high_risk: "Alto riesgo de fallo segΓΊn tu historial.",
+        optimal_time: "Hora Γ³ptima para completar esto: ", most_productive_day: "Tu dΓ­a mΓ΅s productivo es ", most_productive_hour: "Haces mΓ΅s cosas alrededor de ",
         failure_pattern: "Sueles tener problemas con tareas de ", theme: "Tema", toggle_dark: "Modo Oscuro", language: "Idioma",
-        app_info: "Info", version: "Versión", completed: "Completado", failed: "Fallido", pending: "Pendiente", no_tasks: "¡No hay tareas para hoy!",
-        session_expired: "Sesión expirada", task_added: "¡Tarea añadida!", task_updated: "¡Tarea actualizada!", error_occurred: "Ocurrió un error",
+        app_info: "Info", version: "VersiΓ³n", completed: "Completado", failed: "Fallido", pending: "Pendiente", no_tasks: "Β΅No hay tareas para hoy!",
+        session_expired: "SesiΓ³n expirada", task_added: "Β΅Tarea aΓ±adida!", task_updated: "Β΅Tarea actualizada!", error_occurred: "OcurriΓ³ un error",
         calendar: "Calendario", date: "Fecha", time: "Hora", reminder: "Recordatorio",
         view_habits_history: "Ver Historial", instructions_btn: "Instrucciones", force_update: "Actualizar App", install_app: "Instalar App", got_it: "Entendido",
-        inst_title: "Instrucciones", inst_subtitle: "Todo sobre Tobedone", inst_tasks_title: "Tareas", inst_tasks_desc: "Crea tareas con '+'. Obtén puntos al completarlas.",
+        inst_title: "Instrucciones", inst_subtitle: "Todo sobre Tobedone", inst_tasks_title: "Tareas", inst_tasks_desc: "Crea tareas con '+'. ObtΓ©n puntos al completarlas.",
         inst_dash_title: "Panel", inst_dash_desc: "Rastrea tu productividad.", inst_prog_title: "Progreso", inst_prog_desc: "Gana XP y desbloquea insignias.",
-        inst_gestures_title: "Gestos", inst_gestures_desc: "Desliza para cambiar de página."
+        inst_gestures_title: "Gestos", inst_gestures_desc: "Desliza para cambiar de pΓ΅gina."
     },
     fr: {
         app_title: "Tobedone", login: "Se connecter", signup: "S'inscrire", continue_with_google: "Continuer avec Google", or: "ou",
-        username_email: "Utilisateur ou Email", username: "Utilisateur", password: "Mot de passe", forgot_password: "Mot de passe oublié?",
-        forgot_password_note: "Entrez votre email pour un lien de réinitialisation.", send_reset_link: "Envoyer le lien",
-        back_to_login: "Retour à la connexion", verify_email_title: "Vérifiez votre email", verify_email_body: "Vérifiez votre boîte de réception.",
-        verification_code: "Code de vérification", verify_code: "Vérifier le code", reset_code: "Code de réinitialisation", use_code: "Utiliser le code",
+        username_email: "Utilisateur ou Email", username: "Utilisateur", password: "Mot de passe", forgot_password: "Mot de passe oubliΓ©?",
+        forgot_password_note: "Entrez votre email pour un lien de rΓ©initialisation.", send_reset_link: "Envoyer le lien",
+        back_to_login: "Retour Γ  la connexion", verify_email_title: "VΓ©rifiez votre email", verify_email_body: "VΓ©rifiez votre boΓ®te de rΓ©ception.",
+        verification_code: "Code de vΓ©rification", verify_code: "VΓ©rifier le code", reset_code: "Code de rΓ©initialisation", use_code: "Utiliser le code",
         resend_verification: "Renvoyer l'email", reset_password_title: "Nouveau mot de passe", new_password: "Nouveau mot de passe",
-        confirm_password: "Confirmer", update_password: "Mettre à jour", full_name: "Nom complet", email: "Email",
-        change_name: "Changer le nom", change_username: "Changer le nom d'utilisateur", create_account: "Créer un compte", dashboard: "Tableau de bord",
-        reports: "Rapports", me: "Moi", tasks: "Tâches", insights: "Statistiques", progress: "Progrès", settings: "Paramètres", logout: "Déconnexion",
-        trust_score: "Confiance", streak: "Série", success: "Succès", daily_progress: "Progrès quotidien", statistics: "Statistiques",
-        task_distribution: "Distribution des Tâches", add_new_task: "Nouvelle Tâche", new_task: "Nouvelle Tâche", task_placeholder: "Que faire?",
-        category: "Catégorie", difficulty: "Difficulté", easy: "Facile", medium: "Moyen", hard: "Difficile", cancel: "Annuler", add_task: "Ajouter",
-        priority: "Priorité", low: "Basse", high: "Haute", recurring: "Récurrent", none: "Aucun", daily: "Quotidien", weekly: "Hebdomadaire",
+        confirm_password: "Confirmer", update_password: "Mettre Γ  jour", full_name: "Nom complet", email: "Email",
+        change_name: "Changer le nom", change_username: "Changer le nom d'utilisateur", create_account: "CrΓ©er un compte", dashboard: "Tableau de bord",
+        reports: "Rapports", me: "Moi", tasks: "TΓΆches", insights: "Statistiques", progress: "ProgrΓ¨s", settings: "ParamΓ¨tres", logout: "DΓ©connexion",
+        trust_score: "Confiance", streak: "SΓ©rie", success: "SuccΓ¨s", daily_progress: "ProgrΓ¨s quotidien", statistics: "Statistiques",
+        task_distribution: "Distribution des TΓΆches", add_new_task: "Nouvelle TΓΆche", new_task: "Nouvelle TΓΆche", task_placeholder: "Que faire?",
+        category: "CatΓ©gorie", difficulty: "DifficultΓ©", easy: "Facile", medium: "Moyen", hard: "Difficile", cancel: "Annuler", add_task: "Ajouter",
+        priority: "PrioritΓ©", low: "Basse", high: "Haute", recurring: "RΓ©current", none: "Aucun", daily: "Quotidien", weekly: "Hebdomadaire",
         due_date: "Date", overdue: "En retard", all: "Tout", filter_by: "Filtrer par", productive_day: "Jour productif",
-        productive_hour: "Heure productive", trends: "Tendances", failure_patterns: "Modèles d'échec", achievements: "Réalisations",
-        well_done: "Bien joué!", keep_going: "Continuez!", streak_saved: "Série maintenue!", multiplier: "{value}x Bonus",
-        tasks_count: "{count} tâches", smart_suggestion: "Suggestion", best_time_to_create: "Vous êtes très actif maintenant!",
-        suggest_simpler: "Cette tâche semble complexe. La diviser?", high_risk: "Haut risque d'échec selon votre historique.",
+        productive_hour: "Heure productive", trends: "Tendances", failure_patterns: "ModΓ¨les d'Γ©chec", achievements: "RΓ©alisations",
+        well_done: "Bien jouΓ©!", keep_going: "Continuez!", streak_saved: "SΓ©rie maintenue!", multiplier: "{value}x Bonus",
+        tasks_count: "{count} tΓΆches", smart_suggestion: "Suggestion", best_time_to_create: "Vous Γtes trΓ¨s actif maintenant!",
+        suggest_simpler: "Cette tΓΆche semble complexe. La diviser?", high_risk: "Haut risque d'Γ©chec selon votre historique.",
         optimal_time: "Heure optimale: ", most_productive_day: "Jour le plus productif: ", most_productive_hour: "Heure la plus productive: ",
-        failure_pattern: "Vous luttez avec les tâches de ", theme: "Thème", toggle_dark: "Mode Sombre", language: "Langue",
-        app_info: "Info", version: "Version", completed: "Terminé", failed: "Échoué", pending: "En attente", no_tasks: "Pas de tâches!",
-        session_expired: "Session expirée", task_added: "Tâche ajoutée!", task_updated: "Tâche mise à jour!", error_occurred: "Une erreur est survenue",
+        failure_pattern: "Vous luttez avec les tΓΆches de ", theme: "ThΓ¨me", toggle_dark: "Mode Sombre", language: "Langue",
+        app_info: "Info", version: "Version", completed: "TerminΓ©", failed: "Γ‰chouΓ©", pending: "En attente", no_tasks: "Pas de tΓΆches!",
+        session_expired: "Session expirΓ©e", task_added: "TΓΆche ajoutΓ©e!", task_updated: "TΓΆche mise Γ  jour!", error_occurred: "Une erreur est survenue",
         calendar: "Calendrier", date: "Date", time: "Heure", reminder: "Rappel",
-        view_habits_history: "Historique", instructions_btn: "Instructions", force_update: "Mettre à jour", install_app: "Installer App", got_it: "Compris",
-        inst_title: "Instructions", inst_subtitle: "Tout sur Tobedone", inst_tasks_title: "Tâches", inst_tasks_desc: "Créez des tâches avec '+'. Obtenez des points.",
-        inst_dash_title: "Tableau de bord", inst_dash_desc: "Suivez votre productivité.", inst_prog_title: "Progrès", inst_prog_desc: "Gagnez des XP et des badges.",
+        view_habits_history: "Historique", instructions_btn: "Instructions", force_update: "Mettre Γ  jour", install_app: "Installer App", got_it: "Compris",
+        inst_title: "Instructions", inst_subtitle: "Tout sur Tobedone", inst_tasks_title: "TΓΆches", inst_tasks_desc: "CrΓ©ez des tΓΆches avec '+'. Obtenez des points.",
+        inst_dash_title: "Tableau de bord", inst_dash_desc: "Suivez votre productivitΓ©.", inst_prog_title: "ProgrΓ¨s", inst_prog_desc: "Gagnez des XP et des badges.",
         inst_gestures_title: "Gestes", inst_gestures_desc: "Glissez pour changer de page."
     },
     de: {
         app_title: "Tobedone", login: "Anmelden", signup: "Registrieren", continue_with_google: "Mit Google fortfahren", or: "oder",
         username_email: "Benutzer oder E-Mail", username: "Benutzername", password: "Passwort", forgot_password: "Passwort vergessen?",
-        forgot_password_note: "Geben Sie Ihre E-Mail ein für einen Reset-Link.", send_reset_link: "Link senden",
-        back_to_login: "Zurück zum Login", verify_email_title: "E-Mail überprüfen", verify_email_body: "Überprüfen Sie Ihren Posteingang.",
-        verification_code: "Bestätigungscode", verify_code: "Code überprüfen", reset_code: "Reset-Code", use_code: "Code verwenden",
+        forgot_password_note: "Geben Sie Ihre E-Mail ein fΓΌr einen Reset-Link.", send_reset_link: "Link senden",
+        back_to_login: "ZurΓΌck zum Login", verify_email_title: "E-Mail ΓΌberprΓΌfen", verify_email_body: "ΓberprΓΌfen Sie Ihren Posteingang.",
+        verification_code: "BestΓ¤tigungscode", verify_code: "Code ΓΌberprΓΌfen", reset_code: "Reset-Code", use_code: "Code verwenden",
         resend_verification: "E-Mail erneut senden", reset_password_title: "Neues Passwort", new_password: "Neues Passwort",
-        confirm_password: "Passwort bestätigen", update_password: "Aktualisieren", full_name: "Vollständiger Name", email: "E-Mail",
-        change_name: "Name ändern", change_username: "Benutzername ändern", create_account: "Konto erstellen", dashboard: "Dashboard",
+        confirm_password: "Passwort bestΓ¤tigen", update_password: "Aktualisieren", full_name: "VollstΓ¤ndiger Name", email: "E-Mail",
+        change_name: "Name Γ¤ndern", change_username: "Benutzername Γ¤ndern", create_account: "Konto erstellen", dashboard: "Dashboard",
         reports: "Berichte", me: "Ich", tasks: "Aufgaben", insights: "Einblicke", progress: "Fortschritt", settings: "Einstellungen", logout: "Abmelden",
         trust_score: "Vertrauen", streak: "Serie", success: "Erfolg", daily_progress: "Fortschritt", statistics: "Statistiken",
         task_distribution: "Aufgabenverteilung", add_new_task: "Neue Aufgabe", new_task: "Neue Aufgabe", task_placeholder: "Was ist zu tun?",
-        category: "Kategorie", difficulty: "Schwierigkeit", easy: "Leicht", medium: "Mittel", hard: "Schwer", cancel: "Abbrechen", add_task: "Hinzufügen",
-        priority: "Priorität", low: "Niedrig", high: "Hoch", recurring: "Wiederkehrend", none: "Keine", daily: "Täglich", weekly: "Wöchentlich",
-        due_date: "Datum", overdue: "Überfällig", all: "Alle", filter_by: "Filtern nach", productive_day: "Produktivster Tag",
+        category: "Kategorie", difficulty: "Schwierigkeit", easy: "Leicht", medium: "Mittel", hard: "Schwer", cancel: "Abbrechen", add_task: "HinzufΓΌgen",
+        priority: "PrioritΓ¤t", low: "Niedrig", high: "Hoch", recurring: "Wiederkehrend", none: "Keine", daily: "TΓ¤glich", weekly: "WΓ¶chentlich",
+        due_date: "Datum", overdue: "ΓberfΓ¤llig", all: "Alle", filter_by: "Filtern nach", productive_day: "Produktivster Tag",
         productive_hour: "Produktivste Stunde", trends: "Trends", failure_patterns: "Fehlermuster", achievements: "Erfolge",
         well_done: "Gut gemacht!", keep_going: "Weiter so!", streak_saved: "Serie gehalten!", multiplier: "{value}x Boost",
         tasks_count: "{count} Aufgaben heute", smart_suggestion: "Intelligenter Vorschlag", best_time_to_create: "Sie sind jetzt sehr aktiv!",
         suggest_simpler: "Diese Aufgabe scheint komplex. Aufteilen?", high_risk: "Hohes Ausfallrisiko basierend auf Ihrer Historie.",
         optimal_time: "Optimale Zeit: ", most_productive_day: "Produktivster Tag: ", most_productive_hour: "Produktivste Stunde: ",
-        failure_pattern: "Sie kämpfen mit Aufgaben in ", theme: "Design", toggle_dark: "Dunkelmodus", language: "Sprache",
+        failure_pattern: "Sie kΓ¤mpfen mit Aufgaben in ", theme: "Design", toggle_dark: "Dunkelmodus", language: "Sprache",
         app_info: "Info", version: "Version", completed: "Abgeschlossen", failed: "Fehlgeschlagen", pending: "Ausstehend", no_tasks: "Keine Aufgaben!",
-        session_expired: "Sitzung abgelaufen", task_added: "Aufgabe hinzugefügt!", task_updated: "Aufgabe aktualisiert!", error_occurred: "Fehler aufgetreten",
+        session_expired: "Sitzung abgelaufen", task_added: "Aufgabe hinzugefΓΌgt!", task_updated: "Aufgabe aktualisiert!", error_occurred: "Fehler aufgetreten",
         calendar: "Kalender", date: "Datum", time: "Zeit", reminder: "Erinnerung",
         view_habits_history: "Verlauf", instructions_btn: "Anleitung", force_update: "App aktualisieren", install_app: "App installieren", got_it: "Verstanden",
-        inst_title: "Anleitung", inst_subtitle: "Alles über Tobedone", inst_tasks_title: "Aufgaben", inst_tasks_desc: "Erstellen Sie Aufgaben mit '+'.",
-        inst_dash_title: "Dashboard", inst_dash_desc: "Verfolgen Sie Ihre Produktivität.", inst_prog_title: "Fortschritt", inst_prog_desc: "Erhalten Sie XP.",
+        inst_title: "Anleitung", inst_subtitle: "Alles ΓΌber Tobedone", inst_tasks_title: "Aufgaben", inst_tasks_desc: "Erstellen Sie Aufgaben mit '+'.",
+        inst_dash_title: "Dashboard", inst_dash_desc: "Verfolgen Sie Ihre ProduktivitΓ¤t.", inst_prog_title: "Fortschritt", inst_prog_desc: "Erhalten Sie XP.",
         inst_gestures_title: "Gesten", inst_gestures_desc: "Wischen zum Wechseln."
     },
     it: {
@@ -216,168 +216,168 @@ const translations = {
         change_name: "Cambia nome", change_username: "Cambia utente", create_account: "Crea account", dashboard: "Pannello",
         reports: "Rapporti", me: "Io", tasks: "Compiti", insights: "Statistiche", progress: "Progresso", settings: "Impostazioni", logout: "Esci",
         trust_score: "Fiducia", streak: "Serie", success: "Successo", daily_progress: "Progresso", statistics: "Statistiche",
-        task_distribution: "Distribuzione", add_new_task: "Nuovo Compito", new_task: "Nuovo", task_placeholder: "Cosa c'è da fare?",
-        category: "Categoria", difficulty: "Difficoltà", easy: "Facile", medium: "Medio", hard: "Difficile", cancel: "Annulla", add_task: "Aggiungi",
-        priority: "Priorità", low: "Bassa", high: "Alta", recurring: "Ricorrente", none: "Nessuno", daily: "Giornaliero", weekly: "Settimanale",
+        task_distribution: "Distribuzione", add_new_task: "Nuovo Compito", new_task: "Nuovo", task_placeholder: "Cosa c'Γ¨ da fare?",
+        category: "Categoria", difficulty: "DifficoltΓ ", easy: "Facile", medium: "Medio", hard: "Difficile", cancel: "Annulla", add_task: "Aggiungi",
+        priority: "PrioritΓ ", low: "Bassa", high: "Alta", recurring: "Ricorrente", none: "Nessuno", daily: "Giornaliero", weekly: "Settimanale",
         due_date: "Data", overdue: "Scaduto", all: "Tutto", filter_by: "Filtra per", productive_day: "Giorno produttivo",
         productive_hour: "Ora produttiva", trends: "Tendenze", failure_patterns: "Modelli di fallimento", achievements: "Risultati",
-        well_done: "Ben fatto!", keep_going: "Continua così!", streak_saved: "Serie mantenuta!", multiplier: "{value}x Boost",
+        well_done: "Ben fatto!", keep_going: "Continua cosΓ¬!", streak_saved: "Serie mantenuta!", multiplier: "{value}x Boost",
         tasks_count: "{count} compiti oggi", smart_suggestion: "Suggerimento", best_time_to_create: "Sei molto attivo ora!",
         suggest_simpler: "Compito complesso. Dividerlo?", high_risk: "Alto rischio di fallimento.",
         optimal_time: "Ora ottimale: ", most_productive_day: "Giorno produttivo: ", most_productive_hour: "Ora produttiva: ",
-        failure_pattern: "Hai difficoltà con ", theme: "Tema", toggle_dark: "Modo Scuro", language: "Lingua",
+        failure_pattern: "Hai difficoltΓ  con ", theme: "Tema", toggle_dark: "Modo Scuro", language: "Lingua",
         app_info: "Info", version: "Versione", completed: "Completato", failed: "Fallito", pending: "In attesa", no_tasks: "Nessun compito!",
         session_expired: "Sessione scaduta", task_added: "Compito aggiunto!", task_updated: "Compito aggiornato!", error_occurred: "Errore",
         calendar: "Calendario", date: "Data", time: "Ora", reminder: "Promemoria",
         view_habits_history: "Cronologia", instructions_btn: "Istruzioni", force_update: "Aggiorna", install_app: "Installa App", got_it: "Capito",
         inst_title: "Istruzioni", inst_subtitle: "Tutto su Tobedone", inst_tasks_title: "Compiti", inst_tasks_desc: "Crea con '+'.",
-        inst_dash_title: "Pannello", inst_dash_desc: "Traccia produttività.", inst_prog_title: "Progresso", inst_prog_desc: "Guadagna XP.",
+        inst_dash_title: "Pannello", inst_dash_desc: "Traccia produttivitΓ .", inst_prog_title: "Progresso", inst_prog_desc: "Guadagna XP.",
         inst_gestures_title: "Gesti", inst_gestures_desc: "Scorri per cambiare."
     },
     pt: {
         app_title: "Tobedone", login: "Entrar", signup: "Inscrever-se", continue_with_google: "Continuar com Google", or: "ou",
-        username_email: "Usuário ou Email", username: "Usuário", password: "Password", forgot_password: "Esqueceu a senha?",
+        username_email: "UsuΓ΅rio ou Email", username: "UsuΓ΅rio", password: "Password", forgot_password: "Esqueceu a senha?",
         forgot_password_note: "Insira seu email para redefinir.", send_reset_link: "Enviar link",
         back_to_login: "Voltar", verify_email_title: "Verifique seu email", verify_email_body: "Verifique sua caixa de entrada.",
-        verification_code: "Código de verificação", verify_code: "Verificar", reset_code: "Código de reset", use_code: "Usar código",
+        verification_code: "CΓ³digo de verificaΓ§Γ£o", verify_code: "Verificar", reset_code: "CΓ³digo de reset", use_code: "Usar cΓ³digo",
         resend_verification: "Reenviar", reset_password_title: "Nova senha", new_password: "Nova senha",
         confirm_password: "Confirmar senha", update_password: "Atualizar", full_name: "Nome completo", email: "Email",
-        change_name: "Mudar nome", change_username: "Mudar usuário", create_account: "Criar Conta", dashboard: "Painel",
-        reports: "Relatórios", me: "Eu", tasks: "Tarefas", insights: "Estadísticas", progress: "Progresso", settings: "Ajustes", logout: "Sair",
-        trust_score: "Confiança", streak: "Sequência", success: "Sucesso", daily_progress: "Progresso", statistics: "Estatísticas",
-        task_distribution: "Distribuição", add_new_task: "Nova Tarefa", new_task: "Nova Tarefa", task_placeholder: "O que fazer?",
-        category: "Categoria", difficulty: "Dificuldade", easy: "Fácil", medium: "Médio", hard: "Difícil", cancel: "Cancelar", add_task: "Adicionar",
-        priority: "Prioridade", low: "Baixa", high: "Alta", recurring: "Recorrente", none: "Nenhum", daily: "Diário", weekly: "Semanal",
+        change_name: "Mudar nome", change_username: "Mudar usuΓ΅rio", create_account: "Criar Conta", dashboard: "Painel",
+        reports: "RelatΓ³rios", me: "Eu", tasks: "Tarefas", insights: "EstadΓ­sticas", progress: "Progresso", settings: "Ajustes", logout: "Sair",
+        trust_score: "ConfianΓ§a", streak: "SequΓncia", success: "Sucesso", daily_progress: "Progresso", statistics: "EstatΓ­sticas",
+        task_distribution: "DistribuiΓ§Γ£o", add_new_task: "Nova Tarefa", new_task: "Nova Tarefa", task_placeholder: "O que fazer?",
+        category: "Categoria", difficulty: "Dificuldade", easy: "FΓ΅cil", medium: "MΓ©dio", hard: "DifΓ­cil", cancel: "Cancelar", add_task: "Adicionar",
+        priority: "Prioridade", low: "Baixa", high: "Alta", recurring: "Recorrente", none: "Nenhum", daily: "DiΓ΅rio", weekly: "Semanal",
         due_date: "Data", overdue: "Atrasado", all: "Tudo", filter_by: "Filtrar", productive_day: "Dia produtivo",
-        productive_hour: "Hora produtiva", trends: "Tendências", failure_patterns: "Padrões de falha", achievements: "Conquistas",
-        well_done: "Muito bem!", keep_going: "Continue!", streak_saved: "Sequência mantida!", multiplier: "{value}x Boost",
-        tasks_count: "{count} tarefas", smart_suggestion: "Sugestão", best_time_to_create: "Você está ativo!",
+        productive_hour: "Hora produtiva", trends: "TendΓncias", failure_patterns: "PadrΓµes de falha", achievements: "Conquistas",
+        well_done: "Muito bem!", keep_going: "Continue!", streak_saved: "SequΓncia mantida!", multiplier: "{value}x Boost",
+        tasks_count: "{count} tarefas", smart_suggestion: "SugestΓ£o", best_time_to_create: "VocΓ estΓ΅ ativo!",
         suggest_simpler: "Tarefa complexa. Dividir?", high_risk: "Alto risco.",
         optimal_time: "Hora ideal: ", most_productive_day: "Dia produtivo: ", most_productive_hour: "Hora produtiva: ",
         failure_pattern: "Dificuldades com ", theme: "Tema", toggle_dark: "Modo Escuro", language: "Idioma",
-        app_info: "Info", version: "Versão", completed: "Concluído", failed: "Falhou", pending: "Pendente", no_tasks: "Sem tarefas!",
-        session_expired: "Sessão expirada", task_added: "Adicionada!", task_updated: "Atualizada!", error_occurred: "Ocorreu um erro",
-        calendar: "Calendário", date: "Data", time: "Hora", reminder: "Lembrete",
-        view_habits_history: "Histórico", instructions_btn: "Instruções", force_update: "Atualizar", install_app: "Instalar App", got_it: "Entendi",
-        inst_title: "Instruções", inst_subtitle: "Tudo sobre Tobedone", inst_tasks_title: "Tarefas", inst_tasks_desc: "Crie com '+'.",
+        app_info: "Info", version: "VersΓ£o", completed: "ConcluΓ­do", failed: "Falhou", pending: "Pendente", no_tasks: "Sem tarefas!",
+        session_expired: "SessΓ£o expirada", task_added: "Adicionada!", task_updated: "Atualizada!", error_occurred: "Ocorreu um erro",
+        calendar: "CalendΓ΅rio", date: "Data", time: "Hora", reminder: "Lembrete",
+        view_habits_history: "HistΓ³rico", instructions_btn: "InstruΓ§Γµes", force_update: "Atualizar", install_app: "Instalar App", got_it: "Entendi",
+        inst_title: "InstruΓ§Γµes", inst_subtitle: "Tudo sobre Tobedone", inst_tasks_title: "Tarefas", inst_tasks_desc: "Crie com '+'.",
         inst_dash_title: "Painel", inst_dash_desc: "Produtividade.", inst_prog_title: "Progresso", inst_prog_desc: "Ganhe XP.",
         inst_gestures_title: "Gestos", inst_gestures_desc: "Deslize para mudar."
     },
     ru: {
-        app_title: "Tobedone", login: "Войти", signup: "Регистрация", continue_with_google: "Продолжить с Google", or: "или",
-        username_email: "Логин или Email", username: "Логин", password: "Пароль", forgot_password: "Забыли пароль?",
-        forgot_password_note: "Введите email для сброса.", send_reset_link: "Отправить",
-        back_to_login: "Назад", verify_email_title: "Проверьте email", verify_email_body: "Проверьте входящие.",
-        verification_code: "Код", verify_code: "Проверить", reset_code: "Код сброса", use_code: "Использовать",
-        resend_verification: "Отправить снова", reset_password_title: "Новый пароль", new_password: "Новый пароль",
-        confirm_password: "Подтвердить", update_password: "Обновить", full_name: "Имя", email: "Email",
-        change_name: "Изменить имя", change_username: "Изменить логин", create_account: "Создать аккаунт", dashboard: "Панель",
-        reports: "Отчеты", me: "Профиль", tasks: "Задачи", insights: "Статистика", progress: "Прогресс", settings: "Настройки", logout: "Выйти",
-        trust_score: "Доверие", streak: "Серия", success: "Успех", daily_progress: "Прогресс", statistics: "Статистика",
-        task_distribution: "Распределение", add_new_task: "Новая задача", new_task: "Новая задача", task_placeholder: "Что нужно сделать?",
-        category: "Категория", difficulty: "Сложность", easy: "Легко", medium: "Средне", hard: "Сложно", cancel: "Отмена", add_task: "Добавить",
-        priority: "Приоритет", low: "Низкий", high: "Высокий", recurring: "Повтор", none: "Нет", daily: "Ежедневно", weekly: "Еженедельно",
-        due_date: "Срок", overdue: "Просрочено", all: "Все", filter_by: "Фильтр", productive_day: "Продуктивный день",
-        productive_hour: "Продуктивный час", trends: "Тренды", failure_patterns: "Ошибки", achievements: "Достижения",
-        well_done: "Отлично!", keep_going: "Так держать!", streak_saved: "Серия сохранена!", multiplier: "{value}x Буст",
-        tasks_count: "{count} задач", smart_suggestion: "Совет", best_time_to_create: "Хорошее время для планов!",
-        suggest_simpler: "Сложная задача. Разбить?", high_risk: "Высокий риск неудачи.",
-        optimal_time: "Оптимальное время: ", most_productive_day: "Продуктивный день: ", most_productive_hour: "Продуктивный час: ",
-        failure_pattern: "Вам сложно с ", theme: "Тема", toggle_dark: "Темный режим", language: "Язык",
-        app_info: "Инфо", version: "Версия", completed: "Готово", failed: "Провалено", pending: "Ожидает", no_tasks: "Нет задач!",
-        session_expired: "Сессия истекла", task_added: "Добавлено!", task_updated: "Обновлено!", error_occurred: "Ошибка",
-        calendar: "Календарь", date: "Дата", time: "Время", reminder: "Напоминание",
-        view_habits_history: "История", instructions_btn: "Инструкции", force_update: "Обновить", install_app: "Установить App", got_it: "Понятно",
-        inst_title: "Инструкции", inst_subtitle: "Все о Tobedone", inst_tasks_title: "Задачи", inst_tasks_desc: "Создавайте с '+'.",
-        inst_dash_title: "Панель", inst_dash_desc: "Ваша продуктивность.", inst_prog_title: "Прогресс", inst_prog_desc: "Получайте опыт.",
-        inst_gestures_title: "Жесты", inst_gestures_desc: "Свайп для навигации."
+        app_title: "Tobedone", login: "Π’ΠΎΠΉΡ‚ΠΈ", signup: "Π ΠµΠ³ΠΈΡΡ‚Ρ€Π°Ρ†ΠΈΡ", continue_with_google: "ΠΡ€ΠΎΠ΄ΠΎΠ»Π¶ΠΈΡ‚Ρ Ρ Google", or: "ΠΈΠ»ΠΈ",
+        username_email: "Π›ΠΎΠ³ΠΈΠ½ ΠΈΠ»ΠΈ Email", username: "Π›ΠΎΠ³ΠΈΠ½", password: "ΠΠ°Ρ€ΠΎΠ»Ρ", forgot_password: "Π—Π°Π±Ρ‹Π»ΠΈ ΠΏΠ°Ρ€ΠΎΠ»Ρ?",
+        forgot_password_note: "Π’Π²ΠµΠ΄ΠΈΡ‚Πµ email Π΄Π»Ρ ΡΠ±Ρ€ΠΎΡΠ°.", send_reset_link: "ΠΡ‚ΠΏΡ€Π°Π²ΠΈΡ‚Ρ",
+        back_to_login: "ΠΠ°Π·Π°Π΄", verify_email_title: "ΠΡ€ΠΎΠ²ΠµΡ€ΡΡ‚Πµ email", verify_email_body: "ΠΡ€ΠΎΠ²ΠµΡ€ΡΡ‚Πµ Π²Ρ…ΠΎΠ΄ΡΡ‰ΠΈΠµ.",
+        verification_code: "ΠΠΎΠ΄", verify_code: "ΠΡ€ΠΎΠ²ΠµΡ€ΠΈΡ‚Ρ", reset_code: "ΠΠΎΠ΄ ΡΠ±Ρ€ΠΎΡΠ°", use_code: "ΠΡΠΏΠΎΠ»ΡΠ·ΠΎΠ²Π°Ρ‚Ρ",
+        resend_verification: "ΠΡ‚ΠΏΡ€Π°Π²ΠΈΡ‚Ρ ΡΠ½ΠΎΠ²Π°", reset_password_title: "ΠΠΎΠ²Ρ‹ΠΉ ΠΏΠ°Ρ€ΠΎΠ»Ρ", new_password: "ΠΠΎΠ²Ρ‹ΠΉ ΠΏΠ°Ρ€ΠΎΠ»Ρ",
+        confirm_password: "ΠΠΎΠ΄Ρ‚Π²ΠµΡ€Π΄ΠΈΡ‚Ρ", update_password: "ΠΠ±Π½ΠΎΠ²ΠΈΡ‚Ρ", full_name: "ΠΠΌΡ", email: "Email",
+        change_name: "ΠΠ·ΠΌΠµΠ½ΠΈΡ‚Ρ ΠΈΠΌΡ", change_username: "ΠΠ·ΠΌΠµΠ½ΠΈΡ‚Ρ Π»ΠΎΠ³ΠΈΠ½", create_account: "Π΅ΠΎΠ·Π΄Π°Ρ‚Ρ Π°ΠΊΠΊΠ°ΡƒΠ½Ρ‚", dashboard: "ΠΠ°Π½ΠµΠ»Ρ",
+        reports: "ΠΡ‚Ρ‡ΠµΡ‚Ρ‹", me: "ΠΡ€ΠΎΡ„ΠΈΠ»Ρ", tasks: "Π—Π°Π΄Π°Ρ‡ΠΈ", insights: "Π΅Ρ‚Π°Ρ‚ΠΈΡΡ‚ΠΈΠΊΠ°", progress: "ΠΡ€ΠΎΠ³Ρ€ΠµΡΡ", settings: "ΠΠ°ΡΡ‚Ρ€ΠΎΠΉΠΊΠΈ", logout: "Π’Ρ‹ΠΉΡ‚ΠΈ",
+        trust_score: "Π”ΠΎΠ²ΠµΡ€ΠΈΠµ", streak: "Π΅ΠµΡ€ΠΈΡ", success: "Π£ΡΠΏΠµΡ…", daily_progress: "ΠΡ€ΠΎΠ³Ρ€ΠµΡΡ", statistics: "Π΅Ρ‚Π°Ρ‚ΠΈΡΡ‚ΠΈΠΊΠ°",
+        task_distribution: "Π Π°ΡΠΏΡ€ΠµΠ΄ΠµΠ»ΠµΠ½ΠΈΠµ", add_new_task: "ΠΠΎΠ²Π°Ρ Π·Π°Π΄Π°Ρ‡Π°", new_task: "ΠΠΎΠ²Π°Ρ Π·Π°Π΄Π°Ρ‡Π°", task_placeholder: "Π§Ρ‚ΠΎ Π½ΡƒΠ¶Π½ΠΎ ΡΠ΄ΠµΠ»Π°Ρ‚Ρ?",
+        category: "ΠΠ°Ρ‚ΠµΠ³ΠΎΡ€ΠΈΡ", difficulty: "Π΅Π»ΠΎΠ¶Π½ΠΎΡΡ‚Ρ", easy: "Π›ΠµΠ³ΠΊΠΎ", medium: "Π΅Ρ€ΠµΠ΄Π½Πµ", hard: "Π΅Π»ΠΎΠ¶Π½ΠΎ", cancel: "ΠΡ‚ΠΌΠµΠ½Π°", add_task: "Π”ΠΎΠ±Π°Π²ΠΈΡ‚Ρ",
+        priority: "ΠΡ€ΠΈΠΎΡ€ΠΈΡ‚ΠµΡ‚", low: "ΠΠΈΠ·ΠΊΠΈΠΉ", high: "Π’Ρ‹ΡΠΎΠΊΠΈΠΉ", recurring: "ΠΠΎΠ²Ρ‚ΠΎΡ€", none: "ΠΠµΡ‚", daily: "Π•Π¶ΠµΠ΄Π½ΠµΠ²Π½ΠΎ", weekly: "Π•Π¶ΠµΠ½ΠµΠ΄ΠµΠ»ΡΠ½ΠΎ",
+        due_date: "Π΅Ρ€ΠΎΠΊ", overdue: "ΠΡ€ΠΎΡΡ€ΠΎΡ‡ΠµΠ½ΠΎ", all: "Π’ΡΠµ", filter_by: "Π¤ΠΈΠ»ΡΡ‚Ρ€", productive_day: "ΠΡ€ΠΎΠ΄ΡƒΠΊΡ‚ΠΈΠ²Π½Ρ‹ΠΉ Π΄ΠµΠ½Ρ",
+        productive_hour: "ΠΡ€ΠΎΠ΄ΡƒΠΊΡ‚ΠΈΠ²Π½Ρ‹ΠΉ Ρ‡Π°Ρ", trends: "ΠΆΡ€ΠµΠ½Π΄Ρ‹", failure_patterns: "ΠΡΠΈΠ±ΠΊΠΈ", achievements: "Π”ΠΎΡΡ‚ΠΈΠ¶ΠµΠ½ΠΈΡ",
+        well_done: "ΠΡ‚Π»ΠΈΡ‡Π½ΠΎ!", keep_going: "ΠΆΠ°ΠΊ Π΄ΠµΡ€Π¶Π°Ρ‚Ρ!", streak_saved: "Π΅ΠµΡ€ΠΈΡ ΡΠΎΡ…Ρ€Π°Π½ΠµΠ½Π°!", multiplier: "{value}x Π‘ΡƒΡΡ‚",
+        tasks_count: "{count} Π·Π°Π΄Π°Ρ‡", smart_suggestion: "Π΅ΠΎΠ²ΠµΡ‚", best_time_to_create: "Π¥ΠΎΡ€ΠΎΡΠµΠµ Π²Ρ€ΠµΠΌΡ Π΄Π»Ρ ΠΏΠ»Π°Π½ΠΎΠ²!",
+        suggest_simpler: "Π΅Π»ΠΎΠ¶Π½Π°Ρ Π·Π°Π΄Π°Ρ‡Π°. Π Π°Π·Π±ΠΈΡ‚Ρ?", high_risk: "Π’Ρ‹ΡΠΎΠΊΠΈΠΉ Ρ€ΠΈΡΠΊ Π½ΠµΡƒΠ΄Π°Ρ‡ΠΈ.",
+        optimal_time: "ΠΠΏΡ‚ΠΈΠΌΠ°Π»ΡΠ½ΠΎΠµ Π²Ρ€ΠµΠΌΡ: ", most_productive_day: "ΠΡ€ΠΎΠ΄ΡƒΠΊΡ‚ΠΈΠ²Π½Ρ‹ΠΉ Π΄ΠµΠ½Ρ: ", most_productive_hour: "ΠΡ€ΠΎΠ΄ΡƒΠΊΡ‚ΠΈΠ²Π½Ρ‹ΠΉ Ρ‡Π°Ρ: ",
+        failure_pattern: "Π’Π°ΠΌ ΡΠ»ΠΎΠ¶Π½ΠΎ Ρ ", theme: "ΠΆΠµΠΌΠ°", toggle_dark: "ΠΆΠµΠΌΠ½Ρ‹ΠΉ Ρ€ΠµΠ¶ΠΈΠΌ", language: "Π―Π·Ρ‹ΠΊ",
+        app_info: "ΠΠ½Ρ„ΠΎ", version: "Π’ΠµΡ€ΡΠΈΡ", completed: "Π“ΠΎΡ‚ΠΎΠ²ΠΎ", failed: "ΠΡ€ΠΎΠ²Π°Π»ΠµΠ½ΠΎ", pending: "ΠΠ¶ΠΈΠ΄Π°ΠµΡ‚", no_tasks: "ΠΠµΡ‚ Π·Π°Π΄Π°Ρ‡!",
+        session_expired: "Π΅ΠµΡΡΠΈΡ ΠΈΡΡ‚ΠµΠΊΠ»Π°", task_added: "Π”ΠΎΠ±Π°Π²Π»ΠµΠ½ΠΎ!", task_updated: "ΠΠ±Π½ΠΎΠ²Π»ΠµΠ½ΠΎ!", error_occurred: "ΠΡΠΈΠ±ΠΊΠ°",
+        calendar: "ΠΠ°Π»ΠµΠ½Π΄Π°Ρ€Ρ", date: "Π”Π°Ρ‚Π°", time: "Π’Ρ€ΠµΠΌΡ", reminder: "ΠΠ°ΠΏΠΎΠΌΠΈΠ½Π°Π½ΠΈΠµ",
+        view_habits_history: "ΠΡΡ‚ΠΎΡ€ΠΈΡ", instructions_btn: "ΠΠ½ΡΡ‚Ρ€ΡƒΠΊΡ†ΠΈΠΈ", force_update: "ΠΠ±Π½ΠΎΠ²ΠΈΡ‚Ρ", install_app: "Π£ΡΡ‚Π°Π½ΠΎΠ²ΠΈΡ‚Ρ App", got_it: "ΠΠΎΠ½ΡΡ‚Π½ΠΎ",
+        inst_title: "ΠΠ½ΡΡ‚Ρ€ΡƒΠΊΡ†ΠΈΠΈ", inst_subtitle: "Π’ΡΠµ ΠΎ Tobedone", inst_tasks_title: "Π—Π°Π΄Π°Ρ‡ΠΈ", inst_tasks_desc: "Π΅ΠΎΠ·Π΄Π°Π²Π°ΠΉΡ‚Πµ Ρ '+'.",
+        inst_dash_title: "ΠΠ°Π½ΠµΠ»Ρ", inst_dash_desc: "Π’Π°ΡΠ° ΠΏΡ€ΠΎΠ΄ΡƒΠΊΡ‚ΠΈΠ²Π½ΠΎΡΡ‚Ρ.", inst_prog_title: "ΠΡ€ΠΎΠ³Ρ€ΠµΡΡ", inst_prog_desc: "ΠΠΎΠ»ΡƒΡ‡Π°ΠΉΡ‚Πµ ΠΎΠΏΡ‹Ρ‚.",
+        inst_gestures_title: "Π–ΠµΡΡ‚Ρ‹", inst_gestures_desc: "Π΅Π²Π°ΠΉΠΏ Π΄Π»Ρ Π½Π°Π²ΠΈΠ³Π°Ρ†ΠΈΠΈ."
     },
     ja: {
-        app_title: "Tobedone", login: "ログイン", signup: "サインアップ", continue_with_google: "Googleで続行", or: "または",
-        username_email: "ユーザー名かメール", username: "ユーザー名", password: "パスワード", forgot_password: "パスワードをお忘れですか？",
-        forgot_password_note: "メールを入力してください。", send_reset_link: "送信",
-        back_to_login: "戻る", verify_email_title: "メール確認", verify_email_body: "受信トレイを確認してください。",
-        verification_code: "確認コード", verify_code: "確認する", reset_code: "リセットコード", use_code: "使用",
-        resend_verification: "再送信", reset_password_title: "新しいパスワード", new_password: "新パスワード",
-        confirm_password: "確認", update_password: "更新", full_name: "名前", email: "メール",
-        change_name: "名前変更", change_username: "ユーザー名変更", create_account: "アカウント作成", dashboard: "ダッシュボード",
-        reports: "レポート", me: "私", tasks: "タスク", insights: "分析", progress: "進捗", settings: "設定", logout: "ログアウト",
-        trust_score: "信頼度", streak: "連続", success: "成功", daily_progress: "進捗", statistics: "統計",
-        task_distribution: "タスク分布", add_new_task: "新規タスク", new_task: "新規タスク", task_placeholder: "何をしますか？",
-        category: "カテゴリー", difficulty: "難易度", easy: "簡単", medium: "普通", hard: "難しい", cancel: "キャンセル", add_task: "追加",
-        priority: "優先度", low: "低", high: "高", recurring: "繰り返し", none: "なし", daily: "毎日", weekly: "毎週",
-        due_date: "期限", overdue: "期限切れ", all: "全て", filter_by: "フィルター", productive_day: "最も生産的な日",
-        productive_hour: "生産的な時間", trends: "トレンド", failure_patterns: "失敗の傾向", achievements: "実績",
-        well_done: "よくやった！", keep_going: "その調子！", streak_saved: "連続維持！", multiplier: "{value}x ブースト",
-        tasks_count: "{count} タスク", smart_suggestion: "提案", best_time_to_create: "今が計画のチャンス！",
-        suggest_simpler: "分割してみませんか？", high_risk: "失敗リスクが高いです。",
-        optimal_time: "最適な時間: ", most_productive_day: "生産的な日: ", most_productive_hour: "生産的な時間: ",
-        failure_pattern: "苦手なタスク: ", theme: "テーマ", toggle_dark: "ダークモード", language: "言語",
-        app_info: "情報", version: "バージョン", completed: "完了", failed: "失敗", pending: "保留中", no_tasks: "タスクなし！",
-        session_expired: "セッション切れ", task_added: "追加されました！", task_updated: "更新されました！", error_occurred: "エラー発生",
-        calendar: "カレンダー", date: "日付", time: "時間", reminder: "リマインダー",
-        view_habits_history: "履歴", instructions_btn: "使い方", force_update: "更新", install_app: "アプリをインストール", got_it: "了解",
-        inst_title: "使い方", inst_subtitle: "Tobedoneについて", inst_tasks_title: "タスク", inst_tasks_desc: "「+」で作成。",
-        inst_dash_title: "ダッシュボード", inst_dash_desc: "生産性を確認。", inst_prog_title: "進捗", inst_prog_desc: "XPを獲得。",
-        inst_gestures_title: "ジェスチャー", inst_gestures_desc: "スワイプで移動。"
+        app_title: "Tobedone", login: "γƒ­γ‚°γ‚¤γƒ³", signup: "γ‚µγ‚¤γƒ³γ‚Άγƒƒγƒ—", continue_with_google: "Googleγ§η¶θ΅", or: "γΎγγ―",
+        username_email: "γƒ¦γƒΌγ‚¶γƒΌεγ‹γƒ΅γƒΌγƒ«", username: "γƒ¦γƒΌγ‚¶γƒΌε", password: "γƒ‘γ‚Ήγƒ―γƒΌγƒ‰", forgot_password: "γƒ‘γ‚Ήγƒ―γƒΌγƒ‰γ‚’γεΏγ‚γ§γ™γ‹οΌ",
+        forgot_password_note: "γƒ΅γƒΌγƒ«γ‚’ε…¥ε›γ—γ¦γγ γ•γ„γ€‚", send_reset_link: "ι€δΏ΅",
+        back_to_login: "ζ»γ‚‹", verify_email_title: "γƒ΅γƒΌγƒ«ηΆΊθ", verify_email_body: "ε—δΏ΅γƒγƒ¬γ‚¤γ‚’ηΆΊθγ—γ¦γγ γ•γ„γ€‚",
+        verification_code: "ηΆΊθγ‚³γƒΌγƒ‰", verify_code: "ηΆΊθγ™γ‚‹", reset_code: "γƒγ‚»γƒƒγƒγ‚³γƒΌγƒ‰", use_code: "δ½Ώη”¨",
+        resend_verification: "ε†ι€δΏ΅", reset_password_title: "ζ–°γ—γ„γƒ‘γ‚Ήγƒ―γƒΌγƒ‰", new_password: "ζ–°γƒ‘γ‚Ήγƒ―γƒΌγƒ‰",
+        confirm_password: "ηΆΊθ", update_password: "ζ›΄ζ–°", full_name: "εε‰", email: "γƒ΅γƒΌγƒ«",
+        change_name: "εε‰ε¤‰ζ›΄", change_username: "γƒ¦γƒΌγ‚¶γƒΌεε¤‰ζ›΄", create_account: "γ‚Άγ‚«γ‚¦γƒ³γƒδ½ζ", dashboard: "γƒ€γƒƒγ‚·γƒ¥γƒγƒΌγƒ‰",
+        reports: "γƒ¬γƒγƒΌγƒ", me: "η§", tasks: "γ‚Ώγ‚Ήγ‚―", insights: "ε†ζ", progress: "ι€²ζ—", settings: "θ¨­ε®", logout: "γƒ­γ‚°γ‚Άγ‚¦γƒ",
+        trust_score: "δΏ΅ι ΌεΊ¦", streak: "ι€£η¶", success: "ζε", daily_progress: "ι€²ζ—", statistics: "ηµ±θ¨",
+        task_distribution: "γ‚Ώγ‚Ήγ‚―ε†εΈƒ", add_new_task: "ζ–°θ¦γ‚Ώγ‚Ήγ‚―", new_task: "ζ–°θ¦γ‚Ώγ‚Ήγ‚―", task_placeholder: "δ½•γ‚’γ—γΎγ™γ‹οΌ",
+        category: "γ‚«γƒ†γ‚΄γƒγƒΌ", difficulty: "ι›£ζ“εΊ¦", easy: "η°΅ε", medium: "ζ™®ι€", hard: "ι›£γ—γ„", cancel: "γ‚­γƒ£γƒ³γ‚»γƒ«", add_task: "θΏ½ε ",
+        priority: "ε„ε…εΊ¦", low: "δ½", high: "ι«", recurring: "ηΉ°γ‚θΏ”γ—", none: "γγ—", daily: "ζ―ζ—¥", weekly: "ζ―ι€±",
+        due_date: "ζι™", overdue: "ζι™ε‡γ‚", all: "ε…¨γ¦", filter_by: "γƒ•γ‚£γƒ«γ‚ΏγƒΌ", productive_day: "ζ€γ‚‚η”η”£η„γζ—¥",
+        productive_hour: "η”η”£η„γζ™‚ι–“", trends: "γƒγƒ¬γƒ³γƒ‰", failure_patterns: "ε¤±ζ•—γ®ε‚Ύε‘", achievements: "ε®ηΈΎ",
+        well_done: "γ‚γγ‚„γ£γοΌ", keep_going: "γγ®θΏε­οΌ", streak_saved: "ι€£η¶η¶­ζοΌ", multiplier: "{value}x γƒ–γƒΌγ‚Ήγƒ",
+        tasks_count: "{count} γ‚Ώγ‚Ήγ‚―", smart_suggestion: "ζζ΅", best_time_to_create: "δ»γθ¨η”»γ®γƒγƒ£γƒ³γ‚ΉοΌ",
+        suggest_simpler: "ε†ε‰²γ—γ¦γΏγΎγ›γ‚“γ‹οΌ", high_risk: "ε¤±ζ•—γƒγ‚Ήγ‚―γι«γ„γ§γ™γ€‚",
+        optimal_time: "ζ€ι©γζ™‚ι–“: ", most_productive_day: "η”η”£η„γζ—¥: ", most_productive_hour: "η”η”£η„γζ™‚ι–“: ",
+        failure_pattern: "θ‹¦ζ‰‹γγ‚Ώγ‚Ήγ‚―: ", theme: "γƒ†γƒΌγƒ", toggle_dark: "γƒ€γƒΌγ‚―γƒΆγƒΌγƒ‰", language: "θ¨€θ",
+        app_info: "ζƒ…ε ±", version: "γƒγƒΌγ‚Έγƒ§γƒ³", completed: "ε®δΊ†", failed: "ε¤±ζ•—", pending: "δΏη•™δΈ­", no_tasks: "γ‚Ώγ‚Ήγ‚―γγ—οΌ",
+        session_expired: "γ‚»γƒƒγ‚·γƒ§γƒ³ε‡γ‚", task_added: "θΏ½ε γ•γ‚γΎγ—γοΌ", task_updated: "ζ›΄ζ–°γ•γ‚γΎγ—γοΌ", error_occurred: "γ‚¨γƒ©γƒΌη™Ίη”",
+        calendar: "γ‚«γƒ¬γƒ³γƒ€γƒΌ", date: "ζ—¥δ»", time: "ζ™‚ι–“", reminder: "γƒγƒγ‚¤γƒ³γƒ€γƒΌ",
+        view_habits_history: "ε±¥ζ­΄", instructions_btn: "δ½Ώγ„ζ–Ή", force_update: "ζ›΄ζ–°", install_app: "γ‚Άγƒ—γƒγ‚’γ‚¤γƒ³γ‚ΉγƒγƒΌγƒ«", got_it: "δΊ†θ§£",
+        inst_title: "δ½Ώγ„ζ–Ή", inst_subtitle: "Tobedoneγ«γ¤γ„γ¦", inst_tasks_title: "γ‚Ώγ‚Ήγ‚―", inst_tasks_desc: "γ€+γ€γ§δ½ζγ€‚",
+        inst_dash_title: "γƒ€γƒƒγ‚·γƒ¥γƒγƒΌγƒ‰", inst_dash_desc: "η”η”£ζ€§γ‚’ηΆΊθγ€‚", inst_prog_title: "ι€²ζ—", inst_prog_desc: "XPγ‚’η²εΎ—γ€‚",
+        inst_gestures_title: "γ‚Έγ‚§γ‚Ήγƒγƒ£γƒΌ", inst_gestures_desc: "γ‚Ήγƒ―γ‚¤γƒ—γ§η§»ε‹•γ€‚"
     },
     zh: {
-        app_title: "Tobedone", login: "登录", signup: "注册", continue_with_google: "使用Google继续", or: "或",
-        username_email: "用户名或邮箱", username: "用户名", password: "密码", forgot_password: "忘记密码？",
-        forgot_password_note: "输入邮箱以获取重置链接。", send_reset_link: "发送链接",
-        back_to_login: "返回登录", verify_email_title: "验证邮箱", verify_email_body: "请检查收件箱。",
-        verification_code: "验证码", verify_code: "验证", reset_code: "重置代码", use_code: "使用",
-        resend_verification: "重新发送", reset_password_title: "新密码", new_password: "新密码",
-        confirm_password: "确认密码", update_password: "更新", full_name: "全名", email: "邮箱",
-        change_name: "更改姓名", change_username: "更改用户名", create_account: "创建账号", dashboard: "仪表盘",
-        reports: "报告", me: "我", tasks: "任务", insights: "统计", progress: "进度", settings: "设置", logout: "登出",
-        trust_score: "信任分", streak: "连续", success: "成功", daily_progress: "进度", statistics: "统计",
-        task_distribution: "任务分布", add_new_task: "新任务", new_task: "新任务", task_placeholder: "要做什么？",
-        category: "分类", difficulty: "难度", easy: "简单", medium: "中等", hard: "困难", cancel: "取消", add_task: "添加",
-        priority: "优先级", low: "低", high: "高", recurring: "重复", none: "无", daily: "每天", weekly: "每周",
-        due_date: "截止", overdue: "逾期", all: "全部", filter_by: "过滤", productive_day: "最高效日",
-        productive_hour: "最高效时间", trends: "趋势", failure_patterns: "失败模式", achievements: "成就",
-        well_done: "干得好！", keep_going: "继续保持！", streak_saved: "连续未断！", multiplier: "{value}x 奖励",
-        tasks_count: "{count} 个任务", smart_suggestion: "智能建议", best_time_to_create: "现在是计划的好时机！",
-        suggest_simpler: "任务复杂，拆分一下？", high_risk: "失败风险较高。",
-        optimal_time: "最佳时间: ", most_productive_day: "最高效日: ", most_productive_hour: "最高效时间: ",
-        failure_pattern: "较难完成: ", theme: "主题", toggle_dark: "夜间模式", language: "语言",
-        app_info: "信息", version: "版本", completed: "已完成", failed: "失败", pending: "待办", no_tasks: "今天没任务！",
-        session_expired: "会话过期", task_added: "已添加！", task_updated: "已更新！", error_occurred: "发生错误",
-        calendar: "日历", date: "日期", time: "时间", reminder: "提醒",
-        view_habits_history: "历史记录", instructions_btn: "使用说明", force_update: "强制更新", install_app: "安装应用", got_it: "明白了",
-        inst_title: "说明", inst_subtitle: "关于 Tobedone", inst_tasks_title: "任务", inst_tasks_desc: "用“+”创建任务。",
-        inst_dash_title: "仪表盘", inst_dash_desc: "跟踪效率。", inst_prog_title: "进度", inst_prog_desc: "获取XP升级。",
-        inst_gestures_title: "手势", inst_gestures_desc: "滑动切换页面。"
+        app_title: "Tobedone", login: "η™»ε½•", signup: "ζ³¨ε†", continue_with_google: "δ½Ώη”¨Googleη»§η»­", or: "ζ–",
+        username_email: "η”¨ζ·εζ–ι‚®η®±", username: "η”¨ζ·ε", password: "ε―†η ", forgot_password: "εΏθ®°ε―†η οΌ",
+        forgot_password_note: "θΎ“ε…¥ι‚®η®±δ»¥θ·ε–ι‡η½®ι“Ύζ¥γ€‚", send_reset_link: "ε‘ι€ι“Ύζ¥",
+        back_to_login: "θΏ”ε›η™»ε½•", verify_email_title: "ιθ―ι‚®η®±", verify_email_body: "θ―·ζ£€ζ¥ζ”¶δ»¶η®±γ€‚",
+        verification_code: "ιθ―η ", verify_code: "ιθ―", reset_code: "ι‡η½®δ»£η ", use_code: "δ½Ώη”¨",
+        resend_verification: "ι‡ζ–°ε‘ι€", reset_password_title: "ζ–°ε―†η ", new_password: "ζ–°ε―†η ",
+        confirm_password: "η΅®θ®¤ε―†η ", update_password: "ζ›΄ζ–°", full_name: "ε…¨ε", email: "ι‚®η®±",
+        change_name: "ζ›΄ζ”Ήε§“ε", change_username: "ζ›΄ζ”Ήη”¨ζ·ε", create_account: "ε›ε»Ίθ΄¦ε·", dashboard: "δ»θ΅¨η›",
+        reports: "ζ¥ε‘", me: "ζ‘", tasks: "δ»»ε΅", insights: "η»θ®΅", progress: "θΏ›εΊ¦", settings: "θ®Ύη½®", logout: "η™»ε‡Ί",
+        trust_score: "δΏ΅δ»»ε†", streak: "θΏη»­", success: "ζε", daily_progress: "θΏ›εΊ¦", statistics: "η»θ®΅",
+        task_distribution: "δ»»ε΅ε†εΈƒ", add_new_task: "ζ–°δ»»ε΅", new_task: "ζ–°δ»»ε΅", task_placeholder: "θ¦εδ»€δΉοΌ",
+        category: "ε†η±»", difficulty: "ιΎεΊ¦", easy: "η®€ε•", medium: "δΈ­η­‰", hard: "ε›°ιΎ", cancel: "ε–ζ¶", add_task: "ζ·»ε ",
+        priority: "δΌε…ηΊ§", low: "δ½", high: "ι«", recurring: "ι‡ε¤", none: "ζ— ", daily: "ζ―ε¤©", weekly: "ζ―ε‘¨",
+        due_date: "ζζ­Ά", overdue: "ι€Ύζ", all: "ε…¨ιƒ¨", filter_by: "θΏ‡ζ»¤", productive_day: "ζ€ι«ζ•ζ—¥",
+        productive_hour: "ζ€ι«ζ•ζ—¶ι—΄", trends: "θ¶‹εΏ", failure_patterns: "ε¤±θ΄¥ζ¨΅εΌ", achievements: "ζε°±",
+        well_done: "εΉ²εΎ—ε¥½οΌ", keep_going: "η»§η»­δΏζοΌ", streak_saved: "θΏη»­ζζ–­οΌ", multiplier: "{value}x ε¥–ε±",
+        tasks_count: "{count} δΈδ»»ε΅", smart_suggestion: "ζ™Ίθƒ½ε»Ίθ®®", best_time_to_create: "η°ε¨ζ―θ®΅ε’η„ε¥½ζ—¶ζΊοΌ",
+        suggest_simpler: "δ»»ε΅ε¤ζ‚οΌζ‹†ε†δΈ€δΈ‹οΌ", high_risk: "ε¤±θ΄¥ι£ι™©θΎƒι«γ€‚",
+        optimal_time: "ζ€δ½³ζ—¶ι—΄: ", most_productive_day: "ζ€ι«ζ•ζ—¥: ", most_productive_hour: "ζ€ι«ζ•ζ—¶ι—΄: ",
+        failure_pattern: "θΎƒιΎε®ζ: ", theme: "δΈ»ιΆ", toggle_dark: "ε¤ι—΄ζ¨΅εΌ", language: "θ―­θ¨€",
+        app_info: "δΏ΅ζ―", version: "η‰ζ¬", completed: "ε·²ε®ζ", failed: "ε¤±θ΄¥", pending: "εΎ…ε", no_tasks: "δ»ε¤©ζ²΅δ»»ε΅οΌ",
+        session_expired: "δΌθ―θΏ‡ζ", task_added: "ε·²ζ·»ε οΌ", task_updated: "ε·²ζ›΄ζ–°οΌ", error_occurred: "ε‘η”ι”™θ――",
+        calendar: "ζ—¥ε†", date: "ζ—¥ζ", time: "ζ—¶ι—΄", reminder: "ζι†’",
+        view_habits_history: "ε†ε²θ®°ε½•", instructions_btn: "δ½Ώη”¨θ―΄ζ", force_update: "εΌΊε¶ζ›΄ζ–°", install_app: "ε®‰θ£…εΊ”η”¨", got_it: "ζη™½δΊ†",
+        inst_title: "θ―΄ζ", inst_subtitle: "ε…³δΊ Tobedone", inst_tasks_title: "δ»»ε΅", inst_tasks_desc: "η”¨β€+β€ε›ε»Ίδ»»ε΅γ€‚",
+        inst_dash_title: "δ»θ΅¨η›", inst_dash_desc: "θ·θΈζ•η‡γ€‚", inst_prog_title: "θΏ›εΊ¦", inst_prog_desc: "θ·ε–XPε‡ηΊ§γ€‚",
+        inst_gestures_title: "ζ‰‹εΏ", inst_gestures_desc: "ζ»‘ε¨ε‡ζΆι΅µιΆγ€‚"
     },
     ar: {
-        app_title: "Tobedone", login: "تسجيل الدخول", signup: "إنشاء حساب", continue_with_google: "المتابعة باستخدام Google", or: "أو",
-        username_email: "اسم المستخدم أو البريد", username: "اسم المستخدم", password: "كلمة المرور", forgot_password: "هل نسيت كلمة المرور؟",
-        forgot_password_note: "أدخل بريدك لإرسال الرابط.", send_reset_link: "إرسال الرابط",
-        back_to_login: "رجوع", verify_email_title: "تأكيد البريد", verify_email_body: "تحقق من صندوق الوارد.",
-        verification_code: "رمز التأكيد", verify_code: "تأكيد", reset_code: "رمز إعادة التعيين", use_code: "استخدام",
-        resend_verification: "إعادة الإرسال", reset_password_title: "كلمة مرور جديدة", new_password: "كلمة مرور جديدة",
-        confirm_password: "تأكيد", update_password: "تحديث", full_name: "الاسم", email: "البريد",
-        change_name: "تغيير الاسم", change_username: "تغيير اسم المستخدم", create_account: "إنشاء حساب", dashboard: "لوحة القيادة",
-        reports: "التقارير", me: "أنا", tasks: "المهام", insights: "إحصائيات", progress: "التقدم", settings: "الإعدادات", logout: "تسجيل خروج",
-        trust_score: "الثقة", streak: "سلسلة", success: "نجاح", daily_progress: "التقدم", statistics: "إحصائيات",
-        task_distribution: "توزيع المهام", add_new_task: "مهمة جديدة", new_task: "مهمة جديدة", task_placeholder: "ما الذي يجب فعله؟",
-        category: "فئة", difficulty: "صعوبة", easy: "سهل", medium: "متوسط", hard: "صعب", cancel: "إلغاء", add_task: "إضافة",
-        priority: "أولوية", low: "منخفض", high: "عالي", recurring: "متكرر", none: "لا شيء", daily: "يوميا", weekly: "أسبوعيا",
-        due_date: "التاريخ", overdue: "متأخر", all: "الكل", filter_by: "تصفية حسب", productive_day: "اليوم الأكثر إنتاجية",
-        productive_hour: "الساعة الأكثر إنتاجية", trends: "الاتجاهات", failure_patterns: "أنماط الفشل", achievements: "الإنجازات",
-        well_done: "أحسنت!", keep_going: "استمر!", streak_saved: "تم الحفاظ على السلسلة!", multiplier: "{value}x مضاعف",
-        tasks_count: "{count} مهام", smart_suggestion: "اقتراح ذكي", best_time_to_create: "أنت نشط الآن!",
-        suggest_simpler: "مهمة معقدة. هل تقسمها؟", high_risk: "خطر فشل مرتفع.",
-        optimal_time: "الوقت الأمثل: ", most_productive_day: "أكثر يوم إنتاجية: ", most_productive_hour: "أكثر ساعة إنتاجية: ",
-        failure_pattern: "تجد صعوبة في ", theme: "السمة", toggle_dark: "الوضع المظلم", language: "اللغة",
-        app_info: "معلومات", version: "إصدار", completed: "مكتمل", failed: "فشل", pending: "قيد الانتظار", no_tasks: "لا مهام!",
-        session_expired: "انتهت الجلسة", task_added: "تمت الإضافة!", task_updated: "تم التحديث!", error_occurred: "حدث خطأ",
-        calendar: "التقويم", date: "التاريخ", time: "الوقت", reminder: "تذكير",
-        view_habits_history: "السجل", instructions_btn: "تعليمات", force_update: "تحديث التطبيق", install_app: "تثبيت التطبيق", got_it: "مفهوم",
-        inst_title: "التعليمات", inst_subtitle: "كل شيء عن Tobedone", inst_tasks_title: "المهام", inst_tasks_desc: "أضف بـ '+'.",
-        inst_dash_title: "لوحة القيادة", inst_dash_desc: "تتبع إنتاجيتك.", inst_prog_title: "التقدم", inst_prog_desc: "احصل على نقاط.",
-        inst_gestures_title: "الإيماءات", inst_gestures_desc: "اسحب للتنقل."
+        app_title: "Tobedone", login: "ΨΨ³Ψ¬ΩΩ„ Ψ§Ω„Ψ―Ψ®ΩΩ„", signup: "Ψ¥Ω†Ψ΄Ψ§Ψ΅ Ψ­Ψ³Ψ§Ψ¨", continue_with_google: "Ψ§Ω„Ω…ΨΨ§Ψ¨ΨΉΨ© Ψ¨Ψ§Ψ³ΨΨ®Ψ―Ψ§Ω… Google", or: "Ψ£Ω",
+        username_email: "Ψ§Ψ³Ω… Ψ§Ω„Ω…Ψ³ΨΨ®Ψ―Ω… Ψ£Ω Ψ§Ω„Ψ¨Ψ±ΩΨ―", username: "Ψ§Ψ³Ω… Ψ§Ω„Ω…Ψ³ΨΨ®Ψ―Ω…", password: "ΩƒΩ„Ω…Ψ© Ψ§Ω„Ω…Ψ±ΩΨ±", forgot_password: "Ω‡Ω„ Ω†Ψ³ΩΨ ΩƒΩ„Ω…Ψ© Ψ§Ω„Ω…Ψ±ΩΨ±Ψ",
+        forgot_password_note: "Ψ£Ψ―Ψ®Ω„ Ψ¨Ψ±ΩΨ―Ωƒ Ω„Ψ¥Ψ±Ψ³Ψ§Ω„ Ψ§Ω„Ψ±Ψ§Ψ¨Ψ·.", send_reset_link: "Ψ¥Ψ±Ψ³Ψ§Ω„ Ψ§Ω„Ψ±Ψ§Ψ¨Ψ·",
+        back_to_login: "Ψ±Ψ¬ΩΨΉ", verify_email_title: "ΨΨ£ΩƒΩΨ― Ψ§Ω„Ψ¨Ψ±ΩΨ―", verify_email_body: "ΨΨ­Ω‚Ω‚ Ω…Ω† ΨµΩ†Ψ―ΩΩ‚ Ψ§Ω„ΩΨ§Ψ±Ψ―.",
+        verification_code: "Ψ±Ω…Ψ² Ψ§Ω„ΨΨ£ΩƒΩΨ―", verify_code: "ΨΨ£ΩƒΩΨ―", reset_code: "Ψ±Ω…Ψ² Ψ¥ΨΉΨ§Ψ―Ψ© Ψ§Ω„ΨΨΉΩΩΩ†", use_code: "Ψ§Ψ³ΨΨ®Ψ―Ψ§Ω…",
+        resend_verification: "Ψ¥ΨΉΨ§Ψ―Ψ© Ψ§Ω„Ψ¥Ψ±Ψ³Ψ§Ω„", reset_password_title: "ΩƒΩ„Ω…Ψ© Ω…Ψ±ΩΨ± Ψ¬Ψ―ΩΨ―Ψ©", new_password: "ΩƒΩ„Ω…Ψ© Ω…Ψ±ΩΨ± Ψ¬Ψ―ΩΨ―Ψ©",
+        confirm_password: "ΨΨ£ΩƒΩΨ―", update_password: "ΨΨ­Ψ―ΩΨ«", full_name: "Ψ§Ω„Ψ§Ψ³Ω…", email: "Ψ§Ω„Ψ¨Ψ±ΩΨ―",
+        change_name: "ΨΨΊΩΩΨ± Ψ§Ω„Ψ§Ψ³Ω…", change_username: "ΨΨΊΩΩΨ± Ψ§Ψ³Ω… Ψ§Ω„Ω…Ψ³ΨΨ®Ψ―Ω…", create_account: "Ψ¥Ω†Ψ΄Ψ§Ψ΅ Ψ­Ψ³Ψ§Ψ¨", dashboard: "Ω„ΩΨ­Ψ© Ψ§Ω„Ω‚ΩΨ§Ψ―Ψ©",
+        reports: "Ψ§Ω„ΨΩ‚Ψ§Ψ±ΩΨ±", me: "Ψ£Ω†Ψ§", tasks: "Ψ§Ω„Ω…Ω‡Ψ§Ω…", insights: "Ψ¥Ψ­ΨµΨ§Ψ¦ΩΨ§Ψ", progress: "Ψ§Ω„ΨΩ‚Ψ―Ω…", settings: "Ψ§Ω„Ψ¥ΨΉΨ―Ψ§Ψ―Ψ§Ψ", logout: "ΨΨ³Ψ¬ΩΩ„ Ψ®Ψ±ΩΨ¬",
+        trust_score: "Ψ§Ω„Ψ«Ω‚Ψ©", streak: "Ψ³Ω„Ψ³Ω„Ψ©", success: "Ω†Ψ¬Ψ§Ψ­", daily_progress: "Ψ§Ω„ΨΩ‚Ψ―Ω…", statistics: "Ψ¥Ψ­ΨµΨ§Ψ¦ΩΨ§Ψ",
+        task_distribution: "ΨΩΨ²ΩΨΉ Ψ§Ω„Ω…Ω‡Ψ§Ω…", add_new_task: "Ω…Ω‡Ω…Ψ© Ψ¬Ψ―ΩΨ―Ψ©", new_task: "Ω…Ω‡Ω…Ψ© Ψ¬Ψ―ΩΨ―Ψ©", task_placeholder: "Ω…Ψ§ Ψ§Ω„Ψ°Ω ΩΨ¬Ψ¨ ΩΨΉΩ„Ω‡Ψ",
+        category: "ΩΨ¦Ψ©", difficulty: "ΨµΨΉΩΨ¨Ψ©", easy: "Ψ³Ω‡Ω„", medium: "Ω…ΨΩΨ³Ψ·", hard: "ΨµΨΉΨ¨", cancel: "Ψ¥Ω„ΨΊΨ§Ψ΅", add_task: "Ψ¥Ψ¶Ψ§ΩΨ©",
+        priority: "Ψ£ΩΩ„ΩΩΨ©", low: "Ω…Ω†Ψ®ΩΨ¶", high: "ΨΉΨ§Ω„Ω", recurring: "Ω…ΨΩƒΨ±Ψ±", none: "Ω„Ψ§ Ψ΄ΩΨ΅", daily: "ΩΩΩ…ΩΨ§", weekly: "Ψ£Ψ³Ψ¨ΩΨΉΩΨ§",
+        due_date: "Ψ§Ω„ΨΨ§Ψ±ΩΨ®", overdue: "Ω…ΨΨ£Ψ®Ψ±", all: "Ψ§Ω„ΩƒΩ„", filter_by: "ΨΨµΩΩΨ© Ψ­Ψ³Ψ¨", productive_day: "Ψ§Ω„ΩΩΩ… Ψ§Ω„Ψ£ΩƒΨ«Ψ± Ψ¥Ω†ΨΨ§Ψ¬ΩΨ©",
+        productive_hour: "Ψ§Ω„Ψ³Ψ§ΨΉΨ© Ψ§Ω„Ψ£ΩƒΨ«Ψ± Ψ¥Ω†ΨΨ§Ψ¬ΩΨ©", trends: "Ψ§Ω„Ψ§ΨΨ¬Ψ§Ω‡Ψ§Ψ", failure_patterns: "Ψ£Ω†Ω…Ψ§Ψ· Ψ§Ω„ΩΨ΄Ω„", achievements: "Ψ§Ω„Ψ¥Ω†Ψ¬Ψ§Ψ²Ψ§Ψ",
+        well_done: "Ψ£Ψ­Ψ³Ω†Ψ!", keep_going: "Ψ§Ψ³ΨΩ…Ψ±!", streak_saved: "ΨΩ… Ψ§Ω„Ψ­ΩΨ§ΨΈ ΨΉΩ„Ω‰ Ψ§Ω„Ψ³Ω„Ψ³Ω„Ψ©!", multiplier: "{value}x Ω…Ψ¶Ψ§ΨΉΩ",
+        tasks_count: "{count} Ω…Ω‡Ψ§Ω…", smart_suggestion: "Ψ§Ω‚ΨΨ±Ψ§Ψ­ Ψ°ΩƒΩ", best_time_to_create: "Ψ£Ω†Ψ Ω†Ψ΄Ψ· Ψ§Ω„ΨΆΩ†!",
+        suggest_simpler: "Ω…Ω‡Ω…Ψ© Ω…ΨΉΩ‚Ψ―Ψ©. Ω‡Ω„ ΨΩ‚Ψ³Ω…Ω‡Ψ§Ψ", high_risk: "Ψ®Ψ·Ψ± ΩΨ΄Ω„ Ω…Ψ±ΨΩΨΉ.",
+        optimal_time: "Ψ§Ω„ΩΩ‚Ψ Ψ§Ω„Ψ£Ω…Ψ«Ω„: ", most_productive_day: "Ψ£ΩƒΨ«Ψ± ΩΩΩ… Ψ¥Ω†ΨΨ§Ψ¬ΩΨ©: ", most_productive_hour: "Ψ£ΩƒΨ«Ψ± Ψ³Ψ§ΨΉΨ© Ψ¥Ω†ΨΨ§Ψ¬ΩΨ©: ",
+        failure_pattern: "ΨΨ¬Ψ― ΨµΨΉΩΨ¨Ψ© ΩΩ ", theme: "Ψ§Ω„Ψ³Ω…Ψ©", toggle_dark: "Ψ§Ω„ΩΨ¶ΨΉ Ψ§Ω„Ω…ΨΈΩ„Ω…", language: "Ψ§Ω„Ω„ΨΊΨ©",
+        app_info: "Ω…ΨΉΩ„ΩΩ…Ψ§Ψ", version: "Ψ¥ΨµΨ―Ψ§Ψ±", completed: "Ω…ΩƒΨΩ…Ω„", failed: "ΩΨ΄Ω„", pending: "Ω‚ΩΨ― Ψ§Ω„Ψ§Ω†ΨΨΈΨ§Ψ±", no_tasks: "Ω„Ψ§ Ω…Ω‡Ψ§Ω…!",
+        session_expired: "Ψ§Ω†ΨΩ‡Ψ Ψ§Ω„Ψ¬Ω„Ψ³Ψ©", task_added: "ΨΩ…Ψ Ψ§Ω„Ψ¥Ψ¶Ψ§ΩΨ©!", task_updated: "ΨΩ… Ψ§Ω„ΨΨ­Ψ―ΩΨ«!", error_occurred: "Ψ­Ψ―Ψ« Ψ®Ψ·Ψ£",
+        calendar: "Ψ§Ω„ΨΩ‚ΩΩΩ…", date: "Ψ§Ω„ΨΨ§Ψ±ΩΨ®", time: "Ψ§Ω„ΩΩ‚Ψ", reminder: "ΨΨ°ΩƒΩΨ±",
+        view_habits_history: "Ψ§Ω„Ψ³Ψ¬Ω„", instructions_btn: "ΨΨΉΩ„ΩΩ…Ψ§Ψ", force_update: "ΨΨ­Ψ―ΩΨ« Ψ§Ω„ΨΨ·Ψ¨ΩΩ‚", install_app: "ΨΨ«Ψ¨ΩΨ Ψ§Ω„ΨΨ·Ψ¨ΩΩ‚", got_it: "Ω…ΩΩ‡ΩΩ…",
+        inst_title: "Ψ§Ω„ΨΨΉΩ„ΩΩ…Ψ§Ψ", inst_subtitle: "ΩƒΩ„ Ψ΄ΩΨ΅ ΨΉΩ† Tobedone", inst_tasks_title: "Ψ§Ω„Ω…Ω‡Ψ§Ω…", inst_tasks_desc: "Ψ£Ψ¶Ω Ψ¨Ω€ '+'.",
+        inst_dash_title: "Ω„ΩΨ­Ψ© Ψ§Ω„Ω‚ΩΨ§Ψ―Ψ©", inst_dash_desc: "ΨΨΨ¨ΨΉ Ψ¥Ω†ΨΨ§Ψ¬ΩΨΩƒ.", inst_prog_title: "Ψ§Ω„ΨΩ‚Ψ―Ω…", inst_prog_desc: "Ψ§Ψ­ΨµΩ„ ΨΉΩ„Ω‰ Ω†Ω‚Ψ§Ψ·.",
+        inst_gestures_title: "Ψ§Ω„Ψ¥ΩΩ…Ψ§Ψ΅Ψ§Ψ", inst_gestures_desc: "Ψ§Ψ³Ψ­Ψ¨ Ω„Ω„ΨΩ†Ω‚Ω„."
     }
 };
 
@@ -480,10 +480,8 @@ function initLanguage() {
 function changeLanguage(lang) {
     currentLang = lang;
     localStorage.setItem('tm_lang', lang);
-    updateUILanguage();
-    if (currentUser && currentView === 'reports') loadReports();
-    if (currentUser && currentView === 'me') loadMe();
-    showToast(t('task_updated'), 'success');
+    // Reload so ALL dynamic content re-renders in the new language
+    window.location.reload();
 }
 
 function showToast(message, type = 'info') {
@@ -1321,9 +1319,9 @@ function renderInsights(history) {
     // 2. Achievements
     const streak = parseInt(document.getElementById('streak-value').textContent) || 0;
     const achievements = [
-        { id: 'early_bird', name: 'Early Bird', icon: '🌅', unlocked: true },
-        { id: 'streak_3', name: '3 Day Streak', icon: '🔥', unlocked: streak >= 3 },
-        { id: 'master', name: 'Task Master', icon: '🏆', unlocked: streak >= 7 }
+        { id: 'early_bird', name: 'Early Bird', icon: 'π…', unlocked: true },
+        { id: 'streak_3', name: '3 Day Streak', icon: 'π”¥', unlocked: streak >= 3 },
+        { id: 'master', name: 'Task Master', icon: 'π†', unlocked: streak >= 7 }
     ];
     
     const list = document.getElementById('achievements-list');
@@ -1847,10 +1845,10 @@ function logout() {
 }
 
 function getScoreLabel(score) {
-    if (score > 75) return { text: 'Excellent', icon: '🏆', class: 'excellent' };
-    if (score > 50) return { text: 'Good', icon: '✨', class: 'good' };
-    if (score > 20) return { text: 'Average', icon: '⚡', class: 'average' };
-    return { text: 'Low', icon: '⚠️', class: 'low' };
+    if (score > 75) return { text: 'Excellent', icon: 'π†', class: 'excellent' };
+    if (score > 50) return { text: 'Good', icon: 'β¨', class: 'good' };
+    if (score > 20) return { text: 'Average', icon: 'β΅', class: 'average' };
+    return { text: 'Low', icon: 'β οΈ', class: 'low' };
 }
 
 function getBadgeImageSrc(scoreClass) {
@@ -2009,7 +2007,7 @@ async function loadMeInsights() {
         const identity = await apiFetch('/identity/profile');
         const total = (identity.completed_goals || 0) + (identity.failed_goals || 0);
         const rateEl = document.getElementById('me-goal-completion-rate');
-        if (rateEl) rateEl.textContent = total > 0 ? `${Math.round((identity.completed_goals / total) * 100)}%` : '—';
+        if (rateEl) rateEl.textContent = total > 0 ? `${Math.round((identity.completed_goals / total) * 100)}%` : 'β€”';
 
         // Smart insights mini feed
         const miniInsights = generateSmartInsightCards(identity, history);
@@ -2254,7 +2252,7 @@ async function loadScoreComparison() {
             
             if (diff > 0) {
                 comparisonEl.className = 'card score-comparison improved';
-                comparisonText.textContent = `You improved by ${diff.toFixed(1)} points compared to yesterday! 🎉`;
+                comparisonText.textContent = `You improved by ${diff.toFixed(1)} points compared to yesterday! π‰`;
             } else if (diff < 0) {
                 comparisonEl.className = 'card score-comparison dropped';
                 comparisonText.textContent = `You dropped by ${Math.abs(diff).toFixed(1)} points compared to yesterday`;
@@ -2290,7 +2288,7 @@ async function loadMissedTasks() {
             const streakValue = parseInt(document.getElementById('streak-value').textContent) || 0;
             
             if (streakValue > 0 && !hasCompletedToday) {
-                message += ` — You are at risk of losing your streak! ⚠️`;
+                message += ` β€” You are at risk of losing your streak! β οΈ`;
             }
             
             textEl.textContent = message;
@@ -2340,7 +2338,7 @@ async function loadWeeklySummary() {
                 </div>
             </div>
             <div class="weekly-summary-change ${data.success_change >= 0 ? 'positive' : 'negative'}">
-                ${data.success_change >= 0 ? '↑' : '↓'} ${Math.abs(data.success_change)}% ${data.success_change >= 0 ? 'improvement' : 'drop'} from last week
+                ${data.success_change >= 0 ? 'β†‘' : 'β†“'} ${Math.abs(data.success_change)}% ${data.success_change >= 0 ? 'improvement' : 'drop'} from last week
             </div>
         `;
         content.innerHTML = html;
@@ -2388,7 +2386,7 @@ async function loadInsights() {
             if (smartMessages.length > 0) {
                 container.innerHTML = smartMessages.map(insight => `
                     <div class="insight-card">
-                        <span class="icon">✨</span>
+                        <span class="icon">β¨</span>
                         <div class="insight-content">
                             <p style="font-weight: 600; color: var(--text-primary);">${insight}</p>
                         </div>
@@ -2675,18 +2673,18 @@ function renderHabits(habits) {
                 <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
                     <h3>${habit.title}</h3>
                     <span class="priority-badge priority-medium">${habit.category}</span>
-                    <span class="priority-badge priority-low">🔥 ${habit.streak}</span>
+                    <span class="priority-badge priority-low">π”¥ ${habit.streak}</span>
                     <span class="priority-badge priority-low">${habit.consistency_score.toFixed(0)}% consistency</span>
                 </div>
                 <div class="habit-meta">
                     <span>${formatHabitDays(habit)}</span>
-                    ${habit.preferred_time ? `<span>⏰ ${habit.preferred_time}</span>` : ''}
+                    ${habit.preferred_time ? `<span>β° ${habit.preferred_time}</span>` : ''}
                     <span>Best streak ${habit.best_streak}</span>
                 </div>
             </div>
             <div class="task-actions">
                 ${habit.today_status === 'completed' ? `
-                    <div class="status-badge completed"><span>Completed ✔</span></div>
+                    <div class="status-badge completed"><span>Completed β”</span></div>
                 ` : habit.today_status === 'skipped' ? `
                     <div class="status-badge failed"><span>Skipped</span></div>
                 ` : habit.is_due_today ? `
@@ -2724,7 +2722,7 @@ function renderTodayHabits(habits) {
     const html = dueHabits.map(habit => `
         <div class="for-you-item">
             <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem;">
-                <span>${habit.title} 🔥 ${habit.streak}</span>
+                <span>${habit.title} π”¥ ${habit.streak}</span>
                 <span>${habit.consistency_score.toFixed(0)}%</span>
             </div>
             <div style="display:flex; gap:0.45rem; margin-top:0.45rem;">
@@ -2870,7 +2868,7 @@ function showSmartSuggestion() {
     if (suggestion) {
         container.innerHTML = `
             <div class="suggestion-box">
-                <span class="icon">✨</span>
+                <span class="icon">β¨</span>
                 <p>${suggestion}</p>
             </div>
         `;
@@ -2909,7 +2907,7 @@ function renderTasks(tasks) {
             const isComplex = task.title.length > 40;
             const isHard = task.difficulty === 'hard';
             if (isComplex || isHard) {
-                riskHtml = `<span class="task-risk-warning">⚠️ ${isComplex ? t('suggest_simpler') : t('high_risk')}</span>`;
+                riskHtml = `<span class="task-risk-warning">β οΈ ${isComplex ? t('suggest_simpler') : t('high_risk')}</span>`;
             }
         }
 
@@ -2918,11 +2916,11 @@ function renderTasks(tasks) {
         if (task.status === 'pending' && task.due_date) {
             const dueDate = new Date(task.due_date);
             if (dueDate < today) {
-                overdueHtml = `<span class="overdue-badge">⚠️ ${t('overdue')}</span>`;
+                overdueHtml = `<span class="overdue-badge">β οΈ ${t('overdue')}</span>`;
             }
         }
 
-        const recurringIcon = task.recurring !== 'none' ? `<span class="recurring-icon" title="${t(task.recurring)}">🔄</span>` : '';
+        const recurringIcon = task.recurring !== 'none' ? `<span class="recurring-icon" title="${t(task.recurring)}">π”„</span>` : '';
 
         card.innerHTML = `
             <div class="task-info">
@@ -2932,9 +2930,9 @@ function renderTasks(tasks) {
                 </div>
                 <div class="task-meta">
                     <p>${task.category} | ${t(task.difficulty)}</p>
-                    ${task.goal_id ? `<p>🎯 Linked Goal</p>` : ''}
+                    ${task.goal_id ? `<p>π― Linked Goal</p>` : ''}
                     ${recurringIcon}
-                    ${task.due_date ? `<p>📅 ${task.due_date}</p>` : ''}
+                    ${task.due_date ? `<p>π“… ${task.due_date}</p>` : ''}
                     ${overdueHtml}
                 </div>
                 ${riskHtml}
@@ -2943,15 +2941,15 @@ function renderTasks(tasks) {
                 ${task.status === 'pending' ? `
                     <button class="btn task-btn completed" onclick="handleTaskUpdate(${task.id}, 'completed', this)">
                         <span data-i18n="completed">${t('completed')}</span>
-                        <span class="btn-icon">✔</span>
+                        <span class="btn-icon">β”</span>
                     </button>
                     <button class="btn task-btn failed" onclick="handleTaskUpdate(${task.id}, 'failed', this)">
                         <span data-i18n="failed">${t('failed')}</span>
-                        <span class="btn-icon">✖</span>
+                        <span class="btn-icon">β–</span>
                     </button>
                 ` : `
                     <div class="status-badge ${task.status}">
-                        ${task.status === 'completed' ? `<span>${t('completed')} ✔</span>` : `<span>${t('failed')} ✖</span>`}
+                        ${task.status === 'completed' ? `<span>${t('completed')} β”</span>` : `<span>${t('failed')} β–</span>`}
                     </div>
                 `}
             </div>
@@ -2970,7 +2968,7 @@ async function addTask(title, category, difficulty, date, time, startTime) {
     const originalText = submitBtn.innerHTML;
     
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span>⏳</span> Processing...';
+    submitBtn.innerHTML = '<span>β³</span> Processing...';
     
     try {
         const taskDate = date || new Date().toLocalISOString();
@@ -3024,7 +3022,7 @@ async function handleTaskUpdate(taskId, status, btnEl) {
     
     // Update local state and UI immediately
     card.className = `task-card ${status}`;
-    card.querySelector('.task-actions').innerHTML = `<span>⏳</span>`;
+    card.querySelector('.task-actions').innerHTML = `<span>β³</span>`;
     
     // Update cache
     const taskIdx = cachedTasks.findIndex(t => t.id === taskId);
@@ -3039,7 +3037,7 @@ async function handleTaskUpdate(taskId, status, btnEl) {
         // Success: Replace loader with status icon
         card.querySelector('.task-actions').innerHTML = `
             <div class="status-badge ${status}">
-                <span>${status === 'completed' ? t('completed') + ' ✔' : t('failed') + ' ✖'}</span>
+                <span>${status === 'completed' ? t('completed') + ' β”' : t('failed') + ' β–'}</span>
             </div>
         `;
 
@@ -3610,7 +3608,7 @@ function renderGoals(goals) {
     if (!goals || goals.length === 0) {
         list.innerHTML = `
             <div class="empty-state">
-                <span class="empty-state-icon">🎯</span>
+                <span class="empty-state-icon">π―</span>
                 <h3 class="empty-state-title">No goals yet</h3>
                 <p class="empty-state-text">Create your first goal to track long-term progress.</p>
                 <button onclick="toggleGoalForm()" class="btn primary">Create Goal</button>
@@ -3654,15 +3652,15 @@ function renderGoals(goals) {
                 ${goal.status === 'active' ? `
                     <button class="btn task-btn completed" onclick="handleGoalComplete(${goal.id})">
                         <span>Achieved</span>
-                        <span class="btn-icon">✔</span>
+                        <span class="btn-icon">β”</span>
                     </button>
                     <button class="btn task-btn failed" onclick="handleGoalFail(${goal.id})">
                         <span>Failed</span>
-                        <span class="btn-icon">✖</span>
+                        <span class="btn-icon">β–</span>
                     </button>
                 ` : `
                     <div class="status-badge ${goal.status}">
-                        <span>${goal.status === 'achieved' ? 'Achieved ✔' : 'Failed ✖'}</span>
+                        <span>${goal.status === 'achieved' ? 'Achieved β”' : 'Failed β–'}</span>
                     </div>
                 `}
             </div>
@@ -3715,7 +3713,7 @@ async function loadIdentityProfile() {
         if (achievementList) {
             achievementList.innerHTML = identity.badges.map(b => `
                 <div class="achievement-badge ${b.unlocked ? 'unlocked' : ''}">
-                    <span class="icon">${b.unlocked ? '🏅' : '🔒'}</span>
+                    <span class="icon">${b.unlocked ? 'π…' : 'π”’'}</span>
                     <span class="name">${b.label}</span>
                 </div>
             `).join('');
@@ -3788,7 +3786,7 @@ function renderIdentity(identity) {
                 ${b.label}
             </span>
         `).join('')
-        : `<span class="identity-badge" style="opacity:0.5"><span>🔒</span> No achievements yet</span>`;
+        : `<span class="identity-badge" style="opacity:0.5"><span>π”’</span> No achievements yet</span>`;
 
     // Render full achievements section
     renderAchievements(identity.badges);
@@ -3798,35 +3796,35 @@ function renderIdentity(identity) {
 function getAchievementIcon(id) {
     const map = {
         // Tasks
-        first_step: '👣', productive_day: '⚡', task_machine: '🤖',
-        task_master: '🏆', completion_expert: '💪', perfection_day: '✨',
-        zero_miss_day: '🎯', marathon: '🏃',
+        first_step: 'π‘£', productive_day: 'β΅', task_machine: 'π¤–',
+        task_master: 'π†', completion_expert: 'π’', perfection_day: 'β¨',
+        zero_miss_day: 'π―', marathon: 'πƒ',
         // Goals
-        goal_setter: '📌', goal_hunter: '🎯', focused: '🔍',
-        visionary: '🔮', unstoppable: '🚀', goal_legend: '👑',
+        goal_setter: 'π“', goal_hunter: 'π―', focused: 'π”',
+        visionary: 'π”®', unstoppable: 'π€', goal_legend: 'π‘‘',
         // Habits
-        habit_beginner: '🌱', consistent: '📅', dedicated: '💎',
-        ritual_master: '🧘', habit_collector: '📚', habit_legend: '🌟',
+        habit_beginner: 'π±', consistent: 'π“…', dedicated: 'π’',
+        ritual_master: 'π§', habit_collector: 'π“', habit_legend: 'π',
         // Streaks
-        streak_3: '🔥', streak_7: '🔥', streak_14: '🔥',
-        streak_30: '🌟', streak_50: '💥', streak_100: '🏅',
-        century_streak: '🏅', comeback_king: '👑',
+        streak_3: 'π”¥', streak_7: 'π”¥', streak_14: 'π”¥',
+        streak_30: 'π', streak_50: 'π’¥', streak_100: 'π…',
+        century_streak: 'π…', comeback_king: 'π‘‘',
         // Trust
-        average_citizen: '🛡️', reliable: '⚡', excellent: '🌟',
-        trusted: '💎', iron_discipline: '⚔️', elite_consistency: '🏆',
+        average_citizen: 'π›΅οΈ', reliable: 'β΅', excellent: 'π',
+        trusted: 'π’', iron_discipline: 'β”οΈ', elite_consistency: 'π†',
         // XP
-        level_5: '⭐', level_10: '🌟', level_25: '💫',
-        level_50: '🚀', level_100: '👑', veteran: '🎖️',
+        level_5: 'β­', level_10: 'π', level_25: 'π’«',
+        level_50: 'π€', level_100: 'π‘‘', veteran: 'π–οΈ',
         // Calendar
-        active_week: '📅', active_month: '🗓️', weekend_warrior: '🎉',
-        perfect_week: '✨',
+        active_week: 'π“…', active_month: 'π—“οΈ', weekend_warrior: 'π‰',
+        perfect_week: 'β¨',
         // Rare
-        night_owl: '🦉', early_bird: '🐦', recovery_mode: '💚',
-        redemption_arc: '🌅', one_year_strong: '🎂',
+        night_owl: 'π¦‰', early_bird: 'π¦', recovery_mode: 'π’',
+        redemption_arc: 'π…', one_year_strong: 'π‚',
         // Legendary
-        tobedone_legend: '👑',
+        tobedone_legend: 'π‘‘',
     };
-    return map[id] || '🎖️';
+    return map[id] || 'π–οΈ';
 }
 
 // Global state for achievements
@@ -3933,7 +3931,7 @@ function renderAchievementGrid(badges) {
 
     if (!badges || badges.length === 0) {
         grid.innerHTML = `<div class="achievements-empty">
-            <span style="font-size:2rem;display:block;margin-bottom:0.5rem;">🔍</span>
+            <span style="font-size:2rem;display:block;margin-bottom:0.5rem;">π”</span>
             No achievements match your search.
         </div>`;
         return;
@@ -4019,7 +4017,7 @@ function triggerTrustScoreFeedback(diff) {
 }
 
 function triggerLevelUpCelebration(level) {
-    showToast(`🎉 LEVEL UP! You reached Level ${level}!`, 'success');
+    showToast(`π‰ LEVEL UP! You reached Level ${level}!`, 'success');
     
     // Pulse and glow the level badge
     const levelEl = document.getElementById('identity-level-badge');
@@ -4411,10 +4409,10 @@ function toggleTaskForm() {
     }
 }
 
-// === Swipe Navigation (Mobile Only) — Real-time finger tracking ===
+// === Swipe Navigation (Mobile Only) β€” Real-time finger tracking ===
 (function() {
     const viewOrder = ['tasks', 'reports', 'insights', 'progress', 'me'];
-    const SWIPE_THRESHOLD = 40;   // px to commit (was 72 — much lower = snappier)
+    const SWIPE_THRESHOLD = 40;   // px to commit (was 72 β€” much lower = snappier)
     const SWIPE_DIR_LOCK  = 4;    // px before deciding horiz vs vert (was 6)
     const SWIPE_DIR_RATIO = 1.5;  // horiz/vert ratio to lock in (was 2.2)
 
@@ -4432,7 +4430,7 @@ function toggleTaskForm() {
     function applyDragFrame(diffX) {
         if (!activeEl) return;
 
-        // 1:1 tracking — no resistance, just clamp at screen edge
+        // 1:1 tracking β€” no resistance, just clamp at screen edge
         const maxDrag = window.innerWidth;
         const drag = Math.max(-maxDrag, Math.min(maxDrag, diffX));
 
@@ -4645,7 +4643,7 @@ function showLoading(show) {
             loadingHideTimeoutId = null;
         }
 
-        // First call: overlay already active from HTML — just track time, never touch loading-sequence
+        // First call: overlay already active from HTML β€” just track time, never touch loading-sequence
         if (!_loadingInitialized) {
             _loadingInitialized = true;
             loadingVisibleSince = Date.now();
@@ -4661,7 +4659,7 @@ function showLoading(show) {
         overlay.classList.add('active');
         overlay.style.opacity = '1';
         overlay.style.pointerEvents = 'all';
-        // DO NOT add/remove loading-sequence here — avoids animation restart
+        // DO NOT add/remove loading-sequence here β€” avoids animation restart
     } else {
         const elapsed = Date.now() - loadingVisibleSince;
         const remaining = Math.max(0, MIN_LOADING_DURATION_MS - elapsed);
@@ -4672,7 +4670,7 @@ function showLoading(show) {
 
         loadingHideTimeoutId = setTimeout(() => {
             overlay.classList.remove('active');
-            // DO NOT remove loading-sequence — so if shown again, animation is already in forwards state
+            // DO NOT remove loading-sequence β€” so if shown again, animation is already in forwards state
             overlay.style.opacity = '0';
             overlay.style.pointerEvents = 'none';
             loadingHideTimeoutId = null;
@@ -4823,7 +4821,7 @@ async function downloadShareCard() {
 }
 
 function copyShareText() {
-    const text = `Check out my progress on Tobedone! 🎯
+    const text = `Check out my progress on Tobedone! π―
 Level: ${shareData.level}
 XP: ${shareData.xp}
 Streak: ${shareData.streak} days
@@ -5099,12 +5097,12 @@ async function renderPersonalRecords(identity) {
 
     const renderList = (hTrust, mTasksDay) => {
         const records = [
-            { label: 'Longest Streak', val: `${currentStreak} Days`, icon: '🔥' },
-            { label: 'Highest Trust Score', val: hTrust.toFixed(1), icon: '🛡️' },
-            { label: 'Highest XP Achieved', val: identity.total_xp.toLocaleString(), icon: '⭐' },
-            { label: 'Max Tasks In A Day', val: `${Math.max(mTasksDay, totalTasksCount > 0 ? 1 : 0)} Tasks`, icon: '📋' },
-            { label: 'Total Tasks Completed', val: `${totalTasksCount} Tasks`, icon: '✅' },
-            { label: 'Total Goals Achieved', val: `${totalGoalsCount} Goals`, icon: '🎯' }
+            { label: 'Longest Streak', val: `${currentStreak} Days`, icon: 'π”¥' },
+            { label: 'Highest Trust Score', val: hTrust.toFixed(1), icon: 'π›΅οΈ' },
+            { label: 'Highest XP Achieved', val: identity.total_xp.toLocaleString(), icon: 'β­' },
+            { label: 'Max Tasks In A Day', val: `${Math.max(mTasksDay, totalTasksCount > 0 ? 1 : 0)} Tasks`, icon: 'π“‹' },
+            { label: 'Total Tasks Completed', val: `${totalTasksCount} Tasks`, icon: 'β…' },
+            { label: 'Total Goals Achieved', val: `${totalGoalsCount} Goals`, icon: 'π―' }
         ];
 
         list.innerHTML = records.map(r => `
@@ -5151,19 +5149,19 @@ async function renderMilestoneTimeline(identity) {
 
     // Check progress of milestones
     const milestones = [
-        { title: '👣 First Step', desc: 'Complete your first task', condition: identity.completed_tasks >= 1 },
-        { title: '📌 Goal Setter', desc: 'Set your very first goal', condition: identity.completed_goals >= 1 },
-        { title: '⚡ Level 10 Achieved', desc: 'Reach Level 10 of personal productivity', condition: identity.level >= 10 },
-        { title: '🛡️ Trust Builder', desc: 'Raise self trust score above 50', condition: identity.trust_score >= 50.0 },
-        { title: '⚔️ Discipline Elite', desc: 'Reach Level 25 or achieve elite trust levels', condition: identity.level >= 25 || identity.trust_score >= 75.0 },
-        { title: '👑 Legendary Achiever', desc: 'Complete 100 tasks and reach level 50', condition: identity.completed_tasks >= 100 && identity.level >= 50 }
+        { title: 'π‘£ First Step', desc: 'Complete your first task', condition: identity.completed_tasks >= 1 },
+        { title: 'π“ Goal Setter', desc: 'Set your very first goal', condition: identity.completed_goals >= 1 },
+        { title: 'β΅ Level 10 Achieved', desc: 'Reach Level 10 of personal productivity', condition: identity.level >= 10 },
+        { title: 'π›΅οΈ Trust Builder', desc: 'Raise self trust score above 50', condition: identity.trust_score >= 50.0 },
+        { title: 'β”οΈ Discipline Elite', desc: 'Reach Level 25 or achieve elite trust levels', condition: identity.level >= 25 || identity.trust_score >= 75.0 },
+        { title: 'π‘‘ Legendary Achiever', desc: 'Complete 100 tasks and reach level 50', condition: identity.completed_tasks >= 100 && identity.level >= 50 }
     ];
 
     list.innerHTML = milestones.map(m => `
         <div class="timeline-node ${m.condition ? 'unlocked' : ''}">
             <div class="timeline-title">${m.title}</div>
             <div class="timeline-desc">${m.desc}</div>
-            <div class="timeline-date">${m.condition ? 'Unlocked ✓' : 'Locked'}</div>
+            <div class="timeline-date">${m.condition ? 'Unlocked β“' : 'Locked'}</div>
         </div>
     `).join('');
 }
@@ -5246,7 +5244,7 @@ async function renderSeasonalChallenges() {
     const challenges = [
         {
             id: 'summer_sprint',
-            title: '🏃 Summer Sprint',
+            title: 'πƒ Summer Sprint',
             desc: 'Complete 10 tasks to claim a massive boost.',
             target: 10,
             current: Math.min(identity.completed_tasks, 10),
@@ -5254,7 +5252,7 @@ async function renderSeasonalChallenges() {
         },
         {
             id: 'consistency_30',
-            title: '🔥 30 Day Consistency',
+            title: 'π”¥ 30 Day Consistency',
             desc: 'Maintain a streak of 30 days.',
             target: 30,
             current: Math.min(identity.streak, 30),
@@ -5269,7 +5267,7 @@ async function renderSeasonalChallenges() {
         
         let actionBtn = '';
         if (isClaimed) {
-            actionBtn = `<span class="priority-badge priority-low" style="align-self:flex-start;">Claimed ✔</span>`;
+            actionBtn = `<span class="priority-badge priority-low" style="align-self:flex-start;">Claimed β”</span>`;
         } else if (isDone) {
             actionBtn = `<button class="btn primary-link-btn-small" onclick="claimChallengeReward('${c.id}', ${c.xp})" style="align-self:flex-start; min-width:80px; padding:0.25rem 0.5rem; font-size:0.65rem;">Claim Reward</button>`;
         } else {
@@ -5302,7 +5300,7 @@ async function claimChallengeReward(challengeId, xpAmount) {
         claimedList[challengeId] = true;
         localStorage.setItem('seasonal_challenges_claimed', JSON.stringify(claimedList));
 
-        showToast(`Challenge claimed! +${xpAmount} XP added! 🎉`, 'success');
+        showToast(`Challenge claimed! +${xpAmount} XP added! π‰`, 'success');
         
         // Re-render progression page elements
         await loadProgressHub();
@@ -5313,7 +5311,7 @@ async function claimChallengeReward(challengeId, xpAmount) {
 
 // Level Up Celebration overlay trigger
 function triggerLevelUpCelebration(newLevel) {
-    showToast(`🎉 LEVEL UP! You have achieved Level ${newLevel}!`, 'success');
+    showToast(`π‰ LEVEL UP! You have achieved Level ${newLevel}!`, 'success');
     
     // Create simple full screen confetti animation overlay
     const overlay = document.createElement('div');
@@ -5329,7 +5327,7 @@ function triggerLevelUpCelebration(newLevel) {
     
     overlay.innerHTML = `
         <div style="text-align:center; color:#fff; animation:scaleUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);">
-            <div style="font-size: 5rem; margin-bottom: 1rem;">👑</div>
+            <div style="font-size: 5rem; margin-bottom: 1rem;">π‘‘</div>
             <h1 style="font-size: 2.5rem; font-weight:900; background:linear-gradient(90deg, #fbbf24, #f59e0b); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:0.5rem;">LEVEL UP!</h1>
             <p style="font-size: 1.2rem; opacity: 0.8; margin-bottom: 2rem;">You reached Level ${newLevel} & Rank "${getRankName(newLevel)}"</p>
             <button class="btn primary" onclick="this.parentElement.parentElement.remove()" style="padding: 0.75rem 2rem; border-radius: 12px; font-weight: 800;">Keep Growing</button>
@@ -5339,9 +5337,9 @@ function triggerLevelUpCelebration(newLevel) {
     document.body.appendChild(overlay);
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
+// β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•
 // MASTERY PROGRESS METRIC
-// ══════════════════════════════════════════════════════════════════════════════
+// β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•
 
 function computeAndRenderMastery(identity) {
     // Weighted components (each 0-100 scale)
@@ -5349,12 +5347,12 @@ function computeAndRenderMastery(identity) {
     const unlockedAchievements = (identity.badges || []).filter(b => b.unlocked).length;
 
     const components = [
-        { label: 'XP',           icon: '⭐', value: Math.min(100, (identity.total_xp / 5000) * 100), weight: 0.20 },
-        { label: 'Level',        icon: '🏆', value: Math.min(100, (identity.level / 50) * 100),     weight: 0.20 },
-        { label: 'Trust',        icon: '🛡️', value: Math.min(100, identity.trust_score),             weight: 0.25 },
-        { label: 'Achievements', icon: '🎖️', value: Math.min(100, (unlockedAchievements / Math.max(totalAchievements, 1)) * 100), weight: 0.15 },
-        { label: 'Tasks',        icon: '✅', value: Math.min(100, (identity.completed_tasks / 100) * 100), weight: 0.10 },
-        { label: 'Goals',        icon: '🎯', value: Math.min(100, (identity.completed_goals / 20) * 100),  weight: 0.10 },
+        { label: 'XP',           icon: 'β­', value: Math.min(100, (identity.total_xp / 5000) * 100), weight: 0.20 },
+        { label: 'Level',        icon: 'π†', value: Math.min(100, (identity.level / 50) * 100),     weight: 0.20 },
+        { label: 'Trust',        icon: 'π›΅οΈ', value: Math.min(100, identity.trust_score),             weight: 0.25 },
+        { label: 'Achievements', icon: 'π–οΈ', value: Math.min(100, (unlockedAchievements / Math.max(totalAchievements, 1)) * 100), weight: 0.15 },
+        { label: 'Tasks',        icon: 'β…', value: Math.min(100, (identity.completed_tasks / 100) * 100), weight: 0.10 },
+        { label: 'Goals',        icon: 'π―', value: Math.min(100, (identity.completed_goals / 20) * 100),  weight: 0.10 },
     ];
 
     const mastery = Math.round(components.reduce((sum, c) => sum + c.value * c.weight, 0));
@@ -5372,7 +5370,7 @@ function computeAndRenderMastery(identity) {
 
     if (pctEl) pctEl.textContent = `${mastery}%`;
     if (fillEl) fillEl.style.width = `${mastery}%`;
-    if (lblEl) lblEl.textContent = `${rankLabel} · Cross-system progression score`;
+    if (lblEl) lblEl.textContent = `${rankLabel} Β· Cross-system progression score`;
     if (bkdEl) {
         bkdEl.innerHTML = components.map(c => `
             <div class="mastery-item">
@@ -5387,9 +5385,9 @@ function computeAndRenderMastery(identity) {
     }
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
+// β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•
 // FUTURE SELF FEATURE
-// ══════════════════════════════════════════════════════════════════════════════
+// β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•
 
 function toggleFutureSelfForm() {
     const body = document.getElementById('future-self-compose-body');
@@ -5421,7 +5419,7 @@ async function submitFutureSelfMessage() {
         document.getElementById('fs-title').value = '';
         document.getElementById('fs-message').value = '';
         toggleFutureSelfForm();
-        showToast('✉️ Message sealed! It will be waiting for you.', 'success');
+        showToast('β‰οΈ Message sealed! It will be waiting for you.', 'success');
         await loadFutureSelf();
     } catch(e) {
         showToast('Failed to send message. Please try again.', 'error');
@@ -5431,7 +5429,7 @@ async function submitFutureSelfMessage() {
 async function openFutureSelfMessage(msgId) {
     try {
         const msg = await apiFetch(`/future-self/${msgId}/open`, { method: 'PATCH' });
-        showToast(`📬 Message from your past self opened!`, 'success');
+        showToast(`π“¬ Message from your past self opened!`, 'success');
         await loadFutureSelf();
         // Show message in a simple overlay
         showFutureSelfMessageOverlay(msg);
@@ -5441,13 +5439,13 @@ async function openFutureSelfMessage(msgId) {
 }
 
 function showFutureSelfMessageOverlay(msg) {
-    const catEmoji = { goal: '🎯', promise: '🤝', prediction: '🔮', reminder: '🔔', motivational: '💪' };
+    const catEmoji = { goal: 'π―', promise: 'π¤', prediction: 'π”®', reminder: 'π””', motivational: 'π’' };
     const overlay = document.createElement('div');
     overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:9998;padding:1.5rem;';
     overlay.innerHTML = `
         <div style="background:var(--bg-card);border-radius:24px;padding:2rem;max-width:480px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,0.5);border:1px solid rgba(124,58,237,0.3);">
             <div style="text-align:center;margin-bottom:1.5rem;">
-                <div style="font-size:3rem;margin-bottom:0.5rem;">${catEmoji[msg.category] || '✉️'}</div>
+                <div style="font-size:3rem;margin-bottom:0.5rem;">${catEmoji[msg.category] || 'β‰οΈ'}</div>
                 <h2 style="font-size:1.4rem;font-weight:900;margin:0;">${msg.title}</h2>
                 <p style="font-size:0.75rem;color:var(--text-secondary);margin:0.25rem 0 0;">Written on ${new Date(msg.created_at).toLocaleDateString()}</p>
             </div>
@@ -5482,14 +5480,14 @@ async function loadFutureSelf() {
         if (messages.length === 0) {
             archive.innerHTML = `
                 <div style="text-align:center;padding:1.5rem;color:var(--text-secondary);">
-                    <div style="font-size:2.5rem;margin-bottom:0.5rem;">✉️</div>
+                    <div style="font-size:2.5rem;margin-bottom:0.5rem;">β‰οΈ</div>
                     <p style="font-size:0.85rem;">No messages yet. Write your first one above!</p>
                 </div>
             `;
             return;
         }
 
-        const catEmoji = { goal: '🎯', promise: '🤝', prediction: '🔮', reminder: '🔔', motivational: '💪' };
+        const catEmoji = { goal: 'π―', promise: 'π¤', prediction: 'π”®', reminder: 'π””', motivational: 'π’' };
 
         archive.innerHTML = `
             <div style="font-size:0.78rem;font-weight:700;color:var(--text-secondary);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em;">Message Archive</div>
@@ -5501,10 +5499,10 @@ async function loadFutureSelf() {
 
                 let statusBadge, actionBtn;
                 if (isOpened) {
-                    statusBadge = `<span class="priority-badge priority-low" style="background:rgba(34,197,94,0.15);color:#22c55e;">Opened ✓</span>`;
+                    statusBadge = `<span class="priority-badge priority-low" style="background:rgba(34,197,94,0.15);color:#22c55e;">Opened β“</span>`;
                     actionBtn = '';
                 } else if (isReady) {
-                    statusBadge = `<span class="priority-badge priority-high">Ready to Open! 🔓</span>`;
+                    statusBadge = `<span class="priority-badge priority-high">Ready to Open! π”“</span>`;
                     actionBtn = `<button onclick="openFutureSelfMessage(${m.id})" class="btn primary" style="font-size:0.72rem;padding:0.3rem 0.75rem;margin-top:0.5rem;">Open Message</button>`;
                 } else {
                     statusBadge = `<span class="priority-badge priority-medium">Opens in ${daysLeft}d</span>`;
@@ -5515,7 +5513,7 @@ async function loadFutureSelf() {
                     <div class="future-self-msg-card ${isOpened ? 'opened' : isReady ? 'ready' : 'sealed'}">
                         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;">
                             <div style="display:flex;align-items:center;gap:0.5rem;flex:1;min-width:0;">
-                                <span style="font-size:1.25rem;">${catEmoji[m.category] || '✉️'}</span>
+                                <span style="font-size:1.25rem;">${catEmoji[m.category] || 'β‰οΈ'}</span>
                                 <div style="flex:1;min-width:0;">
                                     <div style="font-weight:700;font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.title}</div>
                                     <div style="font-size:0.7rem;color:var(--text-secondary);">Opens ${openDate}</div>
@@ -5533,9 +5531,9 @@ async function loadFutureSelf() {
     }
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
+// β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•
 // SMART INSIGHT ENGINE (reusable)
-// ══════════════════════════════════════════════════════════════════════════════
+// β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•
 
 function generateSmartInsightCards(identity, history = []) {
     const cards = [];
@@ -5548,9 +5546,9 @@ function generateSmartInsightCards(identity, history = []) {
     if (streak === 0) {
         cards.push({ icon: 'fas fa-fire', title: 'Start Your Streak', body: 'Complete a task today to ignite your streak. Consistency is the foundation of trust.' });
     } else if (streak >= 3 && streak < 7) {
-        cards.push({ icon: 'fas fa-fire', title: `${streak}-Day Streak 🔥`, body: `Only ${7 - streak} more days to reach a 1-week streak. You're building momentum!` });
+        cards.push({ icon: 'fas fa-fire', title: `${streak}-Day Streak π”¥`, body: `Only ${7 - streak} more days to reach a 1-week streak. You're building momentum!` });
     } else if (streak >= 7) {
-        cards.push({ icon: 'fas fa-fire-flame-curved', title: `${streak}-Day Streak! 🏆`, body: `Incredible consistency. Your streak is in the top tier — protect it!` });
+        cards.push({ icon: 'fas fa-fire-flame-curved', title: `${streak}-Day Streak! π†`, body: `Incredible consistency. Your streak is in the top tier β€” protect it!` });
     }
 
     // Trust trajectory
@@ -5562,7 +5560,7 @@ function generateSmartInsightCards(identity, history = []) {
             const avgPrev = prev7.reduce((a, b) => a + b, 0) / prev7.length;
             const delta = avg7 - avgPrev;
             if (delta > 2) {
-                cards.push({ icon: 'fas fa-trending-up', title: 'Trust Rising 📈', body: `Your trust score improved by ${delta.toFixed(1)} points vs last week. Keep it up!` });
+                cards.push({ icon: 'fas fa-trending-up', title: 'Trust Rising π“', body: `Your trust score improved by ${delta.toFixed(1)} points vs last week. Keep it up!` });
             } else if (delta < -2) {
                 cards.push({ icon: 'fas fa-trending-down', title: 'Trust Declining', body: `Your trust score dropped ${Math.abs(delta).toFixed(1)} pts this week. Focus on completing tasks on time.` });
             }
@@ -5587,9 +5585,9 @@ function generateSmartInsightCards(identity, history = []) {
     return cards;
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
+// β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•
 // DASHBOARD INTELLIGENCE FEED
-// ══════════════════════════════════════════════════════════════════════════════
+// β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•
 
 function generateDashboardIntelligence(identity, todayScore, history) {
     const feed = document.getElementById('dashboard-intelligence-feed');
@@ -5600,7 +5598,7 @@ function generateDashboardIntelligence(identity, todayScore, history) {
     // Add today-specific insights
     const successRate = (todayScore.success_rate || 0) * 100;
     if (successRate === 100 && todayScore.total > 0) {
-        cards.unshift({ icon: 'fas fa-star', title: 'Perfect Day! ⭐', body: 'You completed every task today. Exceptional discipline — trust score boost incoming!' });
+        cards.unshift({ icon: 'fas fa-star', title: 'Perfect Day! β­', body: 'You completed every task today. Exceptional discipline β€” trust score boost incoming!' });
     } else if (successRate >= 70) {
         cards.unshift({ icon: 'fas fa-check-circle', title: `Strong Day (${Math.round(successRate)}%)`, body: `${todayScore.completed || 0} tasks done today. You're in the top tier of today's performance.` });
     } else if (successRate > 0 && successRate < 50) {
@@ -5646,9 +5644,9 @@ function toggleAchievementsVisibility() {
     }
 }
 
-// ════════════════════════════════════════════════════
+// β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•
 // INLINE HISTORY SYSTEM
-// ════════════════════════════════════════════════════
+// β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•β•
 
 const _inlineHistoryState = {
     tasks: { page: 0, hasMore: true },
@@ -5723,17 +5721,17 @@ function renderInlineHistoryItems(type, items) {
 
         const completedAtStr = item.completed_at
             ? new Date(item.completed_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
-            : '—';
+            : 'β€”';
 
         const statusCls = item.status === 'completed' ? 'completed'
                         : item.status === 'achieved'  ? 'achieved'
                         : item.status === 'failed'    ? 'failed'
                         : 'archived';
 
-        const statusLabel = item.status === 'achieved' ? '✦ Achieved'
-                          : item.status === 'completed' ? '✔ Completed'
-                          : item.status === 'failed'    ? '✖ Failed'
-                          : '🗄 Archived';
+        const statusLabel = item.status === 'achieved' ? 'β¦ Achieved'
+                          : item.status === 'completed' ? 'β” Completed'
+                          : item.status === 'failed'    ? 'β– Failed'
+                          : 'π—„ Archived';
 
         const card = document.createElement('div');
         card.className = 'history-item-card';
@@ -5747,11 +5745,12 @@ function renderInlineHistoryItems(type, items) {
                 <div class="history-item-title" title="${item.title}">${item.title}</div>
                 <div class="history-item-meta">
                     <span class="history-badge ${statusCls}">${statusLabel}</span>
-                    <span title="Completed / Archived">🕐 ${completedAtStr}</span>
+                    <span title="Completed / Archived">π• ${completedAtStr}</span>
                 </div>
             </div>
         `;
         list.appendChild(card);
     });
 }
+
 
