@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<!-- SEO Meta Tags -->
+<meta content="Tobedone is your ultimate smart task manager. Organize your life, boost productivity, track your progress, and stay on top of your daily goals with our elegant app." name="description"/>
+<meta content="task manager, to-do list, productivity app, tobedone, daily goals, habit tracker, organize life, todo" name="keywords"/>
+<meta content="Tobedone" name="author"/>
+<meta content="index, follow" name="robots"/>
+<!-- Open Graph / Facebook -->
+<meta content="website" property="og:type"/>
+<meta content="Tobedone - The Ultimate Smart Task Manager" property="og:title"/>
+<meta content="Organize your life, boost productivity, track your progress, and stay on top of your daily goals with our elegant app." property="og:description"/>
+<meta content="/assets/app-logo-20260501.png" property="og:image"/>
+<!-- Twitter -->
+<meta content="summary_large_image" property="twitter:card"/>
+<meta content="Tobedone - The Ultimate Smart Task Manager" property="twitter:title"/>
+<meta content="Organize your life, boost productivity, track your progress, and stay on top of your daily goals with our elegant app." property="twitter:description"/>
+<meta content="/assets/app-logo-20260501.png" property="twitter:image"/>
+<title>Tobedone - The Ultimate Smart Task Manager</title>
+<link href="styles.css?v=73" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet"/>
+<link href="/src/styles/logo.css?v=23.0.0" rel="stylesheet"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="/assets/app-logo-20260501.png?v=17" rel="icon" type="image/png"/>
+<meta content="#000000" name="theme-color"/>
+<link href="/static/icon-home-192-v7.png" rel="apple-touch-icon"/>
+<!-- Chart.js -->
+<script charset="UTF-8" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Critical: prevent black flash before CSS loads -->
+<style>
+        html, body {
+            margin: 0; padding: 0;
+        }
+        #loading-overlay {
+            position: fixed; inset: 0;
+            background: #000000;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+<script>
+        (function() {
+            var isDark = localStorage.getItem('tm_dark_mode') !== '0';
+            var bg = isDark ? '#000000' : '#ffffff';
+            document.write('<style>#loading-overlay{background:' + bg + ' !important;}</style>');
+        })();
+    </script>
+</head>
+<body>
+<script>
+        (function () {
+            var prefersDark = localStorage.getItem('tm_dark_mode');
+            document.body.classList.add(prefersDark === '0' ? 'light-mode' : 'dark-mode');
+        })();
+    </script>
+<div class="bg-lines-container">
+<div class="bg-line bg-line-1"></div>
+<div class="bg-line bg-line-2"></div>
+<div class="bg-line bg-line-3"></div>
+<div class="bg-line bg-line-4"></div>
+<div class="bg-line bg-line-5"></div>
+</div>
+<div class="toast-container" id="toast-container"></div>
+<!-- Auth Page -->
+<div class="page" id="auth-page">
+<div class="auth-container">
+<img alt="Tobedone logo" class="auth-logo logo" src="/assets/logo_auth.png?v=22" style="width: 100% !important; max-width: 120px !important; height: auto !important; margin: 0 auto 0.25rem !important; display: block !important; object-fit: contain;"/>
+<h1 class="main-title">
+<span class="main-title-t" data-i18n="html_t">T</span><span class="main-title-rest" data-i18n="html_obedone">obedone</span>
+</h1>
+<p class="brand-tagline" data-i18n="html_plan_it_do_it_done">Plan it. Do it. Done.</p>
+<div class="tabs">
+<button class="tab active" id="tab-login" onclick="switchAuthTab('login')">
+<i class="fas fa-user"></i>
+<span data-i18n="login">Sign In</span>
+</button>
+<button class="tab" id="tab-signup" onclick="switchAuthTab('signup')">
+<i class="fas fa-user-plus"></i>
+<span data-i18n="signup">Sign Up</span>
+</button>
+</div>
+<div class="auth-oauth">
+<button class="btn oauth-btn full-width" id="google-signin-btn" type="button">
+<span aria-hidden="true" class="oauth-icon"></span>
+<span data-i18n="continue_with_google">Continue with Google</span>
+</button>
+</div>
+<form class="auth-form active" id="login-form">
+<div class="input-group">
+<input autocomplete="email" data-i18n="email" id="login-email" placeholder="Email" required="" type="email"/>
+</div>
+<div class="input-group">
+<input autocomplete="current-password" data-i18n="password" id="login-password" placeholder="Password" required="" type="password"/>
+<button aria-label="Toggle password visibility" class="password-toggle" data-target="login-password" type="button">
+<i aria-hidden="true" class="fas fa-eye"></i>
+</button>
+</div>
+<button class="btn primary" data-i18n="login" type="submit">Sign In</button>
+<button class="btn link-btn" data-i18n="forgot_password" id="forgot-password-link" type="button">Forgot password?</button>
+</form>
+<form class="auth-form" id="signup-form">
+<div class="input-group">
+<input autocomplete="name" data-i18n="full_name" id="signup-name" placeholder="Full Name" required="" type="text"/>
+</div>
+<div class="input-group">
+<input autocomplete="username" data-i18n="username" id="signup-username" placeholder="Username" required="" type="text"/>
+</div>
+<div class="input-group">
+<input autocomplete="email" data-i18n="email" id="signup-email" placeholder="Email" required="" type="email"/>
+</div>
+<div class="input-group">
+<input autocomplete="new-password" data-i18n="password" id="signup-password" placeholder="Password" required="" type="password"/>
+<button aria-label="Toggle password visibility" class="password-toggle" data-target="signup-password" type="button">
+<i aria-hidden="true" class="fas fa-eye"></i>
+</button>
+</div>
+<button class="btn primary" data-i18n="create_account" type="submit">Create Account</button>
+</form>
+<form class="auth-form" id="forgot-form">
+<div class="auth-note" data-i18n="forgot_password_note">Enter your email and we’ll send you a reset link.</div>
+<div class="input-group">
+<input autocomplete="email" data-i18n="email" id="forgot-email" placeholder="Email" required="" type="email"/>
+</div>
+<button class="btn primary" data-i18n="send_reset_link" type="submit">Send reset link</button>
+<div class="auth-divider"><span data-i18n="or">or</span></div>
+<input autocomplete="one-time-code" data-i18n="reset_code" id="recovery-otp" inputmode="numeric" placeholder="Reset code" type="text"/>
+<button class="btn secondary" data-i18n="use_code" id="recovery-otp-btn" type="button">Use code</button>
+<button class="btn link-btn" data-i18n="back_to_login" id="forgot-back-link" type="button">Back to login</button>
+</form>
+<div class="auth-form" id="verify-form">
+<div class="auth-note">
+<div class="auth-note-title" data-i18n="verify_email_title">Verify your email</div>
+<div class="auth-note-body" data-i18n="verify_email_body" id="verify-email-text">Check your inbox and click the verification link to continue.</div>
+</div>
+<div class="input-group">
+<input autocomplete="one-time-code" data-i18n="verification_code" id="verify-otp" inputmode="numeric" placeholder="Verification code" type="text"/>
+</div>
+<button class="btn primary" data-i18n="verify_code" id="verify-otp-btn" type="button">Verify code</button>
+<button class="btn secondary" data-i18n="resend_verification" id="resend-verification-btn" type="button">Resend verification email</button>
+<button class="btn link-btn" data-i18n="back_to_login" id="verify-back-link" type="button">Back to login</button>
+</div>
+<form class="auth-form" id="reset-form">
+<div class="auth-note">
+<div class="auth-note-title" data-i18n="reset_password_title">Set a new password</div>
+</div>
+<div class="input-group">
+<input autocomplete="new-password" data-i18n="new_password" id="reset-password" placeholder="New password" required="" type="password"/>
+<button aria-label="Toggle password visibility" class="password-toggle" data-target="reset-password" type="button">
+<i aria-hidden="true" class="fas fa-eye"></i>
+</button>
+</div>
+<div class="input-group">
+<input autocomplete="new-password" data-i18n="confirm_password" id="reset-password-confirm" placeholder="Confirm password" required="" type="password"/>
+<button aria-label="Toggle password visibility" class="password-toggle" data-target="reset-password-confirm" type="button">
+<i aria-hidden="true" class="fas fa-eye"></i>
+</button>
+</div>
+<button class="btn primary" data-i18n="update_password" type="submit">Update password</button>
+</form>
+<div class="error-msg" id="auth-error"></div>
+</div>
+</div>
+<!-- Main App Layout -->
+<div class="page" data-i18n="html_top_bar_bottom_navigation" id="main-app">
+<!-- Top Bar -->
+<header class="top-bar">
+<div class="top-bar-left">
+<img alt="Logo" class="app-logo-small" src="/assets/logo_small.png?v=22"/>
+<h2 class="app-title-small" data-i18n="html_obedone"><span data-i18n="html_t" style="color: var(--primary);">T</span>obedone</h2>
+</div>
+</header>
+<div class="top-actions-float">
+<button aria-label="Install App" class="icon-btn install-trigger" id="top-install-btn" style="display: none;">
+<i class="fas fa-download"></i>
+</button>
+<button aria-label="Settings" class="icon-btn settings-trigger" onclick="toggleSettings()">
+<i class="fas fa-cog"></i>
+</button>
+</div>
+<main data-i18n="html_dashboard_view_formerly_reports_me_view_" id="content"> <!-- Dashboard View (formerly Reports) -->
+<section class="view" data-i18n="html_monthly_calendar_moved_near_the_top" id="view-reports">
+<div class="premium-header-card" style="width: 95%; margin: 0 auto 1.5rem auto; display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: transparent; border: none; box-shadow: none;">
+<div>
+<h1 data-i18n="dashboard" style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;">Dashboard</h1>
+</div>
+</div>
+<!-- Monthly Calendar (moved near the top) -->
+<div class="card calendar-container" style="margin-bottom: 1.5rem;">
+<div class="calendar-header">
+<button class="btn secondary" onclick="changeDashboardMonth(-1)">❮</button>
+<h2 data-i18n="html_month_year" id="dashboard-calendar-month-year">Month Year</h2>
+<button class="btn secondary" onclick="changeDashboardMonth(1)">❯</button>
+</div>
+<div class="calendar-grid" data-i18n="html_calendar_injected_here" id="dashboard-calendar-grid">
+<!-- Calendar injected here -->
+</div>
+</div>
+<div class="hero-metric-grid" data-i18n="html_hero_metrics_injected_by_app_js" id="dashboard-hero-metrics">
+<!-- Hero Metrics injected by app.js -->
+</div>
+<div class="card progress-section" style="margin-bottom: 1.5rem;">
+<div class="progress-header">
+<label data-i18n="daily_progress">Daily Progress</label>
+<span class="priority-badge priority-low" data-i18n="html_1_0x_boost" id="multiplier-badge" style="display:none">1.0x Boost</span>
+</div>
+<div class="progress-bar"><div id="daily-progress-fill" style="width: 0%"></div></div>
+</div>
+<div class="card habits-today-card" style="margin-bottom: 1.5rem;">
+<div class="identity-header">
+<h3 data-i18n="today_habits">Today's Habits</h3>
+<span class="priority-badge priority-medium" data-i18n="html_consistency">Consistency</span>
+</div>
+<div class="habit-list" id="today-habits-list"></div>
+</div>
+<div class="card" id="weekly-summary" style="margin-top: 1.5rem; display: none;">
+<h3 data-i18n="html_weekly_summary">Weekly Summary</h3>
+<div id="weekly-summary-content"></div>
+</div>
+</section>
+<!-- Me View -->
+<section class="view" data-i18n="html_identity_card_re_added_moved_below_profi" id="view-me">
+<div class="premium-header-card" style="width: 95%; margin: 0 auto 1.5rem auto; display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: transparent; border: none; box-shadow: none;">
+<div>
+<h1 data-i18n="me" style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;">Me</h1>
+</div>
+</div>
+<div class="card" style="margin-bottom: 1.5rem;">
+<div style="display: flex; align-items: center; gap: 1rem;">
+<div class="profile-avatar-wrap">
+<img alt="Profile avatar" class="profile-avatar-img" id="profile-avatar" src="https://ui-avatars.com/api/?name=User&amp;background=0a86ff&amp;color=fff&amp;size=128&amp;bold=true"/>
+<button aria-label="Edit profile photo" class="profile-avatar-edit" id="profile-avatar-edit" type="button">
+<img alt="Edit" src="/assets/pencil-edit.png"/>
+</button>
+<input accept="image/*" id="profile-avatar-input" style="display:none;" type="file"/>
+</div>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 0.25rem; justify-content: center;">
+<div class="profile-display-name" data-i18n="html_user" id="profile-name" style="margin: 0; font-size: 1.5rem;">User</div>
+<div class="profile-display-username" data-i18n="html_user" id="profile-username" style="margin: 0; font-size: 1rem; opacity: 0.7;">@user</div>
+</div>
+</div>
+<form id="profile-edit-form" style="margin-top: 2rem;">
+<div class="form-row" data-i18n="html_full_name_group_username_group" style="flex-direction: column; gap: 1.5rem;">
+<!-- Full Name Group -->
+<div class="form-group" style="display: flex; flex-direction: column; gap: 0.5rem;">
+<label data-i18n="full_name" style="font-weight: 700; color: var(--text-secondary);">Full Name</label>
+<div style="display: flex; gap: 1rem; align-items: center; background: rgba(255,255,255,0.03); padding: 0.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+<input autocomplete="name" data-i18n="full_name" id="profile-name-input" placeholder="Full Name" readonly="" style="flex: 1; background: transparent; border: none; padding: 0.5rem 1rem; font-size: 1rem; color: var(--text-primary); outline: none;" type="text"/>
+<button class="primary-link-btn-small" onclick="enableEdit('profile-name-input')" style="min-width: 120px;" type="button">
+<span data-i18n="change_name">Change Name</span>
+</button>
+</div>
+</div>
+<!-- Username Group -->
+<div class="form-group" style="display: flex; flex-direction: column; gap: 0.5rem;">
+<label data-i18n="username" style="font-weight: 700; color: var(--text-secondary);">Username</label>
+<div style="display: flex; gap: 1rem; align-items: center; background: rgba(255,255,255,0.03); padding: 0.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+<input autocomplete="username" data-i18n="username" id="profile-username-input" placeholder="Username" readonly="" style="flex: 1; background: transparent; border: none; padding: 0.5rem 1rem; font-size: 1rem; color: var(--text-primary); outline: none;" type="text"/>
+<button class="primary-link-btn-small" onclick="enableEdit('profile-username-input')" style="min-width: 120px;" type="button">
+<span data-i18n="change_username">Change Username</span>
+</button>
+</div>
+</div>
+</div>
+<div class="form-actions" style="margin-top: 2rem;">
+<div style="display:flex; gap: 1rem; width: 100%;">
+<button class="btn secondary" data-i18n="html_cancel" disabled="" id="profile-cancel-btn" style="flex: 1;" type="button">Cancel</button>
+<button class="btn primary" data-i18n="html_save_changes" disabled="" id="profile-save-btn" style="flex: 1;" type="submit">Save Changes</button>
+</div>
+</div>
+</form>
+</div>
+<!-- Identity Card (Re-added, moved below Profile Card) -->
+<div class="card identity-card" id="identity-card-section" style="margin-bottom: 1.5rem;">
+<div class="identity-header">
+<div class="identity-title-group">
+<div class="identity-avatar-icon">
+<i class="fas fa-user-shield"></i>
+</div>
+<div>
+<h3 class="profile-display-name" data-i18n="html_user" id="identity-name-display" style="margin: 0;">User</h3>
+<p class="profile-display-username" data-i18n="html_user" id="identity-username-display" style="font-size:0.72rem; color:var(--text-secondary); margin:0;">@user</p>
+</div>
+</div>
+<span class="identity-level-pill" data-i18n="html_level_1" id="identity-level-badge">
+<i class="fas fa-star"></i> Level 1
+                        </span>
+</div>
+<div class="identity-progress-wrap" style="margin-top: 1.25rem; margin-bottom: 1.25rem;">
+<div class="progress-bar identity-progress-bar">
+<div class="identity-xp-fill" id="identity-xp-fill" style="width: 0%"></div>
+</div>
+<div class="identity-xp-text" data-i18n="html_xp_0_100" id="identity-xp-text">XP 0/100</div>
+</div>
+<div class="identity-stats" data-i18n="html_injected_by_app_js" id="identity-stats" style="margin-bottom: 1rem;">
+<!-- Injected by app.js -->
+</div>
+<div class="identity-trust-score-row" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02); padding:0.75rem 1rem; border-radius:12px; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.05);">
+<span data-i18n="html_self_trust_score" style="font-size:0.9rem; font-weight:600; color:var(--text-secondary);">Self Trust Score</span>
+<span id="identity-trust-value" style="font-size:1.4rem; font-weight:900; color:#fbbf24;">0.0</span>
+</div>
+<div class="identity-badges" data-i18n="html_badges_summary_list" id="identity-badges">
+<!-- Badges summary list -->
+</div>
+</div>
+<div class="card for-you-card" style="margin-bottom: 1.5rem;">
+<div class="identity-header">
+<h3 data-i18n="html_for_you">For You</h3>
+<span class="priority-badge priority-low" data-i18n="html_adaptive" id="for-you-pressure">Adaptive</span>
+</div>
+<div class="for-you-list" id="for-you-list"></div>
+</div>
+<div class="card score-comparison" id="score-comparison" style="display: none; margin-bottom: 1.5rem;">
+<span id="score-comparison-text"></span>
+</div>
+<div class="card missed-tasks-alert" id="missed-tasks-alert" style="display: none; margin-bottom: 1.5rem;">
+<span id="missed-tasks-text"></span>
+</div>
+<!-- Insights Section embedded in Me -->
+<div class="card" style="margin-bottom: 1.5rem;">
+<div class="identity-header" style="margin-bottom:1rem;">
+<h3 data-i18n="html_your_analytics"><i class="fas fa-chart-line" style="margin-right:0.5rem; color:var(--primary);"></i>Your Analytics</h3>
+<button class="btn secondary" data-i18n="html_full_report" onclick="showView('insights')" style="font-size:0.7rem; padding:0.3rem 0.7rem;">Full Report</button>
+</div>
+<div class="insights-container" data-i18n="html_smart_insights_mini_feed_injected_by_js" id="me-smart-insights" style="margin-bottom:1rem;">
+<!-- Smart insights mini-feed injected by JS -->
+</div>
+<div class="weekly-summary-stats" style="margin-bottom:1rem;">
+<div class="weekly-summary-stat">
+<span class="label" data-i18n="html_best_day">Best Day</span>
+<span class="value" id="me-insight-best-day">—</span>
+</div>
+<div class="weekly-summary-stat">
+<span class="label" data-i18n="html_goal_rate">Goal Rate</span>
+<span class="value" id="me-goal-completion-rate">0%</span>
+</div>
+<div class="weekly-summary-stat">
+<span class="label" data-i18n="html_tasks_30d">Tasks (30d)</span>
+<span class="value" id="me-tasks-30d">0</span>
+</div>
+</div>
+<div class="chart-grid" style="grid-template-columns:1fr;">
+<div class="chart-container" style="padding:0;">
+<h3 data-i18n="weekly_trend" style="font-size:0.85rem; margin-bottom:0.75rem;">Weekly Trend</h3>
+<canvas id="me-weekly-trend-chart"></canvas>
+</div>
+</div>
+</div>
+</section>
+<!-- Calendar View (Removed or integrated into Dashboard, keeping hidden container for API compatibility if needed, but not in bottom menu) -->
+<section class="view" id="view-calendar" style="display:none !important;">
+<div class="view-header">
+<h1 data-i18n="calendar">Calendar</h1>
+</div>
+<div class="card calendar-container">
+<div class="calendar-header">
+<button class="btn secondary" onclick="changeMonth(-1)">❮</button>
+<h2 data-i18n="html_month_year" id="calendar-month-year">Month Year</h2>
+<button class="btn secondary" onclick="changeMonth(1)">❯</button>
+</div>
+<div class="calendar-grid" id="calendar-grid"></div>
+</div>
+<div class="day-tasks-list" id="day-tasks-container"></div>
+</section>
+<!-- Insights View (Analytics Only) -->
+<section class="view" data-i18n="html_personal_records_card_dynamic_intelligen" id="view-insights">
+<div class="premium-header-card" style="width: 95%; margin: 0 auto 1.5rem auto; display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: transparent; border: none; box-shadow: none;">
+<div>
+<h1 data-i18n="insights" style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;">Insights</h1>
+</div>
+</div>
+<div class="insights-container" data-i18n="html_smart_insights_will_be_injected_here" id="smart-insights-container" style="margin-bottom: 2rem;">
+<!-- Smart insights will be injected here -->
+</div>
+<div class="card" style="margin-bottom: 1.5rem;">
+<h3 data-i18n="html_goal_analytics" style="margin-bottom: 1rem;">Goal Analytics</h3>
+<div class="weekly-summary-stats">
+<div class="weekly-summary-stat">
+<span class="label" data-i18n="html_completion_rate">Completion Rate</span>
+<span class="value" id="goal-completion-rate">0%</span>
+</div>
+<div class="weekly-summary-stat">
+<span class="label" data-i18n="html_achieved_failed">Achieved / Failed</span>
+<span class="value" id="goal-achieved-failed">0 / 0</span>
+</div>
+<div class="weekly-summary-stat">
+<span class="label" data-i18n="html_avg_completion_time">Avg Completion Time</span>
+<span class="value" data-i18n="html_0d" id="goal-average-time">0d</span>
+</div>
+</div>
+</div>
+<div class="insights-container" style="margin-bottom: 1.5rem;">
+<div class="insight-card">
+<span class="icon"><i class="fas fa-lightbulb"></i></span>
+<div class="insight-content">
+<h4 data-i18n="productive_day">Most Productive Day</h4>
+<p data-i18n="html_analyzing_patterns" id="insight-best-day">Analyzing patterns...</p>
+</div>
+</div>
+<div class="insight-card">
+<span class="icon"><i class="fas fa-bolt"></i></span>
+<div class="insight-content">
+<h4 data-i18n="productive_hour">Most Productive Hour</h4>
+<p data-i18n="html_analyzing_patterns" id="insight-best-hour">Analyzing patterns...</p>
+</div>
+</div>
+<div class="insight-card" style="border-left: 4px solid var(--error);">
+<span class="icon"><i class="fas fa-exclamation-triangle"></i></span>
+<div class="insight-content">
+<h4 data-i18n="failure_patterns">Failure Patterns</h4>
+<p data-i18n="html_analyzing_patterns" id="insight-failure-pattern">Analyzing patterns...</p>
+</div>
+</div>
+</div>
+<!-- Personal Records Card -->
+<div class="card personal-records-card" style="margin-bottom: 1.5rem;">
+<div class="identity-header">
+<h3 data-i18n="html_personal_records">🏆 Personal Records</h3>
+</div>
+<div class="records-grid" data-i18n="html_records_dynamically_loaded_by_js" id="personal-records-list" style="margin-top: 1rem;">
+<!-- Records dynamically loaded by JS -->
+</div>
+</div>
+<!-- Dynamic Intelligence Feed -->
+<div style="margin-bottom: 1.5rem;">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+<h3 data-i18n="html_today_s_insights" style="margin:0;font-size:1.1rem;font-weight:700;color:var(--text-primary);">Today's Insights</h3>
+</div>
+<div data-i18n="html_personalized_data_driven_insights_inject" id="dashboard-intelligence-feed">
+<!-- Personalized data-driven insights injected by JS -->
+</div>
+</div>
+</section>
+<!-- Progress View (NEW HUB) -->
+<section class="view" data-i18n="html_mastery_progress_card_rank_xp_card_trust" id="view-progress">
+<div class="premium-header-card" style="width: 95%; margin: 0 auto 1.5rem auto; display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: transparent; border: none; box-shadow: none;">
+<div>
+<h1 data-i18n="html_progress" style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;">Progress</h1>
+</div>
+</div>
+<!-- Mastery Progress Card -->
+<div class="card mastery-progress-card" style="margin-bottom: 1.5rem;">
+<div class="identity-header">
+<div class="identity-title-group">
+<div class="identity-avatar-icon" style="background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%); border: 2.2px solid rgba(255, 107, 107, 0.45); box-shadow: 0 4px 14px rgba(255, 107, 107, 0.35);">
+<i class="fas fa-chart-line" style="color: #ffffff !important; font-size: 1.1rem;"></i>
+</div>
+<div>
+<h3 data-i18n="html_mastery_progress">Mastery Progress</h3>
+<p data-i18n="html_calculating" id="mastery-rank-label" style="font-size:0.72rem; color:var(--text-secondary); margin:0;">Calculating...</p>
+</div>
+</div>
+<span class="identity-level-pill" id="mastery-percent-badge" style="font-size:1rem; padding:0.4rem 0.9rem;">0%</span>
+</div>
+<div style="margin-top:1.25rem;">
+<div class="progress-bar identity-progress-bar" style="height:10px; border-radius:8px;">
+<div class="identity-xp-fill" id="mastery-progress-fill" style="width:0%; background: linear-gradient(90deg, #f59e0b, #ef4444, #7c3aed); border-radius:8px;"></div>
+</div>
+<div class="mastery-breakdown" data-i18n="html_breakdown_items_injected_by_js" id="mastery-breakdown" style="margin-top:1rem; display:grid; grid-template-columns:repeat(3, 1fr); gap:0.5rem;">
+<!-- Breakdown items injected by JS -->
+</div>
+</div>
+</div>
+<!-- Rank & XP Card -->
+<div class="card rank-xp-card" style="margin-bottom: 1.5rem;">
+<div class="rank-header">
+<div class="rank-title-group">
+<span class="rank-badge-icon"><i class="fas fa-crown"></i></span>
+<div>
+<h3 class="rank-name" data-i18n="html_explorer" id="progress-rank-name">Explorer</h3>
+<p class="rank-subtitle" data-i18n="html_permanent_rank_system">Permanent Rank System</p>
+</div>
+</div>
+<span class="identity-level-pill" data-i18n="html_level_1" id="progress-level-badge">
+<i class="fas fa-star"></i> Level 1
+                        </span>
+</div>
+<div class="xp-progress-wrap" style="margin-top: 1.5rem;">
+<div class="xp-progress-meta">
+<span data-i18n="html_xp_0_100" id="progress-xp-text" style="font-weight: 700;">XP 0 / 100</span>
+<span class="next-level-indicator" data-i18n="next_level">Next Level</span>
+</div>
+<div class="progress-bar identity-progress-bar">
+<div class="identity-xp-fill" id="progress-xp-fill" style="width: 0%"></div>
+</div>
+<div class="total-xp-lbl" data-i18n="total_xp" id="progress-total-xp" style="margin-top: 0.4rem; font-size: 0.72rem; opacity: 0.7;">Total XP: 0</div>
+</div>
+</div>
+<!-- Trust Progress Card -->
+<div class="card trust-progress-card" style="margin-bottom: 1.5rem;">
+<div class="identity-header">
+<div class="identity-title-group">
+<div class="identity-avatar-icon" style="background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%); border: 2.2px solid rgba(0, 198, 255, 0.45); box-shadow: 0 4px 14px rgba(0, 114, 255, 0.35);">
+<i class="fas fa-shield-halved" style="color: #ffffff !important; font-size: 1.1rem;"></i>
+</div>
+<h3 data-i18n="self_trust_score">Self Trust Score</h3>
+</div>
+<span class="priority-badge priority-medium" data-i18n="html_average" id="progress-trust-tier">Average</span>
+</div>
+<div class="trust-progress-details" style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
+<span id="progress-trust-value" style="font-size: 2.2rem; font-weight: 900; color: #fbbf24;">0.0</span>
+<svg class="trust-trend-line" fill="none" style="width: 80px; height: 35px;" viewbox="0 0 64 28" xmlns="http://www.w3.org/2000/svg">
+<polyline fill="none" points="2,24 14,18 24,14 34,16 46,8 62,3" stroke="#fbbf24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></polyline>
+</svg>
+</div>
+<div data-i18n="html_trust_builds_slowly_through_discipline_a" style="margin-top: 1rem; font-size: 0.72rem; color: var(--text-secondary);">
+                        Trust builds slowly through discipline and consistency. Penalty protection is active at higher streak levels.
+                    </div>
+</div>
+<!-- Achievements System (Grid, Filters, Search) -->
+<div class="card achievements-section" data-i18n="html_toggle_button_to_show_hide_achievements_" style="margin-bottom: 1.5rem;">
+<div class="achievements-header">
+<div class="achievements-title-group">
+<div class="achievements-icon-wrap">
+<i class="fas fa-trophy"></i>
+</div>
+<div>
+<h3 data-i18n="achievements">Achievements</h3>
+<p class="achievements-subtitle" data-i18n="html_loading" id="achievements-subtitle">Loading...</p>
+</div>
+</div>
+<div class="achievements-ring" id="achievements-completion-ring">
+<svg class="ring-svg" viewbox="0 0 36 36">
+<circle class="ring-bg" cx="18" cy="18" r="15.9"></circle>
+<circle class="ring-fill" cx="18" cy="18" id="ring-progress-circle" r="15.9" stroke-dasharray="0 100"></circle>
+</svg>
+<span class="ring-text" id="ring-percent-text">0%</span>
+</div>
+</div>
+<div class="achievements-stats-bar">
+<div class="ach-stat ach-stat-common">
+<span class="ach-stat-value" id="ach-count-common">0</span>
+<span class="ach-stat-label" data-i18n="common">Common</span>
+</div>
+<div class="ach-stat ach-stat-rare">
+<span class="ach-stat-value" id="ach-count-rare">0</span>
+<span class="ach-stat-label" data-i18n="rare">Rare</span>
+</div>
+<div class="ach-stat ach-stat-epic">
+<span class="ach-stat-value" id="ach-count-epic">0</span>
+<span class="ach-stat-label" data-i18n="epic">Epic</span>
+</div>
+<div class="ach-stat ach-stat-legendary">
+<span class="ach-stat-value" id="ach-count-legendary">0</span>
+<span class="ach-stat-label" data-i18n="legendary">Legendary</span>
+</div>
+</div>
+<!-- Toggle Button to Show/Hide achievements content -->
+<div style="margin-top: 1rem; text-align: center;">
+<button class="btn primary" id="toggle-achievements-btn" onclick="toggleAchievementsVisibility()" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 700; letter-spacing: 0.05em; padding: 0.65rem 1rem;">
+<span data-i18n="achievements">View Achievements</span>
+<i class="fas fa-chevron-down" id="toggle-achievements-chevron"></i>
+</button>
+</div>
+<!-- Toggleable wrapper (collapsed by default) -->
+<div id="achievements-collapse-wrapper" style="display: none; margin-top: 1.25rem;">
+<div class="achievements-search-wrap">
+<i class="fas fa-search achievements-search-icon"></i>
+<input class="achievements-search" data-i18n="search_achievements" id="achievements-search" placeholder="Search achievements..." type="text"/>
+</div>
+<div class="achievements-filters" id="achievements-filters">
+<button class="ach-filter-btn active" data-filter="All" data-i18n="all" onclick="filterAchievements('All', this)">All</button>
+<button class="ach-filter-btn" data-filter="Tasks" onclick="filterAchievements('Tasks', this)">📋 <span data-i18n="tasks">Tasks</span></button>
+<button class="ach-filter-btn" data-filter="Goals" onclick="filterAchievements('Goals', this)">🎯 <span data-i18n="goals">Goals</span></button>
+<button class="ach-filter-btn" data-filter="Habits" onclick="filterAchievements('Habits', this)">⚡ <span data-i18n="habits">Habits</span></button>
+<button class="ach-filter-btn" data-filter="Streaks" onclick="filterAchievements('Streaks', this)">🔥 <span data-i18n="streak">Streaks</span></button>
+<button class="ach-filter-btn" data-filter="Trust" onclick="filterAchievements('Trust', this)">🛡️ <span data-i18n="trust_score">Trust</span></button>
+<button class="ach-filter-btn" data-filter="XP" data-i18n="html_xp" onclick="filterAchievements('XP', this)">⭐ XP</button>
+<button class="ach-filter-btn" data-filter="Calendar" onclick="filterAchievements('Calendar', this)">📅 <span data-i18n="calendar">Calendar</span></button>
+<button class="ach-filter-btn" data-filter="Rare" data-i18n="html_rare" onclick="filterAchievements('Rare', this)">💎 Rare</button>
+<button class="ach-filter-btn" data-filter="Legendary" data-i18n="html_legendary" onclick="filterAchievements('Legendary', this)">👑 Legendary</button>
+<button class="ach-filter-btn" data-filter="unlocked" data-i18n="html_unlocked" onclick="filterAchievements('unlocked', this)">✅ Unlocked</button>
+<button class="ach-filter-btn" data-filter="locked" data-i18n="html_locked" onclick="filterAchievements('locked', this)">🔒 Locked</button>
+</div>
+<div class="achievements-grid" id="achievements-grid">
+<div class="achievements-loading">
+<i class="fas fa-spinner fa-spin"></i>
+<span data-i18n="html_loading_achievements">Loading achievements...</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Milestone Timeline Card -->
+<div class="card milestone-timeline-card" style="margin-bottom: 1.5rem;">
+<div class="identity-header">
+<h3><span data-i18n="milestones">📅 Milestone Timeline</span></h3>
+</div>
+<div class="timeline-list" data-i18n="html_timeline_entries_loaded_dynamically" id="milestone-timeline-list" style="margin-top: 1rem; position: relative;">
+<!-- Timeline entries loaded dynamically -->
+</div>
+</div>
+<!-- Weekly & Monthly Performance Reviews -->
+<div class="card performance-reports-card" style="margin-bottom: 1.5rem;">
+<div class="tabs" style="margin-bottom: 1.2rem;">
+<button class="tab active" data-i18n="weekly_report" id="tab-report-weekly" onclick="switchPerformanceReport('weekly')">Weekly Report</button>
+<button class="tab" data-i18n="monthly_progress" id="tab-report-monthly" onclick="switchPerformanceReport('monthly')">Monthly Review</button>
+</div>
+<div class="report-content-body" data-i18n="html_loaded_dynamically" id="performance-report-content">
+<!-- Loaded dynamically -->
+</div>
+</div>
+<!-- Seasonal Challenges Card -->
+<div class="card seasonal-challenges-card" style="margin-bottom: 1.5rem;">
+<div class="identity-header">
+<h3><span data-i18n="challenges">❄️ Seasonal Challenges</span></h3>
+<span class="priority-badge priority-high" data-i18n="limited_time">Limited Time</span>
+</div>
+<div class="challenges-grid" data-i18n="html_challenges_loaded_dynamically" id="seasonal-challenges-list" style="margin-top: 1rem;">
+<!-- Challenges loaded dynamically -->
+</div>
+</div>
+<!-- Future Self Section -->
+<div class="card future-self-card" data-i18n="html_compose_form_archive" id="future-self-section" style="margin-bottom: 1.5rem;">
+<div class="identity-header" style="margin-bottom: 1.25rem;">
+<div class="identity-title-group">
+<div class="identity-avatar-icon" style="background: linear-gradient(135deg, #7c3aed, #a78bfa);">
+<i class="fas fa-envelope-open-text"></i>
+</div>
+<div>
+<h3 data-i18n="html_future_self">Future Self</h3>
+<p data-i18n="html_send_a_message_to_your_future_self" style="font-size:0.72rem; color:var(--text-secondary); margin:0;">Send a message to your future self</p>
+</div>
+</div>
+<div class="future-self-stats-bar" id="future-self-stats">
+<span data-i18n="html_0_sent" id="fs-stat-sent">0 Sent</span>
+<span data-i18n="html_0_ready" id="fs-stat-ready">0 Ready</span>
+<span data-i18n="html_0_opened" id="fs-stat-opened">0 Opened</span>
+</div>
+</div>
+<!-- Compose Form -->
+<div class="future-self-compose">
+<div class="future-self-compose-header" onclick="toggleFutureSelfForm()">
+<span><i class="fas fa-plus-circle" style="margin-right:0.5rem; color:var(--primary);"></i><span data-i18n="write_future">Write a message to your future self</span></span>
+<i class="fas fa-chevron-down" id="fs-compose-chevron"></i>
+</div>
+<div id="future-self-compose-body" style="display:none; margin-top:1rem;">
+<input data-i18n="message_title" id="fs-title" placeholder="Message title (e.g. My fitness goal)" style="width:100%; margin-bottom:0.75rem; padding:0.75rem; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-size:0.9rem;" type="text"/>
+<textarea data-i18n="write_message" id="fs-message" placeholder="Write a message to your future self... goals, promises, predictions, reminders, or motivation." rows="4" style="width:100%; margin-bottom:0.75rem; padding:0.75rem; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-size:0.9rem; resize:vertical;"></textarea>
+<div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:0.75rem;">
+<select id="fs-delivery" style="flex:1; padding:0.6rem; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
+<option data-i18n="one_week" value="1_week">📅 Open in 1 Week</option>
+<option data-i18n="one_month" selected="" value="1_month">📅 Open in 1 Month</option>
+<option data-i18n="three_months_long" value="3_months">📅 Open in 3 Months</option>
+<option data-i18n="six_months_long" value="6_months">📅 Open in 6 Months</option>
+<option data-i18n="one_year_long" value="1_year">📅 Open in 1 Year</option>
+</select>
+<select id="fs-category" style="flex:1; padding:0.6rem; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
+<option data-i18n="goals" value="goal">🎯 Goal</option>
+<option data-i18n="html_promise" value="promise">🤝 Promise</option>
+<option data-i18n="html_prediction" value="prediction">🔮 Prediction</option>
+<option data-i18n="html_reminder" value="reminder">🔔 Reminder</option>
+<option data-i18n="html_motivational" selected="" value="motivational">💪 Motivational</option>
+</select>
+</div>
+<button class="btn primary" onclick="submitFutureSelfMessage()" style="width:100%;">
+<i class="fas fa-paper-plane" style="margin-right:0.5rem;"></i><span data-i18n="send_future">Send to Future Self</span>
+</button>
+</div>
+</div>
+<!-- Archive -->
+<div class="future-self-archive" data-i18n="html_loaded_dynamically" id="future-self-archive" style="margin-top:1.25rem;">
+<!-- Loaded dynamically -->
+</div>
+</div>
+</section>
+<!-- Tasks View -->
+<section class="view active" id="view-tasks">
+<div class="premium-header-card" style="width: 95%; margin: 0 auto 1.5rem auto; display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: transparent; border: none; box-shadow: none;">
+<div>
+<h1 data-i18n="tasks" id="tasks-goals-title" style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;">Tasks</h1>
+<p data-i18n="focus_today" id="tasks-goals-subtitle" style="margin: 0.25rem 0 0 0; font-size: 0.85rem; color: var(--text-secondary);">Focus on what matters today.</p>
+</div>
+<button class="btn primary" id="tasks-goals-add-btn" onclick="toggleCurrentForm()" style="border-radius: 12px; padding: 0.65rem 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 0.4rem; box-shadow: 0 4px 15px rgba(10, 134, 255, 0.25);">
+<i class="fas fa-plus-circle" style="font-size: 1.1em;"></i> <span data-i18n="new_task" id="tasks-goals-add-text">New Task</span>
+</button>
+</div>
+<div class="card" style="margin-bottom: 1.5rem;">
+<div class="tabs" style="margin: 0;">
+<button class="tab active" data-i18n="tasks" id="tab-tasks-only" onclick="switchTasksGoalsTab('tasks')">Tasks</button>
+<button class="tab" data-i18n="goals_tab" id="tab-goals-only" onclick="switchTasksGoalsTab('goals')">Goals</button>
+<button class="tab" data-i18n="habits_tab" id="tab-habits-only" onclick="switchTasksGoalsTab('habits')">Habits</button>
+</div>
+</div>
+<div id="smart-suggestion-container" style="display: none;"></div>
+<div id="tasks-only-container">
+<div class="task-list" data-i18n="html_tasks_injected_here" id="task-list">
+<!-- Tasks injected here -->
+</div>
+<div class="task-list" id="tasks-history-list" style="margin-top: 1.5rem;"></div>
+<div style="text-align:center; margin-top: 0.5rem; margin-bottom: 1rem;">
+<button class="btn primary" id="tasks-history-btn" onclick="loadInlineHistory('tasks')" style="width:100%; font-size:0.85rem; gap:0.5rem;">
+<i class="fas fa-clock-rotate-left"></i> <span data-i18n="view_tasks_history">View Completed Tasks History</span>
+</button>
+</div>
+</div>
+<div id="goals-only-container" style="display: none;">
+<div class="task-list" id="goals-list"></div>
+<div class="task-list" id="goals-history-list" style="margin-top: 1.5rem;"></div>
+<div style="text-align:center; margin-top: 0.5rem; margin-bottom: 1rem;">
+<button class="btn primary" id="goals-history-btn" onclick="loadInlineHistory('goals')" style="width:100%; font-size:0.85rem; gap:0.5rem;">
+<i class="fas fa-clock-rotate-left"></i> <span data-i18n="view_goals_history">View Goals History</span>
+</button>
+</div>
+</div>
+<div id="habits-only-container" style="display: none;">
+<div class="task-list" id="habits-list"></div>
+<div class="task-list" id="habits-history-list" style="margin-top: 1.5rem;"></div>
+<div style="text-align:center; margin-top: 0.5rem; margin-bottom: 1rem;">
+<button class="btn primary" id="habits-history-btn" onclick="loadInlineHistory('habits')" style="width:100%; font-size:0.85rem; gap:0.5rem;">
+<i class="fas fa-clock-rotate-left"></i> <span data-i18n="view_habits_history">View Habits History</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Settings View -->
+<section class="view" data-i18n="html_instructions_button" id="view-settings">
+<div class="premium-header-card" style="width: 100%; margin: 0 auto 1.5rem auto; display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; background: transparent; border: none; box-shadow: none;">
+<div>
+<h1 data-i18n="settings" style="margin: 0; font-size: 1.8rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;">Settings</h1>
+</div>
+<button aria-label="Close Settings" class="settings-close-btn" onclick="toggleSettings()">
+<i class="fas fa-times" style="font-size: 0.9rem;"></i>
+</button>
+</div>
+<div class="card settings-styled-card">
+<h3 data-i18n="theme" style="margin-bottom: 1rem;">Theme</h3>
+<div class="settings-row">
+<span data-i18n="toggle_dark">Toggle Dark Mode</span>
+<label class="switch">
+<input id="dark-mode-switch" onchange="toggleDarkMode()" type="checkbox"/>
+<span class="slider round"></span>
+</label>
+</div>
+</div>
+<div class="card settings-styled-card">
+<h3 data-i18n="language" style="margin-bottom: 1rem;">Language</h3>
+<select id="lang-selector" onchange="changeLanguage(this.value)" style="width: 100%; padding: 0.6rem 1rem; border-radius: 8px; border: 1px solid rgba(10,134,255,0.4); background: var(--surface); color: var(--text-primary); font-family: inherit; font-size: 0.95rem;">
+<option data-i18n="html_english" value="en">English</option>
+<option value="el">Ελληνικά</option>
+<option data-i18n="html_espa_ol" value="es">Español</option>
+<option data-i18n="html_fran_ais" value="fr">Français</option>
+<option data-i18n="html_deutsch" value="de">Deutsch</option>
+<option data-i18n="html_italiano" value="it">Italiano</option>
+<option data-i18n="html_portugu_s" value="pt">Português</option>
+<option value="ru">Русский</option>
+<option value="ja">日本語</option>
+<option value="zh">中文</option>
+<option value="ar">العربية</option>
+</select>
+</div>
+<!-- Instructions Button -->
+<button class="settings-action-btn" onclick="openInstructionsModal()">
+<i class="fas fa-book-open" style="color: var(--primary);"></i> <span data-i18n="instructions_btn">Οδηγίες για Νέους Χρήστες</span>
+</button>
+<div class="card settings-styled-card">
+<h3 data-i18n="app_info" style="margin-bottom: 1rem;">App Info</h3>
+<p style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem;"><span data-i18n="version">Version</span>: 4.0.0</p>
+<button class="settings-action-btn" data-i18n="force_update" onclick="forceUpdateApp()">Force Update App</button>
+<button class="settings-action-btn" data-i18n="install_app" id="install-btn" style="display:none;">Install App</button>
+<button class="settings-logout-btn" onclick="logout()">
+<i class="fas fa-sign-out-alt" style="margin-right: 0.5rem;"></i>
+<span data-i18n="logout">Logout</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+<div class="bottom-nav-glow"></div>
+<div aria-hidden="true" class="nav-indicator"></div>
+<button class="nav-item active" onclick="showView('tasks')">
+<span class="nav-icon"><i class="fas fa-tasks"></i></span>
+<span class="nav-label" data-i18n="tasks">Tasks</span>
+</button>
+<button class="nav-item" onclick="showView('reports')">
+<span class="nav-icon"><i class="fas fa-chart-line"></i></span>
+<span class="nav-label" data-i18n="dashboard">Dashboard</span>
+</button>
+<button class="nav-item" onclick="showView('insights')">
+<span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
+<span class="nav-label" data-i18n="insights">Insights</span>
+</button>
+<button class="nav-item" onclick="showView('progress')">
+<span class="nav-icon"><i class="fas fa-crown"></i></span>
+<span class="nav-label" data-i18n="progress">Progress</span>
+</button>
+<button class="nav-item" onclick="showView('me')">
+<span class="nav-icon"><i class="fas fa-user"></i></span>
+<span class="nav-label" data-i18n="me">Me</span>
+</button>
+</nav>
+</div>
+<div class="task-form-modal" id="task-form-container">
+<form id="add-task-form">
+<h3 data-i18n="new_task">New Task</h3>
+<input data-i18n="task_placeholder" id="task-title" placeholder="What needs to be done?" required="" type="text"/>
+<div class="form-row">
+<div class="form-group">
+<label data-i18n="date">Date</label>
+<input id="task-date" required="" type="date"/>
+</div>
+<div class="form-group">
+<label data-i18n="html_start">Start</label>
+<input id="task-start-time" type="time"/>
+</div>
+<div class="form-group">
+<label data-i18n="html_finish">Finish</label>
+<input id="task-time" required="" type="time"/>
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label data-i18n="category">Category</label>
+<input id="task-category" placeholder="General" type="text" value="General"/>
+</div>
+<div class="form-group">
+<label data-i18n="priority">Priority</label>
+<select id="task-priority">
+<option data-i18n="low" value="low">Low</option>
+<option data-i18n="medium" selected="" value="medium">Medium</option>
+<option data-i18n="high" value="high">High</option>
+</select>
+</div>
+</div>
+<div style="display:none">
+<select id="task-difficulty"><option selected="" value="medium"></option></select>
+<select id="task-recurring"><option selected="" value="none"></option></select>
+<input id="task-due-date" type="date"/>
+</div>
+<div class="link-controls">
+<div class="link-toggle-group" style="display: flex; gap: 0.5rem;">
+<button class="link-toggle-btn" id="btn-link-goal" onclick="toggleTaskLink('goal')" style="flex: 1;" type="button">
+<i class="fas fa-bullseye"></i>
+<span data-i18n="html_goal_link">Goal Link</span>
+</button>
+<button class="link-toggle-btn" id="btn-link-habit" onclick="toggleTaskLink('habit')" style="flex: 1;" type="button">
+<i class="fas fa-repeat"></i>
+<span data-i18n="html_habit_link">Habit Link</span>
+</button>
+</div>
+<div class="link-panel" id="link-goal-panel" style="display:none; margin-top: 0.5rem;">
+<select id="task-goal-select">
+<option data-i18n="html_select_a_goal" value="">Select a goal...</option>
+</select>
+</div>
+<div class="link-panel" id="link-habit-panel" style="display:none; margin-top: 0.5rem;">
+<select id="task-habit-select">
+<option data-i18n="html_select_a_habit" value="">Select a habit...</option>
+</select>
+</div>
+</div>
+<div class="form-actions">
+<button class="btn secondary" data-i18n="cancel" onclick="toggleTaskForm()" type="button">Cancel</button>
+<button class="btn primary" data-i18n="add_task" type="submit">Add Task</button>
+</div>
+</form>
+</div>
+<div class="task-form-modal" id="goal-form-container">
+<form id="add-goal-form">
+<h3 data-i18n="html_new_goal">New Goal</h3>
+<input id="goal-title" placeholder="Goal title" required="" type="text"/>
+<div class="form-row">
+<div class="form-group">
+<label data-i18n="html_category">Category</label>
+<input id="goal-category" placeholder="General" required="" type="text" value="General"/>
+</div>
+<div class="form-group">
+<label data-i18n="html_goal_type">Goal Type</label>
+<select id="goal-type">
+<option data-i18n="html_today_short_length" value="today">Today (Short Length)</option>
+<option data-i18n="html_tomorrow_short_length" value="tomorrow">Tomorrow (Short Length)</option>
+<option data-i18n="html_1_3_days_short_length" value="three_days">1-3 days (Short Length)</option>
+<option data-i18n="html_1_week_medium_length" value="one_week">1 week (Medium Length)</option>
+<option data-i18n="html_1_2_weeks_medium_length" selected="" value="two_weeks">1-2 weeks (Medium Length)</option>
+<option data-i18n="html_1_month_medium_length" value="one_month">1 month (Medium Length)</option>
+<option data-i18n="html_3_months_long_length" value="three_months">3 months (Long Length)</option>
+<option data-i18n="html_6_months_long_length" value="six_months">6 months (Long Length)</option>
+<option data-i18n="html_1_year_long_length" value="one_year">1 year (Long Length)</option>
+<option data-i18n="html_1_year_long_length" value="one_year_plus">1 year+ (Long Length)</option>
+</select>
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label data-i18n="html_deadline">Deadline</label>
+<select id="goal-deadline-preset" onchange="handleGoalDeadlinePreset()">
+<option data-i18n="html_tomorrow" value="tomorrow">Tomorrow</option>
+<option data-i18n="html_1_week" value="week">1 Week</option>
+<option data-i18n="html_1_month" value="month">1 Month</option>
+<option data-i18n="html_custom_date" value="custom">Custom Date</option>
+</select>
+</div>
+<div class="form-group">
+<label data-i18n="html_custom_deadline">Custom Deadline</label>
+<input disabled="" id="goal-custom-deadline" type="date"/>
+</div>
+</div>
+<div class="form-actions">
+<button class="btn secondary" data-i18n="html_cancel" onclick="toggleGoalForm()" type="button">Cancel</button>
+<button class="btn primary" data-i18n="html_create_goal" type="submit">Create Goal</button>
+</div>
+</form>
+</div>
+<div class="task-form-modal" id="habit-form-container">
+<form id="add-habit-form">
+<h3 data-i18n="html_new_habit">New Habit</h3>
+<input id="habit-title" placeholder="Habit title" required="" type="text"/>
+<div class="form-row">
+<div class="form-group">
+<label data-i18n="html_category">Category</label>
+<input id="habit-category" placeholder="General" required="" type="text" value="General"/>
+</div>
+<div class="form-group">
+<label data-i18n="html_preferred_time">Preferred Time</label>
+<input id="habit-time" type="time"/>
+</div>
+</div>
+<div class="form-row">
+<div class="form-group" style="width: 100%;">
+<label data-i18n="html_link_to_goal"><i class="fas fa-bullseye"></i> Link to Goal</label>
+<select id="habit-goal-select">
+<option data-i18n="html_no_link" value="">No Link</option>
+</select>
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label data-i18n="html_frequency">Frequency</label>
+<select id="habit-frequency" onchange="toggleHabitDaysSelector(this.value)">
+<option data-i18n="html_daily" value="daily">Daily</option>
+<option data-i18n="html_specific_days" value="weekly">Specific Days</option>
+</select>
+</div>
+<div class="form-group" id="habit-days-group" style="display:none;">
+<label data-i18n="html_days">Days</label>
+<div class="habit-days-picker aesthetic">
+<label class="day-pill"><input type="checkbox" value="0"/><span data-i18n="html_m">M</span></label>
+<label class="day-pill"><input type="checkbox" value="1"/><span data-i18n="html_t">T</span></label>
+<label class="day-pill"><input type="checkbox" value="2"/><span data-i18n="html_w">W</span></label>
+<label class="day-pill"><input type="checkbox" value="3"/><span data-i18n="html_t">T</span></label>
+<label class="day-pill"><input type="checkbox" value="4"/><span data-i18n="html_f">F</span></label>
+<label class="day-pill"><input type="checkbox" value="5"/><span data-i18n="html_s">S</span></label>
+<label class="day-pill"><input type="checkbox" value="6"/><span data-i18n="html_s">S</span></label>
+</div>
+</div>
+</div>
+<div class="form-actions">
+<button class="btn secondary" data-i18n="html_cancel" onclick="toggleHabitForm()" type="button">Cancel</button>
+<button class="btn primary" data-i18n="html_create_habit" type="submit">Create Habit</button>
+</div>
+</form>
+</div>
+<div class="task-form-modal" id="goal-reflection-modal">
+<form id="goal-reflection-form">
+<h3 data-i18n="html_goal_reflection">Goal Reflection</h3>
+<div class="form-group">
+<label data-i18n="html_what_went_well">What went well?</label>
+<textarea id="reflection-went-well" placeholder="Tell us about what worked..." rows="3"></textarea>
+</div>
+<div class="form-group">
+<label data-i18n="html_what_didn_t_go_well">What didn't go well?</label>
+<textarea id="reflection-didnt-go-well" placeholder="What could be improved..." rows="3"></textarea>
+</div>
+<div class="form-actions">
+<button class="btn secondary" data-i18n="html_skip" onclick="closeReflectionModal()" type="button">Skip</button>
+<button class="btn primary" data-i18n="html_save_reflection" type="submit">Save Reflection</button>
+</div>
+</form>
+</div>
+<!-- Share Modal -->
+<div class="task-form-modal" id="share-modal">
+<div class="share-modal-content" data-i18n="html_share_card_preview_share_actions_profile">
+<h2 data-i18n="html_share_your_progress" style="margin-bottom: 1rem; text-align: center;">Share Your Progress</h2>
+<!-- Share Card Preview -->
+<div class="share-card" id="share-card">
+<div class="share-card-header">
+<img alt="Tobedone Logo" class="share-logo" src="/assets/logo_auth.png?v=22"/>
+<h3 data-i18n="html_username" id="share-username">Username</h3>
+</div>
+<div class="share-card-stats">
+<div class="share-stat">
+<span class="share-stat-label" data-i18n="html_level">Level</span>
+<span class="share-stat-value" id="share-level">1</span>
+</div>
+<div class="share-stat">
+<span class="share-stat-label" data-i18n="html_xp">XP</span>
+<span class="share-stat-value" id="share-xp">0</span>
+</div>
+<div class="share-stat">
+<span class="share-stat-label" data-i18n="html_streak">Streak</span>
+<span class="share-stat-value" id="share-streak">0</span>
+</div>
+<div class="share-stat">
+<span class="share-stat-label" data-i18n="html_completed_tasks">Completed Tasks</span>
+<span class="share-stat-value" id="share-completed-tasks">0</span>
+</div>
+<div class="share-stat">
+<span class="share-stat-label" data-i18n="html_goals_achieved">Goals Achieved</span>
+<span class="share-stat-value" id="share-goals-achieved">0</span>
+</div>
+</div>
+<div class="share-card-footer">
+<span data-i18n="html_obedone"><span data-i18n="html_t" style="color: var(--primary);">T</span>obedone</span>
+</div>
+</div>
+<!-- Share Actions -->
+<div class="share-actions">
+<button class="btn primary" data-i18n="html_download" onclick="downloadShareCard()" style="flex: 1;">
+<i class="fas fa-download" style="margin-right: 0.5rem;"></i> Download
+                </button>
+<button class="btn secondary" data-i18n="html_copy_text" onclick="copyShareText()" style="flex: 1;">
+<i class="fas fa-copy" style="margin-right: 0.5rem;"></i> Copy Text
+                </button>
+<button class="btn secondary" data-i18n="html_share" onclick="nativeShare()" style="flex: 1;">
+<i class="fas fa-share" style="margin-right: 0.5rem;"></i> Share
+                </button>
+</div>
+<!-- Profile Link -->
+<div class="profile-link-section">
+<label data-i18n="html_profile_link" style="margin-bottom: 0.5rem; display: block;">Profile Link</label>
+<div style="display: flex; gap: 0.5rem;">
+<input id="profile-link" readonly="" style="flex: 1; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary);" type="text"/>
+<button class="btn secondary" onclick="copyProfileLink()">
+<i class="fas fa-copy"></i>
+</button>
+</div>
+</div>
+<div class="form-actions" style="margin-top: 1.5rem;">
+<button class="btn secondary" data-i18n="html_close" onclick="closeShareModal()" style="width: 100%;" type="button">Close</button>
+</div>
+</div>
+</div>
+<!-- Crop Image Modal -->
+<div class="modal" id="crop-modal">
+<div class="modal-content glass-card" style="max-width: 500px;">
+<div class="modal-header">
+<h3 data-i18n="html_adjust_profile_photo">Adjust Profile Photo</h3>
+</div>
+<div class="crop-container" style="max-height: 400px; overflow: hidden; margin: 1rem 0; border-radius: 12px;">
+<img id="crop-image" src="" style="max-width: 100%; display: block;"/>
+</div>
+<div style="display: flex; gap: 1rem;">
+<button class="btn secondary" data-i18n="html_cancel" id="crop-cancel-btn" style="flex: 1;" type="button">Cancel</button>
+<button class="btn primary" data-i18n="html_crop_save" id="crop-save-btn" style="flex: 1;" type="button">Crop &amp; Save</button>
+</div>
+</div>
+</div>
+<!-- Instructions Modal -->
+<div class="modal" id="instructions-modal">
+<div class="modal-content glass-card" style="max-width: 450px; padding: 2rem;">
+<div class="modal-header" style="margin-bottom: 1.5rem; text-align: center;">
+<div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(10, 134, 255, 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+<i class="fas fa-book-open" style="color: var(--primary); font-size: 1.5rem;"></i>
+</div>
+<h3 data-i18n="inst_title" style="font-size: 1.4rem; margin-bottom: 0.5rem;">Οδηγίες Χρήσης</h3>
+<p data-i18n="inst_subtitle" style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">Όλα όσα πρέπει να ξέρετε για το Tobedone</p>
+</div>
+<div class="instructions-content" style="max-height: 50vh; overflow-y: auto; padding-right: 0.5rem; text-align: left;">
+<div style="margin-bottom: 1.5rem;">
+<h4 style="color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-tasks" style="color: var(--primary);"></i> <span data-i18n="inst_tasks_title">Tasks (Εργασίες)</span></h4>
+<p data-i18n="inst_tasks_desc" style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin: 0;">Δημιουργήστε νέες εργασίες πατώντας το '+'. Μπορείτε να ορίσετε προτεραιότητα και κατηγορία. Όταν τελειώσετε, πατήστε το κυκλικό κουτάκι για να την ολοκληρώσετε και να κερδίσετε πόντους.</p>
+</div>
+<div style="margin-bottom: 1.5rem;">
+<h4 style="color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-chart-line" style="color: var(--primary);"></i> <span data-i18n="inst_dash_title">Dashboard</span></h4>
+<p data-i18n="inst_dash_desc" style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin: 0;">Εδώ βλέπετε την πρόοδό σας. Παρακολουθήστε πόσες εργασίες ολοκληρώσατε την εβδομάδα και δείτε τα διαγράμματα παραγωγικότητας.</p>
+</div>
+<div style="margin-bottom: 1.5rem;">
+<h4 style="color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-crown" style="color: var(--primary);"></i> <span data-i18n="inst_prog_title">Progress &amp; Badges</span></h4>
+<p data-i18n="inst_prog_desc" style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin: 0;">Κάθε εργασία σας δίνει XP. Συγκεντρώστε XP για να ανεβείτε επίπεδο (Level Up). Ξεκλειδώστε συλλεκτικά Badges καθώς πετυχαίνετε νέους στόχους!</p>
+</div>
+<div style="margin-bottom: 1.5rem;">
+<h4 style="color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-hand-pointer" style="color: var(--primary);"></i> <span data-i18n="inst_gestures_title">Gestures &amp; Πλοήγηση</span></h4>
+<p data-i18n="inst_gestures_desc" style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin: 0;">Κάντε Swipe (σύρετε την οθόνη) αριστερά ή δεξιά για να μεταβείτε γρήγορα στις υπόλοιπες σελίδες της εφαρμογής.</p>
+</div>
+</div>
+<div class="form-actions" style="margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+<button class="btn primary" data-i18n="got_it" onclick="closeInstructionsModal()" style="width: 100%;" type="button">Κατάλαβα</button>
+</div>
+</div>
+</div>
+<div class="loading-overlay active loading-sequence" id="loading-overlay">
+<div aria-hidden="true" class="loading-content">
+<div class="logo-draw-loader">
+<img alt="Logo" class="logo-modern-mark" src="/assets/logo_small.png?v=26"/>
+</div>
+</div>
+</div>
+<script charset="UTF-8" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<script charset="UTF-8" src="assets.js?v=17.0.0"></script>
+<script charset="UTF-8" src="badge_assets.js?v=36.0.0"></script>
+<script charset="UTF-8" src="app.js?v=41.0.0"></script>
+<script>
+        // Logos are pre-sized; no JS resizing needed to avoid flicker.
+        document.addEventListener('DOMContentLoaded', function() {
+            // intentionally empty — sizes are set in CSS
+        });
+    </script>
+</body>
+</html>

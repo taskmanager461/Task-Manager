@@ -236,7 +236,7 @@
                 </div>
 
                 <div id="weekly-summary" class="card" style="margin-top: 1.5rem; display: none;">
-                    <h3>Weekly Summary</h3>
+                    <h3 data-i18n="weekly_summary">Weekly Summary</h3>
                     <div id="weekly-summary-content"></div>
                 </div>
             </section>
@@ -309,8 +309,7 @@
                             </div>
                         </div>
                         <span id="identity-level-badge" class="identity-level-pill">
-                            <i class="fas fa-star"></i> Level 1
-                        </span>
+                            <i class="fas fa-star"></i><span data-i18n="level">Level</span> 1</span>
                     </div>
 
                     <div class="identity-progress-wrap" style="margin-top: 1.25rem; margin-bottom: 1.25rem;">
@@ -325,7 +324,7 @@
                     </div>
 
                     <div class="identity-trust-score-row" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02); padding:0.75rem 1rem; border-radius:12px; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.05);">
-                        <span style="font-size:0.9rem; font-weight:600; color:var(--text-secondary);">Self Trust Score</span>
+                        <span style="font-size:0.9rem; font-weight:600; color:var(--text-secondary);" data-i18n="self_trust_score">Self Trust Score</span>
                         <span id="identity-trust-value" style="font-size:1.4rem; font-weight:900; color:#fbbf24;">0.0</span>
                     </div>
 
@@ -414,7 +413,7 @@
                     <h3 style="margin-bottom: 1rem;">Goal Analytics</h3>
                     <div class="weekly-summary-stats">
                         <div class="weekly-summary-stat">
-                            <span class="label">Completion Rate</span>
+                            <span class="label" data-i18n="completion_rate">Completion Rate</span>
                             <span id="goal-completion-rate" class="value">0%</span>
                         </div>
                         <div class="weekly-summary-stat">
@@ -477,7 +476,7 @@
             <section id="view-progress" class="view">
                 <div class="premium-header-card" style="width: 95%; margin: 0 auto 1.5rem auto; display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: transparent; border: none; box-shadow: none;">
                     <div>
-                        <h1 style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;">Progress</h1>
+                        <h1 style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;" data-i18n="progress>Progress</h1>
                     </div>
                 </div>
 
@@ -489,7 +488,7 @@
                                 <i class="fas fa-chart-line" style="color: #ffffff !important; font-size: 1.1rem;"></i>
                             </div>
                             <div>
-                                <h3>Mastery Progress</h3>
+                                <h3 data-i18n="mastery_progress">Mastery Progress</h3>
                                 <p id="mastery-rank-label" style="font-size:0.72rem; color:var(--text-secondary); margin:0;">Calculating...</p>
                             </div>
                         </div>
@@ -511,24 +510,23 @@
                         <div class="rank-title-group">
                             <span class="rank-badge-icon"><i class="fas fa-crown"></i></span>
                             <div>
-                                <h3 id="progress-rank-name" class="rank-name">Explorer</h3>
+                                <h3 id="progress-rank-name" class="rank-name" data-i18n="rank_explorer">Explorer</h3>
                                 <p class="rank-subtitle">Permanent Rank System</p>
                             </div>
                         </div>
                         <span id="progress-level-badge" class="identity-level-pill">
-                            <i class="fas fa-star"></i> Level 1
-                        </span>
+                            <i class="fas fa-star"></i><span data-i18n="level">Level</span> 1</span>
                     </div>
 
                     <div class="xp-progress-wrap" style="margin-top: 1.5rem;">
                         <div class="xp-progress-meta">
                             <span id="progress-xp-text" style="font-weight: 700;">XP 0 / 100</span>
-                            <span class="next-level-indicator">Next Level</span>
+                            <span class="next-level-indicator" data-i18n="next_level>Next Level</span>
                         </div>
                         <div class="progress-bar identity-progress-bar">
                             <div id="progress-xp-fill" class="identity-xp-fill" style="width: 0%"></div>
                         </div>
-                        <div id="progress-total-xp" class="total-xp-lbl" style="margin-top: 0.4rem; font-size: 0.72rem; opacity: 0.7;">Total XP: 0</div>
+                        <div id="progress-total-xp" class="total-xp-lbl" style="margin-top: 0.4rem; font-size: 0.72rem; opacity: 0.7;" data-i18n="total_xp">Total XP: 0</div>
                     </div>
                 </div>
 
@@ -539,9 +537,9 @@
                             <div class="identity-avatar-icon" style="background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%); border: 2.2px solid rgba(0, 198, 255, 0.45); box-shadow: 0 4px 14px rgba(0, 114, 255, 0.35);">
                                 <i class="fas fa-shield-halved" style="color: #ffffff !important; font-size: 1.1rem;"></i>
                             </div>
-                            <h3>Self Trust Score</h3>
+                            <h3 data-i18n="self_trust_score>Self Trust Score</h3>
                         </div>
-                        <span id="progress-trust-tier" class="priority-badge priority-medium">Average</span>
+                        <span id="progress-trust-tier" class="priority-badge priority-medium" data-i18n="trust_average">Average</span>
                     </div>
                     <div class="trust-progress-details" style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
                         <span id="progress-trust-value" style="font-size: 2.2rem; font-weight: 900; color: #fbbf24;">0.0</span>
@@ -562,7 +560,7 @@
                                 <i class="fas fa-trophy"></i>
                             </div>
                             <div>
-                                <h3>Achievements</h3>
+                                <h3 data-i18n="achievements>Achievements</h3>
                                 <p id="achievements-subtitle" class="achievements-subtitle">Loading...</p>
                             </div>
                         </div>
@@ -578,26 +576,26 @@
                     <div class="achievements-stats-bar">
                         <div class="ach-stat ach-stat-common">
                             <span id="ach-count-common" class="ach-stat-value">0</span>
-                            <span class="ach-stat-label">Common</span>
+                            <span class="ach-stat-label" data-i18n="common">Common</span>
                         </div>
                         <div class="ach-stat ach-stat-rare">
                             <span id="ach-count-rare" class="ach-stat-value">0</span>
-                            <span class="ach-stat-label">Rare</span>
+                            <span class="ach-stat-label" data-i18n="rare">Rare</span>
                         </div>
                         <div class="ach-stat ach-stat-epic">
                             <span id="ach-count-epic" class="ach-stat-value">0</span>
-                            <span class="ach-stat-label">Epic</span>
+                            <span class="ach-stat-label" data-i18n="epic">Epic</span>
                         </div>
                         <div class="ach-stat ach-stat-legendary">
                             <span id="ach-count-legendary" class="ach-stat-value">0</span>
-                            <span class="ach-stat-label">Legendary</span>
+                            <span class="ach-stat-label" data-i18n="legendary">Legendary</span>
                         </div>
                     </div>
 
                     <!-- Toggle Button to Show/Hide achievements content -->
                     <div style="margin-top: 1rem; text-align: center;">
                         <button id="toggle-achievements-btn" class="btn primary" onclick="toggleAchievementsVisibility()" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 700; letter-spacing: 0.05em; padding: 0.65rem 1rem;">
-                            <span>View Achievements</span>
+                            <span data-i18n="achievements">View Achievements</span>
                             <i class="fas fa-chevron-down" id="toggle-achievements-chevron"></i>
                         </button>
                     </div>
@@ -606,15 +604,15 @@
                     <div id="achievements-collapse-wrapper" style="display: none; margin-top: 1.25rem;">
                         <div class="achievements-search-wrap">
                             <i class="fas fa-search achievements-search-icon"></i>
-                            <input type="text" id="achievements-search" class="achievements-search" placeholder="Search achievements...">
+                            <input type="text" id="achievements-search" class="achievements-search" data-i18n="search_achievements" placeholder="Search achievements...">
                         </div>
 
                         <div class="achievements-filters" id="achievements-filters">
                             <button class="ach-filter-btn active" data-filter="All" onclick="filterAchievements('All', this)" data-i18n="all">All</button>
-                            <button class="ach-filter-btn" data-filter="Tasks" onclick="filterAchievements('Tasks', this)">📋 <span data-i18n="tasks">Tasks</span></button>
-                            <button class="ach-filter-btn" data-filter="Goals" onclick="filterAchievements('Goals', this)">🎯 <span data-i18n="goals">Goals</span></button>
-                            <button class="ach-filter-btn" data-filter="Habits" onclick="filterAchievements('Habits', this)">⚡ <span data-i18n="habits">Habits</span></button>
-                            <button class="ach-filter-btn" data-filter="Streaks" onclick="filterAchievements('Streaks', this)">🔥 <span data-i18n="streak">Streaks</span></button>
+                            <button class="ach-filter-btn" data-filter="Tasks" onclick="filterAchievements('Tasks', this)">📋 <span data-i18n="tasks>Tasks</span></button>
+                            <button class="ach-filter-btn" data-filter="Goals" onclick="filterAchievements('Goals', this)">🎯 <span data-i18n="goals>Goals</span></button>
+                            <button class="ach-filter-btn" data-filter="Habits" onclick="filterAchievements('Habits', this)">⚡ <span data-i18n="habits>Habits</span></button>
+                            <button class="ach-filter-btn" data-filter="Streaks" onclick="filterAchievements('Streaks', this)">🔥 <span data-i18n="streak>Streaks</span></button>
                             <button class="ach-filter-btn" data-filter="Trust" onclick="filterAchievements('Trust', this)">🛡️ <span data-i18n="trust_score">Trust</span></button>
                             <button class="ach-filter-btn" data-filter="XP" onclick="filterAchievements('XP', this)">⭐ XP</button>
                             <button class="ach-filter-btn" data-filter="Calendar" onclick="filterAchievements('Calendar', this)">📅 <span data-i18n="calendar">Calendar</span></button>
@@ -636,7 +634,7 @@
                 <!-- Milestone Timeline Card -->
                 <div class="card milestone-timeline-card" style="margin-bottom: 1.5rem;">
                     <div class="identity-header">
-                        <h3>📅 Milestone Timeline</h3>
+                        <h3><span data-i18n="milestones">📅 Milestone Timeline</span></h3>
                     </div>
                     <div id="milestone-timeline-list" class="timeline-list" style="margin-top: 1rem; position: relative;">
                         <!-- Timeline entries loaded dynamically -->
@@ -646,8 +644,8 @@
                 <!-- Weekly & Monthly Performance Reviews -->
                 <div class="card performance-reports-card" style="margin-bottom: 1.5rem;">
                     <div class="tabs" style="margin-bottom: 1.2rem;">
-                        <button id="tab-report-weekly" class="tab active" onclick="switchPerformanceReport('weekly')">Weekly Report</button>
-                        <button id="tab-report-monthly" class="tab" onclick="switchPerformanceReport('monthly')">Monthly Review</button>
+                        <button id="tab-report-weekly" class="tab active" onclick="switchPerformanceReport('weekly')" data-i18n="weekly_report">Weekly Report</button>
+                        <button id="tab-report-monthly" class="tab" onclick="switchPerformanceReport('monthly')" data-i18n="monthly_progress">Monthly Review</button>
                     </div>
                     <div id="performance-report-content" class="report-content-body">
                         <!-- Loaded dynamically -->
@@ -657,8 +655,8 @@
                 <!-- Seasonal Challenges Card -->
                 <div class="card seasonal-challenges-card" style="margin-bottom: 1.5rem;">
                     <div class="identity-header">
-                        <h3>❄️ Seasonal Challenges</h3>
-                        <span class="priority-badge priority-high">Limited Time</span>
+                        <h3><span data-i18n="challenges">❄️ Seasonal Challenges</span></h3>
+                        <span class="priority-badge priority-high" data-i18n="limited_time">Limited Time</span>
                     </div>
                     <div id="seasonal-challenges-list" class="challenges-grid" style="margin-top: 1rem;">
                         <!-- Challenges loaded dynamically -->
@@ -673,7 +671,7 @@
                                 <i class="fas fa-envelope-open-text"></i>
                             </div>
                             <div>
-                                <h3>Future Self</h3>
+                                <h3 data-i18n="future_self">Future Self</h3>
                                 <p style="font-size:0.72rem; color:var(--text-secondary); margin:0;">Send a message to your future self</p>
                             </div>
                         </div>
@@ -687,22 +685,22 @@
                     <!-- Compose Form -->
                     <div class="future-self-compose">
                         <div class="future-self-compose-header" onclick="toggleFutureSelfForm()">
-                            <span><i class="fas fa-plus-circle" style="margin-right:0.5rem; color:var(--primary);"></i>Write a message to your future self</span>
+                            <span><i class="fas fa-plus-circle" style="margin-right:0.5rem; color:var(--primary);"></i><span data-i18n="write_future">Write a message to your future self</span></span>
                             <i class="fas fa-chevron-down" id="fs-compose-chevron"></i>
                         </div>
                         <div id="future-self-compose-body" style="display:none; margin-top:1rem;">
-                            <input type="text" id="fs-title" placeholder="Message title (e.g. My fitness goal)" style="width:100%; margin-bottom:0.75rem; padding:0.75rem; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-size:0.9rem;">
-                            <textarea id="fs-message" placeholder="Write a message to your future self... goals, promises, predictions, reminders, or motivation." rows="4" style="width:100%; margin-bottom:0.75rem; padding:0.75rem; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-size:0.9rem; resize:vertical;"></textarea>
+                            <input type="text" id="fs-title" data-i18n="message_title" placeholder="Message title (e.g. My fitness goal)" style="width:100%; margin-bottom:0.75rem; padding:0.75rem; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-size:0.9rem;">
+                            <textarea id="fs-message" data-i18n="write_message" placeholder="Write a message to your future self... goals, promises, predictions, reminders, or motivation." rows="4" style="width:100%; margin-bottom:0.75rem; padding:0.75rem; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-size:0.9rem; resize:vertical;"></textarea>
                             <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:0.75rem;">
                                 <select id="fs-delivery" style="flex:1; padding:0.6rem; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
-                                    <option value="1_week">📅 Open in 1 Week</option>
-                                    <option value="1_month" selected>📅 Open in 1 Month</option>
-                                    <option value="3_months">📅 Open in 3 Months</option>
-                                    <option value="6_months">📅 Open in 6 Months</option>
-                                    <option value="1_year">📅 Open in 1 Year</option>
+                                    <option value="1_week" data-i18n="one_week">📅 Open in 1 Week</option>
+                                    <option value="1_month" selected data-i18n="one_month">📅 Open in 1 Month</option>
+                                    <option value="3_months" data-i18n="three_months_long">📅 Open in 3 Months</option>
+                                    <option value="6_months" data-i18n="six_months_long">📅 Open in 6 Months</option>
+                                    <option value="1_year" data-i18n="one_year_long">📅 Open in 1 Year</option>
                                 </select>
                                 <select id="fs-category" style="flex:1; padding:0.6rem; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
-                                    <option value="goal">🎯 Goal</option>
+                                    <option value="goal" data-i18n="goals">🎯 Goal</option>
                                     <option value="promise">🤝 Promise</option>
                                     <option value="prediction">🔮 Prediction</option>
                                     <option value="reminder">🔔 Reminder</option>
@@ -710,7 +708,7 @@
                                 </select>
                             </div>
                             <button onclick="submitFutureSelfMessage()" class="btn primary" style="width:100%;">
-                                <i class="fas fa-paper-plane" style="margin-right:0.5rem;"></i>Send to Future Self
+                                <i class="fas fa-paper-plane" style="margin-right:0.5rem;"></i><span data-i18n="send_future">Send to Future Self</span>
                             </button>
                         </div>
                     </div>
@@ -727,19 +725,19 @@
             <section id="view-tasks" class="view active">
                 <div class="premium-header-card" style="width: 95%; margin: 0 auto 1.5rem auto; display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: transparent; border: none; box-shadow: none;">
                     <div>
-                        <h1 id="tasks-goals-title" style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;">Tasks</h1>
-                        <p id="tasks-goals-subtitle" style="margin: 0.25rem 0 0 0; font-size: 0.85rem; color: var(--text-secondary);">Focus on what matters today.</p>
+                        <h1 id="tasks-goals-title" style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;" data-i18n="tasks>Tasks</h1>
+                        <p id="tasks-goals-subtitle" style="margin: 0.25rem 0 0 0; font-size: 0.85rem; color: var(--text-secondary);" data-i18n="focus_today">Focus on what matters today.</p>
                     </div>
                     <button id="tasks-goals-add-btn" onclick="toggleCurrentForm()" class="btn primary" style="border-radius: 12px; padding: 0.65rem 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 0.4rem; box-shadow: 0 4px 15px rgba(10, 134, 255, 0.25);">
-                        <i class="fas fa-plus-circle" style="font-size: 1.1em;"></i> <span id="tasks-goals-add-text">New Task</span>
+                        <i class="fas fa-plus-circle" style="font-size: 1.1em;"></i> <span id="tasks-goals-add-text" data-i18n="new_task">New Task</span>
                     </button>
                 </div>
 
                 <div class="card" style="margin-bottom: 1.5rem;">
                     <div class="tabs" style="margin: 0;">
-                        <button id="tab-tasks-only" class="tab active" onclick="switchTasksGoalsTab('tasks')" data-i18n="tasks">Tasks</button>
-                        <button id="tab-goals-only" class="tab" onclick="switchTasksGoalsTab('goals')" data-i18n="goals_tab">Goals</button>
-                        <button id="tab-habits-only" class="tab" onclick="switchTasksGoalsTab('habits')" data-i18n="habits_tab">Habits</button>
+                        <button id="tab-tasks-only" class="tab active" onclick="switchTasksGoalsTab('tasks')" data-i18n="tasks>Tasks</button>
+                        <button id="tab-goals-only" class="tab" onclick="switchTasksGoalsTab('goals')" data-i18n="goals_tab>Goals</button>
+                        <button id="tab-habits-only" class="tab" onclick="switchTasksGoalsTab('habits')" data-i18n="habits_tab>Habits</button>
                     </div>
                 </div>
 
@@ -752,7 +750,7 @@
                     <div id="tasks-history-list" class="task-list" style="margin-top: 1.5rem;"></div>
                     <div style="text-align:center; margin-top: 0.5rem; margin-bottom: 1rem;">
                         <button class="btn primary" id="tasks-history-btn" onclick="loadInlineHistory('tasks')" style="width:100%; font-size:0.85rem; gap:0.5rem;">
-                            <i class="fas fa-clock-rotate-left"></i> View Completed Tasks History
+                            <i class="fas fa-clock-rotate-left"></i> <span data-i18n="view_tasks_history">View Completed Tasks History</span>
                         </button>
                     </div>
                 </div>
@@ -762,7 +760,7 @@
                     <div id="goals-history-list" class="task-list" style="margin-top: 1.5rem;"></div>
                     <div style="text-align:center; margin-top: 0.5rem; margin-bottom: 1rem;">
                         <button class="btn primary" id="goals-history-btn" onclick="loadInlineHistory('goals')" style="width:100%; font-size:0.85rem; gap:0.5rem;">
-                            <i class="fas fa-clock-rotate-left"></i> View Goals History
+                            <i class="fas fa-clock-rotate-left"></i> <span data-i18n="view_goals_history">View Goals History</span>
                         </button>
                     </div>
                 </div>
@@ -842,7 +840,7 @@
             <div class="nav-indicator" aria-hidden="true"></div>
             <button class="nav-item active" onclick="showView('tasks')">
                 <span class="nav-icon"><i class="fas fa-tasks"></i></span>
-                <span class="nav-label" data-i18n="tasks">Tasks</span>
+                <span class="nav-label" data-i18n="tasks>Tasks</span>
             </button>
             <button class="nav-item" onclick="showView('reports')">
                 <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
@@ -854,7 +852,7 @@
             </button>
             <button class="nav-item" onclick="showView('progress')">
                 <span class="nav-icon"><i class="fas fa-crown"></i></span>
-                <span class="nav-label" data-i18n="progress">Progress</span>
+                <span class="nav-label" data-i18n="progress>Progress</span>
             </button>
             <button class="nav-item" onclick="showView('me')">
                 <span class="nav-icon"><i class="fas fa-user"></i></span>
@@ -886,12 +884,12 @@
             <div class="form-row">
                 <div class="form-group">
                     <label data-i18n="category">Category</label>
-                    <input type="text" id="task-category" placeholder="General" value="General">
+                    <input type="text" id="task-category" data-i18n="category_general" placeholder="General" value="General">
                 </div>
                 <div class="form-group">
                     <label data-i18n="priority">Priority</label>
                     <select id="task-priority">
-                        <option value="low" data-i18n="low">Low</option>
+                        <option value="low" data-i18n="low>Low</option>
                         <option value="medium" data-i18n="medium" selected>Medium</option>
                         <option value="high" data-i18n="high">High</option>
                     </select>
@@ -937,11 +935,11 @@
     <div id="goal-form-container" class="task-form-modal">
         <form id="add-goal-form">
             <h3>New Goal</h3>
-            <input type="text" id="goal-title" placeholder="Goal title" required>
+            <input type="text" id="goal-title" data-i18n="goal_title" placeholder="Goal title" required>
             <div class="form-row">
                 <div class="form-group">
                     <label>Category</label>
-                    <input type="text" id="goal-category" placeholder="General" value="General" required>
+                    <input type="text" id="goal-category" data-i18n="category_general" placeholder="General" value="General" required>
                 </div>
                 <div class="form-group">
                     <label>Goal Type</label>
@@ -984,11 +982,11 @@
     <div id="habit-form-container" class="task-form-modal">
         <form id="add-habit-form">
             <h3>New Habit</h3>
-            <input type="text" id="habit-title" placeholder="Habit title" required>
+            <input type="text" id="habit-title" data-i18n="habit_title" placeholder="Habit title" required>
             <div class="form-row">
                 <div class="form-group">
                     <label>Category</label>
-                    <input type="text" id="habit-category" placeholder="General" value="General" required>
+                    <input type="text" id="habit-category" data-i18n="category_general" placeholder="General" value="General" required>
                 </div>
                 <div class="form-group">
                     <label>Preferred Time</label>
@@ -1036,11 +1034,11 @@
             <h3>Goal Reflection</h3>
             <div class="form-group">
                 <label>What went well?</label>
-                <textarea id="reflection-went-well" placeholder="Tell us about what worked..." rows="3"></textarea>
+                <textarea id="reflection-went-well" data-i18n="what_worked" placeholder="Tell us about what worked..." rows="3"></textarea>
             </div>
             <div class="form-group">
                 <label>What didn't go well?</label>
-                <textarea id="reflection-didnt-go-well" placeholder="What could be improved..." rows="3"></textarea>
+                <textarea id="reflection-didnt-go-well" data-i18n="what_improved" placeholder="What could be improved..." rows="3"></textarea>
             </div>
             <div class="form-actions">
                 <button type="button" onclick="closeReflectionModal()" class="btn secondary">Skip</button>
@@ -1052,7 +1050,7 @@
     <!-- Share Modal -->
     <div id="share-modal" class="task-form-modal">
         <div class="share-modal-content">
-            <h2 style="margin-bottom: 1rem; text-align: center;">Share Your Progress</h2>
+            <h2 style="margin-bottom: 1rem; text-align: center;" data-i18n="share_progress">Share Your Progress</h2>
             
             <!-- Share Card Preview -->
             <div id="share-card" class="share-card">
@@ -1062,15 +1060,15 @@
                 </div>
                 <div class="share-card-stats">
                     <div class="share-stat">
-                        <span class="share-stat-label">Level</span>
+                        <span class="share-stat-label" data-i18n="level">Level</span>
                         <span id="share-level" class="share-stat-value">1</span>
                     </div>
                     <div class="share-stat">
-                        <span class="share-stat-label">XP</span>
+                        <span class="share-stat-label" data-i18n="xp">XP</span>
                         <span id="share-xp" class="share-stat-value">0</span>
                     </div>
                     <div class="share-stat">
-                        <span class="share-stat-label">Streak</span>
+                        <span class="share-stat-label" data-i18n="streak_lbl">Streak</span>
                         <span id="share-streak" class="share-stat-value">0</span>
                     </div>
                     <div class="share-stat">
