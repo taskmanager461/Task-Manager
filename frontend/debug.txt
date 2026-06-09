@@ -1,0 +1,28 @@
+--- L3820-3835 ---
+L3821:         inst_gestures_title: "الإيماءات", inst_gestures_desc: "اسحب يساراً أو يميناً للتنقل بين صفحات التطبيق.",
+L3822:         goals: "أهداف", habits: "عادات", goals_tab: "أهداف", habits_tab: "عادات", add_goal: "إضافة هدف", add_habit: "إضافة عادة", new_goal: "هدف جديد", new_habit: "عادة جديدة", today_habits: "عادات اليوم", goals_subtitle: "معالم للمستقبل.", habits_subtitle: "خطوات صغيرة، نتائج كبيرة.", reflect: "تأمل", reflection: "تأمل", check_in: "تسجيل", save_goal: "حفظ الهدف", save_habit: "حفظ العادة"
+L3823:     }
+L3824: };
+L3825: 
+L3826: function t(key) {
+L3827:     return translations[currentLang][key] || key;
+L3828: }
+L3829: 
+L3830: function updateUILanguage() {
+L3831:     document.querySelectorAll('[data-i18n]').forEach(el => {
+L3832:         const key = el.getAttribute('data-i18n');
+L3833:         if (el.tagName === 'INPUT' && el.type !== 'submit') {
+L3834:             el.placeholder = t(key);
+L3835:         } else {
+
+--- L1845-1855 ---
+L1846:         no_tasks_yet: "Noch keine Aufgaben",
+L1847:         no_goals_yet: "Noch keine Ziele",
+L1848:         no_habits_yet: "Noch keine Gewohnheiten",
+L1849:         no_habits_today: "No habits scheduled for today."
+L1850:     it: {
+L1851:         app_title: "Tobedone",
+L1852:         login: "Accedi", signup: "Registrati", continue_with_google: "Continua con Google", or: "o",
+L1853:         username_email: "Utente o Email", username: "Utente", password: "Password", forgot_password: "Password dimenticata?",
+L1854:         forgot_password_note: "Inserisci l'email per il link di reset.", send_reset_link: "Invia link",
+L1855:         back_to_login: "Torna al login", verify_email_title: "Verifica l'email", verify_email_body: "Controlla la tua casella di posta.",

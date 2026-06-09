@@ -375,7 +375,38 @@ const translations = {
         inst_dash_title: "Dashboard", inst_dash_desc: "See your progress here. Track how many tasks you completed and view productivity charts.",
         inst_prog_title: "Progress & Badges", inst_prog_desc: "Each task gives you XP. Level up and unlock collectible badges as you achieve goals!",
         inst_gestures_title: "Gestures & Navigation", inst_gestures_desc: "Swipe left or right to quickly switch between the app pages.",
-        goals: "Goals", habits: "Habits", goals_tab: "Goals", habits_tab: "Habits", add_goal: "Add Goal", add_habit: "Add Habit", new_goal: "New Goal", new_habit: "New Habit", today_habits: "Today's Habits", goals_subtitle: "Milestones for the future.", habits_subtitle: "Small steps, big results.", reflect: "Reflect", reflection: "Reflection", check_in: "Check-in", save_goal: "Save Goal", save_habit: "Save Habit"
+        goals: "Goals", habits: "Habits", goals_tab: "Goals", habits_tab: "Habits", add_goal: "Add Goal", add_habit: "Add Habit", new_goal: "New Goal", new_habit: "New Habit", today_habits: "Today's Habits", goals_subtitle: "Milestones for the future.", habits_subtitle: "Small steps, big results.", reflect: "Reflect", reflection: "Reflection", check_in: "Check-in", save_goal: "Save Goal", save_habit: "Save Habit",
+        send_future: "Send to Future",
+        mastery_progress: "Mastery Progress",
+        send_message_future: "Send Message to Future",
+        link_to_goal: "Link to Goal",
+        your_analytics: "Your Analytics",
+        personal_records: "Personal Records",
+        goal_rate: "Goal Rate",
+        write_future: "Write to Future",
+        full_report: "Full Report",
+        future_self: "Future Self",
+        view_goals_history: "View Goals History",
+        goal_analytics: "Goal Analytics",
+        weekly_report: "Weekly Report",
+        todays_insights: "Today's Insights",
+        weekly_summary: "Weekly Summary",
+        best_day: "Best Day",
+        analyzing_patterns: "Analyzing patterns...",
+        trust_desc: "Trust score determines consistency.",
+        limited_time: "Limited Time",
+        total_xp: "Total XP",
+        tasks_30d: "Tasks (30d)",
+        view_tasks_history: "View Tasks History",
+        tasks_subtitle: "Your active tasks",
+        avg_completion_time: "Avg Completion Time",
+        weekly_trend: "Weekly Trend",
+        loading_achievements: "Loading achievements...",
+        calculating: "Calculating...",
+        no_tasks_yet: "No tasks yet",
+        no_goals_yet: "No goals yet",
+        no_habits_yet: "No habits yet",
+        no_habits_today: "No habits scheduled for today.",
     },
     el: {
         app_title: "Tobedone",
@@ -419,7 +450,7 @@ const translations = {
         ach_marathon: "Μαραθώνας",
         ach_legend: "Θρύλος",
         ach_elite_consistency: "Ελίτ Συνέπεια",
-        rank_starter: "Μίζα",
+        rank_starter: "Πρωτάρης",
         rank_builder: "Οικοδόμος",
         rank_achiever: "Κατορθωτής",
         rank_consistent: "Συνεπής",
@@ -704,7 +735,38 @@ const translations = {
         inst_dash_title: "Ταμπλό", inst_dash_desc: "Εδώ βλέπετε την πρόοδό σας με διαγράμματα παραγωγικότητας.",
         inst_prog_title: "Πρόοδος & Σήματα", inst_prog_desc: "Κάθε εργασία δίνει XP. Ανεβείτε επίπεδο και ξεκλειδώστε badges!",
         inst_gestures_title: "Πλοήγηση", inst_gestures_desc: "Σύρετε αριστερά-δεξιά για γρήγορη εναλλαγή σελίδων.",
-        goals: "Στόχοι", habits: "Συνήθειες", goals_tab: "Στόχοι", habits_tab: "Συνήθειες", add_goal: "Προσθήκη Στόχου", add_habit: "Προσθήκη Συνήθειας", new_goal: "Νέος Στόχος", new_habit: "Νέα Συνήθεια", today_habits: "Σημερινές Συνήθειες", goals_subtitle: "Ορόσημα για το μέλλον.", habits_subtitle: "Μικρά βήματα, μεγάλα αποτελέσματα.", reflect: "Αναστοχασμός", reflection: "Αναστοχασμός", check_in: "Έλεγχος", save_goal: "Αποθήκευση Στόχου", save_habit: "Αποθήκευση Συνήθειας"
+        goals: "Στόχοι", habits: "Συνήθειες", goals_tab: "Στόχοι", habits_tab: "Συνήθειες", add_goal: "Προσθήκη Στόχου", add_habit: "Προσθήκη Συνήθειας", new_goal: "Νέος Στόχος", new_habit: "Νέα Συνήθεια", today_habits: "Σημερινές Συνήθειες", goals_subtitle: "Ορόσημα για το μέλλον.", habits_subtitle: "Μικρά βήματα, μεγάλα αποτελέσματα.", reflect: "Αναστοχασμός", reflection: "Αναστοχασμός", check_in: "Έλεγχος", save_goal: "Αποθήκευση Στόχου", save_habit: "Αποθήκευση Συνήθειας",
+        send_future: "Αποστολή στο Μέλλον",
+        mastery_progress: "Πρόοδος",
+        send_message_future: "Στείλτε Μήνυμα στο Μέλλον",
+        link_to_goal: "Σύνδεση με Στόχο",
+        your_analytics: "Τα Στατιστικά σας",
+        personal_records: "Προσωπικά Ρεκόρ",
+        goal_rate: "Ποσοστό Στόχων",
+        write_future: "Γράψτε στο Μέλλον",
+        full_report: "Πλήρης Αναφορά",
+        future_self: "Μελλοντικός Εαυτός",
+        view_goals_history: "Ιστορικό Στόχων",
+        goal_analytics: "Ανάλυση Στόχων",
+        weekly_report: "Εβδομαδιαία Αναφορά",
+        todays_insights: "Σημερινά Στοιχεία",
+        weekly_summary: "Εβδομαδιαία Σύνοψη",
+        best_day: "Καλύτερη Μέρα",
+        analyzing_patterns: "Ανάλυση μοτίβων...",
+        trust_desc: "Το σκορ εμπιστοσύνης δείχνει τη συνέπεια.",
+        limited_time: "Περιορισμένος Χρόνος",
+        total_xp: "Συνολικό XP",
+        tasks_30d: "Εργασίες (30ημ)",
+        view_tasks_history: "Ιστορικό Εργασιών",
+        tasks_subtitle: "Οι ενεργές εργασίες σας",
+        avg_completion_time: "Μέσος Χρόνος Ολοκλήρωσης",
+        weekly_trend: "Εβδομαδιαία Τάση",
+        loading_achievements: "Φόρτωση επιτευγμάτων...",
+        calculating: "Υπολογισμός...",
+        no_tasks_yet: "Δεν υπάρχουν εργασίες",
+        no_goals_yet: "Δεν υπάρχουν στόχοι",
+        no_habits_yet: "Δεν υπάρχουν συνήθειες",
+        no_habits_today: "Καμία συνήθεια για σήμερα.",
     },
     es: {
         app_title: "tobedone",
@@ -1033,7 +1095,38 @@ const translations = {
         inst_dash_title: "Panel", inst_dash_desc: "Rastrea tu productividad con gráficos.",
         inst_prog_title: "Progreso", inst_prog_desc: "Gana XP y desbloquea insignias.",
         inst_gestures_title: "Gestos", inst_gestures_desc: "Desliza para cambiar de página.",
-        goals: "Metas", habits: "Hábitos", goals_tab: "Metas", habits_tab: "Hábitos", add_goal: "Añadir Meta", add_habit: "Añadir Hábito", new_goal: "Nueva Meta", new_habit: "Nuevo Hábito", today_habits: "Hábitos de Hoy", goals_subtitle: "Hitos para el futuro.", habits_subtitle: "Pequeños pasos, grandes resultados.", reflect: "Reflexionar", reflection: "Reflexión", check_in: "Registro", save_goal: "Guardar Meta", save_habit: "Guardar Hábito"
+        goals: "Metas", habits: "Hábitos", goals_tab: "Metas", habits_tab: "Hábitos", add_goal: "Añadir Meta", add_habit: "Añadir Hábito", new_goal: "Nueva Meta", new_habit: "Nuevo Hábito", today_habits: "Hábitos de Hoy", goals_subtitle: "Hitos para el futuro.", habits_subtitle: "Pequeños pasos, grandes resultados.", reflect: "Reflexionar", reflection: "Reflexión", check_in: "Registro", save_goal: "Guardar Meta", save_habit: "Guardar Hábito",
+        send_future: "Send to Future",
+        mastery_progress: "Mastery Progress",
+        send_message_future: "Send Message to Future",
+        link_to_goal: "Link to Goal",
+        your_analytics: "Your Analytics",
+        personal_records: "Personal Records",
+        goal_rate: "Goal Rate",
+        write_future: "Write to Future",
+        full_report: "Full Report",
+        future_self: "Future Self",
+        view_goals_history: "View Goals History",
+        goal_analytics: "Goal Analytics",
+        weekly_report: "Weekly Report",
+        todays_insights: "Today's Insights",
+        weekly_summary: "Weekly Summary",
+        best_day: "Best Day",
+        analyzing_patterns: "Analyzing patterns...",
+        trust_desc: "Trust score determines consistency.",
+        limited_time: "Limited Time",
+        total_xp: "Total XP",
+        tasks_30d: "Tasks (30d)",
+        view_tasks_history: "View Tasks History",
+        tasks_subtitle: "Your active tasks",
+        avg_completion_time: "Avg Completion Time",
+        weekly_trend: "Weekly Trend",
+        loading_achievements: "Loading achievements...",
+        calculating: "Calculating...",
+        no_tasks_yet: "Aún no hay tareas",
+        no_goals_yet: "Aún no hay objetivos",
+        no_habits_yet: "Aún no hay hábitos",
+        no_habits_today: "No habits scheduled for today.",
     },
     fr: {
         app_title: "Tobédon",
@@ -1362,7 +1455,38 @@ const translations = {
         inst_dash_title: "Tableau de bord", inst_dash_desc: "Suivez votre productivité.",
         inst_prog_title: "Progrès", inst_prog_desc: "Gagnez des XP et des badges.",
         inst_gestures_title: "Gestes", inst_gestures_desc: "Glissez pour changer de page.",
-        goals: "Objectifs", habits: "Habitudes", goals_tab: "Objectifs", habits_tab: "Habitudes", add_goal: "Ajouter Objectif", add_habit: "Ajouter Habitude", new_goal: "Nouvel Objectif", new_habit: "Nouvelle Habitude", today_habits: "Habitudes du Jour", goals_subtitle: "Jalons pour l'avenir.", habits_subtitle: "Petits pas, grands résultats.", reflect: "Réfléchir", reflection: "Réflexion", check_in: "Point", save_goal: "Enregistrer Objectif", save_habit: "Enregistrer Habitude"
+        goals: "Objectifs", habits: "Habitudes", goals_tab: "Objectifs", habits_tab: "Habitudes", add_goal: "Ajouter Objectif", add_habit: "Ajouter Habitude", new_goal: "Nouvel Objectif", new_habit: "Nouvelle Habitude", today_habits: "Habitudes du Jour", goals_subtitle: "Jalons pour l'avenir.", habits_subtitle: "Petits pas, grands résultats.", reflect: "Réfléchir", reflection: "Réflexion", check_in: "Point", save_goal: "Enregistrer Objectif", save_habit: "Enregistrer Habitude",
+        send_future: "Send to Future",
+        mastery_progress: "Mastery Progress",
+        send_message_future: "Send Message to Future",
+        link_to_goal: "Link to Goal",
+        your_analytics: "Your Analytics",
+        personal_records: "Personal Records",
+        goal_rate: "Goal Rate",
+        write_future: "Write to Future",
+        full_report: "Full Report",
+        future_self: "Future Self",
+        view_goals_history: "View Goals History",
+        goal_analytics: "Goal Analytics",
+        weekly_report: "Weekly Report",
+        todays_insights: "Today's Insights",
+        weekly_summary: "Weekly Summary",
+        best_day: "Best Day",
+        analyzing_patterns: "Analyzing patterns...",
+        trust_desc: "Trust score determines consistency.",
+        limited_time: "Limited Time",
+        total_xp: "Total XP",
+        tasks_30d: "Tasks (30d)",
+        view_tasks_history: "View Tasks History",
+        tasks_subtitle: "Your active tasks",
+        avg_completion_time: "Avg Completion Time",
+        weekly_trend: "Weekly Trend",
+        loading_achievements: "Loading achievements...",
+        calculating: "Calculating...",
+        no_tasks_yet: "Pas encore de tâches",
+        no_goals_yet: "Pas encore d'objectifs",
+        no_habits_yet: "Pas encore d'habitudes",
+        no_habits_today: "No habits scheduled for today.",
     },
     de: {
         app_title: "Tobedone",
@@ -1691,7 +1815,38 @@ const translations = {
         inst_dash_title: "Armaturenbrett", inst_dash_desc: "Verfolgen Sie Ihre Produktivität.",
         inst_prog_title: "Fortschritt", inst_prog_desc: "Erhalten Sie XP und schalten Sie Abzeichen frei.",
         inst_gestures_title: "Gesten", inst_gestures_desc: "Wischen zum Seitenwechsel.",
-        goals: "Ziele", habits: "Gewohnheiten", goals_tab: "Ziele", habits_tab: "Gewohnheiten", add_goal: "Ziel Hinzufügen", add_habit: "Gewohnheit Hinzufügen", new_goal: "Neues Ziel", new_habit: "Neue Gewohnheit", today_habits: "Heutige Gewohnheiten", goals_subtitle: "Meilensteine für die Zukunft.", habits_subtitle: "Kleine Schritte, große Ergebnisse.", reflect: "Reflektieren", reflection: "Reflexion", check_in: "Einchecken", save_goal: "Ziel Speichern", save_habit: "Gewohnheit Speichern"
+        goals: "Ziele", habits: "Gewohnheiten", goals_tab: "Ziele", habits_tab: "Gewohnheiten", add_goal: "Ziel Hinzufügen", add_habit: "Gewohnheit Hinzufügen", new_goal: "Neues Ziel", new_habit: "Neue Gewohnheit", today_habits: "Heutige Gewohnheiten", goals_subtitle: "Meilensteine für die Zukunft.", habits_subtitle: "Kleine Schritte, große Ergebnisse.", reflect: "Reflektieren", reflection: "Reflexion", check_in: "Einchecken", save_goal: "Ziel Speichern", save_habit: "Gewohnheit Speichern",
+        send_future: "Send to Future",
+        mastery_progress: "Mastery Progress",
+        send_message_future: "Send Message to Future",
+        link_to_goal: "Link to Goal",
+        your_analytics: "Your Analytics",
+        personal_records: "Personal Records",
+        goal_rate: "Goal Rate",
+        write_future: "Write to Future",
+        full_report: "Full Report",
+        future_self: "Future Self",
+        view_goals_history: "View Goals History",
+        goal_analytics: "Goal Analytics",
+        weekly_report: "Weekly Report",
+        todays_insights: "Today's Insights",
+        weekly_summary: "Weekly Summary",
+        best_day: "Best Day",
+        analyzing_patterns: "Analyzing patterns...",
+        trust_desc: "Trust score determines consistency.",
+        limited_time: "Limited Time",
+        total_xp: "Total XP",
+        tasks_30d: "Tasks (30d)",
+        view_tasks_history: "View Tasks History",
+        tasks_subtitle: "Your active tasks",
+        avg_completion_time: "Avg Completion Time",
+        weekly_trend: "Weekly Trend",
+        loading_achievements: "Loading achievements...",
+        calculating: "Calculating...",
+        no_tasks_yet: "Noch keine Aufgaben",
+        no_goals_yet: "Noch keine Ziele",
+        no_habits_yet: "Noch keine Gewohnheiten",
+        no_habits_today: "No habits scheduled for today.",
     },
     it: {
         app_title: "Tobedone",
@@ -2020,7 +2175,7 @@ const translations = {
         inst_dash_title: "Pannello", inst_dash_desc: "Traccia la tua produttività.",
         inst_prog_title: "Progresso", inst_prog_desc: "Guadagna XP e sblocca badge.",
         inst_gestures_title: "Gesti", inst_gestures_desc: "Scorri per cambiare pagina.",
-        goals: "Obiettivi", habits: "Abitudini", goals_tab: "Obiettivi", habits_tab: "Abitudini", add_goal: "Aggiungi Obiettivo", add_habit: "Aggiungi Abitudine", new_goal: "Nuovo Obiettivo", new_habit: "Nuova Abitudine", today_habits: "Abitudini di Oggi", goals_subtitle: "Traguardi per il futuro.", habits_subtitle: "Piccoli passi, grandi risultati.", reflect: "Riflettere", reflection: "Riflessione", check_in: "Controllo", save_goal: "Salva Obiettivo", save_habit: "Salva Abitudine"
+        goals: "Obiettivi", habits: "Abitudini", goals_tab: "Obiettivi", habits_tab: "Abitudini", add_goal: "Aggiungi Obiettivo", add_habit: "Aggiungi Abitudine", new_goal: "Nuovo Obiettivo", new_habit: "Nuova Abitudine", today_habits: "Abitudini di Oggi", goals_subtitle: "Traguardi per il futuro.", habits_subtitle: "Piccoli passi, grandi risultati.", reflect: "Riflettere", reflection: "Riflessione", check_in: "Controllo", save_goal: "Salva Obiettivo", save_habit: "Salva Abitudine",
     },
     pt: {
         app_title: "Tobedone",
@@ -2349,7 +2504,7 @@ const translations = {
         inst_dash_title: "Painel", inst_dash_desc: "Acompanhe sua produtividade.",
         inst_prog_title: "Progresso", inst_prog_desc: "Ganhe XP e desbloqueie badges.",
         inst_gestures_title: "Gestos", inst_gestures_desc: "Deslize para mudar de página.",
-        goals: "Objetivos", habits: "Hábitos", goals_tab: "Objetivos", habits_tab: "Hábitos", add_goal: "Adicionar Objetivo", add_habit: "Adicionar Hábito", new_goal: "Novo Objetivo", new_habit: "Novo Hábito", today_habits: "Hábitos de Hoje", goals_subtitle: "Marcos para o futuro.", habits_subtitle: "Pequenos passos, grandes resultados.", reflect: "Refletir", reflection: "Reflexão", check_in: "Check-in", save_goal: "Salvar Objetivo", save_habit: "Salvar Hábito"
+        goals: "Objetivos", habits: "Hábitos", goals_tab: "Objetivos", habits_tab: "Hábitos", add_goal: "Adicionar Objetivo", add_habit: "Adicionar Hábito", new_goal: "Novo Objetivo", new_habit: "Novo Hábito", today_habits: "Hábitos de Hoje", goals_subtitle: "Marcos para o futuro.", habits_subtitle: "Pequenos passos, grandes resultados.", reflect: "Refletir", reflection: "Reflexão", check_in: "Check-in", save_goal: "Salvar Objetivo", save_habit: "Salvar Hábito",
     },
     ru: {
         app_title: "Тобедоне",
@@ -2678,7 +2833,7 @@ const translations = {
         inst_dash_title: "Панель", inst_dash_desc: "Отслеживайте свою продуктивность.",
         inst_prog_title: "Прогресс", inst_prog_desc: "Получайте опыт и открывайте значки.",
         inst_gestures_title: "Жесты", inst_gestures_desc: "Листайте для смены страниц.",
-        goals: "Цели", habits: "Привычки", goals_tab: "Цели", habits_tab: "Привычки", add_goal: "Добавить Цель", add_habit: "Добавить Привычку", new_goal: "Новая Цель", new_habit: "Новая Привычка", today_habits: "Привычки на Сегодня", goals_subtitle: "Вехи на будущее.", habits_subtitle: "Маленькие шаги, большие результаты.", reflect: "Рефлексия", reflection: "Рефлексия", check_in: "Отметка", save_goal: "Сохранить Цель", save_habit: "Сохранить Привычку"
+        goals: "Цели", habits: "Привычки", goals_tab: "Цели", habits_tab: "Привычки", add_goal: "Добавить Цель", add_habit: "Добавить Привычку", new_goal: "Новая Цель", new_habit: "Новая Привычка", today_habits: "Привычки на Сегодня", goals_subtitle: "Вехи на будущее.", habits_subtitle: "Маленькие шаги, большие результаты.", reflect: "Рефлексия", reflection: "Рефлексия", check_in: "Отметка", save_goal: "Сохранить Цель", save_habit: "Сохранить Привычку",
     },
     ja: {
         app_title: "トベドネ",
@@ -3007,7 +3162,7 @@ const translations = {
         inst_dash_title: "ダッシュボード", inst_dash_desc: "生産性グラフで進捗を確認できます。",
         inst_prog_title: "進捗とバッジ", inst_prog_desc: "タスクを完了するとXPを獲得。レベルアップしてバッジをアンロック！",
         inst_gestures_title: "ジェスチャー", inst_gestures_desc: "左右にスワイプしてページを切り替えられます。",
-        goals: "目標", habits: "習慣", goals_tab: "目標", habits_tab: "習慣", add_goal: "目標を追加", add_habit: "習慣を追加", new_goal: "新しい目標", new_habit: "新しい習慣", today_habits: "今日の習慣", goals_subtitle: "未来へのマイルストーン。", habits_subtitle: "小さな一歩、大きな成果。", reflect: "振り返り", reflection: "振り返り", check_in: "チェックイン", save_goal: "目標を保存", save_habit: "習慣を保存"
+        goals: "目標", habits: "習慣", goals_tab: "目標", habits_tab: "習慣", add_goal: "目標を追加", add_habit: "習慣を追加", new_goal: "新しい目標", new_habit: "新しい習慣", today_habits: "今日の習慣", goals_subtitle: "未来へのマイルストーン。", habits_subtitle: "小さな一歩、大きな成果。", reflect: "振り返り", reflection: "振り返り", check_in: "チェックイン", save_goal: "目標を保存", save_habit: "習慣を保存",
     },
     zh: {
         app_title: "托贝多内",
@@ -3336,7 +3491,7 @@ const translations = {
         inst_dash_title: "仪表盘", inst_dash_desc: "通过图表查看您的生产力进度。",
         inst_prog_title: "进度与徽章", inst_prog_desc: "完成任务获取XP，升级并解锁收藏徽章！",
         inst_gestures_title: "手势", inst_gestures_desc: "左右滑动可以快速切换应用页面。",
-        goals: "目标", habits: "习惯", goals_tab: "目标", habits_tab: "习惯", add_goal: "添加目标", add_habit: "添加习惯", new_goal: "新目标", new_habit: "新习惯", today_habits: "今日习惯", goals_subtitle: "未来的里程碑。", habits_subtitle: "每天一小步，成就一大步。", reflect: "反思", reflection: "反思", check_in: "打卡", save_goal: "保存目标", save_habit: "保存习惯"
+        goals: "目标", habits: "习惯", goals_tab: "目标", habits_tab: "习惯", add_goal: "添加目标", add_habit: "添加习惯", new_goal: "新目标", new_habit: "新习惯", today_habits: "今日习惯", goals_subtitle: "未来的里程碑。", habits_subtitle: "每天一小步，成就一大步。", reflect: "反思", reflection: "反思", check_in: "打卡", save_goal: "保存目标", save_habit: "保存习惯",
     },
     ar: {
         app_title: "توبيدون",
@@ -3910,6 +4065,7 @@ async function handleAuthSessionChange(event, session) {
             name: meta.name || meta.full_name || session.user.email.split('@')[0],
             username: meta.username || session.user.email.split('@')[0],
             avatar_url: meta.avatar_url || null
+    }
         };
 
         // Immediately show app with what we have
@@ -3924,6 +4080,7 @@ async function handleAuthSessionChange(event, session) {
                 name: meta.name || meta.full_name || session.user.email.split('@')[0],
                 username: meta.username || session.user.email.split('@')[0],
                 avatar_url: meta.avatar_url || null
+    }
             };
         } else {
             currentUser.email = session.user.email;
@@ -4833,6 +4990,7 @@ const originalShowView = showView;
 showView = function(viewId) {
     originalShowView(viewId);
     if (viewId === 'calendar') renderCalendar();
+    }
 };
 
 // --- API Calls ---
@@ -4843,6 +5001,7 @@ async function apiFetch(endpoint, options = {}) {
     options.headers = {
         ...options.headers,
         'Content-Type': 'application/json'
+    }
     };
     
     if (supabaseAccessToken) {
@@ -5144,7 +5303,8 @@ function getBadgeImageSrc(scoreClass) {
         excellent: 'excellent',
         good: 'good',
         average: 'average',
-        low: 'low',
+        low: 'low'
+    }
     };
     const key = map[scoreClass] || 'low';
     if (window.BADGE_ASSETS && window.BADGE_ASSETS[key]) {
@@ -5402,6 +5562,7 @@ function removeBlackBackground(imageSrc, scale = 1, isLogo = false) {
             const resultUrl = canvas.toDataURL('image/png');
             logoBackgroundCache.set(cacheKey, resultUrl);
             resolve(resultUrl);
+    }
         };
         img.src = imageSrc;
     });
@@ -5824,6 +5985,7 @@ function updateTaskChart(tasks) {
         completed: tasks.filter(t => t.status === 'completed').length,
         failed: tasks.filter(t => t.status === 'failed').length,
         pending: tasks.filter(t => t.status === 'pending').length
+    }
     };
 
     const canvas = document.getElementById('task-pie-chart');
@@ -5948,7 +6110,7 @@ function renderHabits(habits) {
         list.innerHTML = `
             <div class="empty-state">
                 <span class="empty-state-icon"><i class="fas fa-brain"></i></span>
-                <h3 class="empty-state-title">No habits yet</h3>
+                <h3 class="empty-state-title">${t('no_habits_yet')}</h3>
                 <p class="empty-state-text">Build consistency with your first recurring habit.</p>
                 <button onclick="toggleHabitForm()" class="btn primary"><i class="fas fa-plus-circle"></i> CREATE HABIT</button>
             </div>
@@ -6004,7 +6166,7 @@ function renderTodayHabits(habits) {
     if (!list) return;
     const dueHabits = (habits || []).filter(h => h.is_due_today);
     if (dueHabits.length === 0) {
-        list.innerHTML = `<div class="for-you-item">No habits scheduled for today.</div>`;
+        list.innerHTML = `<div class="for-you-item">${t('no_habits_today')}</div>`;
         return;
     }
     const html = dueHabits.map(habit => `
@@ -6094,7 +6256,7 @@ function toggleHabitForm() {
         const habitGoalSelect = document.getElementById('habit-goal-select');
         if (habitGoalSelect) {
             const activeGoals = cachedGoals.filter(g => g.status === 'active');
-            habitGoalSelect.innerHTML = `<option value="">No Link</option>` + activeGoals.map(g => `<option value="${g.id}">${g.title}</option>`).join('');
+            habitGoalSelect.innerHTML = `<option value="">${t('no_link')}</option>` + activeGoals.map(g => `<option value="${g.id}">${g.title}</option>`).join('');
         }
         
         toggleHabitDaysSelector('daily');
@@ -6173,7 +6335,7 @@ function renderTasks(tasks) {
         list.innerHTML = `
             <div class="empty-state">
                 <span class="empty-state-icon"><i class="fas fa-list-check"></i></span>
-                <h3 class="empty-state-title">No tasks yet</h3>
+                <h3 class="empty-state-title">${t('no_tasks_yet')}</h3>
                 <p class="empty-state-text">Create your first task to stay organized and productive.</p>
                 <button onclick="toggleCurrentForm()" class="btn primary"><i class="fas fa-plus-circle"></i> CREATE TASK</button>
             </div>
@@ -6476,7 +6638,7 @@ function renderGoals(goals) {
         list.innerHTML = `
             <div class="empty-state">
                 <span class="empty-state-icon"><i class="fas fa-bullseye"></i></span>
-                <h3 class="empty-state-title">No goals yet</h3>
+                <h3 class="empty-state-title">${t('no_goals_yet')}</h3>
                 <p class="empty-state-text">Create your first goal to track long-term progress.</p>
                 <button onclick="toggleGoalForm()" class="btn primary"><i class="fas fa-plus-circle"></i> CREATE GOAL</button>
             </div>
@@ -6582,6 +6744,7 @@ function handleGoalTypeChange() {
         one_year: '1 year',
         one_year_plus: '1 year+',
         custom: 'Custom Date'
+    }
     };
     
     deadlinePresetEl.innerHTML = config.presets.map(preset => 
@@ -6644,11 +6807,13 @@ function validateGoalDeadline() {
             three_months: '3 months',
             six_months: '6 months',
             one_year: '1 year',
-            one_year_plus: '1 year+',
+            one_year_plus: '1 year+'
+    }
         };
         return { 
             valid: false, 
             message: `This deadline is outside the range for ${typeLabels[goalType]} goals` 
+    }
         };
     }
     
@@ -6801,6 +6966,7 @@ function getGoalTypeLabel(type) {
         six_months: '6 months (Long)',
         one_year: '1 year (Long)',
         one_year_plus: '1 year+ (Long)'
+    }
     };
     return labels[type] || type;
 }
@@ -6897,7 +7063,7 @@ function renderGoals(goals) {
         list.innerHTML = `
             <div class="empty-state">
                 <span class="empty-state-icon">🎯</span>
-                <h3 class="empty-state-title">No goals yet</h3>
+                <h3 class="empty-state-title">${t('no_goals_yet')}</h3>
                 <p class="empty-state-text">Create your first goal to track long-term progress.</p>
                 <button onclick="toggleGoalForm()" class="btn primary">Create Goal</button>
             </div>
@@ -6995,6 +7161,7 @@ async function loadIdentityProfile() {
             level: identity.level,
             unlockedBadgeIds: identity.badges.filter(b => b.unlocked).map(b => b.id),
             trust_score: identity.trust_score || 0.0
+    }
         };
         identityInitialized = true;
         const achievementList = document.getElementById('achievements-list');
@@ -7110,7 +7277,8 @@ function getAchievementIcon(id) {
         night_owl: '🦉', early_bird: '🐦', recovery_mode: '💚',
         redemption_arc: '🌅', one_year_strong: '🎂',
         // Legendary
-        tobedone_legend: '👑',
+        tobedone_legend: '👑'
+    }
     };
     return map[id] || '🎖️';
 }
@@ -7600,6 +7768,7 @@ function setupEventListeners() {
                         toggleDragModeOnDblclick: false,
                     });
                 }, 50);
+    }
             };
             reader.readAsDataURL(file);
         });
@@ -7691,6 +7860,7 @@ function toggleTaskForm() {
             // When the date changes, update time constraints
             taskDateInput.onchange = function() {
                 updateTaskTimeConstraints();
+    }
             };
         }
         updateTaskTimeConstraints();
@@ -7987,6 +8157,7 @@ if ('serviceWorker' in navigator) {
                             }
                         }
                     };
+    }
                 };
             })
             .catch(err => console.log('SW failed', err));
@@ -8032,6 +8203,7 @@ let shareData = {
     streak: 0,
     completedTasks: 0,
     goalsAchieved: 0
+    }
 };
 
 async function openShareModal() {
@@ -8050,6 +8222,7 @@ async function openShareModal() {
             streak: identity.streak,
             completedTasks: identity.completed_tasks,
             goalsAchieved: socialProfile.goals_achieved || 0
+    }
         };
         
         document.getElementById('share-username').textContent = currentUser.name || currentUser.username;
@@ -8099,6 +8272,7 @@ async function downloadShareCard() {
             link.click();
             
             showToast('Image downloaded!', 'success');
+    }
         };
         document.head.appendChild(html2canvasScript);
         
@@ -8402,6 +8576,7 @@ async function renderPersonalRecords(identity) {
                 </div>
             </div>
         `).join('');
+    }
     };
 
     if (cachedRecordsStr) {

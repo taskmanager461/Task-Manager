@@ -1,0 +1,37 @@
+L1841:         tasks_subtitle: "Your active tasks",
+L1842:         avg_completion_time: "Avg Completion Time",
+L1843:         weekly_trend: "Weekly Trend",
+L1844:         loading_achievements: "Loading achievements...",
+L1845:         calculating: "Calculating...",
+L1846:         no_tasks_yet: "Noch keine Aufgaben",
+L1847:         no_goals_yet: "Noch keine Ziele",
+L1848:         no_habits_yet: "Noch keine Gewohnheiten",
+L1849:         no_habits_today: "No habits scheduled for today."
+L1850:     },
+L1851:     it: {
+L1852:         app_title: "Tobedone",
+L1853:         login: "Accedi", signup: "Registrati", continue_with_google: "Continua con Google", or: "o",
+L1854:         username_email: "Utente o Email", username: "Utente", password: "Password", forgot_password: "Password dimenticata?",
+L1855:         forgot_password_note: "Inserisci l'email per il link di reset.", send_reset_link: "Invia link",
+
+-----------------
+L3821:         inst_prog_title: "التقدم والشارات", inst_prog_desc: "كل مهمة تمنحك XP. ارتقِ في المستويات وافتح شارات حصرية!",
+L3822:         inst_gestures_title: "الإيماءات", inst_gestures_desc: "اسحب يساراً أو يميناً للتنقل بين صفحات التطبيق.",
+L3823:         goals: "أهداف", habits: "عادات", goals_tab: "أهداف", habits_tab: "عادات", add_goal: "إضافة هدف", add_habit: "إضافة عادة", new_goal: "هدف جديد", new_habit: "عادة جديدة", today_habits: "عادات اليوم", goals_subtitle: "معالم للمستقبل.", habits_subtitle: "خطوات صغيرة، نتائج كبيرة.", reflect: "تأمل", reflection: "تأمل", check_in: "تسجيل", save_goal: "حفظ الهدف", save_habit: "حفظ العادة"
+L3824:     }
+L3825: };
+L3826: 
+L3827: function t(key) {
+L3828:     return translations[currentLang][key] || key;
+L3829: }
+L3830: 
+L3831: function updateUILanguage() {
+L3832:     document.querySelectorAll('[data-i18n]').forEach(el => {
+L3833:         const key = el.getAttribute('data-i18n');
+L3834:         if (el.tagName === 'INPUT' && el.type !== 'submit') {
+L3835:             el.placeholder = t(key);
+L3836:         } else {
+L3837:             el.textContent = t(key);
+L3838:         }
+L3839:     });
+L3840: }

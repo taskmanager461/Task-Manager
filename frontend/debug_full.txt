@@ -1,0 +1,14 @@
+Found 'it: {' at L1851
+'en: {' at L55
+'el: {' at L411
+'es: {' at L771
+'fr: {' at L1131
+'de: {' at L1491
+'it: {' at L1851
+'pt: {' at L2180
+'ru: {' at L2509
+'ja: {' at L2838
+'zh: {' at L3167
+'ar: {' at L3496
+'function t(key)' at L3827
+'}; at L3825
