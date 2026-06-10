@@ -245,7 +245,7 @@
             <section id="view-me" class="view">
                 <div class="premium-header-card" style="width: 95%; margin: 0 auto 1.5rem auto; display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: transparent; border: none; box-shadow: none;">
                     <div>
-                        <h1 style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;" data-i18n="me">Me</h1>
+                        <h1 style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em;" data-i18n="profile">Profile</h1>
                     </div>
                 </div>
 
@@ -289,14 +289,14 @@
                         </div>
                         <div class="form-actions" style="margin-top: 2rem;">
                             <div style="display:flex; gap: 1rem; width: 100%;">
-                                <button id="profile-cancel-btn" type="button" class="btn secondary" style="flex: 1;" disabled>Cancel</button>
-                                <button id="profile-save-btn" type="submit" class="btn primary" style="flex: 1;" disabled>Save Changes</button>
+                                <button id="profile-cancel-btn" type="button" class="btn secondary" style="flex: 1;" data-i18n="cancel" disabled>Cancel</button>
+                                <button id="profile-save-btn" type="submit" class="btn primary" style="flex: 1;" data-i18n="save_changes" disabled>Save Changes</button>
                             </div>
                         </div>
                     </form>
                 </div>
 
-                <!-- Identity Card (Re-added, moved below Profile Card) -->
+                <!-- Identity Card -->
                 <div class="card identity-card" id="identity-card-section" style="margin-bottom: 1.5rem;">
                     <div class="identity-header">
                         <div class="identity-title-group">
@@ -335,7 +335,7 @@
 
                 <div class="card for-you-card" style="margin-bottom: 1.5rem;">
                     <div class="identity-header">
-                        <h3>For You</h3>
+                        <h3 data-i18n="for_you">For You</h3>
                         <span id="for-you-pressure" class="priority-badge priority-low">Adaptive</span>
                     </div>
                     <div id="for-you-list" class="for-you-list"></div>
@@ -352,7 +352,7 @@
                 <!-- Insights Section embedded in Me -->
                 <div class="card" style="margin-bottom: 1.5rem;">
                     <div class="identity-header" style="margin-bottom:1rem;">
-                        <h3><i class="fas fa-chart-line" style="margin-right:0.5rem; color:var(--primary);"></i data-i18n="your_analytics">Your Analytics</h3>
+                        <h3><i class="fas fa-chart-line" style="margin-right:0.5rem; color:var(--primary);"></i> <span data-i18n="your_analytics">Your Analytics</span></h3>
                         <button onclick="showView('insights')" class="btn secondary" style="font-size:0.7rem; padding:0.3rem 0.7rem;" data-i18n="full_report">Full Report</button>
                     </div>
                     <div id="me-smart-insights" class="insights-container" style="margin-bottom:1rem;">
@@ -854,7 +854,7 @@
             </button>
             <button class="nav-item" onclick="showView('me')">
                 <span class="nav-icon"><i class="fas fa-user"></i></span>
-                <span class="nav-label" data-i18n="me">Me</span>
+                <span class="nav-label" data-i18n="profile">Profile</span>
             </button>
         </nav>
     </div>
@@ -882,7 +882,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label data-i18n="category">Category</label>
-                    <input type="text" id="task-category" data-i18n="category_general value="General">
+                    <input type="text" id="task-category" data-i18n="category_general" value="General">
                 </div>
                 <div class="form-group">
                     <label data-i18n="priority">Priority</label>
@@ -937,7 +937,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>Category</label>
-                    <input type="text" id="goal-category" data-i18n="category_general value="General" required>
+                    <input type="text" id="goal-category" data-i18n="category_general" value="General" required>
                 </div>
                 <div class="form-group">
                     <label data-i18n="goal_type">Goal Type</label>
@@ -971,7 +971,7 @@
                 </div>
             </div>
             <div class="form-actions">
-                <button type="button" onclick="toggleGoalForm()" class="btn secondary">Cancel</button>
+                <button type="button" onclick="toggleGoalForm()" class="btn secondary" data-i18n="cancel">Cancel</button>
                 <button type="submit" class="btn primary" data-i18n="create_goal">Create Goal</button>
             </div>
         </form>
@@ -984,7 +984,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>Category</label>
-                    <input type="text" id="habit-category" data-i18n="category_general value="General" required>
+                    <input type="text" id="habit-category" data-i18n="category_general" value="General" required>
                 </div>
                 <div class="form-group">
                     <label data-i18n="preferred_time">Preferred Time</label>
@@ -1021,7 +1021,7 @@
                 </div>
             </div>
             <div class="form-actions">
-                <button type="button" onclick="toggleHabitForm()" class="btn secondary">Cancel</button>
+                <button type="button" onclick="toggleHabitForm()" class="btn secondary" data-i18n="cancel">Cancel</button>
                 <button type="submit" class="btn primary" data-i18n="create_habit">Create Habit</button>
             </div>
         </form>
@@ -1117,14 +1117,14 @@
     <div id="crop-modal" class="modal">
         <div class="modal-content glass-card" style="max-width: 500px;">
             <div class="modal-header">
-                <h3>Adjust Profile Photo</h3>
+                <h3 data-i18n="adjust_profile_photo">Adjust Profile Photo</h3>
             </div>
             <div class="crop-container" style="max-height: 400px; overflow: hidden; margin: 1rem 0; border-radius: 12px;">
                 <img id="crop-image" src="" style="max-width: 100%; display: block;">
             </div>
             <div style="display: flex; gap: 1rem;">
-                <button type="button" id="crop-cancel-btn" class="btn secondary" style="flex: 1;">Cancel</button>
-                <button type="button" id="crop-save-btn" class="btn primary" style="flex: 1;">Crop & Save</button>
+                <button type="button" id="crop-cancel-btn" class="btn secondary" style="flex: 1;" data-i18n="cancel">Cancel</button>
+                <button type="button" id="crop-save-btn" class="btn primary" style="flex: 1;" data-i18n="crop_save">Crop & Save</button>
             </div>
         </div>
     </div>
