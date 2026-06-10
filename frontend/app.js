@@ -524,7 +524,15 @@ const translations = {
         rank_push: "rank. Push for it!",
         tasks_to_milestone: "Tasks to Milestone",
         complete: "Complete",
-        more_tasks_milestone: "more tasks to reach the milestone of"
+        more_tasks_milestone: "more tasks to reach the milestone of",
+        create_task: "Create Task",
+        create_goal: "Create Goal",
+        create_habit: "Create Habit",
+        pressure_low: "Low Pressure",
+        pressure_high: "High Momentum",
+        pressure_balanced: "Balanced",
+        message_title: "Message title",
+        write_message: "Write your message..."
     },
     el: {
         app_title: "Tobedone",
@@ -1002,7 +1010,15 @@ const translations = {
         rank_push: "βαθμού. Προσπαθήστε!",
         tasks_to_milestone: "Εργασίες μέχρι Ορόσημο",
         complete: "Ολοκληρώστε",
-        more_tasks_milestone: "ακόμα εργασίες για το ορόσημο των"
+        more_tasks_milestone: "ακόμα εργασίες για το ορόσημο των",
+        create_task: "Δημιουργία Εργασίας",
+        create_goal: "Δημιουργία Στόχου",
+        create_habit: "Δημιουργία Συνήθειας",
+        pressure_low: "Χαμηλή Πίεση",
+        pressure_high: "Υψηλή Δυναμική",
+        pressure_balanced: "Ισορροπημένη",
+        message_title: "Τίτλος μηνύματος",
+        write_message: "Γράψτε το μήνυμά σας..."
     },
     es: {
         app_title: "tobedone",
@@ -1480,7 +1496,15 @@ const translations = {
         rank_push: "rango. ¡Esfuérzate!",
         tasks_to_milestone: "Tareas para Hito",
         complete: "Completa",
-        more_tasks_milestone: "tareas más para el hito de"
+        more_tasks_milestone: "tareas más para el hito de",
+        create_task: "Crear Tarea",
+        create_goal: "Crear Objetivo",
+        create_habit: "Crear Hábito",
+        pressure_low: "Baja Presión",
+        pressure_high: "Alto Impulso",
+        pressure_balanced: "Equilibrado",
+        message_title: "Título del mensaje",
+        write_message: "Escribe tu mensaje..."
     },
     fr: {
         app_title: "Tobédon",
@@ -1958,7 +1982,15 @@ const translations = {
         rank_push: "rang. Foncez !",
         tasks_to_milestone: "Tâches vers Jalon",
         complete: "Complétez",
-        more_tasks_milestone: "tâches de plus vers le jalon de"
+        more_tasks_milestone: "tâches de plus vers le jalon de",
+        create_task: "Créer Tâche",
+        create_goal: "Créer Objectif",
+        create_habit: "Créer Habitude",
+        pressure_low: "Basse Pression",
+        pressure_high: "Haute Dynamique",
+        pressure_balanced: "Équilibré",
+        message_title: "Titre du message",
+        write_message: "Écrivez votre message..."
     },
     de: {
         app_title: "Tobedone",
@@ -2436,7 +2468,15 @@ const translations = {
         rank_push: "Rang freizuschalten. Los geht's!",
         tasks_to_milestone: "Aufgaben bis Meilenstein",
         complete: "Schließe",
-        more_tasks_milestone: "weitere Aufgaben bis zum Meilenstein von"
+        more_tasks_milestone: "weitere Aufgaben bis zum Meilenstein von",
+        create_task: "Aufgabe Erstellen",
+        create_goal: "Ziel Erstellen",
+        create_habit: "Gewohnheit Erstellen",
+        pressure_low: "Niedriger Druck",
+        pressure_high: "Hohes Momentum",
+        pressure_balanced: "Ausgeglichen",
+        message_title: "Nachrichtentitel",
+        write_message: "Schreibe deine Nachricht..."
     },
     it: {
         app_title: "Tobedone",
@@ -2883,7 +2923,15 @@ const translations = {
         rank_push: "rank. Push for it!",
         tasks_to_milestone: "Tasks to Milestone",
         complete: "Complete",
-        more_tasks_milestone: "more tasks to reach the milestone of"
+        more_tasks_milestone: "more tasks to reach the milestone of",
+        create_task: "Crea Attività",
+        create_goal: "Crea Obiettivo",
+        create_habit: "Crea Abitudine",
+        pressure_low: "Bassa Pressione",
+        pressure_high: "Alto Slancio",
+        pressure_balanced: "Equilibrato",
+        message_title: "Titolo del messaggio",
+        write_message: "Scrivi il tuo messaggio..."
     },
     pt: {
         app_title: "Tobedone",
@@ -3330,7 +3378,15 @@ const translations = {
         rank_push: "rank. Push for it!",
         tasks_to_milestone: "Tasks to Milestone",
         complete: "Complete",
-        more_tasks_milestone: "more tasks to reach the milestone of"
+        more_tasks_milestone: "more tasks to reach the milestone of",
+        create_task: "Criar Tarefa",
+        create_goal: "Criar Objetivo",
+        create_habit: "Criar Hábito",
+        pressure_low: "Baixa Pressão",
+        pressure_high: "Alto Impulso",
+        pressure_balanced: "Equilibrado",
+        message_title: "Título da mensagem",
+        write_message: "Escreva sua mensagem..."
     },
     ru: {
         app_title: "Тобедоне",
@@ -3777,7 +3833,15 @@ const translations = {
         rank_push: "rank. Push for it!",
         tasks_to_milestone: "Tasks to Milestone",
         complete: "Complete",
-        more_tasks_milestone: "more tasks to reach the milestone of"
+        more_tasks_milestone: "more tasks to reach the milestone of",
+        create_task: "Создать Задачу",
+        create_goal: "Создать Цель",
+        create_habit: "Создать Привычку",
+        pressure_low: "Низкое Давление",
+        pressure_high: "Высокий Импульс",
+        pressure_balanced: "Сбалансировано",
+        message_title: "Заголовок сообщения",
+        write_message: "Напишите ваше сообщение..."
     },
     ja: {
         app_title: "トベドネ",
@@ -4224,7 +4288,15 @@ const translations = {
         rank_push: "rank. Push for it!",
         tasks_to_milestone: "Tasks to Milestone",
         complete: "Complete",
-        more_tasks_milestone: "more tasks to reach the milestone of"
+        more_tasks_milestone: "more tasks to reach the milestone of",
+        create_task: "タスク作成",
+        create_goal: "目標作成",
+        create_habit: "習慣作成",
+        pressure_low: "低プレッシャー",
+        pressure_high: "高モメンタム",
+        pressure_balanced: "バランス",
+        message_title: "メッセージのタイトル",
+        write_message: "メッセージを書いてください..."
     },
     zh: {
         app_title: "托贝多内",
@@ -4671,7 +4743,15 @@ const translations = {
         rank_push: "rank. Push for it!",
         tasks_to_milestone: "Tasks to Milestone",
         complete: "Complete",
-        more_tasks_milestone: "more tasks to reach the milestone of"
+        more_tasks_milestone: "more tasks to reach the milestone of",
+        create_task: "创建任务",
+        create_goal: "创建目标",
+        create_habit: "创建习惯",
+        pressure_low: "低压力",
+        pressure_high: "高动力",
+        pressure_balanced: "平衡",
+        message_title: "消息标题",
+        write_message: "写下您的消息..."
     },
     ar: {
         app_title: "توبيدون",
@@ -5118,7 +5198,15 @@ const translations = {
         rank_push: "rank. Push for it!",
         tasks_to_milestone: "Tasks to Milestone",
         complete: "Complete",
-        more_tasks_milestone: "more tasks to reach the milestone of"
+        more_tasks_milestone: "more tasks to reach the milestone of",
+        create_task: "إنشاء مهمة",
+        create_goal: "إنشاء هدف",
+        create_habit: "إنشاء عادة",
+        pressure_low: "ضغط منخفض",
+        pressure_high: "زخم عالي",
+        pressure_balanced: "متوازن",
+        message_title: "عنوان الرسالة",
+        write_message: "اكتب رسالتك..."
     }
 };
 
@@ -5129,7 +5217,7 @@ function t(key) {
 function updateUILanguage() {
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        if (el.tagName === 'INPUT' && el.type !== 'submit') {
+        if ((el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') && el.type !== 'submit') {
             el.placeholder = t(key);
         } else {
             el.textContent = t(key);
@@ -6958,11 +7046,11 @@ function renderDashboardPersonalization(smartData) {
     const messages = (smartData.for_you || []).slice(0, 4);
     listEl.innerHTML = messages.map(m => `<div class="for-you-item">${m}</div>`).join('');
     if (messages.length === 0) {
-        listEl.innerHTML = `<div class="for-you-item">Keep completing tasks to unlock personalized guidance</div>`;
+        listEl.innerHTML = `<div class="for-you-item">${t('for_you_default_body')}</div>`;
     }
 
     const pressure = smartData.pressure_level || 'normal';
-    pressureEl.textContent = pressure === 'light' ? 'Low Pressure' : pressure === 'high' ? 'High Momentum' : 'Balanced';
+    pressureEl.textContent = pressure === 'light' ? t('pressure_low') : pressure === 'high' ? t('pressure_high') : t('pressure_balanced');
     pressureEl.className = `priority-badge ${pressure === 'light' ? 'priority-low' : pressure === 'high' ? 'priority-high' : 'priority-medium'}`;
 }
 
@@ -7538,7 +7626,7 @@ function toggleHabitForm() {
     container.classList.toggle('active');
     if (container.classList.contains('active')) {
         document.getElementById('habit-title').value = '';
-        document.getElementById('habit-category').value = 'General';
+        document.getElementById('habit-category').value = t('category_general');
         document.getElementById('habit-time').value = '';
         document.getElementById('habit-frequency').value = 'daily';
         document.querySelectorAll('#habit-days-group input[type="checkbox"]').forEach(el => { el.checked = false; });
@@ -7964,7 +8052,7 @@ function toggleGoalForm() {
     container.classList.toggle('active');
     if (container.classList.contains('active')) {
         document.getElementById('goal-title').value = '';
-        document.getElementById('goal-category').value = 'General';
+        document.getElementById('goal-category').value = t('category_general');
         document.getElementById('goal-type').value = 'two_weeks';
         handleGoalTypeChange();
         
@@ -9892,7 +9980,7 @@ async function renderMilestoneTimeline(identity) {
     const milestones = [
         { title: '👣 ' + t('ms_first_step'), desc: t('ms_first_step_desc'), condition: identity.completed_tasks >= 1 },
         { title: '📌 ' + t('ms_goal_setter'), desc: t('ms_goal_setter_desc'), condition: identity.completed_goals >= 1 },
-        { title: '⚡ Level 10 Achieved', desc: t('rec_lvl10_desc'), condition: identity.level >= 10 },
+        { title: '⚡ ' + t('ms_lvl10'), desc: t('ms_lvl10_desc'), condition: identity.level >= 10 },
         { title: '🛡️ ' + t('ms_trust_builder'), desc: t('ms_trust_builder_desc'), condition: identity.trust_score >= 50.0 },
         { title: '⚔️ ' + t('ms_discipline_elite'), desc: t('ms_discipline_elite_desc'), condition: identity.level >= 25 || identity.trust_score >= 75.0 },
         { title: '👑 ' + t('ms_legendary'), desc: t('ms_legendary_desc'), condition: identity.completed_tasks >= 100 && identity.level >= 50 }
