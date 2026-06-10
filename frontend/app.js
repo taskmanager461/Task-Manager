@@ -4065,7 +4065,6 @@ async function handleAuthSessionChange(event, session) {
             name: meta.name || meta.full_name || session.user.email.split('@')[0],
             username: meta.username || session.user.email.split('@')[0],
             avatar_url: meta.avatar_url || null
-    }
         };
 
         // Immediately show app with what we have
@@ -4080,7 +4079,6 @@ async function handleAuthSessionChange(event, session) {
                 name: meta.name || meta.full_name || session.user.email.split('@')[0],
                 username: meta.username || session.user.email.split('@')[0],
                 avatar_url: meta.avatar_url || null
-    }
             };
         } else {
             currentUser.email = session.user.email;
@@ -4990,7 +4988,6 @@ const originalShowView = showView;
 showView = function(viewId) {
     originalShowView(viewId);
     if (viewId === 'calendar') renderCalendar();
-    }
 };
 
 // --- API Calls ---
@@ -5001,7 +4998,6 @@ async function apiFetch(endpoint, options = {}) {
     options.headers = {
         ...options.headers,
         'Content-Type': 'application/json'
-    }
     };
     
     if (supabaseAccessToken) {
@@ -5304,7 +5300,6 @@ function getBadgeImageSrc(scoreClass) {
         good: 'good',
         average: 'average',
         low: 'low'
-    }
     };
     const key = map[scoreClass] || 'low';
     if (window.BADGE_ASSETS && window.BADGE_ASSETS[key]) {
@@ -5562,7 +5557,6 @@ function removeBlackBackground(imageSrc, scale = 1, isLogo = false) {
             const resultUrl = canvas.toDataURL('image/png');
             logoBackgroundCache.set(cacheKey, resultUrl);
             resolve(resultUrl);
-    }
         };
         img.src = imageSrc;
     });
@@ -5985,7 +5979,6 @@ function updateTaskChart(tasks) {
         completed: tasks.filter(t => t.status === 'completed').length,
         failed: tasks.filter(t => t.status === 'failed').length,
         pending: tasks.filter(t => t.status === 'pending').length
-    }
     };
 
     const canvas = document.getElementById('task-pie-chart');
@@ -6744,7 +6737,6 @@ function handleGoalTypeChange() {
         one_year: '1 year',
         one_year_plus: '1 year+',
         custom: 'Custom Date'
-    }
     };
     
     deadlinePresetEl.innerHTML = config.presets.map(preset => 
@@ -6808,12 +6800,10 @@ function validateGoalDeadline() {
             six_months: '6 months',
             one_year: '1 year',
             one_year_plus: '1 year+'
-    }
         };
         return { 
             valid: false, 
             message: `This deadline is outside the range for ${typeLabels[goalType]} goals` 
-    }
         };
     }
     
@@ -6966,7 +6956,6 @@ function getGoalTypeLabel(type) {
         six_months: '6 months (Long)',
         one_year: '1 year (Long)',
         one_year_plus: '1 year+ (Long)'
-    }
     };
     return labels[type] || type;
 }
@@ -7161,7 +7150,6 @@ async function loadIdentityProfile() {
             level: identity.level,
             unlockedBadgeIds: identity.badges.filter(b => b.unlocked).map(b => b.id),
             trust_score: identity.trust_score || 0.0
-    }
         };
         identityInitialized = true;
         const achievementList = document.getElementById('achievements-list');
@@ -7278,7 +7266,6 @@ function getAchievementIcon(id) {
         redemption_arc: '🌅', one_year_strong: '🎂',
         // Legendary
         tobedone_legend: '👑'
-    }
     };
     return map[id] || '🎖️';
 }
@@ -7768,7 +7755,6 @@ function setupEventListeners() {
                         toggleDragModeOnDblclick: false,
                     });
                 }, 50);
-    }
             };
             reader.readAsDataURL(file);
         });
@@ -7860,7 +7846,6 @@ function toggleTaskForm() {
             // When the date changes, update time constraints
             taskDateInput.onchange = function() {
                 updateTaskTimeConstraints();
-    }
             };
         }
         updateTaskTimeConstraints();
@@ -8157,7 +8142,6 @@ if ('serviceWorker' in navigator) {
                             }
                         }
                     };
-    }
                 };
             })
             .catch(err => console.log('SW failed', err));
@@ -8203,7 +8187,6 @@ let shareData = {
     streak: 0,
     completedTasks: 0,
     goalsAchieved: 0
-    }
 };
 
 async function openShareModal() {
@@ -8222,7 +8205,6 @@ async function openShareModal() {
             streak: identity.streak,
             completedTasks: identity.completed_tasks,
             goalsAchieved: socialProfile.goals_achieved || 0
-    }
         };
         
         document.getElementById('share-username').textContent = currentUser.name || currentUser.username;
@@ -8272,7 +8254,6 @@ async function downloadShareCard() {
             link.click();
             
             showToast('Image downloaded!', 'success');
-    }
         };
         document.head.appendChild(html2canvasScript);
         
@@ -8576,7 +8557,6 @@ async function renderPersonalRecords(identity) {
                 </div>
             </div>
         `).join('');
-    }
     };
 
     if (cachedRecordsStr) {
