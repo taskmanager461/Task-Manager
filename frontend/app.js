@@ -63,7 +63,7 @@ const translations = {
         confirm_password: "Confirm password", update_password: "Update password", full_name: "Full Name", email: "Email",
         change_name: "Change Name", change_username: "Change Username", create_account: "Create Account", dashboard: "Dashboard",
         reports: "Reports", me: "Me", tasks: "Tasks", insights: "Insights", progress: "Progress", settings: "Settings", logout: "Logout",
-        trust_score: "Trust Score", streak: "Streak", success: "Success", daily_progress: "Daily Progress", statistics: "Statistics",
+        trust_score: "Trust Score", streak: "Streak", success: "Success", daily_progress: "Progress", statistics: "Statistics",
         task_distribution: "Task Distribution", add_new_task: "Add New Task", new_task: "New Task", task_placeholder: "What needs to be done?",
         category: "Category", difficulty: "Difficulty", easy: "Easy", medium: "Medium", hard: "Hard", cancel: "Cancel", add_task: "Add Task",
         priority: "Priority", low: "Low", high: "High", recurring: "Recurring", none: "None", daily: "Daily", weekly: "Weekly",
@@ -80,12 +80,12 @@ const translations = {
         total_tasks: "Total Tasks",
         total_goals: "Total Goals",
         total_habits: "Total Habits",
-        weekly_progress: "Weekly Progress",
-        monthly_progress: "Monthly Progress",
+        weekly_progress: "Progress",
+        monthly_progress: "Progress",
         completion_rate: "Completion Rate",
         productivity_score: "Productivity Score",
         achievement_unlocked: "Achievement Unlocked",
-        rank_progress: "Rank Progress",
+        rank_progress: "Progress",
         ach_first_step: "First Step",
         ach_goal_hunter: "Goal Hunter",
         ach_marathon: "Marathon",
@@ -107,8 +107,8 @@ const translations = {
         notif_level_up: "Level Up",
         search_placeholder: "Search...",
         enter_task_name: "Enter Task Name...",
-        select_goal: "Select Goal...",
-        select_habit: "Select Habit...",
+        select_goal: "Select goal",
+        select_habit: "Select habit",
         description: "Description...",
         reports_tab: "Reports",
         insights_tab: "Insights",
@@ -139,7 +139,7 @@ const translations = {
         what_didnt_go_well: "What didn't go well?",
         skip: "Skip",
         save_reflection: "Save Reflection",
-        share_progress: "Share Your Progress",
+        share_progress: "Progress",
         download: "Download",
         copy_text: "Copy Text",
         share: "Share",
@@ -175,7 +175,7 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "Streak",
         completed_tasks: "Completed Tasks",
-        goals_achieved: "Goals Achieved",
+        goals_achieved: "Achieved",
         trust_low: "Low",
         trust_average: "Average",
         trust_good: "Good",
@@ -311,7 +311,7 @@ const translations = {
         what_didnt_go_well: "What didn't go well?",
         skip: "Skip",
         save_reflection: "Save Reflection",
-        share_progress: "Share Your Progress",
+        share_progress: "Progress",
         download: "Download",
         copy_text: "Copy Text",
         share: "Share",
@@ -347,7 +347,7 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "Streak",
         completed_tasks: "Completed Tasks",
-        goals_achieved: "Goals Achieved",
+        goals_achieved: "Achieved",
         task_completed: "Task Completed",
         goal_completed: "Goal Completed",
         trust_low: "Low",
@@ -377,7 +377,7 @@ const translations = {
         inst_gestures_title: "Gestures & Navigation", inst_gestures_desc: "Swipe left or right to quickly switch between the app pages.",
         goals: "Goals", habits: "Habits", goals_tab: "Goals", habits_tab: "Habits", add_goal: "Add Goal", add_habit: "Add Habit", new_goal: "New Goal", new_habit: "New Habit", today_habits: "Today's Habits", goals_subtitle: "Milestones for the future.", habits_subtitle: "Small steps, big results.", reflect: "Reflect", reflection: "Reflection", check_in: "Check-in", save_goal: "Save Goal", save_habit: "Save Habit",
         send_future: "Send to Future",
-        mastery_progress: "Mastery Progress",
+        mastery_progress: "Progress",
         send_message_future: "Send Message to Future",
         link_to_goal: "Link to Goal",
         your_analytics: "Your Analytics",
@@ -528,7 +528,7 @@ const translations = {
         chal_summer_desc: "Complete 10 tasks to claim a massive boost.",
         chal_30day: "30 Day Consistency",
         chal_30day_desc: "Maintain a streak of 30 days.",
-        in_progress: "In Progress",
+        in_progress: "Progress",
         xp_reward_500: "+500 XP Reward",
         xp_reward_1500: "+1500 XP Reward",
         sent: "Sent",
@@ -567,6 +567,47 @@ const translations = {
         goal_word: "Goal",
         boost: "Boost",
         average: "Average",
+        skipped: "Skipped",
+        not_scheduled_today: "Not scheduled today",
+        deadline_lbl: "Deadline",
+        no_history_found: "No history found",
+        claim_reward: "Claim Reward",
+        xp_reward: "XP Reward",
+        keep_growing: "Keep Growing",
+        skipped_status: "Skipped",
+        unable_to_load_habits: "Unable to load habits now.",
+        level_up_excl: "LEVEL UP!",
+        close_message: "Close Message",
+        failed_to_load_messages: "Failed to load messages.",
+        you_missed: "You missed",
+        task: "task",
+        streak_at_risk: "You are at risk of losing your streak!",
+        confirm_force_update: "This will clear all cache and reload the app. Continue?",
+        habit_created: "Habit created",
+        select_weekly_day: "Select at least one day for weekly habit",
+        goal_created: "Goal created",
+        goal_marked_failed: "Goal marked as failed",
+        reflection_saved: "Reflection saved!",
+        new_badge_unlocked: "New Badge Unlocked",
+        cannot_select_past_date: "Cannot select a date in the past.",
+        start_time_past: "Start time cannot be in the past.",
+        changes_discarded: "Changes discarded",
+        photo_adjusted: "Photo adjusted (pending save)",
+        new_version: "New version available! Refreshing...",
+        failed_load_share: "Failed to load share data",
+        image_downloaded: "Image downloaded!",
+        download_failed: "Download failed",
+        text_copied: "Text copied!",
+        failed_copy_text: "Failed to copy text",
+        shared_successfully: "Shared successfully!",
+        failed_copy_link: "Failed to copy link",
+        challenge_claimed: "Challenge claimed! +{xpAmount} XP added! 🎉",
+        fill_title_msg: "Please fill in the title and message.",
+        message_sealed: "✉️ Message sealed! It will be waiting for you.",
+        failed_send_msg: "Failed to send message. Please try again.",
+        message_opened: "📬 Message from your past self opened!",
+        cannot_open_yet: "Cannot open yet!",
+        level_up_reached: "🎉 LEVEL UP! You reached Level {level}!",
     },
     el: {
         app_title: "Tobedone",
@@ -580,7 +621,7 @@ const translations = {
         change_name: "Αλλαγή Ονόματος", change_username: "Αλλαγή Username", create_account: "Δημιουργία Λογαριασμού",
         dashboard: "Ταμπλό", reports: "Αναφορές", me: "Εγώ", tasks: "Εργασίες", insights: "Στατιστικά",
         progress: "Πρόοδος", settings: "Ρυθμίσεις", logout: "Αποσύνδεση",
-        trust_score: "Βαθμολογία", streak: "Σερί", success: "Επιτυχία", daily_progress: "Ημερήσια Πρόοδος",
+        trust_score: "Βαθμολογία", streak: "Σερί", success: "Επιτυχία", daily_progress: "Πρόοδος",
         statistics: "Στατιστικά", task_distribution: "Κατανομή Εργασιών",
         add_new_task: "Νέα Εργασία", new_task: "Νέα Εργασία", task_placeholder: "Τι πρέπει να γίνει;",
         category: "Κατηγορία", difficulty: "Δυσκολία", easy: "Εύκολο", medium: "Μέτριο", hard: "Δύσκολο",
@@ -599,12 +640,12 @@ const translations = {
         total_tasks: "Σύνολο εργασιών",
         total_goals: "Σύνολο στόχων",
         total_habits: "Συνολικές συνήθειες",
-        weekly_progress: "Εβδομαδιαία Πρόοδος",
-        monthly_progress: "Μηνιαία Πρόοδος",
+        weekly_progress: "Πρόοδος",
+        monthly_progress: "Πρόοδος",
         completion_rate: "Ποσοστό Ολοκλήρωσης",
         productivity_score: "Βαθμολογία παραγωγικότητας",
         achievement_unlocked: "Το επίτευγμα ξεκλειδώθηκε",
-        rank_progress: "Πρόοδος κατάταξης",
+        rank_progress: "Πρόοδος",
         ach_first_step: "Πρώτο Βήμα",
         ach_goal_hunter: "Κυνηγός Γκολ",
         ach_marathon: "Μαραθώνας",
@@ -626,8 +667,8 @@ const translations = {
         notif_level_up: "Level Up",
         search_placeholder: "Ερευνα...",
         enter_task_name: "Εισαγάγετε όνομα εργασίας...",
-        select_goal: "Επιλέξτε στόχο...",
-        select_habit: "Επιλέξτε Συνήθεια...",
+        select_goal: "Επιλογή στόχου",
+        select_habit: "Επιλογή συνήθειας",
         description: "Περιγραφή...",
         reports_tab: "Αναφορές",
         insights_tab: "Insights",
@@ -640,7 +681,7 @@ const translations = {
         progress_descriptions: "Περιγραφές προόδου",
         recommendations: "συστάσεις",
         smart_insights: "Smart Insights",
-        trust_score_changed: "Trust Score changed: {value}",
+        trust_score_changed: "Το σκόρ εμπιστοσύνης άλλαξε: {value}",
         goal_link: "Σύνδεσμος στόχου",
         habit_link: "Σύνδεσμος συνήθειας",
         start: "Αρχή",
@@ -656,9 +697,9 @@ const translations = {
         goal_reflection: "Αντανάκλαση στόχου",
         what_went_well: "Τι πήγε καλά;",
         what_didnt_go_well: "Τι δεν πήγε καλά;",
-        skip: "Παραλείπω",
+        skip: "Παράλειψη",
         save_reflection: "Αποθήκευση Reflection",
-        share_progress: "Μοιραστείτε την πρόοδό σας",
+        share_progress: "Πρόοδος",
         download: "Λήψη",
         copy_text: "Αντιγραφή κειμένου",
         share: "Μερίδιο",
@@ -683,8 +724,8 @@ const translations = {
         custom_date: "Προσαρμοσμένη ημερομηνία",
         specific_days: "Συγκεκριμένες Ημέρες",
         no_link: "Χωρίς Σύνδεσμο",
-        select_a_goal: "Επιλέξτε έναν στόχο...",
-        select_a_habit: "Επιλέξτε μια συνήθεια...",
+        select_a_goal: "Επίλεξε ένα στόχο...",
+        select_a_habit: "Επίλεξε μια συνήθεια...",
         what_worked: "Πες μας τι λειτούργησε...",
         what_improved: "Τι θα μπορούσε να βελτιωθεί...",
         search_achievements: "Αναζήτηση επιτευγμάτων...",
@@ -694,7 +735,7 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "Ράβδωση",
         completed_tasks: "Ολοκληρωμένες Εργασίες",
-        goals_achieved: "Στόχοι που επιτεύχθηκαν",
+        goals_achieved: "Επιτεύχθηκε",
         trust_low: "Χαμηλός",
         trust_average: "Μέσος",
         trust_good: "Καλός",
@@ -828,9 +869,9 @@ const translations = {
         goal_reflection: "Αντανάκλαση στόχου",
         what_went_well: "Τι πήγε καλά;",
         what_didnt_go_well: "Τι δεν πήγε καλά;",
-        skip: "Παραλείπω",
+        skip: "Παράλειψη",
         save_reflection: "Αποθήκευση Reflection",
-        share_progress: "Μοιραστείτε την πρόοδό σας",
+        share_progress: "Πρόοδος",
         download: "Λήψη",
         copy_text: "Αντιγραφή κειμένου",
         share: "Μερίδιο",
@@ -855,8 +896,8 @@ const translations = {
         custom_date: "Προσαρμοσμένη ημερομηνία",
         specific_days: "Συγκεκριμένες Ημέρες",
         no_link: "Χωρίς Σύνδεσμο",
-        select_a_goal: "Επιλέξτε έναν στόχο...",
-        select_a_habit: "Επιλέξτε μια συνήθεια...",
+        select_a_goal: "Επίλεξε ένα στόχο...",
+        select_a_habit: "Επίλεξε μια συνήθεια...",
         what_worked: "Πες μας τι λειτούργησε...",
         what_improved: "Τι θα μπορούσε να βελτιωθεί...",
         search_achievements: "Αναζήτηση επιτευγμάτων...",
@@ -866,7 +907,7 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "Ράβδωση",
         completed_tasks: "Ολοκληρωμένες Εργασίες",
-        goals_achieved: "Στόχοι που επιτεύχθηκαν",
+        goals_achieved: "Επιτεύχθηκε",
         task_completed: "Εργασία Ολοκληρώθηκε",
         goal_completed: "Ο στόχος Ολοκληρώθηκε",
         trust_low: "Χαμηλός",
@@ -897,7 +938,7 @@ const translations = {
         inst_gestures_title: "Πλοήγηση", inst_gestures_desc: "Σύρετε αριστερά-δεξιά για γρήγορη εναλλαγή σελίδων.",
         goals: "Στόχοι", habits: "Συνήθειες", goals_tab: "Στόχοι", habits_tab: "Συνήθειες", add_goal: "Προσθήκη Στόχου", add_habit: "Προσθήκη Συνήθειας", new_goal: "Νέος Στόχος", new_habit: "Νέα Συνήθεια", today_habits: "Σημερινές Συνήθειες", goals_subtitle: "Ορόσημα για το μέλλον.", habits_subtitle: "Μικρά βήματα, μεγάλα αποτελέσματα.", reflect: "Αναστοχασμός", reflection: "Αναστοχασμός", check_in: "Έλεγχος", save_goal: "Αποθήκευση Στόχου", save_habit: "Αποθήκευση Συνήθειας",
         send_future: "Αποστολή στο Μέλλον",
-        mastery_progress: "Πρόοδος Κατάκτησης",
+        mastery_progress: "Πρόοδος",
         send_message_future: "Στείλε Μήνυμα στο Μέλλον",
         link_to_goal: "Σύνδεση με Στόχο",
         your_analytics: "Τα Στατιστικά Σου",
@@ -1012,7 +1053,7 @@ const translations = {
         empty_goal_desc: "Δημιουργήστε τον πρώτο σας στόχο για μακροπρόθεσμη πρόοδο.",
         empty_habit_desc: "Χτίστε συνέπεια με την πρώτη σας επαναλαμβανόμενη συνήθεια.",
         achieved_failed: "Επιτυχημένοι / Αποτυχημένοι",
-        achieved: "Επιτυχημένος",
+        achieved: "Επιτεύχθηκε",
         failed_status: "Αποτυχημένος",
         longest_streak: "Μεγαλύτερο Σερί",
         highest_xp: "Υψηλότερα XP",
@@ -1048,7 +1089,7 @@ const translations = {
         chal_summer_desc: "Ολοκληρώστε 10 εργασίες για τεράστια ώθηση.",
         chal_30day: "Συνέπεια 30 Ημερών",
         chal_30day_desc: "Διατηρήστε σερί 30 ημερών.",
-        in_progress: "Σε Εξέλιξη",
+        in_progress: "Πρόοδος",
         xp_reward_500: "+500 XP Ανταμοιβή",
         xp_reward_1500: "+1500 XP Ανταμοιβή",
         sent: "Απεσταλμένα",
@@ -1072,7 +1113,7 @@ const translations = {
         to_unlock: "για ξεκλείδωμα του",
         rank_push: "βαθμού. Προσπαθήστε!",
         tasks_to_milestone: "Εργασίες μέχρι Ορόσημο",
-        complete: "Ολοκληρώστε",
+        complete: "Ολοκλήρωση",
         more_tasks_milestone: "ακόμα εργασίες για το ορόσημο των",
         create_task: "Δημιουργία Εργασίας",
         create_goal: "Δημιουργία Στόχου",
@@ -1088,6 +1129,46 @@ const translations = {
         boost: "Ενίσχυση",
         average: "Μέσος",
         xp_boost: "XP Ενίσχυση",
+        skipped: "Παραλείφθηκε",
+        not_scheduled_today: "Δεν έχει προγραμματιστεί σήμερα",
+        deadline_lbl: "Προθεσμία",
+        no_history_found: "Δεν βρέθηκε ιστορικό",
+        claim_reward: "Διεκδίκηση Βραβείου",
+        xp_reward: "Βραβείο XP",
+        keep_growing: "Συνέχισε να Μεγαλώνεις",
+        unable_to_load_habits: "Αδυναμία φόρτωσης συνηθειών.",
+        level_up_excl: "ΑΝΕΒΗΚΕΣ ΕΠΙΠΕΔΟ!",
+        close_message: "Κλείσιμο Μηνύματος",
+        failed_to_load_messages: "Αποτυχία φόρτωσης μηνυμάτων.",
+        you_missed: "Έχασες",
+        task: "εργασία",
+        streak_at_risk: "Κινδυνεύεις να χάσεις το σερί σου!",
+        confirm_force_update: "Αυτό θα καθαρίσει την προσωρινή μνήμη και θα επαναφορτώσει την εφαρμογή. Συνέχεια;",
+        habit_created: "Η συνήθεια δημιουργήθηκε",
+        select_weekly_day: "Επιλέξτε τουλάχιστον μία μέρα",
+        goal_created: "Ο στόχος δημιουργήθηκε",
+        goal_marked_failed: "Ο στόχος σημειώθηκε ως αποτυχημένος",
+        reflection_saved: "Ο αναστοχασμός αποθηκεύτηκε!",
+        new_badge_unlocked: "Νέο έμβλημα ξεκλειδώθηκε",
+        cannot_select_past_date: "Δεν μπορείτε να επιλέξετε ημερομηνία στο παρελθόν.",
+        start_time_past: "Η ώρα έναρξης δεν μπορεί να είναι στο παρελθόν.",
+        changes_discarded: "Οι αλλαγές απορρίφθηκαν",
+        photo_adjusted: "Η φωτογραφία ρυθμίστηκε",
+        new_version: "Νέα έκδοση διαθέσιμη! Ανανέωση...",
+        failed_load_share: "Αποτυχία φόρτωσης δεδομένων διαμοιρασμού",
+        image_downloaded: "Η εικόνα κατέβηκε!",
+        download_failed: "Η λήψη απέτυχε",
+        text_copied: "Το κείμενο αντιγράφηκε!",
+        failed_copy_text: "Αποτυχία αντιγραφής κειμένου",
+        shared_successfully: "Διαμοιράστηκε επιτυχώς!",
+        failed_copy_link: "Αποτυχία αντιγραφής συνδέσμου",
+        challenge_claimed: "Η πρόκληση διεκδικήθηκε! +{xpAmount} XP προστέθηκαν! 🎉",
+        fill_title_msg: "Παρακαλώ συμπληρώστε τίτλο και μήνυμα.",
+        message_sealed: "✉️ Το μήνυμα σφραγίστηκε! Θα σας περιμένει.",
+        failed_send_msg: "Αποτυχία αποστολής μηνύματος.",
+        message_opened: "📬 Το μήνυμα από τον παλιό σας εαυτό άνοιξε!",
+        cannot_open_yet: "Δεν μπορεί να ανοίξει ακόμα!",
+        level_up_reached: "🎉 ΕΠΙΠΕΔΟ ΠΑΝΩ! Φτάσατε στο επίπεδο {level}!",
     },
     es: {
         app_title: "tobedone",
@@ -1101,7 +1182,7 @@ const translations = {
         change_name: "Cambiar nombre", change_username: "Cambiar usuario", create_account: "Crear Cuenta",
         dashboard: "Panel", reports: "Informes", me: "Yo", tasks: "Tareas", insights: "Estadísticas",
         progress: "Progreso", settings: "Ajustes", logout: "Salir",
-        trust_score: "Confianza", streak: "Racha", success: "Éxito", daily_progress: "Progreso diario",
+        trust_score: "Confianza", streak: "Racha", success: "Éxito", daily_progress: "Progreso",
         statistics: "Estadísticas", task_distribution: "Distribución de Tareas",
         add_new_task: "Nueva Tarea", new_task: "Nueva Tarea", task_placeholder: "¿Qué hay que hacer?",
         category: "Categoría", difficulty: "Dificultad", easy: "Fácil", medium: "Medio", hard: "Difícil",
@@ -1120,12 +1201,12 @@ const translations = {
         total_tasks: "Tareas totales",
         total_goals: "Metas totales",
         total_habits: "Hábitos totales",
-        weekly_progress: "Progreso semanal",
-        monthly_progress: "Progreso mensual",
+        weekly_progress: "Progreso",
+        monthly_progress: "Progreso",
         completion_rate: "Tasa de finalización",
         productivity_score: "Puntuación de productividad",
         achievement_unlocked: "Logro desbloqueado",
-        rank_progress: "Progreso de rango",
+        rank_progress: "Progreso",
         ach_first_step: "Primer paso",
         ach_goal_hunter: "Cazador de goles",
         ach_marathon: "Maratón",
@@ -1147,8 +1228,8 @@ const translations = {
         notif_level_up: "Elevar a mismo nivel",
         search_placeholder: "Buscar...",
         enter_task_name: "Introduzca el nombre de la tarea...",
-        select_goal: "Seleccionar objetivo...",
-        select_habit: "Seleccione Hábito...",
+        select_goal: "Seleccionar objetivo",
+        select_habit: "Seleccionar hábito",
         description: "Descripción...",
         reports_tab: "Informes",
         insights_tab: "Perspectivas",
@@ -1161,7 +1242,7 @@ const translations = {
         progress_descriptions: "Descripciones de progreso",
         recommendations: "Recomendaciones",
         smart_insights: "Información inteligente",
-        trust_score_changed: "Trust Score changed: {value}",
+        trust_score_changed: "Puntuación de confianza cambiada: {value}",
         goal_link: "Enlace de objetivo",
         habit_link: "Enlace de hábito",
         start: "Comenzar",
@@ -1179,7 +1260,7 @@ const translations = {
         what_didnt_go_well: "¿Qué no salió bien?",
         skip: "Saltar",
         save_reflection: "Guardar reflexión",
-        share_progress: "Comparte tu progreso",
+        share_progress: "Progreso",
         download: "Descargar",
         copy_text: "Copiar texto",
         share: "Compartir",
@@ -1215,7 +1296,7 @@ const translations = {
         xp_lbl: "experiencia",
         streak_lbl: "Racha",
         completed_tasks: "Tareas completadas",
-        goals_achieved: "Metas alcanzadas",
+        goals_achieved: "Logrado",
         trust_low: "Bajo",
         trust_average: "Promedio",
         trust_good: "Bien",
@@ -1351,7 +1432,7 @@ const translations = {
         what_didnt_go_well: "¿Qué no salió bien?",
         skip: "Saltar",
         save_reflection: "Guardar reflexión",
-        share_progress: "Comparte tu progreso",
+        share_progress: "Progreso",
         download: "Descargar",
         copy_text: "Copiar texto",
         share: "Compartir",
@@ -1387,7 +1468,7 @@ const translations = {
         xp_lbl: "experiencia",
         streak_lbl: "Racha",
         completed_tasks: "Tareas completadas",
-        goals_achieved: "Metas alcanzadas",
+        goals_achieved: "Logrado",
         task_completed: "Tarea completada",
         goal_completed: "Objetivo completado",
         trust_low: "Bajo",
@@ -1418,7 +1499,7 @@ const translations = {
         inst_gestures_title: "Gestos", inst_gestures_desc: "Desliza para cambiar de página.",
         goals: "Metas", habits: "Hábitos", goals_tab: "Metas", habits_tab: "Hábitos", add_goal: "Añadir Meta", add_habit: "Añadir Hábito", new_goal: "Nueva Meta", new_habit: "Nuevo Hábito", today_habits: "Hábitos de Hoy", goals_subtitle: "Hitos para el futuro.", habits_subtitle: "Pequeños pasos, grandes resultados.", reflect: "Reflexionar", reflection: "Reflexión", check_in: "Registro", save_goal: "Guardar Meta", save_habit: "Guardar Hábito",
         send_future: "Enviar al Futuro",
-        mastery_progress: "Progreso de Dominio",
+        mastery_progress: "Progreso",
         send_message_future: "Enviar Mensaje al Futuro",
         link_to_goal: "Vincular a Meta",
         your_analytics: "Tus Estadísticas",
@@ -1569,7 +1650,7 @@ const translations = {
         chal_summer_desc: "Completa 10 tareas para un impulso masivo.",
         chal_30day: "Consistencia 30 Días",
         chal_30day_desc: "Mantén una racha de 30 días.",
-        in_progress: "En Progreso",
+        in_progress: "Progreso",
         xp_reward_500: "+500 XP Recompensa",
         xp_reward_1500: "+1500 XP Recompensa",
         sent: "Enviados",
@@ -1593,7 +1674,7 @@ const translations = {
         to_unlock: "para desbloquear el",
         rank_push: "rango. ¡Esfuérzate!",
         tasks_to_milestone: "Tareas para Hito",
-        complete: "Completa",
+        complete: "Completar",
         more_tasks_milestone: "tareas más para el hito de",
         create_task: "Crear Tarea",
         create_goal: "Crear Objetivo",
@@ -1609,6 +1690,46 @@ const translations = {
         boost: "Impulso",
         average: "Promedio",
         xp_boost: "Impulso XP",
+        skipped: "Saltado",
+        not_scheduled_today: "No programado hoy",
+        deadline_lbl: "Fecha límite",
+        no_history_found: "No se encontró historial",
+        claim_reward: "Reclamar Recompensa",
+        xp_reward: "Recompensa XP",
+        keep_growing: "Sigue Creciendo",
+        unable_to_load_habits: "No se pueden cargar los hábitos ahora.",
+        level_up_excl: "¡SUBISTE DE NIVEL!",
+        close_message: "Cerrar Mensaje",
+        failed_to_load_messages: "No se pudieron cargar los mensajes.",
+        you_missed: "Te perdiste",
+        task: "tarea",
+        streak_at_risk: "¡Estás en riesgo de perder tu racha!",
+        confirm_force_update: "Esto borrará toda la memoria caché y recargará la aplicación. ¿Continuar?",
+        habit_created: "Hábito creado",
+        select_weekly_day: "Seleccione al menos un día",
+        goal_created: "Objetivo creado",
+        goal_marked_failed: "Objetivo marcado como fallido",
+        reflection_saved: "¡Reflexión guardada!",
+        new_badge_unlocked: "Nueva insignia desbloqueada",
+        cannot_select_past_date: "No se puede seleccionar una fecha pasada.",
+        start_time_past: "La hora de inicio no puede ser en el pasado.",
+        changes_discarded: "Cambios descartados",
+        photo_adjusted: "Foto ajustada",
+        new_version: "¡Nueva versión! Actualizando...",
+        failed_load_share: "Error al cargar datos para compartir",
+        image_downloaded: "¡Imagen descargada!",
+        download_failed: "Descarga fallida",
+        text_copied: "¡Texto copiado!",
+        failed_copy_text: "Error al copiar texto",
+        shared_successfully: "¡Compartido con éxito!",
+        failed_copy_link: "Error al copiar el enlace",
+        challenge_claimed: "¡Desafío reclamado! +{xpAmount} XP 🎉",
+        fill_title_msg: "Por favor llene título y mensaje.",
+        message_sealed: "✉️ ¡Mensaje sellado!",
+        failed_send_msg: "Error al enviar mensaje.",
+        message_opened: "📬 ¡Mensaje abierto!",
+        cannot_open_yet: "¡No se puede abrir aún!",
+        level_up_reached: "🎉 ¡NIVEL SUPERADO! Nivel {level}!",
     },
     fr: {
         app_title: "Tobédon",
@@ -1621,8 +1742,8 @@ const translations = {
         confirm_password: "Confirmer", update_password: "Mettre à jour", full_name: "Nom complet", email: "E-mail",
         change_name: "Changer le nom", change_username: "Changer le nom d'utilisateur", create_account: "Créer un compte",
         dashboard: "Tableau de bord", reports: "Rapports", me: "Moi", tasks: "Tâches", insights: "Statistiques",
-        progress: "Progrès", settings: "Paramètres", logout: "Déconnexion",
-        trust_score: "Confiance", streak: "Série", success: "Succès", daily_progress: "Progrès quotidien",
+        progress: "Progression", settings: "Paramètres", logout: "Déconnexion",
+        trust_score: "Confiance", streak: "Série", success: "Succès", daily_progress: "Progression",
         statistics: "Statistiques", task_distribution: "Distribution des Tâches",
         add_new_task: "Nouvelle Tâche", new_task: "Nouvelle Tâche", task_placeholder: "Que faire?",
         category: "Catégorie", difficulty: "Difficulté", easy: "Facile", medium: "Moyen", hard: "Difficile",
@@ -1641,12 +1762,12 @@ const translations = {
         total_tasks: "Tâches totales",
         total_goals: "Objectifs totaux",
         total_habits: "Habitudes totales",
-        weekly_progress: "Progrès hebdomadaire",
-        monthly_progress: "Progrès mensuel",
+        weekly_progress: "Progression",
+        monthly_progress: "Progression",
         completion_rate: "Taux d'achèvement",
         productivity_score: "Score de productivité",
         achievement_unlocked: "Succès débloqué",
-        rank_progress: "Progression du classement",
+        rank_progress: "Progression",
         ach_first_step: "Premier pas",
         ach_goal_hunter: "Chasseur de buts",
         ach_marathon: "Marathon",
@@ -1668,8 +1789,8 @@ const translations = {
         notif_level_up: "Niveau supérieur",
         search_placeholder: "Recherche...",
         enter_task_name: "Entrez le nom de la tâche...",
-        select_goal: "Sélectionnez un objectif...",
-        select_habit: "Sélectionnez l'habitude...",
+        select_goal: "Sélectionner un objectif",
+        select_habit: "Sélectionner une habitude",
         description: "Description...",
         reports_tab: "Rapports",
         insights_tab: "Connaissances",
@@ -1682,7 +1803,7 @@ const translations = {
         progress_descriptions: "Descriptions des progrès",
         recommendations: "Recommandations",
         smart_insights: "Informations intelligentes",
-        trust_score_changed: "Trust Score changed: {value}",
+        trust_score_changed: "Score de confiance modifié : {value}",
         goal_link: "Lien vers l'objectif",
         habit_link: "Lien d'habitude",
         start: "Commencer",
@@ -1698,9 +1819,9 @@ const translations = {
         goal_reflection: "Réflexion sur les objectifs",
         what_went_well: "Qu'est-ce qui s'est bien passé ?",
         what_didnt_go_well: "Qu'est-ce qui ne s'est pas bien passé ?",
-        skip: "Sauter",
+        skip: "Ignorer",
         save_reflection: "Enregistrer la réflexion",
-        share_progress: "Partagez vos progrès",
+        share_progress: "Progression",
         download: "Télécharger",
         copy_text: "Copier le texte",
         share: "Partager",
@@ -1736,7 +1857,7 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "Traînée",
         completed_tasks: "Tâches terminées",
-        goals_achieved: "Objectifs atteints",
+        goals_achieved: "Atteint",
         trust_low: "Faible",
         trust_average: "Moyenne",
         trust_good: "Bien",
@@ -1870,9 +1991,9 @@ const translations = {
         goal_reflection: "Réflexion sur les objectifs",
         what_went_well: "Qu'est-ce qui s'est bien passé ?",
         what_didnt_go_well: "Qu'est-ce qui ne s'est pas bien passé ?",
-        skip: "Sauter",
+        skip: "Ignorer",
         save_reflection: "Enregistrer la réflexion",
-        share_progress: "Partagez vos progrès",
+        share_progress: "Progression",
         download: "Télécharger",
         copy_text: "Copier le texte",
         share: "Partager",
@@ -1908,7 +2029,7 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "Traînée",
         completed_tasks: "Tâches terminées",
-        goals_achieved: "Objectifs atteints",
+        goals_achieved: "Atteint",
         task_completed: "Tâche terminée",
         goal_completed: "Objectif atteint",
         trust_low: "Faible",
@@ -1939,7 +2060,7 @@ const translations = {
         inst_gestures_title: "Gestes", inst_gestures_desc: "Glissez pour changer de page.",
         goals: "Objectifs", habits: "Habitudes", goals_tab: "Objectifs", habits_tab: "Habitudes", add_goal: "Ajouter Objectif", add_habit: "Ajouter Habitude", new_goal: "Nouvel Objectif", new_habit: "Nouvelle Habitude", today_habits: "Habitudes du Jour", goals_subtitle: "Jalons pour l'avenir.", habits_subtitle: "Petits pas, grands résultats.", reflect: "Réfléchir", reflection: "Réflexion", check_in: "Point", save_goal: "Enregistrer Objectif", save_habit: "Enregistrer Habitude",
         send_future: "Envoyer au Futur",
-        mastery_progress: "Progression de Maîtrise",
+        mastery_progress: "Progression",
         send_message_future: "Envoyer Message au Futur",
         link_to_goal: "Lier à Objectif",
         your_analytics: "Vos Analyses",
@@ -2090,7 +2211,7 @@ const translations = {
         chal_summer_desc: "Complétez 10 tâches pour un boost massif.",
         chal_30day: "Régularité 30 Jours",
         chal_30day_desc: "Maintenez une série de 30 jours.",
-        in_progress: "En Cours",
+        in_progress: "Progression",
         xp_reward_500: "+500 XP Récompense",
         xp_reward_1500: "+1500 XP Récompense",
         sent: "Envoyés",
@@ -2114,7 +2235,7 @@ const translations = {
         to_unlock: "pour débloquer le",
         rank_push: "rang. Foncez !",
         tasks_to_milestone: "Tâches vers Jalon",
-        complete: "Complétez",
+        complete: "Terminer",
         more_tasks_milestone: "tâches de plus vers le jalon de",
         create_task: "Créer Tâche",
         create_goal: "Créer Objectif",
@@ -2130,6 +2251,46 @@ const translations = {
         boost: "Boost",
         average: "Moyen",
         xp_boost: "Boost XP",
+        skipped: "Ignoré",
+        not_scheduled_today: "Pas prévu aujourd'hui",
+        deadline_lbl: "Échéance",
+        no_history_found: "Aucun historique trouvé",
+        claim_reward: "Réclamer la Récompense",
+        xp_reward: "Récompense XP",
+        keep_growing: "Continue de Progresser",
+        unable_to_load_habits: "Impossible de charger les habitudes pour le moment.",
+        level_up_excl: "NIVEAU SUPÉRIEUR !",
+        close_message: "Fermer le Message",
+        failed_to_load_messages: "Échec du chargement des messages.",
+        you_missed: "Vous avez manqué",
+        task: "tâche",
+        streak_at_risk: "Vous risquez de perdre votre série !",
+        confirm_force_update: "Cela effacera tout le cache et rechargera l'application. Continuer ?",
+        habit_created: "Habitude créée",
+        select_weekly_day: "Sélectionnez au moins un jour",
+        goal_created: "Objectif créé",
+        goal_marked_failed: "Objectif marqué comme échoué",
+        reflection_saved: "Réflexion enregistrée !",
+        new_badge_unlocked: "Nouveau badge débloqué",
+        cannot_select_past_date: "Impossible de choisir une date passée.",
+        start_time_past: "L'heure de début ne peut pas être dans le passé.",
+        changes_discarded: "Modifications annulées",
+        photo_adjusted: "Photo ajustée",
+        new_version: "Nouvelle version ! Actualisation...",
+        failed_load_share: "Échec du chargement des données",
+        image_downloaded: "Image téléchargée !",
+        download_failed: "Échec du téléchargement",
+        text_copied: "Texte copié !",
+        failed_copy_text: "Échec de la copie du texte",
+        shared_successfully: "Partagé avec succès !",
+        failed_copy_link: "Échec de la copie du lien",
+        challenge_claimed: "Défi réclamé ! +{xpAmount} XP 🎉",
+        fill_title_msg: "Veuillez remplir le titre et le message.",
+        message_sealed: "✉️ Message scellé !",
+        failed_send_msg: "Échec de l'envoi.",
+        message_opened: "📬 Message ouvert !",
+        cannot_open_yet: "Impossible d'ouvrir pour le moment !",
+        level_up_reached: "🎉 NIVEAU SUPÉRIEUR ! Niveau {level} !",
     },
     de: {
         app_title: "Tobedone",
@@ -2143,7 +2304,7 @@ const translations = {
         change_name: "Name ändern", change_username: "Benutzername ändern", create_account: "Konto erstellen",
         dashboard: "Armaturenbrett", reports: "Berichte", me: "Ich", tasks: "Aufgaben", insights: "Einblicke",
         progress: "Fortschritt", settings: "Einstellungen", logout: "Abmelden",
-        trust_score: "Vertrauen", streak: "Serie", success: "Erfolg", daily_progress: "Tagesfortschritt",
+        trust_score: "Vertrauen", streak: "Serie", success: "Erfolg", daily_progress: "Fortschritt",
         statistics: "Statistiken", task_distribution: "Aufgabenverteilung",
         add_new_task: "Neue Aufgabe", new_task: "Neue Aufgabe", task_placeholder: "Was ist zu tun?",
         category: "Kategorie", difficulty: "Schwierigkeit", easy: "Leicht", medium: "Mittel", hard: "Schwer",
@@ -2162,12 +2323,12 @@ const translations = {
         total_tasks: "Gesamtaufgaben",
         total_goals: "Gesamtziele",
         total_habits: "Gesamtgewohnheiten",
-        weekly_progress: "Wöchentlicher Fortschritt",
-        monthly_progress: "Monatlicher Fortschritt",
+        weekly_progress: "Fortschritt",
+        monthly_progress: "Fortschritt",
         completion_rate: "Abschlussrate",
         productivity_score: "Produktivitätsbewertung",
         achievement_unlocked: "Erfolg freigeschaltet",
-        rank_progress: "Rangfortschritt",
+        rank_progress: "Fortschritt",
         ach_first_step: "Erster Schritt",
         ach_goal_hunter: "Zieljäger",
         ach_marathon: "Marathon",
@@ -2189,8 +2350,8 @@ const translations = {
         notif_level_up: "Level aufsteigen",
         search_placeholder: "Suchen...",
         enter_task_name: "Geben Sie den Aufgabennamen ein...",
-        select_goal: "Ziel auswählen...",
-        select_habit: "Wählen Sie Gewohnheit...",
+        select_goal: "Ziel auswählen",
+        select_habit: "Gewohnheit auswählen",
         description: "Beschreibung...",
         reports_tab: "Berichte",
         insights_tab: "Einblicke",
@@ -2203,7 +2364,7 @@ const translations = {
         progress_descriptions: "Fortschrittsbeschreibungen",
         recommendations: "Empfehlungen",
         smart_insights: "Intelligente Einblicke",
-        trust_score_changed: "Trust Score changed: {value}",
+        trust_score_changed: "Vertrauenspunktzahl geändert: {value}",
         goal_link: "Ziellink",
         habit_link: "Gewohnheitslink",
         start: "Start",
@@ -2221,7 +2382,7 @@ const translations = {
         what_didnt_go_well: "Was ist nicht gut gelaufen?",
         skip: "Überspringen",
         save_reflection: "Reflexion speichern",
-        share_progress: "Teilen Sie Ihren Fortschritt",
+        share_progress: "Fortschritt",
         download: "Herunterladen",
         copy_text: "Text kopieren",
         share: "Aktie",
@@ -2246,8 +2407,8 @@ const translations = {
         custom_date: "Benutzerdefiniertes Datum",
         specific_days: "Spezifische Tage",
         no_link: "Kein Link",
-        select_a_goal: "Wählen Sie ein Ziel aus...",
-        select_a_habit: "Wählen Sie eine Gewohnheit aus...",
+        select_a_goal: "Wähle ein Ziel...",
+        select_a_habit: "Wähle eine Gewohnheit...",
         what_worked: "Erzählen Sie uns, was funktioniert hat ...",
         what_improved: "Was könnte verbessert werden...",
         search_achievements: "Erfolge suchen...",
@@ -2257,7 +2418,7 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "Strähne",
         completed_tasks: "Abgeschlossene Aufgaben",
-        goals_achieved: "Ziele erreicht",
+        goals_achieved: "Erreicht",
         trust_low: "Niedrig",
         trust_average: "Durchschnitt",
         trust_good: "Gut",
@@ -2393,7 +2554,7 @@ const translations = {
         what_didnt_go_well: "Was ist nicht gut gelaufen?",
         skip: "Überspringen",
         save_reflection: "Reflexion speichern",
-        share_progress: "Teilen Sie Ihren Fortschritt",
+        share_progress: "Fortschritt",
         download: "Herunterladen",
         copy_text: "Text kopieren",
         share: "Aktie",
@@ -2418,8 +2579,8 @@ const translations = {
         custom_date: "Benutzerdefiniertes Datum",
         specific_days: "Spezifische Tage",
         no_link: "Kein Link",
-        select_a_goal: "Wählen Sie ein Ziel aus...",
-        select_a_habit: "Wählen Sie eine Gewohnheit aus...",
+        select_a_goal: "Wähle ein Ziel...",
+        select_a_habit: "Wähle eine Gewohnheit...",
         what_worked: "Erzählen Sie uns, was funktioniert hat ...",
         what_improved: "Was könnte verbessert werden...",
         search_achievements: "Erfolge suchen...",
@@ -2429,7 +2590,7 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "Strähne",
         completed_tasks: "Abgeschlossene Aufgaben",
-        goals_achieved: "Ziele erreicht",
+        goals_achieved: "Erreicht",
         task_completed: "Aufgabe abgeschlossen",
         goal_completed: "Ziel erreicht",
         trust_low: "Niedrig",
@@ -2460,7 +2621,7 @@ const translations = {
         inst_gestures_title: "Gesten", inst_gestures_desc: "Wischen zum Seitenwechsel.",
         goals: "Ziele", habits: "Gewohnheiten", goals_tab: "Ziele", habits_tab: "Gewohnheiten", add_goal: "Ziel Hinzufügen", add_habit: "Gewohnheit Hinzufügen", new_goal: "Neues Ziel", new_habit: "Neue Gewohnheit", today_habits: "Heutige Gewohnheiten", goals_subtitle: "Meilensteine für die Zukunft.", habits_subtitle: "Kleine Schritte, große Ergebnisse.", reflect: "Reflektieren", reflection: "Reflexion", check_in: "Einchecken", save_goal: "Ziel Speichern", save_habit: "Gewohnheit Speichern",
         send_future: "An Zukunft senden",
-        mastery_progress: "Meisterungsfortschritt",
+        mastery_progress: "Fortschritt",
         send_message_future: "Nachricht an Zukunft senden",
         link_to_goal: "Mit Ziel verknüpfen",
         your_analytics: "Deine Analysen",
@@ -2611,7 +2772,7 @@ const translations = {
         chal_summer_desc: "Schließe 10 Aufgaben ab für einen massiven Boost.",
         chal_30day: "30 Tage Beständigkeit",
         chal_30day_desc: "Halte eine Serie von 30 Tagen aufrecht.",
-        in_progress: "In Bearbeitung",
+        in_progress: "Fortschritt",
         xp_reward_500: "+500 XP Belohnung",
         xp_reward_1500: "+1500 XP Belohnung",
         sent: "Gesendet",
@@ -2635,7 +2796,7 @@ const translations = {
         to_unlock: "um den",
         rank_push: "Rang freizuschalten. Los geht's!",
         tasks_to_milestone: "Aufgaben bis Meilenstein",
-        complete: "Schließe",
+        complete: "Abschließen",
         more_tasks_milestone: "weitere Aufgaben bis zum Meilenstein von",
         create_task: "Aufgabe Erstellen",
         create_goal: "Ziel Erstellen",
@@ -2651,6 +2812,46 @@ const translations = {
         boost: "Boost",
         average: "Durchschnitt",
         xp_boost: "XP-Boost",
+        skipped: "Übersprungen",
+        not_scheduled_today: "Heute nicht geplant",
+        deadline_lbl: "Frist",
+        no_history_found: "Kein Verlauf gefunden",
+        claim_reward: "Belohnung einfordern",
+        xp_reward: "XP-Belohnung",
+        keep_growing: "Weiter wachsen",
+        unable_to_load_habits: "Gewohnheiten können derzeit nicht geladen werden.",
+        level_up_excl: "LEVEL AUFSTIEG!",
+        close_message: "Nachricht schließen",
+        failed_to_load_messages: "Nachrichten konnten nicht geladen werden.",
+        you_missed: "Du hast verpasst",
+        task: "aufgabe",
+        streak_at_risk: "Du bist in Gefahr, deinen Streak zu verlieren!",
+        confirm_force_update: "Dadurch wird der gesamte Cache gelöscht und die App neu geladen. Fortfahren?",
+        habit_created: "Gewohnheit erstellt",
+        select_weekly_day: "Wähle mindestens einen Tag",
+        goal_created: "Ziel erstellt",
+        goal_marked_failed: "Ziel als fehlgeschlagen markiert",
+        reflection_saved: "Reflexion gespeichert!",
+        new_badge_unlocked: "Neues Abzeichen freigeschaltet",
+        cannot_select_past_date: "Kein Datum in der Vergangenheit wählbar.",
+        start_time_past: "Startzeit darf nicht in der Vergangenheit liegen.",
+        changes_discarded: "Änderungen verworfen",
+        photo_adjusted: "Foto angepasst",
+        new_version: "Neue Version verfügbar! Aktualisiere...",
+        failed_load_share: "Fehler beim Laden der Freigabedaten",
+        image_downloaded: "Bild heruntergeladen!",
+        download_failed: "Download fehlgeschlagen",
+        text_copied: "Text kopiert!",
+        failed_copy_text: "Fehler beim Kopieren des Textes",
+        shared_successfully: "Erfolgreich geteilt!",
+        failed_copy_link: "Fehler beim Kopieren des Links",
+        challenge_claimed: "Herausforderung abgeschlossen! +{xpAmount} XP 🎉",
+        fill_title_msg: "Bitte Titel und Nachricht eingeben.",
+        message_sealed: "✉️ Nachricht versiegelt!",
+        failed_send_msg: "Nachricht konnte nicht gesendet werden.",
+        message_opened: "📬 Nachricht geöffnet!",
+        cannot_open_yet: "Kann noch nicht geöffnet werden!",
+        level_up_reached: "🎉 LEVEL AUFSTIEG! Level {level} erreicht!",
     },
     it: {
         app_title: "Tobedone",
@@ -2664,7 +2865,7 @@ const translations = {
         change_name: "Cambia nome", change_username: "Cambia utente", create_account: "Crea account",
         dashboard: "Pannello", reports: "Rapporti", me: "Io", tasks: "Compiti", insights: "Statistiche",
         progress: "Progresso", settings: "Impostazioni", logout: "Esci",
-        trust_score: "Fiducia", streak: "Serie", success: "Successo", daily_progress: "Progresso giornaliero",
+        trust_score: "Fiducia", streak: "Serie", success: "Successo", daily_progress: "Progresso",
         statistics: "Statistiche", task_distribution: "Distribuzione compiti",
         add_new_task: "Nuovo Compito", new_task: "Nuovo Compito", task_placeholder: "Cosa c'è da fare?",
         category: "Categoria", difficulty: "Difficoltà", easy: "Facile", medium: "Medio", hard: "Difficile",
@@ -2683,12 +2884,12 @@ const translations = {
         total_tasks: "Compiti totali",
         total_goals: "Obiettivi totali",
         total_habits: "Abitudini totali",
-        weekly_progress: "Progresso settimanale",
-        monthly_progress: "Progresso mensile",
+        weekly_progress: "Progresso",
+        monthly_progress: "Progresso",
         completion_rate: "Tasso di completamento",
         productivity_score: "Punteggio di produttività",
         achievement_unlocked: "Obiettivo sbloccato",
-        rank_progress: "Avanzamento di grado",
+        rank_progress: "Progresso",
         ach_first_step: "Primo passo",
         ach_goal_hunter: "Cacciatore di obiettivi",
         ach_marathon: "Maratona",
@@ -2710,8 +2911,8 @@ const translations = {
         notif_level_up: "Sali di livello",
         search_placeholder: "Ricerca...",
         enter_task_name: "Inserisci il nome dell'attività...",
-        select_goal: "Seleziona obiettivo...",
-        select_habit: "Seleziona Abitudine...",
+        select_goal: "Seleziona obiettivo",
+        select_habit: "Seleziona abitudine",
         description: "Descrizione...",
         reports_tab: "Rapporti",
         insights_tab: "Approfondimenti",
@@ -2724,7 +2925,7 @@ const translations = {
         progress_descriptions: "Descrizioni dei progressi",
         recommendations: "Raccomandazioni",
         smart_insights: "Approfondimenti intelligenti",
-        trust_score_changed: "Trust Score changed: {value}",
+        trust_score_changed: "Punteggio fiducia cambiato: {value}",
         goal_link: "Collegamento obiettivo",
         habit_link: "Collegamento di abitudine",
         start: "Inizio",
@@ -2740,9 +2941,9 @@ const translations = {
         goal_reflection: "Riflessione sugli obiettivi",
         what_went_well: "Cosa è andato bene?",
         what_didnt_go_well: "Cosa non è andato bene?",
-        skip: "Saltare",
+        skip: "Salta",
         save_reflection: "Salva riflessione",
-        share_progress: "Condividi i tuoi progressi",
+        share_progress: "Progresso",
         download: "Scaricamento",
         copy_text: "Copia testo",
         share: "Condividere",
@@ -2778,7 +2979,7 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "Strisciante",
         completed_tasks: "Attività completate",
-        goals_achieved: "Obiettivi raggiunti",
+        goals_achieved: "Raggiunto",
         trust_low: "Basso",
         trust_average: "Media",
         trust_good: "Bene",
@@ -2912,9 +3113,9 @@ const translations = {
         goal_reflection: "Riflessione sugli obiettivi",
         what_went_well: "Cosa è andato bene?",
         what_didnt_go_well: "Cosa non è andato bene?",
-        skip: "Saltare",
+        skip: "Salta",
         save_reflection: "Salva riflessione",
-        share_progress: "Condividi i tuoi progressi",
+        share_progress: "Progresso",
         download: "Scaricamento",
         copy_text: "Copia testo",
         share: "Condividere",
@@ -2950,7 +3151,7 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "Strisciante",
         completed_tasks: "Attività completate",
-        goals_achieved: "Obiettivi raggiunti",
+        goals_achieved: "Raggiunto",
         task_completed: "Attività completata",
         goal_completed: "Obiettivo completato",
         trust_low: "Basso",
@@ -3065,7 +3266,7 @@ const translations = {
         empty_goal_desc: "Crea il tuo primo obiettivo per monitorare i progressi.",
         empty_habit_desc: "Costruisci costanza con la tua prima abitudine.",
         achieved_failed: "Achieved / Failed",
-        achieved: "Achieved",
+        achieved: "Raggiunto",
         failed_status: "Failed",
         longest_streak: "Longest Streak",
         highest_xp: "Highest XP Achieved",
@@ -3101,7 +3302,7 @@ const translations = {
         chal_summer_desc: "Complete 10 tasks to claim a massive boost.",
         chal_30day: "30 Day Consistency",
         chal_30day_desc: "Maintain a streak of 30 days.",
-        in_progress: "In Progress",
+        in_progress: "Progresso",
         xp_reward_500: "+500 XP Reward",
         xp_reward_1500: "+1500 XP Reward",
         sent: "Sent",
@@ -3125,7 +3326,7 @@ const translations = {
         to_unlock: "to unlock the",
         rank_push: "rank. Push for it!",
         tasks_to_milestone: "Tasks to Milestone",
-        complete: "Complete",
+        complete: "Completa",
         more_tasks_milestone: "more tasks to reach the milestone of",
         create_task: "Crea Attività",
         create_goal: "Crea Obiettivo",
@@ -3141,7 +3342,7 @@ const translations = {
         tasks_30d: "Attività (30g)",
         limited_time: "Tempo Limitato",
         goal_analytics: "Analisi Obiettivi",
-        mastery_progress: "Progresso Padronanza",
+        mastery_progress: "Progresso",
         goal_rate: "Tasso Obiettivi",
         view_goals_history: "Vedi Storico Obiettivi",
         write_future: "Scrivi al Futuro",
@@ -3172,6 +3373,46 @@ const translations = {
         tasks_subtitle: "Le tue attività attive",
         full_report: "Rapporto Completo",
         weekly_report: "Report Settimanale",
+        skipped: "Saltato",
+        not_scheduled_today: "Non programmato oggi",
+        deadline_lbl: "Scadenza",
+        no_history_found: "Nessuna cronologia trovata",
+        claim_reward: "Riscatta Ricompensa",
+        xp_reward: "Ricompensa XP",
+        keep_growing: "Continua a Crescere",
+        unable_to_load_habits: "Impossibile caricare le abitudini ora.",
+        level_up_excl: "LIVELLO SUPERATO!",
+        close_message: "Chiudi Messaggio",
+        failed_to_load_messages: "Impossibile caricare i messaggi.",
+        you_missed: "Hai perso",
+        task: "attività",
+        streak_at_risk: "Sei a rischio di perdere la tua serie!",
+        confirm_force_update: "Questo cancellerà tutta la cache e ricaricherà l'app. Continuare?",
+        habit_created: "Abitudine creata",
+        select_weekly_day: "Seleziona almeno un giorno",
+        goal_created: "Obiettivo creato",
+        goal_marked_failed: "Obiettivo segnato come fallito",
+        reflection_saved: "Riflessione salvata!",
+        new_badge_unlocked: "Nuovo badge sbloccato",
+        cannot_select_past_date: "Impossibile selezionare una data passata.",
+        start_time_past: "L'ora di inizio non può essere nel passato.",
+        changes_discarded: "Modifiche annullate",
+        photo_adjusted: "Foto modificata",
+        new_version: "Nuova versione! Aggiornamento...",
+        failed_load_share: "Impossibile caricare i dati di condivisione",
+        image_downloaded: "Immagine scaricata!",
+        download_failed: "Download non riuscito",
+        text_copied: "Testo copiato!",
+        failed_copy_text: "Impossibile copiare il testo",
+        shared_successfully: "Condiviso con successo!",
+        failed_copy_link: "Impossibile copiare il link",
+        challenge_claimed: "Sfida completata! +{xpAmount} XP 🎉",
+        fill_title_msg: "Compila titolo e messaggio.",
+        message_sealed: "✉️ Messaggio sigillato!",
+        failed_send_msg: "Impossibile inviare il messaggio.",
+        message_opened: "📬 Messaggio aperto!",
+        cannot_open_yet: "Non si può ancora aprire!",
+        level_up_reached: "🎉 LIVELLO SUPERATO! Livello {level}!",
     },
     pt: {
         app_title: "Tobedone",
@@ -3185,7 +3426,7 @@ const translations = {
         change_name: "Mudar nome", change_username: "Mudar usuário", create_account: "Criar Conta",
         dashboard: "Painel", reports: "Relatórios", me: "Eu", tasks: "Tarefas", insights: "Estatísticas",
         progress: "Progresso", settings: "Ajustes", logout: "Sair",
-        trust_score: "Confiança", streak: "Sequência", success: "Sucesso", daily_progress: "Progresso diário",
+        trust_score: "Confiança", streak: "Sequência", success: "Sucesso", daily_progress: "Progresso",
         statistics: "Estatísticas", task_distribution: "Distribuição de Tarefas",
         add_new_task: "Nova Tarefa", new_task: "Nova Tarefa", task_placeholder: "O que fazer?",
         category: "Categoria", difficulty: "Dificuldade", easy: "Fácil", medium: "Médio", hard: "Difícil",
@@ -3204,12 +3445,12 @@ const translations = {
         total_tasks: "Total de tarefas",
         total_goals: "Total de metas",
         total_habits: "Hábitos totais",
-        weekly_progress: "Progresso Semanal",
-        monthly_progress: "Progresso Mensal",
+        weekly_progress: "Progresso",
+        monthly_progress: "Progresso",
         completion_rate: "Taxa de conclusão",
         productivity_score: "Pontuação de produtividade",
         achievement_unlocked: "Conquista desbloqueada",
-        rank_progress: "Progresso de classificação",
+        rank_progress: "Progresso",
         ach_first_step: "Primeiro passo",
         ach_goal_hunter: "Caçador de gols",
         ach_marathon: "Maratona",
@@ -3231,8 +3472,8 @@ const translations = {
         notif_level_up: "Subir de nível",
         search_placeholder: "Procurar...",
         enter_task_name: "Digite o nome da tarefa...",
-        select_goal: "Selecione Meta...",
-        select_habit: "Selecione Hábito...",
+        select_goal: "Selecionar objetivo",
+        select_habit: "Selecionar hábito",
         description: "Descrição...",
         reports_tab: "Relatórios",
         insights_tab: "Percepções",
@@ -3245,7 +3486,7 @@ const translations = {
         progress_descriptions: "Descrições do progresso",
         recommendations: "Recomendações",
         smart_insights: "Informações inteligentes",
-        trust_score_changed: "Trust Score changed: {value}",
+        trust_score_changed: "Pontuação de confiança alterada: {value}",
         goal_link: "Link da meta",
         habit_link: "Link do hábito",
         start: "Começar",
@@ -3263,7 +3504,7 @@ const translations = {
         what_didnt_go_well: "O que não deu certo?",
         skip: "Pular",
         save_reflection: "Salvar reflexão",
-        share_progress: "Compartilhe seu progresso",
+        share_progress: "Progresso",
         download: "Download",
         copy_text: "Copiar texto",
         share: "Compartilhar",
@@ -3288,7 +3529,7 @@ const translations = {
         custom_date: "Data personalizada",
         specific_days: "Dias Específicos",
         no_link: "Sem link",
-        select_a_goal: "Selecione uma meta...",
+        select_a_goal: "Selecione um objetivo...",
         select_a_habit: "Selecione um hábito...",
         what_worked: "Conte-nos sobre o que funcionou...",
         what_improved: "O que poderia ser melhorado...",
@@ -3299,7 +3540,7 @@ const translations = {
         xp_lbl: "EXP",
         streak_lbl: "Onda",
         completed_tasks: "Tarefas Concluídas",
-        goals_achieved: "Metas alcançadas",
+        goals_achieved: "Alcançado",
         trust_low: "Baixo",
         trust_average: "Média",
         trust_good: "Bom",
@@ -3435,7 +3676,7 @@ const translations = {
         what_didnt_go_well: "O que não deu certo?",
         skip: "Pular",
         save_reflection: "Salvar reflexão",
-        share_progress: "Compartilhe seu progresso",
+        share_progress: "Progresso",
         download: "Download",
         copy_text: "Copiar texto",
         share: "Compartilhar",
@@ -3460,7 +3701,7 @@ const translations = {
         custom_date: "Data personalizada",
         specific_days: "Dias Específicos",
         no_link: "Sem link",
-        select_a_goal: "Selecione uma meta...",
+        select_a_goal: "Selecione um objetivo...",
         select_a_habit: "Selecione um hábito...",
         what_worked: "Conte-nos sobre o que funcionou...",
         what_improved: "O que poderia ser melhorado...",
@@ -3471,7 +3712,7 @@ const translations = {
         xp_lbl: "EXP",
         streak_lbl: "Onda",
         completed_tasks: "Tarefas Concluídas",
-        goals_achieved: "Metas alcançadas",
+        goals_achieved: "Alcançado",
         task_completed: "Tarefa concluída",
         goal_completed: "Meta concluída",
         trust_low: "Baixo",
@@ -3586,7 +3827,7 @@ const translations = {
         empty_goal_desc: "Crie sua primeira meta para acompanhar o progresso.",
         empty_habit_desc: "Construa consistência com seu primeiro hábito recorrente.",
         achieved_failed: "Achieved / Failed",
-        achieved: "Achieved",
+        achieved: "Alcançado",
         failed_status: "Failed",
         longest_streak: "Longest Streak",
         highest_xp: "Highest XP Achieved",
@@ -3622,7 +3863,7 @@ const translations = {
         chal_summer_desc: "Complete 10 tasks to claim a massive boost.",
         chal_30day: "30 Day Consistency",
         chal_30day_desc: "Maintain a streak of 30 days.",
-        in_progress: "In Progress",
+        in_progress: "Progresso",
         xp_reward_500: "+500 XP Reward",
         xp_reward_1500: "+1500 XP Reward",
         sent: "Sent",
@@ -3646,7 +3887,7 @@ const translations = {
         to_unlock: "to unlock the",
         rank_push: "rank. Push for it!",
         tasks_to_milestone: "Tasks to Milestone",
-        complete: "Complete",
+        complete: "Completar",
         more_tasks_milestone: "more tasks to reach the milestone of",
         create_task: "Criar Tarefa",
         create_goal: "Criar Objetivo",
@@ -3662,7 +3903,7 @@ const translations = {
         tasks_30d: "Tarefas (30d)",
         limited_time: "Tempo Limitado",
         goal_analytics: "Análise de Metas",
-        mastery_progress: "Progresso de Domínio",
+        mastery_progress: "Progresso",
         goal_rate: "Taxa de Metas",
         view_goals_history: "Ver Histórico de Metas",
         write_future: "Escrever para o Futuro",
@@ -3693,6 +3934,46 @@ const translations = {
         tasks_subtitle: "Suas tarefas ativas",
         full_report: "Relatório Completo",
         weekly_report: "Relatório Semanal",
+        skipped: "Pulado",
+        not_scheduled_today: "Não programado hoje",
+        deadline_lbl: "Prazo",
+        no_history_found: "Nenhum histórico encontrado",
+        claim_reward: "Reivindicar Recompensa",
+        xp_reward: "Recompensa XP",
+        keep_growing: "Continue Crescendo",
+        unable_to_load_habits: "Não é possível carregar hábitos agora.",
+        level_up_excl: "SUBIU DE NÍVEL!",
+        close_message: "Fechar Mensagem",
+        failed_to_load_messages: "Falha ao carregar mensagens.",
+        you_missed: "Você perdeu",
+        task: "tarefa",
+        streak_at_risk: "Você corre o risco de perder sua sequência!",
+        confirm_force_update: "Isso limpará todo o cache e recarregará o aplicativo. Continuar?",
+        habit_created: "Hábito criado",
+        select_weekly_day: "Selecione pelo menos um dia",
+        goal_created: "Objetivo criado",
+        goal_marked_failed: "Objetivo marcado como falhado",
+        reflection_saved: "Reflexão salva!",
+        new_badge_unlocked: "Novo emblema desbloqueado",
+        cannot_select_past_date: "Não é possível selecionar uma data passada.",
+        start_time_past: "A hora de início não pode estar no passado.",
+        changes_discarded: "Alterações descartadas",
+        photo_adjusted: "Foto ajustada",
+        new_version: "Nova versão! Atualizando...",
+        failed_load_share: "Falha ao carregar dados de partilha",
+        image_downloaded: "Imagem transferida!",
+        download_failed: "Falha na transferência",
+        text_copied: "Texto copiado!",
+        failed_copy_text: "Falha ao copiar texto",
+        shared_successfully: "Partilhado com sucesso!",
+        failed_copy_link: "Falha ao copiar link",
+        challenge_claimed: "Desafio reivindicado! +{xpAmount} XP 🎉",
+        fill_title_msg: "Preencha o título e a mensagem.",
+        message_sealed: "✉️ Mensagem selada!",
+        failed_send_msg: "Falha ao enviar mensagem.",
+        message_opened: "📬 Mensagem aberta!",
+        cannot_open_yet: "Não pode abrir ainda!",
+        level_up_reached: "🎉 SUBIU DE NÍVEL! Nível {level}!",
     },
     ru: {
         app_title: "Тобедоне",
@@ -3706,7 +3987,7 @@ const translations = {
         change_name: "Изменить имя", change_username: "Изменить логин", create_account: "Создать аккаунт",
         dashboard: "Панель", reports: "Отчёты", me: "Профиль", tasks: "Задачи", insights: "Статистика",
         progress: "Прогресс", settings: "Настройки", logout: "Выйти",
-        trust_score: "Доверие", streak: "Серия", success: "Успех", daily_progress: "Дневной прогресс",
+        trust_score: "Доверие", streak: "Серия", success: "Успех", daily_progress: "Прогресс",
         statistics: "Статистика", task_distribution: "Распределение задач",
         add_new_task: "Новая задача", new_task: "Новая задача", task_placeholder: "Что нужно сделать?",
         category: "Категория", difficulty: "Сложность", easy: "Легко", medium: "Средне", hard: "Сложно",
@@ -3725,12 +4006,12 @@ const translations = {
         total_tasks: "Всего задач",
         total_goals: "Всего голов",
         total_habits: "Всего привычек",
-        weekly_progress: "Еженедельный прогресс",
-        monthly_progress: "Ежемесячный прогресс",
+        weekly_progress: "Прогресс",
+        monthly_progress: "Прогресс",
         completion_rate: "Скорость завершения",
         productivity_score: "Оценка производительности",
         achievement_unlocked: "Достижение разблокировано",
-        rank_progress: "Прогресс ранга",
+        rank_progress: "Прогресс",
         ach_first_step: "Первый шаг",
         ach_goal_hunter: "Охотник за целями",
         ach_marathon: "Марафон",
@@ -3752,8 +4033,8 @@ const translations = {
         notif_level_up: "Повышение уровня",
         search_placeholder: "Поиск...",
         enter_task_name: "Введите имя задачи...",
-        select_goal: "Выберите цель...",
-        select_habit: "Выберите привычку...",
+        select_goal: "Выбрать цель",
+        select_habit: "Выбрать привычку",
         description: "Описание...",
         reports_tab: "Отчеты",
         insights_tab: "Информация",
@@ -3766,7 +4047,7 @@ const translations = {
         progress_descriptions: "Описание прогресса",
         recommendations: "Рекомендации",
         smart_insights: "Умная информация",
-        trust_score_changed: "Trust Score changed: {value}",
+        trust_score_changed: "Оценка доверия изменилась: {value}",
         goal_link: "Цель Ссылка",
         habit_link: "Ссылка на привычку",
         start: "Начинать",
@@ -3782,9 +4063,9 @@ const translations = {
         goal_reflection: "Отражение цели",
         what_went_well: "Что прошло хорошо?",
         what_didnt_go_well: "Что пошло не так?",
-        skip: "Пропускать",
+        skip: "Пропустить",
         save_reflection: "Сохранить отражение",
-        share_progress: "Поделитесь своим прогрессом",
+        share_progress: "Прогресс",
         download: "Скачать",
         copy_text: "Копировать текст",
         share: "Делиться",
@@ -3820,7 +4101,7 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "Полоса",
         completed_tasks: "Выполненные задачи",
-        goals_achieved: "Цели достигнуты",
+        goals_achieved: "Достигнуто",
         trust_low: "Низкий",
         trust_average: "Средний",
         trust_good: "Хороший",
@@ -3954,9 +4235,9 @@ const translations = {
         goal_reflection: "Отражение цели",
         what_went_well: "Что прошло хорошо?",
         what_didnt_go_well: "Что пошло не так?",
-        skip: "Пропускать",
+        skip: "Пропустить",
         save_reflection: "Сохранить отражение",
-        share_progress: "Поделитесь своим прогрессом",
+        share_progress: "Прогресс",
         download: "Скачать",
         copy_text: "Копировать текст",
         share: "Делиться",
@@ -3992,7 +4273,7 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "Полоса",
         completed_tasks: "Выполненные задачи",
-        goals_achieved: "Цели достигнуты",
+        goals_achieved: "Достигнуто",
         task_completed: "Задача выполнена",
         goal_completed: "Цель достигнута",
         trust_low: "Низкий",
@@ -4107,7 +4388,7 @@ const translations = {
         empty_goal_desc: "Создайте свою первую цель для отслеживания прогресса.",
         empty_habit_desc: "Выработайте постоянство с вашей первой привычкой.",
         achieved_failed: "Achieved / Failed",
-        achieved: "Achieved",
+        achieved: "Достигнуто",
         failed_status: "Failed",
         longest_streak: "Longest Streak",
         highest_xp: "Highest XP Achieved",
@@ -4143,7 +4424,7 @@ const translations = {
         chal_summer_desc: "Complete 10 tasks to claim a massive boost.",
         chal_30day: "30 Day Consistency",
         chal_30day_desc: "Maintain a streak of 30 days.",
-        in_progress: "In Progress",
+        in_progress: "Прогресс",
         xp_reward_500: "+500 XP Reward",
         xp_reward_1500: "+1500 XP Reward",
         sent: "Sent",
@@ -4167,7 +4448,7 @@ const translations = {
         to_unlock: "to unlock the",
         rank_push: "rank. Push for it!",
         tasks_to_milestone: "Tasks to Milestone",
-        complete: "Complete",
+        complete: "Завершить",
         more_tasks_milestone: "more tasks to reach the milestone of",
         create_task: "Создать Задачу",
         create_goal: "Создать Цель",
@@ -4183,7 +4464,7 @@ const translations = {
         tasks_30d: "Задачи (30д)",
         limited_time: "Ограниченное время",
         goal_analytics: "Аналитика целей",
-        mastery_progress: "Прогресс мастерства",
+        mastery_progress: "Прогресс",
         goal_rate: "Уровень целей",
         view_goals_history: "Посмотреть историю целей",
         write_future: "Письмо в будущее",
@@ -4214,6 +4495,46 @@ const translations = {
         tasks_subtitle: "Ваши активные задачи",
         full_report: "Полный отчёт",
         weekly_report: "Еженедельный отчёт",
+        skipped: "Пропущено",
+        not_scheduled_today: "Не запланировано на сегодня",
+        deadline_lbl: "Срок",
+        no_history_found: "История не найдена",
+        claim_reward: "Получить Награду",
+        xp_reward: "Награда XP",
+        keep_growing: "Продолжай Расти",
+        unable_to_load_habits: "Не удалось загрузить привычки.",
+        level_up_excl: "НОВЫЙ УРОВЕНЬ!",
+        close_message: "Закрыть сообщение",
+        failed_to_load_messages: "Не удалось загрузить сообщения.",
+        you_missed: "Вы пропустили",
+        task: "задача",
+        streak_at_risk: "Вы рискуете потерять свою серию!",
+        confirm_force_update: "Это очистит весь кэш и перезагрузит приложение. Продолжить?",
+        habit_created: "Привычка создана",
+        select_weekly_day: "Выберите хотя бы один день",
+        goal_created: "Цель создана",
+        goal_marked_failed: "Цель отмечена как проваленная",
+        reflection_saved: "Размышление сохранено!",
+        new_badge_unlocked: "Разблокирован новый значок",
+        cannot_select_past_date: "Нельзя выбрать прошедшую дату.",
+        start_time_past: "Время начала не может быть в прошлом.",
+        changes_discarded: "Изменения отменены",
+        photo_adjusted: "Фото изменено",
+        new_version: "Доступна новая версия! Обновление...",
+        failed_load_share: "Не удалось загрузить данные",
+        image_downloaded: "Изображение загружено!",
+        download_failed: "Ошибка загрузки",
+        text_copied: "Текст скопирован!",
+        failed_copy_text: "Ошибка копирования текста",
+        shared_successfully: "Успешно опубликовано!",
+        failed_copy_link: "Ошибка копирования ссылки",
+        challenge_claimed: "Испытание завершено! +{xpAmount} XP 🎉",
+        fill_title_msg: "Пожалуйста, заполните заголовок и сообщение.",
+        message_sealed: "✉️ Сообщение запечатано!",
+        failed_send_msg: "Не удалось отправить сообщение.",
+        message_opened: "📬 Сообщение открыто!",
+        cannot_open_yet: "Еще нельзя открыть!",
+        level_up_reached: "🎉 НОВЫЙ УРОВЕНЬ! Уровень {level}!",
     },
     ja: {
         app_title: "トベドネ",
@@ -4227,7 +4548,7 @@ const translations = {
         change_name: "名前を変更", change_username: "ユーザー名を変更", create_account: "アカウント作成",
         dashboard: "ダッシュボード", reports: "レポート", me: "マイページ", tasks: "タスク", insights: "分析",
         progress: "進捗", settings: "設定", logout: "ログアウト",
-        trust_score: "信頼スコア", streak: "連続達成", success: "成功", daily_progress: "日次進捗",
+        trust_score: "信頼スコア", streak: "連続達成", success: "成功", daily_progress: "進捗",
         statistics: "統計", task_distribution: "タスク分布",
         add_new_task: "新しいタスク", new_task: "新しいタスク", task_placeholder: "何をすべきですか？",
         category: "カテゴリ", difficulty: "難易度", easy: "簡単", medium: "普通", hard: "難しい",
@@ -4246,12 +4567,12 @@ const translations = {
         total_tasks: "合計タスク数",
         total_goals: "総目標数",
         total_habits: "合計の習慣",
-        weekly_progress: "週ごとの進捗状況",
-        monthly_progress: "毎月の進捗状況",
+        weekly_progress: "進捗",
+        monthly_progress: "進捗",
         completion_rate: "完了率",
         productivity_score: "生産性スコア",
         achievement_unlocked: "実績のロックが解除されました",
-        rank_progress: "ランクの進行状況",
+        rank_progress: "進捗",
         ach_first_step: "最初のステップ",
         ach_goal_hunter: "ゴールハンター",
         ach_marathon: "マラソン",
@@ -4273,8 +4594,8 @@ const translations = {
         notif_level_up: "レベルアップ",
         search_placeholder: "検索...",
         enter_task_name: "タスク名を入力してください...",
-        select_goal: "目標を選択...",
-        select_habit: "習慣を選択...",
+        select_goal: "目標を選択",
+        select_habit: "習慣を選択",
         description: "説明...",
         reports_tab: "レポート",
         insights_tab: "洞察",
@@ -4287,7 +4608,7 @@ const translations = {
         progress_descriptions: "進行状況の説明",
         recommendations: "推奨事項",
         smart_insights: "スマートな洞察",
-        trust_score_changed: "Trust Score changed: {value}",
+        trust_score_changed: "信頼スコアが変更されました: {value}",
         goal_link: "ゴールリンク",
         habit_link: "習慣リンク",
         start: "始める",
@@ -4305,7 +4626,7 @@ const translations = {
         what_didnt_go_well: "何がうまくいかなかったのでしょうか？",
         skip: "スキップ",
         save_reflection: "リフレクションの保存",
-        share_progress: "進捗状況を共有する",
+        share_progress: "進捗",
         download: "ダウンロード",
         copy_text: "テキストをコピーする",
         share: "共有",
@@ -4330,8 +4651,8 @@ const translations = {
         custom_date: "カスタム日付",
         specific_days: "特定の日",
         no_link: "リンクなし",
-        select_a_goal: "目標を選択してください...",
-        select_a_habit: "習慣を選択してください...",
+        select_a_goal: "目標を選択...",
+        select_a_habit: "習慣を選択...",
         what_worked: "何が効果的だったか教えてください...",
         what_improved: "改善できる点は何でしょうか...",
         search_achievements: "実績を検索...",
@@ -4341,7 +4662,7 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "ストリーク",
         completed_tasks: "完了したタスク",
-        goals_achieved: "達成した目標",
+        goals_achieved: "達成",
         trust_low: "低い",
         trust_average: "平均",
         trust_good: "良い",
@@ -4477,7 +4798,7 @@ const translations = {
         what_didnt_go_well: "何がうまくいかなかったのでしょうか？",
         skip: "スキップ",
         save_reflection: "リフレクションの保存",
-        share_progress: "進捗状況を共有する",
+        share_progress: "進捗",
         download: "ダウンロード",
         copy_text: "テキストをコピーする",
         share: "共有",
@@ -4502,8 +4823,8 @@ const translations = {
         custom_date: "カスタム日付",
         specific_days: "特定の日",
         no_link: "リンクなし",
-        select_a_goal: "目標を選択してください...",
-        select_a_habit: "習慣を選択してください...",
+        select_a_goal: "目標を選択...",
+        select_a_habit: "習慣を選択...",
         what_worked: "何が効果的だったか教えてください...",
         what_improved: "改善できる点は何でしょうか...",
         search_achievements: "実績を検索...",
@@ -4513,7 +4834,7 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "ストリーク",
         completed_tasks: "完了したタスク",
-        goals_achieved: "達成した目標",
+        goals_achieved: "達成",
         task_completed: "タスクが完了しました",
         goal_completed: "目標は完了しました",
         trust_low: "低い",
@@ -4628,7 +4949,7 @@ const translations = {
         empty_goal_desc: "最初の目標を作成して、長期的な進捗を追跡しましょう。",
         empty_habit_desc: "最初の習慣を作成して、一貫性を築きましょう。",
         achieved_failed: "Achieved / Failed",
-        achieved: "Achieved",
+        achieved: "達成",
         failed_status: "Failed",
         longest_streak: "Longest Streak",
         highest_xp: "Highest XP Achieved",
@@ -4664,7 +4985,7 @@ const translations = {
         chal_summer_desc: "Complete 10 tasks to claim a massive boost.",
         chal_30day: "30 Day Consistency",
         chal_30day_desc: "Maintain a streak of 30 days.",
-        in_progress: "In Progress",
+        in_progress: "進捗",
         xp_reward_500: "+500 XP Reward",
         xp_reward_1500: "+1500 XP Reward",
         sent: "Sent",
@@ -4688,7 +5009,7 @@ const translations = {
         to_unlock: "to unlock the",
         rank_push: "rank. Push for it!",
         tasks_to_milestone: "Tasks to Milestone",
-        complete: "Complete",
+        complete: "完了",
         more_tasks_milestone: "more tasks to reach the milestone of",
         create_task: "タスク作成",
         create_goal: "目標作成",
@@ -4704,7 +5025,7 @@ const translations = {
         tasks_30d: "タスク (30日)",
         limited_time: "期間限定",
         goal_analytics: "目標分析",
-        mastery_progress: "習熟の進捗",
+        mastery_progress: "進捗",
         goal_rate: "目標達成率",
         view_goals_history: "目標の履歴を見る",
         write_future: "未来へ書く",
@@ -4735,6 +5056,46 @@ const translations = {
         tasks_subtitle: "アクティブなタスク",
         full_report: "フルレポート",
         weekly_report: "週間レポート",
+        skipped: "スキップ済み",
+        not_scheduled_today: "今日は予定なし",
+        deadline_lbl: "期限",
+        no_history_found: "履歴が見つかりません",
+        claim_reward: "報酬を受け取る",
+        xp_reward: "XP報酬",
+        keep_growing: "成長し続ける",
+        unable_to_load_habits: "現在、習慣を読み込めません。",
+        level_up_excl: "レベルアップ！",
+        close_message: "メッセージを閉じる",
+        failed_to_load_messages: "メッセージの読み込みに失敗しました。",
+        you_missed: "見逃しました",
+        task: "タスク",
+        streak_at_risk: "ストリークを失うリスクがあります！",
+        confirm_force_update: "これによりすべてのキャッシュがクリアされ、アプリが再読み込みされます。続行しますか？",
+        habit_created: "習慣が作成されました",
+        select_weekly_day: "少なくとも1日を選択してください",
+        goal_created: "目標が作成されました",
+        goal_marked_failed: "目標が失敗としてマークされました",
+        reflection_saved: "振り返りが保存されました！",
+        new_badge_unlocked: "新しいバッジがアンロックされました",
+        cannot_select_past_date: "過去の日付は選択できません。",
+        start_time_past: "開始時間を過去にすることはできません。",
+        changes_discarded: "変更が破棄されました",
+        photo_adjusted: "写真が調整されました",
+        new_version: "新しいバージョンがあります！更新中...",
+        failed_load_share: "共有データの読み込みに失敗しました",
+        image_downloaded: "画像がダウンロードされました！",
+        download_failed: "ダウンロードに失敗しました",
+        text_copied: "テキストがコピーされました！",
+        failed_copy_text: "テキストのコピーに失敗しました",
+        shared_successfully: "正常に共有されました！",
+        failed_copy_link: "リンクのコピーに失敗しました",
+        challenge_claimed: "チャレンジ達成！ +{xpAmount} XP 🎉",
+        fill_title_msg: "タイトルとメッセージを入力してください。",
+        message_sealed: "✉️ メッセージが封印されました！",
+        failed_send_msg: "メッセージの送信に失敗しました。",
+        message_opened: "📬 メッセージが開かれました！",
+        cannot_open_yet: "まだ開けません！",
+        level_up_reached: "🎉 レベルアップ！ レベル {level} に到達しました！",
     },
     zh: {
         app_title: "托贝多内",
@@ -4748,7 +5109,7 @@ const translations = {
         change_name: "更改姓名", change_username: "更改用户名", create_account: "创建账号",
         dashboard: "仪表盘", reports: "报告", me: "我", tasks: "任务", insights: "统计",
         progress: "进度", settings: "设置", logout: "登出",
-        trust_score: "信任分", streak: "连续", success: "成功", daily_progress: "每日进度",
+        trust_score: "信任分", streak: "连续", success: "成功", daily_progress: "进度",
         statistics: "统计", task_distribution: "任务分布",
         add_new_task: "新任务", new_task: "新任务", task_placeholder: "要做什么？",
         category: "分类", difficulty: "难度", easy: "简单", medium: "中等", hard: "困难",
@@ -4767,12 +5128,12 @@ const translations = {
         total_tasks: "任务总数",
         total_goals: "总目标",
         total_habits: "总习惯",
-        weekly_progress: "每周进度",
-        monthly_progress: "每月进度",
+        weekly_progress: "进度",
+        monthly_progress: "进度",
         completion_rate: "完成率",
         productivity_score: "生产力得分",
         achievement_unlocked: "解锁成就",
-        rank_progress: "排名进展",
+        rank_progress: "进度",
         ach_first_step: "第一步",
         ach_goal_hunter: "目标猎人",
         ach_marathon: "马拉松",
@@ -4794,8 +5155,8 @@ const translations = {
         notif_level_up: "升级",
         search_placeholder: "搜索...",
         enter_task_name: "输入任务名称...",
-        select_goal: "选择目标...",
-        select_habit: "选择习惯...",
+        select_goal: "选择目标",
+        select_habit: "选择习惯",
         description: "描述...",
         reports_tab: "报告",
         insights_tab: "见解",
@@ -4808,7 +5169,7 @@ const translations = {
         progress_descriptions: "进度说明",
         recommendations: "建议",
         smart_insights: "智能洞察",
-        trust_score_changed: "Trust Score changed: {value}",
+        trust_score_changed: "信任分数已更改: {value}",
         goal_link: "目标链接",
         habit_link: "习惯链接",
         start: "开始",
@@ -4826,7 +5187,7 @@ const translations = {
         what_didnt_go_well: "什么事情进展不顺利？",
         skip: "跳过",
         save_reflection: "保存反射",
-        share_progress: "分享您的进步",
+        share_progress: "进度",
         download: "下载",
         copy_text: "复制文本",
         share: "分享",
@@ -4862,7 +5223,7 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "条纹",
         completed_tasks: "已完成的任务",
-        goals_achieved: "实现的目标",
+        goals_achieved: "已实现",
         trust_low: "低的",
         trust_average: "平均的",
         trust_good: "好的",
@@ -4998,7 +5359,7 @@ const translations = {
         what_didnt_go_well: "什么事情进展不顺利？",
         skip: "跳过",
         save_reflection: "保存反射",
-        share_progress: "分享您的进步",
+        share_progress: "进度",
         download: "下载",
         copy_text: "复制文本",
         share: "分享",
@@ -5034,7 +5395,7 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "条纹",
         completed_tasks: "已完成的任务",
-        goals_achieved: "实现的目标",
+        goals_achieved: "已实现",
         task_completed: "任务完成",
         goal_completed: "目标完成",
         trust_low: "低的",
@@ -5149,7 +5510,7 @@ const translations = {
         empty_goal_desc: "创建您的第一个目标以跟踪长期进度。",
         empty_habit_desc: "通过您的第一个日常习惯建立一致性。",
         achieved_failed: "Achieved / Failed",
-        achieved: "Achieved",
+        achieved: "已实现",
         failed_status: "Failed",
         longest_streak: "Longest Streak",
         highest_xp: "Highest XP Achieved",
@@ -5185,7 +5546,7 @@ const translations = {
         chal_summer_desc: "Complete 10 tasks to claim a massive boost.",
         chal_30day: "30 Day Consistency",
         chal_30day_desc: "Maintain a streak of 30 days.",
-        in_progress: "In Progress",
+        in_progress: "进度",
         xp_reward_500: "+500 XP Reward",
         xp_reward_1500: "+1500 XP Reward",
         sent: "Sent",
@@ -5209,7 +5570,7 @@ const translations = {
         to_unlock: "to unlock the",
         rank_push: "rank. Push for it!",
         tasks_to_milestone: "Tasks to Milestone",
-        complete: "Complete",
+        complete: "完成",
         more_tasks_milestone: "more tasks to reach the milestone of",
         create_task: "创建任务",
         create_goal: "创建目标",
@@ -5225,7 +5586,7 @@ const translations = {
         tasks_30d: "任务 (30天)",
         limited_time: "限时",
         goal_analytics: "目标分析",
-        mastery_progress: "掌握进度",
+        mastery_progress: "进度",
         goal_rate: "目标率",
         view_goals_history: "查看目标历史",
         write_future: "写给未来",
@@ -5256,6 +5617,46 @@ const translations = {
         tasks_subtitle: "您的活跃任务",
         full_report: "完整报告",
         weekly_report: "每周报告",
+        skipped: "已跳过",
+        not_scheduled_today: "今天没有计划",
+        deadline_lbl: "截止日期",
+        no_history_found: "未找到历史记录",
+        claim_reward: "领取奖励",
+        xp_reward: "XP奖励",
+        keep_growing: "继续成长",
+        unable_to_load_habits: "现在无法加载习惯。",
+        level_up_excl: "升级！",
+        close_message: "关闭消息",
+        failed_to_load_messages: "加载消息失败。",
+        you_missed: "你错过了",
+        task: "任务",
+        streak_at_risk: "你有失去连续记录的风险！",
+        confirm_force_update: "这将清除所有缓存并重新加载应用程序。是否继续？",
+        habit_created: "习惯已创建",
+        select_weekly_day: "请至少选择一天",
+        goal_created: "目标已创建",
+        goal_marked_failed: "目标已标记为失败",
+        reflection_saved: "反思已保存！",
+        new_badge_unlocked: "已解锁新徽章",
+        cannot_select_past_date: "无法选择过去的日期。",
+        start_time_past: "开始时间不能在过去。",
+        changes_discarded: "更改已放弃",
+        photo_adjusted: "照片已调整",
+        new_version: "有新版本！刷新中...",
+        failed_load_share: "加载共享数据失败",
+        image_downloaded: "图像已下载！",
+        download_failed: "下载失败",
+        text_copied: "文本已复制！",
+        failed_copy_text: "复制文本失败",
+        shared_successfully: "分享成功！",
+        failed_copy_link: "复制链接失败",
+        challenge_claimed: "挑战已领取！+{xpAmount} XP 🎉",
+        fill_title_msg: "请填写标题和消息。",
+        message_sealed: "✉️ 消息已封存！",
+        failed_send_msg: "发送消息失败。",
+        message_opened: "📬 消息已打开！",
+        cannot_open_yet: "暂时无法打开！",
+        level_up_reached: "🎉 升级！你已达到 {level} 级！",
     },
     ar: {
         app_title: "توبيدون",
@@ -5269,7 +5670,7 @@ const translations = {
         change_name: "تغيير الاسم", change_username: "تغيير اسم المستخدم", create_account: "إنشاء حساب",
         dashboard: "لوحة التحكم", reports: "التقارير", me: "ملفي", tasks: "المهام", insights: "الإحصائيات",
         progress: "التقدم", settings: "الإعدادات", logout: "تسجيل الخروج",
-        trust_score: "درجة الثقة", streak: "سلسلة الإنجازات", success: "النجاح", daily_progress: "التقدم اليومي",
+        trust_score: "درجة الثقة", streak: "سلسلة الإنجازات", success: "النجاح", daily_progress: "التقدم",
         statistics: "الإحصائيات", task_distribution: "توزيع المهام",
         add_new_task: "إضافة مهمة", new_task: "مهمة جديدة", task_placeholder: "ما الذي يجب فعله؟",
         category: "الفئة", difficulty: "الصعوبة", easy: "سهل", medium: "متوسط", hard: "صعب",
@@ -5288,12 +5689,12 @@ const translations = {
         total_tasks: "إجمالي المهام",
         total_goals: "مجموع الأهداف",
         total_habits: "مجموع العادات",
-        weekly_progress: "التقدم الأسبوعي",
-        monthly_progress: "التقدم الشهري",
+        weekly_progress: "التقدم",
+        monthly_progress: "التقدم",
         completion_rate: "معدل الإنجاز",
         productivity_score: "نقاط الإنتاجية",
         achievement_unlocked: "الإنجاز مفتوح",
-        rank_progress: "تقدم الرتبة",
+        rank_progress: "التقدم",
         ach_first_step: "الخطوة الأولى",
         ach_goal_hunter: "صياد الهدف",
         ach_marathon: "ماراثون",
@@ -5315,8 +5716,8 @@ const translations = {
         notif_level_up: "المستوى الأعلى",
         search_placeholder: "يبحث...",
         enter_task_name: "أدخل اسم المهمة...",
-        select_goal: "حدد الهدف...",
-        select_habit: "اختر العادة...",
+        select_goal: "حدد هدفًا",
+        select_habit: "حدد عادة",
         description: "وصف...",
         reports_tab: "التقارير",
         insights_tab: "رؤى",
@@ -5329,7 +5730,7 @@ const translations = {
         progress_descriptions: "أوصاف التقدم",
         recommendations: "التوصيات",
         smart_insights: "رؤى ذكية",
-        trust_score_changed: "Trust Score changed: {value}",
+        trust_score_changed: "تغيرت درجة الثقة: {value}",
         goal_link: "رابط الهدف",
         habit_link: "رابط العادة",
         start: "يبدأ",
@@ -5345,9 +5746,9 @@ const translations = {
         goal_reflection: "انعكاس الهدف",
         what_went_well: "ما الذي سار على ما يرام؟",
         what_didnt_go_well: "ما الذي لم يسير على ما يرام؟",
-        skip: "يتخطى",
+        skip: "تخطي",
         save_reflection: "حفظ الانعكاس",
-        share_progress: "شارك تقدمك",
+        share_progress: "التقدم",
         download: "تحميل",
         copy_text: "نسخ النص",
         share: "يشارك",
@@ -5372,8 +5773,8 @@ const translations = {
         custom_date: "تاريخ مخصص",
         specific_days: "أيام محددة",
         no_link: "لا يوجد رابط",
-        select_a_goal: "حدد هدفا...",
-        select_a_habit: "اختر العادة...",
+        select_a_goal: "حدد هدفًا...",
+        select_a_habit: "حدد عادة...",
         what_worked: "أخبرنا بما نجح..",
         what_improved: "ما الذي يمكن تحسينه...",
         search_achievements: "إنجازات البحث...",
@@ -5383,7 +5784,7 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "أثَر",
         completed_tasks: "المهام المكتملة",
-        goals_achieved: "الأهداف التي تم تحقيقها",
+        goals_achieved: "تم تحقيقه",
         trust_low: "قليل",
         trust_average: "متوسط",
         trust_good: "جيد",
@@ -5517,9 +5918,9 @@ const translations = {
         goal_reflection: "انعكاس الهدف",
         what_went_well: "ما الذي سار على ما يرام؟",
         what_didnt_go_well: "ما الذي لم يسير على ما يرام؟",
-        skip: "يتخطى",
+        skip: "تخطي",
         save_reflection: "حفظ الانعكاس",
-        share_progress: "شارك تقدمك",
+        share_progress: "التقدم",
         download: "تحميل",
         copy_text: "نسخ النص",
         share: "يشارك",
@@ -5544,8 +5945,8 @@ const translations = {
         custom_date: "تاريخ مخصص",
         specific_days: "أيام محددة",
         no_link: "لا يوجد رابط",
-        select_a_goal: "حدد هدفا...",
-        select_a_habit: "اختر العادة...",
+        select_a_goal: "حدد هدفًا...",
+        select_a_habit: "حدد عادة...",
         what_worked: "أخبرنا بما نجح..",
         what_improved: "ما الذي يمكن تحسينه...",
         search_achievements: "إنجازات البحث...",
@@ -5555,7 +5956,7 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "أثَر",
         completed_tasks: "المهام المكتملة",
-        goals_achieved: "الأهداف التي تم تحقيقها",
+        goals_achieved: "تم تحقيقه",
         task_completed: "اكتملت المهمة",
         goal_completed: "الهدف مكتمل",
         trust_low: "قليل",
@@ -5670,7 +6071,7 @@ const translations = {
         empty_goal_desc: "قم بإنشاء هدفك الأول لتتبع التقدم.",
         empty_habit_desc: "ابنِ الاستمرارية مع عادتك المتكررة الأولى.",
         achieved_failed: "Achieved / Failed",
-        achieved: "Achieved",
+        achieved: "تم تحقيقه",
         failed_status: "Failed",
         longest_streak: "Longest Streak",
         highest_xp: "Highest XP Achieved",
@@ -5706,7 +6107,7 @@ const translations = {
         chal_summer_desc: "Complete 10 tasks to claim a massive boost.",
         chal_30day: "30 Day Consistency",
         chal_30day_desc: "Maintain a streak of 30 days.",
-        in_progress: "In Progress",
+        in_progress: "التقدم",
         xp_reward_500: "+500 XP Reward",
         xp_reward_1500: "+1500 XP Reward",
         sent: "Sent",
@@ -5730,7 +6131,7 @@ const translations = {
         to_unlock: "to unlock the",
         rank_push: "rank. Push for it!",
         tasks_to_milestone: "Tasks to Milestone",
-        complete: "Complete",
+        complete: "إكمال",
         more_tasks_milestone: "more tasks to reach the milestone of",
         create_task: "إنشاء مهمة",
         create_goal: "إنشاء هدف",
@@ -5746,7 +6147,7 @@ const translations = {
         tasks_30d: "المهام (30 يوم)",
         limited_time: "وقت محدود",
         goal_analytics: "تحليلات الهدف",
-        mastery_progress: "تقدم الإتقان",
+        mastery_progress: "التقدم",
         goal_rate: "معدل الهدف",
         view_goals_history: "عرض سجل الأهداف",
         write_future: "اكتب للمستقبل",
@@ -5777,6 +6178,46 @@ const translations = {
         tasks_subtitle: "مهامك النشطة",
         full_report: "التقرير الكامل",
         weekly_report: "التقرير الأسبوعي",
+        skipped: "تم التخطي",
+        not_scheduled_today: "غير مجدول اليوم",
+        deadline_lbl: "الموعد النهائي",
+        no_history_found: "لم يتم العثور على سجل",
+        claim_reward: "استلام المكافأة",
+        xp_reward: "مكافأة XP",
+        keep_growing: "استمر في النمو",
+        unable_to_load_habits: "تعذر تحميل العادات الآن.",
+        level_up_excl: "ارتقاء في المستوى!",
+        close_message: "إغلاق الرسالة",
+        failed_to_load_messages: "فشل في تحميل الرسائل.",
+        you_missed: "لقد فاتك",
+        task: "مهمة",
+        streak_at_risk: "أنت في خطر فقدان سلسلتك!",
+        confirm_force_update: "سيؤدي هذا إلى مسح كل ذاكرة التخزين المؤقت وإعادة تحميل التطبيق. هل تريد الاستمرار؟",
+        habit_created: "تم إنشاء العادة",
+        select_weekly_day: "حدد يومًا واحدًا على الأقل",
+        goal_created: "تم إنشاء الهدف",
+        goal_marked_failed: "تم وضع علامة فشل على الهدف",
+        reflection_saved: "تم حفظ الانعكاس!",
+        new_badge_unlocked: "تم فتح شارة جديدة",
+        cannot_select_past_date: "لا يمكن تحديد تاريخ في الماضي.",
+        start_time_past: "لا يمكن أن يكون وقت البدء في الماضي.",
+        changes_discarded: "تم تجاهل التغييرات",
+        photo_adjusted: "تم ضبط الصورة",
+        new_version: "نسخة جديدة! جاري التحديث...",
+        failed_load_share: "فشل تحميل بيانات المشاركة",
+        image_downloaded: "تم تنزيل الصورة!",
+        download_failed: "فشل التنزيل",
+        text_copied: "تم نسخ النص!",
+        failed_copy_text: "فشل نسخ النص",
+        shared_successfully: "تمت المشاركة بنجاح!",
+        failed_copy_link: "فشل نسخ الرابط",
+        challenge_claimed: "تم استلام التحدي! +{xpAmount} XP 🎉",
+        fill_title_msg: "يرجى ملء العنوان والرسالة.",
+        message_sealed: "✉️ تم ختم الرسالة!",
+        failed_send_msg: "فشل إرسال الرسالة.",
+        message_opened: "📬 تم فتح الرسالة!",
+        cannot_open_yet: "لا يمكن فتحه بعد!",
+        level_up_reached: "🎉 ترقية! لقد وصلت إلى المستوى {level}!",
     }
 };
 
@@ -7675,7 +8116,7 @@ async function loadMissedTasks() {
         
         if (data.count > 0) {
             alertEl.style.display = 'block';
-            let message = `You missed ${data.count} task${data.count > 1 ? 's' : ''}`;
+            let message = `${t('you_missed')} ${data.count} ${data.count > 1 ? t('tasks') : t('task')}`;
             
             const today = new Date().toLocalISOString();
             let url = `/tasks?day=${today}`;
@@ -7687,7 +8128,7 @@ async function loadMissedTasks() {
             const streakValue = parseInt(document.getElementById('streak-value').textContent) || 0;
             
             if (streakValue > 0 && !hasCompletedToday) {
-                message += ` — You are at risk of losing your streak! ⚠️`;
+                message += ` — ${t('streak_at_risk')} ⚠️`;
             }
             
             textEl.textContent = message;
@@ -8078,19 +8519,19 @@ function renderHabits(habits) {
                 <div class="habit-meta">
                     <span>${formatHabitDays(habit)}</span>
                     ${habit.preferred_time ? `<span>⏰ ${habit.preferred_time}</span>` : ''}
-                    <span>Best streak ${habit.best_streak}</span>
+                    <span>${t('best_streak')}: ${habit.best_streak}</span>
                 </div>
             </div>
             <div class="task-actions">
                 ${habit.today_status === 'completed' ? `
-                    <div class="status-badge completed"><span>Completed ✔</span></div>
+                    <div class="status-badge completed"><span>${t('completed')} ✔</span></div>
                 ` : habit.today_status === 'skipped' ? `
-                    <div class="status-badge failed"><span>Skipped</span></div>
+                    <div class="status-badge failed"><span>${t('skipped')}</span></div>
                 ` : habit.is_due_today ? `
-                    <button class="btn task-btn completed" onclick="trackHabit(${habit.id}, 'completed')">Complete</button>
-                    <button class="btn task-btn failed" onclick="trackHabit(${habit.id}, 'skipped')">Skip</button>
+                    <button class="btn task-btn completed" onclick="trackHabit(${habit.id}, 'completed')">${t('complete')}</button>
+                    <button class="btn task-btn failed" onclick="trackHabit(${habit.id}, 'skipped')">${t('skip')}</button>
                 ` : `
-                    <div class="status-badge pending"><span>Not scheduled today</span></div>
+                    <div class="status-badge pending"><span>${t('not_scheduled_today')}</span></div>
                 `}
             </div>
         </div>
@@ -8126,8 +8567,8 @@ function renderTodayHabits(habits) {
             </div>
             <div style="display:flex; gap:0.45rem; margin-top:0.45rem;">
                 ${habit.today_status ? `<span class="priority-badge ${habit.today_status === 'completed' ? 'priority-low' : 'priority-high'}">${habit.today_status}</span>` : `
-                    <button class="btn task-btn completed" onclick="trackHabit(${habit.id}, 'completed')">Complete</button>
-                    <button class="btn task-btn failed" onclick="trackHabit(${habit.id}, 'skipped')">Skip</button>
+                    <button class="btn task-btn completed" onclick="trackHabit(${habit.id}, 'completed')">${t('complete')}</button>
+                    <button class="btn task-btn failed" onclick="trackHabit(${habit.id}, 'skipped')">${t('skip')}</button>
                 `}
             </div>
         </div>
@@ -8152,10 +8593,10 @@ async function loadTodayHabits() {
     try {
         const habits = await apiFetch('/habits');
         cachedHabits = habits;
-        renderTodayHabits(habits);
+        renderTodayHabits(cachedHabits);
     } catch (err) {
         if (list && !list.innerHTML) {
-            list.innerHTML = `<div class="for-you-item">Unable to load habits now.</div>`;
+            list.innerHTML = `<div class="for-you-item">${t('unable_to_load_habits')}</div>`;
         }
     }
 }
@@ -8219,7 +8660,7 @@ async function addHabit() {
     const preferredTime = document.getElementById('habit-time').value || null;
     const frequencyDays = frequency === 'weekly' ? getSelectedHabitDays() : null;
     if (frequency === 'weekly' && (!frequencyDays || frequencyDays.length === 0)) {
-        showToast('Select at least one day for weekly habit', 'error');
+        showToast(t('select_weekly_day'), 'error');
         return;
     }
     const goalSelect = document.getElementById('habit-goal-select');
@@ -8246,7 +8687,7 @@ async function addHabit() {
     } else {
         await loadHabits();
     }
-    showToast('Habit created', 'success');
+    showToast(t('habit_created'), 'success');
 }
 
 function showSmartSuggestion() {
@@ -8549,7 +8990,7 @@ function populateHabitOptions() {
     const select = document.getElementById('task-habit-select');
     if (!select) return;
     const activeHabits = cachedHabits.filter(h => h.title);
-    select.innerHTML = `<option value="">Select habit</option>` +
+    select.innerHTML = `<option value="">${t('select_habit')}</option>` +
         activeHabits.map(h => `<option value="${h.id}">${h.title}</option>`).join('');
 }
 
@@ -8558,7 +8999,7 @@ function populateGoalOptions() {
     const select = document.getElementById('task-goal-select');
     if (!select) return;
     const activeGoals = cachedGoals.filter(g => g.status === 'active');
-    select.innerHTML = `<option value="">Select goal</option>` + activeGoals.map(g => `<option value="${g.id}">${g.title}</option>`).join('');
+    select.innerHTML = `<option value="">${t('select_goal')}</option>` + activeGoals.map(g => `<option value="${g.id}">${g.title}</option>`).join('');
 }
 
 async function loadGoals() {
@@ -8602,7 +9043,7 @@ function renderGoals(goals) {
                     <span class="priority-badge priority-low">${goal.category}</span>
                 </div>
                 <div class="task-meta">
-                    <p>Deadline: ${goal.deadline}</p>
+                    <p>${t('deadline_lbl')}: ${goal.deadline}</p>
                     <p>${t('tasks_lbl')}: ${goal.completed_tasks_count}/${goal.linked_tasks_count}</p>
                 </div>
                 <div class="progress-bar" style="margin-top:0.75rem;">
@@ -8940,7 +9381,7 @@ async function addGoal(title, category) {
     } else {
         await loadGoals();
     }
-    showToast('Goal created', 'success');
+    showToast(t('goal_created'), 'success');
 }
 
 async function handleGoalComplete(goalId) {
@@ -8970,7 +9411,7 @@ async function handleGoalFail(goalId) {
         loadGoals();
         if (currentView === 'reports') loadReports();
         if (currentView === 'me') loadMe();
-        showToast('Goal marked as failed', 'error');
+        showToast(t('goal_marked_failed'), 'error');
     } catch (err) {
         console.error('Failed to update goal:', err);
     }
@@ -8988,7 +9429,7 @@ async function saveGoalReflection() {
             })
         });
         closeReflectionModal();
-        showToast('Reflection saved!', 'success');
+        showToast(t('reflection_saved'), 'success');
     } catch (err) {
         console.error('Failed to save reflection:', err);
     }
@@ -9042,15 +9483,15 @@ function renderGoals(goals) {
                 </div>
                 ${goal.reflection_went_well || goal.reflection_didnt_go_well ? `
                 <div style="margin-top:0.75rem; padding:0.75rem; background:rgba(255,255,255,0.05); border-radius:8px;">
-                    ${goal.reflection_went_well ? `<p><strong>What went well:</strong> ${goal.reflection_went_well}</p>` : ''}
-                    ${goal.reflection_didnt_go_well ? `<p><strong>What didn't:</strong> ${goal.reflection_didnt_go_well}</p>` : ''}
+                    ${goal.reflection_went_well ? `<p><strong>${t('what_went_well')}:</strong> ${goal.reflection_went_well}</p>` : ''}
+                    ${goal.reflection_didnt_go_well ? `<p><strong>${t('what_didnt_go_well')}:</strong> ${goal.reflection_didnt_go_well}</p>` : ''}
                 </div>
                 ` : ''}
             </div>
             <div class="task-actions">
                 ${goal.status === 'active' ? `
                     <button class="btn task-btn completed" onclick="handleGoalComplete(${goal.id})">
-                        <span>Achieved</span>
+                        <span>${t('achieved')}</span>
                         <span class="btn-icon">✔</span>
                     </button>
                     <button class="btn task-btn failed" onclick="handleGoalFail(${goal.id})">
@@ -9059,7 +9500,7 @@ function renderGoals(goals) {
                     </button>
                 ` : `
                     <div class="status-badge ${goal.status}">
-                        <span>${goal.status === 'achieved' ? 'Achieved ✔' : 'Failed ✖'}</span>
+                        <span>${goal.status === 'achieved' ? `${t('achieved')} ✔` : `${t('failed')} ✖`}</span>
                     </div>
                 `}
             </div>
@@ -9089,7 +9530,7 @@ async function loadIdentityProfile() {
             const currentUnlocked = identity.badges.filter(b => b.unlocked).map(b => b.id);
             const previousUnlocked = new Set(identitySnapshot.unlockedBadgeIds);
             const newlyUnlocked = currentUnlocked.filter(id => !previousUnlocked.has(id));
-            newlyUnlocked.forEach(() => showToast('New Badge Unlocked', 'info'));
+            newlyUnlocked.forEach(() => showToast(t('new_badge_unlocked'), 'info'));
 
             // Redesigned Trust Score Change UX Feedback
             const oldTrust = identitySnapshot.trust_score;
@@ -9397,7 +9838,7 @@ function renderAchievementGrid(badges) {
 function triggerTrustScoreFeedback(diff) {
     const isPositive = diff > 0;
     const sign = isPositive ? '+' : '';
-    const text = `Trust Score changed: ${sign}${diff.toFixed(1)}`;
+    const text = t('trust_score_changed').replace('{value}', `${sign}${diff.toFixed(1)}`);
     
     // Play satisfying (success) or warning toast
     showToast(text, isPositive ? 'success' : 'warning');
@@ -9416,7 +9857,7 @@ function triggerTrustScoreFeedback(diff) {
 }
 
 function triggerLevelUpCelebration(level) {
-    showToast(`🎉 LEVEL UP! You reached Level ${level}!`, 'success');
+    showToast(t('level_up_reached').replace('{level}', level), 'success');
     
     // Pulse and glow the level badge
     const levelEl = document.getElementById('identity-level-badge');
@@ -9563,7 +10004,7 @@ function setupEventListeners() {
             if (date) {
                 const todayStr = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD local time
                 if (date < todayStr) {
-                    showToast('Cannot select a date in the past.', 'error');
+                    showToast(t('cannot_select_past_date'), 'error');
                     return;
                 }
                 
@@ -9574,7 +10015,7 @@ function setupEventListeners() {
                     const currentMinutes = String(now.getMinutes()).padStart(2, '0');
                     const currentTimeStr = `${currentHours}:${currentMinutes}`;
                     if (startTime < currentTimeStr) {
-                        showToast('Start time cannot be in the past.', 'error');
+                        showToast(t('start_time_past'), 'error');
                         return;
                     }
                 }
@@ -9643,7 +10084,7 @@ function setupEventListeners() {
     if (cancelBtn) {
         cancelBtn.addEventListener('click', () => {
             cancelProfileChanges();
-            showToast('Changes discarded', 'info');
+            showToast(t('changes_discarded'), 'info');
         });
     }
 
@@ -9741,7 +10182,7 @@ function setupEventListeners() {
             if (avatarEl) avatarEl.src = dataUrl;
             
             updateProfileSaveState();
-            showToast('Photo adjusted (pending save)', 'info');
+            showToast(t('photo_adjusted'), 'info');
             
             document.getElementById('crop-modal').classList.remove('active');
             cropper.destroy();
@@ -9999,7 +10440,7 @@ function toggleTaskForm() {
 })();
 
 async function forceUpdateApp() {
-    if (confirm("This will clear all cache and reload the app. Continue?")) {
+    if (confirm(t('confirm_force_update'))) {
         showLoading(true);
         try {
             // 1. Unregister all service workers
@@ -10091,7 +10532,7 @@ if ('serviceWorker' in navigator) {
                         if (installingWorker.state === 'installed') {
                             if (navigator.serviceWorker.controller) {
                                 // New content is available, show toast
-                                showToast("New version available! Refreshing...", "info");
+                                showToast(t('new_version'), 'info');
                                 setTimeout(() => {
                                     window.location.reload();
                                 }, 2000);
@@ -10173,7 +10614,7 @@ async function openShareModal() {
         
     } catch (err) {
         console.error('Failed to load share data:', err);
-        showToast('Failed to load share data', 'error');
+        showToast(t('failed_load_share'), 'error');
     }
 }
 
@@ -10209,13 +10650,13 @@ async function downloadShareCard() {
             link.href = canvas.toDataURL('image/png');
             link.click();
             
-            showToast('Image downloaded!', 'success');
+            showToast(t('image_downloaded'), 'success');
         };
         document.head.appendChild(html2canvasScript);
         
     } catch (err) {
         console.error('Download failed:', err);
-        showToast('Download failed', 'error');
+        showToast(t('download_failed'), 'error');
     }
 }
 
@@ -10228,9 +10669,9 @@ Completed Tasks: ${shareData.completedTasks}
 Goals Achieved: ${shareData.goalsAchieved}`;
     
     navigator.clipboard.writeText(text).then(() => {
-        showToast('Text copied!', 'success');
+        showToast(t('text_copied'), 'success');
     }).catch(() => {
-        showToast('Failed to copy text', 'error');
+        showToast(t('failed_copy_text'), 'error');
     });
 }
 
@@ -10242,7 +10683,7 @@ async function nativeShare() {
                 text: `Check out my progress on Tobedone! Level ${shareData.level}, ${shareData.streak} day streak!`,
                 url: document.getElementById('profile-link').value
             });
-            showToast('Shared successfully!', 'success');
+            showToast(t('shared_successfully'), 'success');
         } catch (err) {
             console.log('Share cancelled or failed');
         }
@@ -10256,7 +10697,7 @@ function copyProfileLink() {
     navigator.clipboard.writeText(linkInput.value).then(() => {
         showToast(t('profile_link_copied'), 'success');
     }).catch(() => {
-        showToast('Failed to copy link', 'error');
+        showToast(t('failed_copy_link'), 'error');
     });
 }
 
@@ -10450,7 +10891,7 @@ async function loadProgressHub() {
         const xpTextElReal = document.getElementById('progress-xp-text');
         if (xpTextElReal) xpTextElReal.textContent = `XP ${identity.xp_into_current_level} / ${identity.xp_for_next_level}`;
         if (xpFillEl) xpFillEl.style.width = `${identity.level_progress_percent || 0}%`;
-        if (totalXpEl) totalXpEl.textContent = `Total XP: ${identity.total_xp.toLocaleString()}`;
+        if (totalXpEl) totalXpEl.textContent = `${t('total_xp')}: ${identity.total_xp.toLocaleString()}`;
 
         // Render Trust Progress Card
         const trustValEl = document.getElementById('progress-trust-value');
@@ -10668,9 +11109,9 @@ async function renderSeasonalChallenges() {
         if (isClaimed) {
             actionBtn = `<span class="priority-badge priority-low" style="align-self:flex-start;">Claimed ✔</span>`;
         } else if (isDone) {
-            actionBtn = `<button class="btn primary-link-btn-small" onclick="claimChallengeReward('${c.id}', ${c.xp})" style="align-self:flex-start; min-width:80px; padding:0.25rem 0.5rem; font-size:0.65rem;">Claim Reward</button>`;
+            actionBtn = `<button class="btn primary-link-btn-small" onclick="claimChallengeReward('${c.id}', ${c.xp})" style="align-self:flex-start; min-width:80px; padding:0.25rem 0.5rem; font-size:0.65rem;">${t('claim_reward')}</button>`;
         } else {
-            actionBtn = `<span class="priority-badge priority-low" style="align-self:flex-start;">In Progress</span>`;
+            actionBtn = `<span class="priority-badge priority-low" style="align-self:flex-start;">${t('in_progress')}</span>`;
         }
 
         return `
@@ -10680,12 +11121,12 @@ async function renderSeasonalChallenges() {
                     <span class="challenge-badge-lbl">${c.current}/${c.target}</span>
                 </div>
                 <div class="challenge-desc">${c.desc}</div>
-                <div class="challenge-reward">+${c.xp} XP Reward</div>
+                <div class="challenge-reward">+${c.xp} ${t('xp_reward')}</div>
                 <div class="challenge-progress-bar">
                     <div class="challenge-progress-fill" style="width: ${pct}%"></div>
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.2rem;">
-                    <span style="font-size:0.62rem; opacity:0.7;">Progress: ${pct}%</span>
+                    <span style="font-size:0.62rem; opacity:0.7;">${t('progress')}: ${pct}%</span>
                     ${actionBtn}
                 </div>
             </div>
@@ -10699,7 +11140,7 @@ async function claimChallengeReward(challengeId, xpAmount) {
         claimedList[challengeId] = true;
         localStorage.setItem('seasonal_challenges_claimed', JSON.stringify(claimedList));
 
-        showToast(`Challenge claimed! +${xpAmount} XP added! 🎉`, 'success');
+        showToast(t('challenge_claimed').replace('{xpAmount}', xpAmount), 'success');
         
         // Re-render progression page elements
         await loadProgressHub();
@@ -10727,9 +11168,9 @@ function triggerLevelUpCelebration(newLevel) {
     overlay.innerHTML = `
         <div style="text-align:center; color:#fff; animation:scaleUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);">
             <div style="font-size: 5rem; margin-bottom: 1rem;">👑</div>
-            <h1 style="font-size: 2.5rem; font-weight:900; background:linear-gradient(90deg, #fbbf24, #f59e0b); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:0.5rem;">LEVEL UP!</h1>
+            <h1 style="font-size: 2.5rem; font-weight:900; background:linear-gradient(90deg, #fbbf24, #f59e0b); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:0.5rem;">${t('level_up_excl')}</h1>
             <p style="font-size: 1.2rem; opacity: 0.8; margin-bottom: 2rem;">${t('level_up')} ${newLevel} & ${t('rank')} "${getRankName(newLevel)}"</p>
-            <button class="btn primary" onclick="this.parentElement.parentElement.remove()" style="padding: 0.75rem 2rem; border-radius: 12px; font-weight: 800;">Keep Growing</button>
+            <button class="btn primary" onclick="this.parentElement.parentElement.remove()" style="padding: 0.75rem 2rem; border-radius: 12px; font-weight: 800;">${t('keep_growing')}</button>
         </div>
     `;
     
@@ -10804,7 +11245,7 @@ async function submitFutureSelfMessage() {
     const category = document.getElementById('fs-category')?.value || 'motivational';
 
     if (!title || !message) {
-        showToast('Please fill in the title and message.', 'error');
+        showToast(t('fill_title_msg'), 'error');
         return;
     }
 
@@ -10818,22 +11259,22 @@ async function submitFutureSelfMessage() {
         document.getElementById('fs-title').value = '';
         document.getElementById('fs-message').value = '';
         toggleFutureSelfForm();
-        showToast('✉️ Message sealed! It will be waiting for you.', 'success');
+        showToast(t('message_sealed'), 'success');
         await loadFutureSelf();
     } catch(e) {
-        showToast('Failed to send message. Please try again.', 'error');
+        showToast(t('failed_send_msg'), 'error');
     }
 }
 
 async function openFutureSelfMessage(msgId) {
     try {
         const msg = await apiFetch(`/future-self/${msgId}/open`, { method: 'PATCH' });
-        showToast(`📬 Message from your past self opened!`, 'success');
+        showToast(t('message_opened'), 'success');
         await loadFutureSelf();
         // Show message in a simple overlay
         showFutureSelfMessageOverlay(msg);
     } catch(e) {
-        showToast(e.message || 'Cannot open yet!', 'error');
+        showToast(e.message || t('cannot_open_yet'), 'error');
     }
 }
 
@@ -10851,7 +11292,7 @@ function showFutureSelfMessageOverlay(msg) {
             <div style="background:rgba(124,58,237,0.08);border-radius:16px;padding:1.25rem;margin-bottom:1.5rem;border:1px solid rgba(124,58,237,0.15);line-height:1.7;font-size:0.95rem;">
                 ${msg.message.replace(/\n/g, '<br>')}
             </div>
-            <button onclick="this.parentElement.parentElement.remove()" class="btn primary" style="width:100%;">Close Message</button>
+            <button onclick="this.parentElement.parentElement.remove()" class="btn primary" style="width:100%;">${t('close_message')}</button>
         </div>
     `;
     document.body.appendChild(overlay);
@@ -10926,7 +11367,7 @@ async function loadFutureSelf() {
             }).join('')}
         `;
     } catch(e) {
-        archive.innerHTML = `<p style="color:var(--error);font-size:0.8rem;">Failed to load messages.</p>`;
+        archive.innerHTML = `<p style="color:var(--error);font-size:0.8rem;">${t('failed_to_load_messages')}</p>`;
     }
 }
 
@@ -11104,7 +11545,7 @@ function renderInlineHistoryItems(type, items) {
         list.innerHTML = `
             <div class="history-empty" style="padding: 1.5rem; text-align: center; color: var(--text-secondary); opacity: 0.7;">
                 <i class="fas fa-clock-rotate-left" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
-                <span>No history found</span>
+                <span>${t('no_history_found')}</span>
             </div>`;
         return;
     }

@@ -230,7 +230,7 @@
                 <div class="card habits-today-card" style="margin-bottom: 1.5rem;">
                     <div class="identity-header">
                         <h3 data-i18n="today_habits">Today's Habits</h3>
-                        <span class="priority-badge priority-medium">Consistency</span>
+                        <span class="priority-badge priority-medium" data-i18n="consistency">Consistency</span>
                     </div>
                     <div id="today-habits-list" class="habit-list"></div>
                 </div>
@@ -336,7 +336,7 @@
                 <div class="card for-you-card" style="margin-bottom: 1.5rem;">
                     <div class="identity-header">
                         <h3 data-i18n="for_you">For You</h3>
-                        <span id="for-you-pressure" class="priority-badge priority-low">Adaptive</span>
+                        <span id="for-you-pressure" class="priority-badge priority-low" data-i18n="pressure_balanced">Adaptive</span>
                     </div>
                     <div id="for-you-list" class="for-you-list"></div>
                 </div>
@@ -612,7 +612,7 @@
                             <button class="ach-filter-btn" data-filter="Tasks" onclick="filterAchievements('Tasks', this)">📋 <span data-i18n="inst_tasks_title">Tasks</span></button>
                             <button class="ach-filter-btn" data-filter="Goals" onclick="filterAchievements('Goals', this)">🎯 <span data-i18n="goals_tab">Goals</span></button>
                             <button class="ach-filter-btn" data-filter="Habits" onclick="filterAchievements('Habits', this)">⚡ <span data-i18n="habits_tab">Habits</span></button>
-                            <button class="ach-filter-btn" data-filter="Streaks" onclick="filterAchievements('Streaks', this)">🔥 <span data-i18n="streak ">Streaks</span></button>
+                            <button class="ach-filter-btn" data-filter="Streaks" onclick="filterAchievements('Streaks', this)">🔥 <span data-i18n="streak">Streaks</span></button>
                             <button class="ach-filter-btn" data-filter="Trust" onclick="filterAchievements('Trust', this)">🛡️ <span data-i18n="trust_score">Trust</span></button>
                             <button class="ach-filter-btn" data-filter="XP" onclick="filterAchievements('XP', this)">⭐ XP</button>
                             <button class="ach-filter-btn" data-filter="Calendar" onclick="filterAchievements('Calendar', this)">📅 <span data-i18n="calendar">Calendar</span></button>
@@ -864,7 +864,7 @@
     <div id="task-form-container" class="task-form-modal">
         <form id="add-task-form">
             <h3 data-i18n="new_task">New Task</h3>
-            <input type="text" id="task-title" data-i18n="task_placeholder required">
+            <input type="text" id="task-title" data-i18n="task_placeholder" required>
             
             <div class="form-row">
                 <div class="form-group">
@@ -915,12 +915,12 @@
                 </div>
                 <div id="link-goal-panel" class="link-panel" style="display:none; margin-top: 0.5rem;">
                     <select id="task-goal-select">
-                        <option value="">Select a goal...</option>
+                        <option value="" data-i18n="select_a_goal">Select a goal...</option>
                     </select>
                 </div>
                 <div id="link-habit-panel" class="link-panel" style="display:none; margin-top: 0.5rem;">
                     <select id="task-habit-select">
-                        <option value="">Select a habit...</option>
+                        <option value="" data-i18n="select_a_habit">Select a habit...</option>
                     </select>
                 </div>
             </div>
@@ -935,7 +935,7 @@
     <div id="goal-form-container" class="task-form-modal">
         <form id="add-goal-form">
             <h3 data-i18n="new_goal">New Goal</h3>
-            <input type="text" id="goal-title" data-i18n="goal_title required">
+            <input type="text" id="goal-title" data-i18n="goal_title" required>
             <div class="form-row">
                 <div class="form-group">
                     <label>Category</label>
@@ -982,7 +982,7 @@
     <div id="habit-form-container" class="task-form-modal">
         <form id="add-habit-form">
             <h3 data-i18n="new_habit">New Habit</h3>
-            <input type="text" id="habit-title" data-i18n="habit_title required">
+            <input type="text" id="habit-title" data-i18n="habit_title" required>
             <div class="form-row">
                 <div class="form-group">
                     <label>Category</label>
@@ -1034,15 +1034,15 @@
             <h3 data-i18n="goal_reflection">Goal Reflection</h3>
             <div class="form-group">
                 <label data-i18n="what_went_well">What went well?</label>
-                <textarea id="reflection-went-well" data-i18n="what_worked rows="3"></textarea>
+                <textarea id="reflection-went-well" data-i18n="what_worked" rows=3"></textarea>
             </div>
             <div class="form-group">
                 <label data-i18n="what_didnt_go_well">What didn't go well?</label>
-                <textarea id="reflection-didnt-go-well" data-i18n="what_improved rows="3"></textarea>
+                <textarea id="reflection-didnt-go-well" data-i18n="what_improved" rows=3"></textarea>
             </div>
             <div class="form-actions">
-                <button type="button" onclick="closeReflectionModal()" class="btn secondary">Skip</button>
-                <button type="submit" class="btn primary">Save Reflection</button>
+                <button type="button" onclick="closeReflectionModal()" class="btn secondary" data-i18n="skip">Skip</button>
+                <button type="submit" class="btn primary" data-i18n="save_reflection">Save Reflection</button>
             </div>
         </form>
     </div>
@@ -1072,11 +1072,11 @@
                         <span id="share-streak" class="share-stat-value">0</span>
                     </div>
                     <div class="share-stat">
-                        <span class="share-stat-label">Completed Tasks</span>
+                        <span class="share-stat-label" data-i18n="completed_tasks">Completed Tasks</span>
                         <span id="share-completed-tasks" class="share-stat-value">0</span>
                     </div>
                     <div class="share-stat">
-                        <span class="share-stat-label">Goals Achieved</span>
+                        <span class="share-stat-label" data-i18n="goals_achieved">Goals Achieved</span>
                         <span id="share-goals-achieved" class="share-stat-value">0</span>
                     </div>
                 </div>
@@ -1088,13 +1088,13 @@
             <!-- Share Actions -->
             <div class="share-actions">
                 <button onclick="downloadShareCard()" class="btn primary" style="flex: 1;">
-                    <i class="fas fa-download" style="margin-right: 0.5rem;"></i> Download
+                    <i class="fas fa-download" style="margin-right: 0.5rem;"></i> <span data-i18n="download">Download</span>
                 </button>
                 <button onclick="copyShareText()" class="btn secondary" style="flex: 1;">
-                    <i class="fas fa-copy" style="margin-right: 0.5rem;"></i> Copy Text
+                    <i class="fas fa-copy" style="margin-right: 0.5rem;"></i> <span data-i18n="copy_text">Copy Text</span>
                 </button>
                 <button onclick="nativeShare()" class="btn secondary" style="flex: 1;">
-                    <i class="fas fa-share" style="margin-right: 0.5rem;"></i> Share
+                    <i class="fas fa-share" style="margin-right: 0.5rem;"></i> <span data-i18n="share">Share</span>
                 </button>
             </div>
             
@@ -1110,7 +1110,7 @@
             </div>
             
             <div class="form-actions" style="margin-top: 1.5rem;">
-                <button type="button" onclick="closeShareModal()" class="btn secondary" style="width: 100%;">Close</button>
+                <button type="button" onclick="closeShareModal()" class="btn secondary" style="width: 100%;" data-i18n="close">Close</button>
             </div>
         </div>
     </div>
