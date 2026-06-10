@@ -349,36 +349,7 @@
                     <span id="missed-tasks-text"></span>
                 </div>
 
-                <!-- Insights Section embedded in Me -->
-                <div class="card" style="margin-bottom: 1.5rem;">
-                    <div class="identity-header" style="margin-bottom:1rem;">
-                        <h3><i class="fas fa-chart-line" style="margin-right:0.5rem; color:var(--primary);"></i> <span data-i18n="your_analytics">Your Analytics</span></h3>
-                        <button onclick="showView('insights')" class="btn secondary" style="font-size:0.7rem; padding:0.3rem 0.7rem;" data-i18n="full_report">Full Report</button>
-                    </div>
-                    <div id="me-smart-insights" class="insights-container" style="margin-bottom:1rem;">
-                        <!-- Smart insights mini-feed injected by JS -->
-                    </div>
-                    <div class="weekly-summary-stats" style="margin-bottom:1rem;">
-                        <div class="weekly-summary-stat">
-                            <span class="label" data-i18n="best_day">Best Day</span>
-                            <span id="me-insight-best-day" class="value">—</span>
-                        </div>
-                        <div class="weekly-summary-stat">
-                            <span class="label" data-i18n="goal_rate">Goal Rate</span>
-                            <span id="me-goal-completion-rate" class="value">0%</span>
-                        </div>
-                        <div class="weekly-summary-stat">
-                            <span class="label" data-i18n="tasks_30d">Tasks (30d)</span>
-                            <span id="me-tasks-30d" class="value">0</span>
-                        </div>
-                    </div>
-                    <div class="chart-grid" style="grid-template-columns:1fr;">
-                        <div class="chart-container" style="padding:0;">
-                            <h3 data-i18n="weekly_trend" style="font-size:0.85rem; margin-bottom:0.75rem;">Weekly Trend</h3>
-                            <canvas id="me-weekly-trend-chart"></canvas>
-                        </div>
-                    </div>
-                </div>
+                
             </section>
 
             <!-- Calendar View (Removed or integrated into Dashboard, keeping hidden container for API compatibility if needed, but not in bottom menu) -->
@@ -417,7 +388,7 @@
                             <span id="goal-completion-rate" class="value">0%</span>
                         </div>
                         <div class="weekly-summary-stat">
-                            <span class="label">Achieved / Failed</span>
+                            <span class="label" data-i18n="achieved_failed">Achieved / Failed</span>
                             <span id="goal-achieved-failed" class="value">0 / 0</span>
                         </div>
                         <div class="weekly-summary-stat">
@@ -470,7 +441,38 @@
                         <!-- Personalized data-driven insights injected by JS -->
                     </div>
                 </div>
-            </section>
+            
+                <!-- Your Analytics (moved from Profile) -->
+                <div class="card" style="margin-bottom: 1.5rem;">
+                    <div class="identity-header" style="margin-bottom:1rem;">
+                        <h3><i class="fas fa-chart-line" style="margin-right:0.5rem; color:var(--primary);"></i> <span data-i18n="your_analytics">Your Analytics</span></h3>
+                        
+                    </div>
+                    <div id="me-smart-insights" class="insights-container" style="margin-bottom:1rem;">
+                        <!-- Smart insights mini-feed injected by JS -->
+                    </div>
+                    <div class="weekly-summary-stats" style="margin-bottom:1rem;">
+                        <div class="weekly-summary-stat">
+                            <span class="label" data-i18n="best_day">Best Day</span>
+                            <span id="me-insight-best-day" class="value">—</span>
+                        </div>
+                        <div class="weekly-summary-stat">
+                            <span class="label" data-i18n="goal_rate">Goal Rate</span>
+                            <span id="me-goal-completion-rate" class="value">0%</span>
+                        </div>
+                        <div class="weekly-summary-stat">
+                            <span class="label" data-i18n="tasks_30d">Tasks (30d)</span>
+                            <span id="me-tasks-30d" class="value">0</span>
+                        </div>
+                    </div>
+                    <div class="chart-grid" style="grid-template-columns:1fr;">
+                        <div class="chart-container" style="padding:0;">
+                            <h3 data-i18n="weekly_trend" style="font-size:0.85rem; margin-bottom:0.75rem;">Weekly Trend</h3>
+                            <canvas id="me-weekly-trend-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+</section>
 
             <!-- Progress View (NEW HUB) -->
             <section id="view-progress" class="view">
@@ -642,7 +644,7 @@
                 <!-- Weekly & Monthly Performance Reviews -->
                 <div class="card performance-reports-card" style="margin-bottom: 1.5rem;">
                     <div class="tabs" style="margin-bottom: 1.2rem;">
-                        <button id="tab-report-weekly" class="tab active" onclick="switchPerformanceReport('weekly')" data-i18n="weekly_report">Weekly Report</button>
+                        <button id="tab-report-weekly" class="tab active" onclick="switchPerformanceReport('weekly')" data-i18n="weekly_progress_tab">Weekly Progress</button>
                         <button id="tab-report-monthly" class="tab" onclick="switchPerformanceReport('monthly')" data-i18n="monthly_progress">Monthly Review</button>
                     </div>
                     <div id="performance-report-content" class="report-content-body">
@@ -687,8 +689,8 @@
                             <i class="fas fa-chevron-down" id="fs-compose-chevron"></i>
                         </div>
                         <div id="future-self-compose-body" style="display:none; margin-top:1rem;">
-                            <input type="text" id="fs-title" data-i18n="message_title style="width:100%; margin-bottom:0.75rem; padding:0.75rem; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-size:0.9rem;">
-                            <textarea id="fs-message" data-i18n="write_message rows="4" style="width:100%; margin-bottom:0.75rem; padding:0.75rem; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-size:0.9rem; resize:vertical;"></textarea>
+                            <input type="text" id="fs-title" data-i18n="message_title" placeholder="Message title" style="width:100%; margin-bottom:0.75rem; padding:0.75rem; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-size:0.9rem;">
+                            <textarea id="fs-message" data-i18n="write_message" placeholder="Write your message..." rows="4" style="width:100%; margin-bottom:0.75rem; padding:0.75rem; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); font-size:0.9rem; resize:vertical;"></textarea>
                             <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:0.75rem;">
                                 <select id="fs-delivery" style="flex:1; padding:0.6rem; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
                                     <option value="1_week" data-i18n="one_week">📅 Open in 1 Week</option>
@@ -699,10 +701,10 @@
                                 </select>
                                 <select id="fs-category" style="flex:1; padding:0.6rem; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
                                     <option value="goal" data-i18n="goals">🎯 Goal</option>
-                                    <option value="promise">🤝 Promise</option>
-                                    <option value="prediction">🔮 Prediction</option>
-                                    <option value="reminder">🔔 Reminder</option>
-                                    <option value="motivational" selected>💪 Motivational</option>
+                                    <option value="promise" data-i18n="fs_promise">🤝 Promise</option>
+                                    <option value="prediction" data-i18n="fs_prediction">🔮 Prediction</option>
+                                    <option value="reminder" data-i18n="fs_reminder">🔔 Reminder</option>
+                                    <option value="motivational" selected data-i18n="fs_motivational">💪 Motivational</option>
                                 </select>
                             </div>
                             <button onclick="submitFutureSelfMessage()" class="btn primary" style="width:100%;">
@@ -1098,7 +1100,7 @@
             
             <!-- Profile Link -->
             <div class="profile-link-section">
-                <label style="margin-bottom: 0.5rem; display: block;">Profile Link</label>
+                <label style="margin-bottom: 0.5rem; display: block;" data-i18n="profile_link">Profile Link</label>
                 <div style="display: flex; gap: 0.5rem;">
                     <input type="text" id="profile-link" readonly style="flex: 1; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary);">
                     <button onclick="copyProfileLink()" class="btn secondary">

@@ -458,7 +458,73 @@ const translations = {
         chal_streak_title: "Reach a 3 day streak",
         chal_streak_desc: "Consistency is key",
         future_placeholder: "Write a letter to your future self",
-        future_dear: "Dear future me..."
+        future_dear: "Dear future me...",
+        empty_task_desc: "Create your first task to stay organized and productive.",
+        empty_goal_desc: "Create your first goal to track long-term progress.",
+        empty_habit_desc: "Build consistency with your first recurring habit.",
+        achieved_failed: "Achieved / Failed",
+        achieved: "Achieved",
+        failed_status: "Failed",
+        longest_streak: "Longest Streak",
+        highest_xp: "Highest XP Achieved",
+        max_tasks_day: "Max Tasks In A Day",
+        tasks_word: "Tasks",
+        goals_word: "Goals",
+        ms_first_step: "First Step",
+        ms_first_step_desc: "Complete your first task",
+        ms_goal_setter: "Goal Setter",
+        ms_goal_setter_desc: "Set your very first goal",
+        ms_lvl10: "Level 10 Achieved",
+        ms_lvl10_desc: "Reach Level 10 of personal productivity",
+        ms_trust_builder: "Trust Builder",
+        ms_trust_builder_desc: "Raise self trust score above 50",
+        ms_discipline_elite: "Discipline Elite",
+        ms_discipline_elite_desc: "Reach Level 25 or achieve elite trust levels",
+        ms_legendary: "Legendary Achiever",
+        ms_legendary_desc: "Complete 100 tasks and reach level 50",
+        locked: "Locked",
+        unlocked_status: "Unlocked",
+        weekly_perf_card: "Weekly Performance Card",
+        weekly_perf_desc: "Auto-generated weekly activity stats",
+        monthly_perf_card: "Monthly Performance Review",
+        monthly_perf_desc: "Detailed performance metrics review",
+        weekly_progress_tab: "Weekly Progress",
+        tasks_done: "Tasks Done",
+        goals_done: "Goals Done",
+        streak_health: "Streak Health",
+        trust_growth: "Trust Growth",
+        xp_rank_level: "XP Rank Level",
+        trust_consistency: "Trust Consistency",
+        chal_summer_sprint: "Summer Sprint",
+        chal_summer_desc: "Complete 10 tasks to claim a massive boost.",
+        chal_30day: "30 Day Consistency",
+        chal_30day_desc: "Maintain a streak of 30 days.",
+        in_progress: "In Progress",
+        xp_reward_500: "+500 XP Reward",
+        xp_reward_1500: "+1500 XP Reward",
+        sent: "Sent",
+        ready: "Ready",
+        opened: "Opened",
+        no_messages_yet: "No messages yet. Write your first one above!",
+        ready_to_open: "Ready to Open!",
+        fs_promise: "🤝 Promise",
+        fs_prediction: "🔮 Prediction",
+        fs_reminder: "🔔 Reminder",
+        fs_motivational: "💪 Motivational",
+        no_achievements: "No achievements yet",
+        for_you_default_body: "Keep completing tasks to unlock personalized guidance",
+        profile_updated: "Profile updated",
+        profile_update_failed: "Failed to update profile",
+        profile_link_copied: "Profile link copied!",
+        insight_start_streak: "Start Your Streak",
+        insight_start_streak_body: "Complete a task today to ignite your streak. Consistency is the foundation of trust.",
+        levels_to_rank: "Levels to Rank Up",
+        reach_level: "Reach Level",
+        to_unlock: "to unlock the",
+        rank_push: "rank. Push for it!",
+        tasks_to_milestone: "Tasks to Milestone",
+        complete: "Complete",
+        more_tasks_milestone: "more tasks to reach the milestone of"
     },
     el: {
         app_title: "Tobedone",
@@ -536,7 +602,7 @@ const translations = {
         goal_link: "Σύνδεσμος στόχου",
         habit_link: "Σύνδεσμος συνήθειας",
         start: "Αρχή",
-        finish: "Φινίρισμα",
+        finish: "Τέλος",
         goal_type: "Τύπος στόχου",
         deadline: "Διορία",
         custom_deadline: "Προσαρμοσμένη προθεσμία",
@@ -708,7 +774,7 @@ const translations = {
         goal_link: "Σύνδεσμος στόχου",
         habit_link: "Σύνδεσμος συνήθειας",
         start: "Αρχή",
-        finish: "Φινίρισμα",
+        finish: "Τέλος",
         goal_type: "Τύπος στόχου",
         deadline: "Διορία",
         custom_deadline: "Προσαρμοσμένη προθεσμία",
@@ -870,7 +936,73 @@ const translations = {
         chal_streak_title: "Φτάστε 3 μέρες σερί",
         chal_streak_desc: "Η συνέπεια είναι το κλειδί",
         future_placeholder: "Γράψτε ένα γράμμα στον μελλοντικό σας εαυτό",
-        future_dear: "Αγαπητέ μελλοντικέ μου εαυτέ..."
+        future_dear: "Αγαπητέ μελλοντικέ μου εαυτέ...",
+        empty_task_desc: "Δημιουργήστε την πρώτη σας εργασία για να μείνετε οργανωμένοι και παραγωγικοί.",
+        empty_goal_desc: "Δημιουργήστε τον πρώτο σας στόχο για μακροπρόθεσμη πρόοδο.",
+        empty_habit_desc: "Χτίστε συνέπεια με την πρώτη σας επαναλαμβανόμενη συνήθεια.",
+        achieved_failed: "Επιτυχημένοι / Αποτυχημένοι",
+        achieved: "Επιτυχημένος",
+        failed_status: "Αποτυχημένος",
+        longest_streak: "Μεγαλύτερο Σερί",
+        highest_xp: "Υψηλότερα XP",
+        max_tasks_day: "Μέγιστες Εργασίες/Ημέρα",
+        tasks_word: "Εργασίες",
+        goals_word: "Στόχοι",
+        ms_first_step: "Πρώτο Βήμα",
+        ms_first_step_desc: "Ολοκληρώστε την πρώτη σας εργασία",
+        ms_goal_setter: "Δημιουργός Στόχων",
+        ms_goal_setter_desc: "Ορίστε τον πρώτο σας στόχο",
+        ms_lvl10: "Επίπεδο 10",
+        ms_lvl10_desc: "Φτάστε το Επίπεδο 10 παραγωγικότητας",
+        ms_trust_builder: "Χτίστης Εμπιστοσύνης",
+        ms_trust_builder_desc: "Αυξήστε τη βαθμολογία αυτοπεποίθησης πάνω από 50",
+        ms_discipline_elite: "Ελίτ Πειθαρχίας",
+        ms_discipline_elite_desc: "Φτάστε Επίπεδο 25 ή επιτύχετε ελίτ επίπεδα αυτοπεποίθησης",
+        ms_legendary: "Θρυλικός",
+        ms_legendary_desc: "Ολοκληρώστε 100 εργασίες και φτάστε επίπεδο 50",
+        locked: "Κλειδωμένο",
+        unlocked_status: "Ξεκλείδωτο",
+        weekly_perf_card: "Εβδομαδιαία Κάρτα Απόδοσης",
+        weekly_perf_desc: "Αυτόματα δημιουργημένα εβδομαδιαία στατιστικά",
+        monthly_perf_card: "Μηνιαία Αξιολόγηση Απόδοσης",
+        monthly_perf_desc: "Λεπτομερής αξιολόγηση μετρήσεων απόδοσης",
+        weekly_progress_tab: "Εβδομαδιαία Πρόοδος",
+        tasks_done: "Εργασίες",
+        goals_done: "Στόχοι",
+        streak_health: "Υγεία Σερί",
+        trust_growth: "Ανάπτυξη Εμπιστοσύνης",
+        xp_rank_level: "Επίπεδο XP",
+        trust_consistency: "Συνέπεια Εμπιστοσύνης",
+        chal_summer_sprint: "Καλοκαιρινό Σπριντ",
+        chal_summer_desc: "Ολοκληρώστε 10 εργασίες για τεράστια ώθηση.",
+        chal_30day: "Συνέπεια 30 Ημερών",
+        chal_30day_desc: "Διατηρήστε σερί 30 ημερών.",
+        in_progress: "Σε Εξέλιξη",
+        xp_reward_500: "+500 XP Ανταμοιβή",
+        xp_reward_1500: "+1500 XP Ανταμοιβή",
+        sent: "Απεσταλμένα",
+        ready: "Έτοιμα",
+        opened: "Ανοιγμένα",
+        no_messages_yet: "Δεν υπάρχουν μηνύματα ακόμα. Γράψτε το πρώτο σας παραπάνω!",
+        ready_to_open: "Έτοιμο για Άνοιγμα!",
+        fs_promise: "🤝 Υπόσχεση",
+        fs_prediction: "🔮 Πρόβλεψη",
+        fs_reminder: "🔔 Υπενθύμιση",
+        fs_motivational: "💪 Κινητοποιητικό",
+        no_achievements: "Δεν υπάρχουν επιτεύγματα ακόμα",
+        for_you_default_body: "Συνεχίστε να ολοκληρώνετε εργασίες για εξατομικευμένη καθοδήγηση",
+        profile_updated: "Το προφίλ ενημερώθηκε",
+        profile_update_failed: "Αποτυχία ενημέρωσης προφίλ",
+        profile_link_copied: "Ο σύνδεσμος προφίλ αντιγράφηκε!",
+        insight_start_streak: "Ξεκινήστε το Σερί σας",
+        insight_start_streak_body: "Ολοκληρώστε μια εργασία σήμερα για να ξεκινήσετε το σερί σας. Η συνέπεια είναι η βάση της εμπιστοσύνης.",
+        levels_to_rank: "Επίπεδα μέχρι Αναβάθμιση",
+        reach_level: "Φτάστε Επίπεδο",
+        to_unlock: "για ξεκλείδωμα του",
+        rank_push: "βαθμού. Προσπαθήστε!",
+        tasks_to_milestone: "Εργασίες μέχρι Ορόσημο",
+        complete: "Ολοκληρώστε",
+        more_tasks_milestone: "ακόμα εργασίες για το ορόσημο των"
     },
     es: {
         app_title: "tobedone",
@@ -1282,7 +1414,73 @@ const translations = {
         chal_streak_title: "Reach a 3 day streak",
         chal_streak_desc: "Consistency is key",
         future_placeholder: "Write a letter to your future self",
-        future_dear: "Dear future me..."
+        future_dear: "Dear future me...",
+        empty_task_desc: "Crea tu primera tarea para mantenerte organizado y productivo.",
+        empty_goal_desc: "Crea tu primer objetivo para seguir el progreso a largo plazo.",
+        empty_habit_desc: "Construye consistencia con tu primer hábito recurrente.",
+        achieved_failed: "Logrados / Fallidos",
+        achieved: "Logrado",
+        failed_status: "Fallido",
+        longest_streak: "Racha más larga",
+        highest_xp: "XP más alto logrado",
+        max_tasks_day: "Máx. tareas/día",
+        tasks_word: "Tareas",
+        goals_word: "Objetivos",
+        ms_first_step: "Primer Paso",
+        ms_first_step_desc: "Completa tu primera tarea",
+        ms_goal_setter: "Creador de Objetivos",
+        ms_goal_setter_desc: "Establece tu primer objetivo",
+        ms_lvl10: "Nivel 10 Alcanzado",
+        ms_lvl10_desc: "Alcanza el Nivel 10 de productividad",
+        ms_trust_builder: "Constructor de Confianza",
+        ms_trust_builder_desc: "Eleva la puntuación de confianza por encima de 50",
+        ms_discipline_elite: "Élite de Disciplina",
+        ms_discipline_elite_desc: "Alcanza Nivel 25 o niveles élite de confianza",
+        ms_legendary: "Logrador Legendario",
+        ms_legendary_desc: "Completa 100 tareas y alcanza nivel 50",
+        locked: "Bloqueado",
+        unlocked_status: "Desbloqueado",
+        weekly_perf_card: "Tarjeta de Rendimiento Semanal",
+        weekly_perf_desc: "Estadísticas semanales auto-generadas",
+        monthly_perf_card: "Revisión de Rendimiento Mensual",
+        monthly_perf_desc: "Revisión detallada de métricas",
+        weekly_progress_tab: "Progreso Semanal",
+        tasks_done: "Tareas",
+        goals_done: "Objetivos",
+        streak_health: "Salud de Racha",
+        trust_growth: "Crecimiento de Confianza",
+        xp_rank_level: "Nivel XP",
+        trust_consistency: "Consistencia de Confianza",
+        chal_summer_sprint: "Sprint de Verano",
+        chal_summer_desc: "Completa 10 tareas para un impulso masivo.",
+        chal_30day: "Consistencia 30 Días",
+        chal_30day_desc: "Mantén una racha de 30 días.",
+        in_progress: "En Progreso",
+        xp_reward_500: "+500 XP Recompensa",
+        xp_reward_1500: "+1500 XP Recompensa",
+        sent: "Enviados",
+        ready: "Listos",
+        opened: "Abiertos",
+        no_messages_yet: "Sin mensajes aún. ¡Escribe el primero arriba!",
+        ready_to_open: "¡Listo para Abrir!",
+        fs_promise: "🤝 Promesa",
+        fs_prediction: "🔮 Predicción",
+        fs_reminder: "🔔 Recordatorio",
+        fs_motivational: "💪 Motivacional",
+        no_achievements: "Sin logros aún",
+        for_you_default_body: "Sigue completando tareas para desbloquear orientación personalizada",
+        profile_updated: "Perfil actualizado",
+        profile_update_failed: "Error al actualizar perfil",
+        profile_link_copied: "¡Enlace de perfil copiado!",
+        insight_start_streak: "Inicia tu Racha",
+        insight_start_streak_body: "Completa una tarea hoy para iniciar tu racha. La consistencia es la base de la confianza.",
+        levels_to_rank: "Niveles para Subir",
+        reach_level: "Alcanza Nivel",
+        to_unlock: "para desbloquear el",
+        rank_push: "rango. ¡Esfuérzate!",
+        tasks_to_milestone: "Tareas para Hito",
+        complete: "Completa",
+        more_tasks_milestone: "tareas más para el hito de"
     },
     fr: {
         app_title: "Tobédon",
@@ -1694,7 +1892,73 @@ const translations = {
         chal_streak_title: "Reach a 3 day streak",
         chal_streak_desc: "Consistency is key",
         future_placeholder: "Write a letter to your future self",
-        future_dear: "Dear future me..."
+        future_dear: "Dear future me...",
+        empty_task_desc: "Créez votre première tâche pour rester organisé et productif.",
+        empty_goal_desc: "Créez votre premier objectif pour suivre vos progrès.",
+        empty_habit_desc: "Construisez la régularité avec votre première habitude.",
+        achieved_failed: "Atteints / Échoués",
+        achieved: "Atteint",
+        failed_status: "Échoué",
+        longest_streak: "Plus longue série",
+        highest_xp: "XP le plus élevé",
+        max_tasks_day: "Max tâches/jour",
+        tasks_word: "Tâches",
+        goals_word: "Objectifs",
+        ms_first_step: "Premier Pas",
+        ms_first_step_desc: "Complétez votre première tâche",
+        ms_goal_setter: "Créateur d'Objectifs",
+        ms_goal_setter_desc: "Définissez votre premier objectif",
+        ms_lvl10: "Niveau 10 Atteint",
+        ms_lvl10_desc: "Atteignez le Niveau 10 de productivité",
+        ms_trust_builder: "Bâtisseur de Confiance",
+        ms_trust_builder_desc: "Élevez le score de confiance au-dessus de 50",
+        ms_discipline_elite: "Élite de Discipline",
+        ms_discipline_elite_desc: "Atteignez Niveau 25 ou niveaux élite de confiance",
+        ms_legendary: "Légende",
+        ms_legendary_desc: "Complétez 100 tâches et atteignez niveau 50",
+        locked: "Verrouillé",
+        unlocked_status: "Déverrouillé",
+        weekly_perf_card: "Carte de Performance Hebdomadaire",
+        weekly_perf_desc: "Statistiques hebdomadaires auto-générées",
+        monthly_perf_card: "Revue de Performance Mensuelle",
+        monthly_perf_desc: "Revue détaillée des métriques",
+        weekly_progress_tab: "Progrès Hebdomadaire",
+        tasks_done: "Tâches",
+        goals_done: "Objectifs",
+        streak_health: "Santé de Série",
+        trust_growth: "Croissance Confiance",
+        xp_rank_level: "Niveau XP",
+        trust_consistency: "Régularité Confiance",
+        chal_summer_sprint: "Sprint Estival",
+        chal_summer_desc: "Complétez 10 tâches pour un boost massif.",
+        chal_30day: "Régularité 30 Jours",
+        chal_30day_desc: "Maintenez une série de 30 jours.",
+        in_progress: "En Cours",
+        xp_reward_500: "+500 XP Récompense",
+        xp_reward_1500: "+1500 XP Récompense",
+        sent: "Envoyés",
+        ready: "Prêts",
+        opened: "Ouverts",
+        no_messages_yet: "Pas encore de messages. Écrivez le premier ci-dessus !",
+        ready_to_open: "Prêt à Ouvrir !",
+        fs_promise: "🤝 Promesse",
+        fs_prediction: "🔮 Prédiction",
+        fs_reminder: "🔔 Rappel",
+        fs_motivational: "💪 Motivationnel",
+        no_achievements: "Pas encore de succès",
+        for_you_default_body: "Continuez à compléter des tâches pour des conseils personnalisés",
+        profile_updated: "Profil mis à jour",
+        profile_update_failed: "Échec de mise à jour du profil",
+        profile_link_copied: "Lien de profil copié !",
+        insight_start_streak: "Démarrez votre Série",
+        insight_start_streak_body: "Complétez une tâche pour démarrer votre série. La régularité est la base de la confiance.",
+        levels_to_rank: "Niveaux pour Monter",
+        reach_level: "Atteignez Niveau",
+        to_unlock: "pour débloquer le",
+        rank_push: "rang. Foncez !",
+        tasks_to_milestone: "Tâches vers Jalon",
+        complete: "Complétez",
+        more_tasks_milestone: "tâches de plus vers le jalon de"
     },
     de: {
         app_title: "Tobedone",
@@ -2106,7 +2370,73 @@ const translations = {
         chal_streak_title: "Reach a 3 day streak",
         chal_streak_desc: "Consistency is key",
         future_placeholder: "Write a letter to your future self",
-        future_dear: "Dear future me..."
+        future_dear: "Dear future me...",
+        empty_task_desc: "Erstelle deine erste Aufgabe, um organisiert und produktiv zu bleiben.",
+        empty_goal_desc: "Erstelle dein erstes Ziel, um langfristigen Fortschritt zu verfolgen.",
+        empty_habit_desc: "Baue Beständigkeit mit deiner ersten wiederkehrenden Gewohnheit auf.",
+        achieved_failed: "Erreicht / Gescheitert",
+        achieved: "Erreicht",
+        failed_status: "Gescheitert",
+        longest_streak: "Längste Serie",
+        highest_xp: "Höchste XP",
+        max_tasks_day: "Max Aufgaben/Tag",
+        tasks_word: "Aufgaben",
+        goals_word: "Ziele",
+        ms_first_step: "Erster Schritt",
+        ms_first_step_desc: "Schließe deine erste Aufgabe ab",
+        ms_goal_setter: "Zielsetzer",
+        ms_goal_setter_desc: "Setze dein erstes Ziel",
+        ms_lvl10: "Level 10 Erreicht",
+        ms_lvl10_desc: "Erreiche Level 10 der Produktivität",
+        ms_trust_builder: "Vertrauensbauer",
+        ms_trust_builder_desc: "Erhöhe den Vertrauens-Score über 50",
+        ms_discipline_elite: "Disziplin-Elite",
+        ms_discipline_elite_desc: "Erreiche Level 25 oder Elite-Vertrauensstufen",
+        ms_legendary: "Legendärer Erreicher",
+        ms_legendary_desc: "Schließe 100 Aufgaben ab und erreiche Level 50",
+        locked: "Gesperrt",
+        unlocked_status: "Freigeschaltet",
+        weekly_perf_card: "Wöchentliche Leistungskarte",
+        weekly_perf_desc: "Automatisch generierte wöchentliche Statistiken",
+        monthly_perf_card: "Monatliche Leistungsübersicht",
+        monthly_perf_desc: "Detaillierte Leistungsmetriken",
+        weekly_progress_tab: "Wöchentlicher Fortschritt",
+        tasks_done: "Aufgaben",
+        goals_done: "Ziele",
+        streak_health: "Serien-Gesundheit",
+        trust_growth: "Vertrauenswachstum",
+        xp_rank_level: "XP Rang-Level",
+        trust_consistency: "Vertrauens-Beständigkeit",
+        chal_summer_sprint: "Sommer Sprint",
+        chal_summer_desc: "Schließe 10 Aufgaben ab für einen massiven Boost.",
+        chal_30day: "30 Tage Beständigkeit",
+        chal_30day_desc: "Halte eine Serie von 30 Tagen aufrecht.",
+        in_progress: "In Bearbeitung",
+        xp_reward_500: "+500 XP Belohnung",
+        xp_reward_1500: "+1500 XP Belohnung",
+        sent: "Gesendet",
+        ready: "Bereit",
+        opened: "Geöffnet",
+        no_messages_yet: "Noch keine Nachrichten. Schreibe deine erste oben!",
+        ready_to_open: "Bereit zum Öffnen!",
+        fs_promise: "🤝 Versprechen",
+        fs_prediction: "🔮 Vorhersage",
+        fs_reminder: "🔔 Erinnerung",
+        fs_motivational: "💪 Motivierend",
+        no_achievements: "Noch keine Erfolge",
+        for_you_default_body: "Erledige weiterhin Aufgaben für personalisierte Anleitung",
+        profile_updated: "Profil aktualisiert",
+        profile_update_failed: "Profil-Update fehlgeschlagen",
+        profile_link_copied: "Profillink kopiert!",
+        insight_start_streak: "Starte deine Serie",
+        insight_start_streak_body: "Schließe heute eine Aufgabe ab, um deine Serie zu starten. Beständigkeit ist die Grundlage des Vertrauens.",
+        levels_to_rank: "Level bis zum Aufstieg",
+        reach_level: "Erreiche Level",
+        to_unlock: "um den",
+        rank_push: "Rang freizuschalten. Los geht's!",
+        tasks_to_milestone: "Aufgaben bis Meilenstein",
+        complete: "Schließe",
+        more_tasks_milestone: "weitere Aufgaben bis zum Meilenstein von"
     },
     it: {
         app_title: "Tobedone",
@@ -2487,7 +2817,73 @@ const translations = {
         chal_streak_title: "Reach a 3 day streak",
         chal_streak_desc: "Consistency is key",
         future_placeholder: "Write a letter to your future self",
-        future_dear: "Dear future me..."
+        future_dear: "Dear future me...",
+        empty_task_desc: "Create your first task to stay organized and productive.",
+        empty_goal_desc: "Create your first goal to track long-term progress.",
+        empty_habit_desc: "Build consistency with your first recurring habit.",
+        achieved_failed: "Achieved / Failed",
+        achieved: "Achieved",
+        failed_status: "Failed",
+        longest_streak: "Longest Streak",
+        highest_xp: "Highest XP Achieved",
+        max_tasks_day: "Max Tasks In A Day",
+        tasks_word: "Tasks",
+        goals_word: "Goals",
+        ms_first_step: "First Step",
+        ms_first_step_desc: "Complete your first task",
+        ms_goal_setter: "Goal Setter",
+        ms_goal_setter_desc: "Set your very first goal",
+        ms_lvl10: "Level 10 Achieved",
+        ms_lvl10_desc: "Reach Level 10 of personal productivity",
+        ms_trust_builder: "Trust Builder",
+        ms_trust_builder_desc: "Raise self trust score above 50",
+        ms_discipline_elite: "Discipline Elite",
+        ms_discipline_elite_desc: "Reach Level 25 or achieve elite trust levels",
+        ms_legendary: "Legendary Achiever",
+        ms_legendary_desc: "Complete 100 tasks and reach level 50",
+        locked: "Locked",
+        unlocked_status: "Unlocked",
+        weekly_perf_card: "Weekly Performance Card",
+        weekly_perf_desc: "Auto-generated weekly activity stats",
+        monthly_perf_card: "Monthly Performance Review",
+        monthly_perf_desc: "Detailed performance metrics review",
+        weekly_progress_tab: "Weekly Progress",
+        tasks_done: "Tasks Done",
+        goals_done: "Goals Done",
+        streak_health: "Streak Health",
+        trust_growth: "Trust Growth",
+        xp_rank_level: "XP Rank Level",
+        trust_consistency: "Trust Consistency",
+        chal_summer_sprint: "Summer Sprint",
+        chal_summer_desc: "Complete 10 tasks to claim a massive boost.",
+        chal_30day: "30 Day Consistency",
+        chal_30day_desc: "Maintain a streak of 30 days.",
+        in_progress: "In Progress",
+        xp_reward_500: "+500 XP Reward",
+        xp_reward_1500: "+1500 XP Reward",
+        sent: "Sent",
+        ready: "Ready",
+        opened: "Opened",
+        no_messages_yet: "No messages yet. Write your first one above!",
+        ready_to_open: "Ready to Open!",
+        fs_promise: "🤝 Promise",
+        fs_prediction: "🔮 Prediction",
+        fs_reminder: "🔔 Reminder",
+        fs_motivational: "💪 Motivational",
+        no_achievements: "No achievements yet",
+        for_you_default_body: "Keep completing tasks to unlock personalized guidance",
+        profile_updated: "Profile updated",
+        profile_update_failed: "Failed to update profile",
+        profile_link_copied: "Profile link copied!",
+        insight_start_streak: "Start Your Streak",
+        insight_start_streak_body: "Complete a task today to ignite your streak. Consistency is the foundation of trust.",
+        levels_to_rank: "Levels to Rank Up",
+        reach_level: "Reach Level",
+        to_unlock: "to unlock the",
+        rank_push: "rank. Push for it!",
+        tasks_to_milestone: "Tasks to Milestone",
+        complete: "Complete",
+        more_tasks_milestone: "more tasks to reach the milestone of"
     },
     pt: {
         app_title: "Tobedone",
@@ -2868,7 +3264,73 @@ const translations = {
         chal_streak_title: "Reach a 3 day streak",
         chal_streak_desc: "Consistency is key",
         future_placeholder: "Write a letter to your future self",
-        future_dear: "Dear future me..."
+        future_dear: "Dear future me...",
+        empty_task_desc: "Create your first task to stay organized and productive.",
+        empty_goal_desc: "Create your first goal to track long-term progress.",
+        empty_habit_desc: "Build consistency with your first recurring habit.",
+        achieved_failed: "Achieved / Failed",
+        achieved: "Achieved",
+        failed_status: "Failed",
+        longest_streak: "Longest Streak",
+        highest_xp: "Highest XP Achieved",
+        max_tasks_day: "Max Tasks In A Day",
+        tasks_word: "Tasks",
+        goals_word: "Goals",
+        ms_first_step: "First Step",
+        ms_first_step_desc: "Complete your first task",
+        ms_goal_setter: "Goal Setter",
+        ms_goal_setter_desc: "Set your very first goal",
+        ms_lvl10: "Level 10 Achieved",
+        ms_lvl10_desc: "Reach Level 10 of personal productivity",
+        ms_trust_builder: "Trust Builder",
+        ms_trust_builder_desc: "Raise self trust score above 50",
+        ms_discipline_elite: "Discipline Elite",
+        ms_discipline_elite_desc: "Reach Level 25 or achieve elite trust levels",
+        ms_legendary: "Legendary Achiever",
+        ms_legendary_desc: "Complete 100 tasks and reach level 50",
+        locked: "Locked",
+        unlocked_status: "Unlocked",
+        weekly_perf_card: "Weekly Performance Card",
+        weekly_perf_desc: "Auto-generated weekly activity stats",
+        monthly_perf_card: "Monthly Performance Review",
+        monthly_perf_desc: "Detailed performance metrics review",
+        weekly_progress_tab: "Weekly Progress",
+        tasks_done: "Tasks Done",
+        goals_done: "Goals Done",
+        streak_health: "Streak Health",
+        trust_growth: "Trust Growth",
+        xp_rank_level: "XP Rank Level",
+        trust_consistency: "Trust Consistency",
+        chal_summer_sprint: "Summer Sprint",
+        chal_summer_desc: "Complete 10 tasks to claim a massive boost.",
+        chal_30day: "30 Day Consistency",
+        chal_30day_desc: "Maintain a streak of 30 days.",
+        in_progress: "In Progress",
+        xp_reward_500: "+500 XP Reward",
+        xp_reward_1500: "+1500 XP Reward",
+        sent: "Sent",
+        ready: "Ready",
+        opened: "Opened",
+        no_messages_yet: "No messages yet. Write your first one above!",
+        ready_to_open: "Ready to Open!",
+        fs_promise: "🤝 Promise",
+        fs_prediction: "🔮 Prediction",
+        fs_reminder: "🔔 Reminder",
+        fs_motivational: "💪 Motivational",
+        no_achievements: "No achievements yet",
+        for_you_default_body: "Keep completing tasks to unlock personalized guidance",
+        profile_updated: "Profile updated",
+        profile_update_failed: "Failed to update profile",
+        profile_link_copied: "Profile link copied!",
+        insight_start_streak: "Start Your Streak",
+        insight_start_streak_body: "Complete a task today to ignite your streak. Consistency is the foundation of trust.",
+        levels_to_rank: "Levels to Rank Up",
+        reach_level: "Reach Level",
+        to_unlock: "to unlock the",
+        rank_push: "rank. Push for it!",
+        tasks_to_milestone: "Tasks to Milestone",
+        complete: "Complete",
+        more_tasks_milestone: "more tasks to reach the milestone of"
     },
     ru: {
         app_title: "Тобедоне",
@@ -3249,7 +3711,73 @@ const translations = {
         chal_streak_title: "Reach a 3 day streak",
         chal_streak_desc: "Consistency is key",
         future_placeholder: "Write a letter to your future self",
-        future_dear: "Dear future me..."
+        future_dear: "Dear future me...",
+        empty_task_desc: "Create your first task to stay organized and productive.",
+        empty_goal_desc: "Create your first goal to track long-term progress.",
+        empty_habit_desc: "Build consistency with your first recurring habit.",
+        achieved_failed: "Achieved / Failed",
+        achieved: "Achieved",
+        failed_status: "Failed",
+        longest_streak: "Longest Streak",
+        highest_xp: "Highest XP Achieved",
+        max_tasks_day: "Max Tasks In A Day",
+        tasks_word: "Tasks",
+        goals_word: "Goals",
+        ms_first_step: "First Step",
+        ms_first_step_desc: "Complete your first task",
+        ms_goal_setter: "Goal Setter",
+        ms_goal_setter_desc: "Set your very first goal",
+        ms_lvl10: "Level 10 Achieved",
+        ms_lvl10_desc: "Reach Level 10 of personal productivity",
+        ms_trust_builder: "Trust Builder",
+        ms_trust_builder_desc: "Raise self trust score above 50",
+        ms_discipline_elite: "Discipline Elite",
+        ms_discipline_elite_desc: "Reach Level 25 or achieve elite trust levels",
+        ms_legendary: "Legendary Achiever",
+        ms_legendary_desc: "Complete 100 tasks and reach level 50",
+        locked: "Locked",
+        unlocked_status: "Unlocked",
+        weekly_perf_card: "Weekly Performance Card",
+        weekly_perf_desc: "Auto-generated weekly activity stats",
+        monthly_perf_card: "Monthly Performance Review",
+        monthly_perf_desc: "Detailed performance metrics review",
+        weekly_progress_tab: "Weekly Progress",
+        tasks_done: "Tasks Done",
+        goals_done: "Goals Done",
+        streak_health: "Streak Health",
+        trust_growth: "Trust Growth",
+        xp_rank_level: "XP Rank Level",
+        trust_consistency: "Trust Consistency",
+        chal_summer_sprint: "Summer Sprint",
+        chal_summer_desc: "Complete 10 tasks to claim a massive boost.",
+        chal_30day: "30 Day Consistency",
+        chal_30day_desc: "Maintain a streak of 30 days.",
+        in_progress: "In Progress",
+        xp_reward_500: "+500 XP Reward",
+        xp_reward_1500: "+1500 XP Reward",
+        sent: "Sent",
+        ready: "Ready",
+        opened: "Opened",
+        no_messages_yet: "No messages yet. Write your first one above!",
+        ready_to_open: "Ready to Open!",
+        fs_promise: "🤝 Promise",
+        fs_prediction: "🔮 Prediction",
+        fs_reminder: "🔔 Reminder",
+        fs_motivational: "💪 Motivational",
+        no_achievements: "No achievements yet",
+        for_you_default_body: "Keep completing tasks to unlock personalized guidance",
+        profile_updated: "Profile updated",
+        profile_update_failed: "Failed to update profile",
+        profile_link_copied: "Profile link copied!",
+        insight_start_streak: "Start Your Streak",
+        insight_start_streak_body: "Complete a task today to ignite your streak. Consistency is the foundation of trust.",
+        levels_to_rank: "Levels to Rank Up",
+        reach_level: "Reach Level",
+        to_unlock: "to unlock the",
+        rank_push: "rank. Push for it!",
+        tasks_to_milestone: "Tasks to Milestone",
+        complete: "Complete",
+        more_tasks_milestone: "more tasks to reach the milestone of"
     },
     ja: {
         app_title: "トベドネ",
@@ -3630,7 +4158,73 @@ const translations = {
         chal_streak_title: "Reach a 3 day streak",
         chal_streak_desc: "Consistency is key",
         future_placeholder: "Write a letter to your future self",
-        future_dear: "Dear future me..."
+        future_dear: "Dear future me...",
+        empty_task_desc: "Create your first task to stay organized and productive.",
+        empty_goal_desc: "Create your first goal to track long-term progress.",
+        empty_habit_desc: "Build consistency with your first recurring habit.",
+        achieved_failed: "Achieved / Failed",
+        achieved: "Achieved",
+        failed_status: "Failed",
+        longest_streak: "Longest Streak",
+        highest_xp: "Highest XP Achieved",
+        max_tasks_day: "Max Tasks In A Day",
+        tasks_word: "Tasks",
+        goals_word: "Goals",
+        ms_first_step: "First Step",
+        ms_first_step_desc: "Complete your first task",
+        ms_goal_setter: "Goal Setter",
+        ms_goal_setter_desc: "Set your very first goal",
+        ms_lvl10: "Level 10 Achieved",
+        ms_lvl10_desc: "Reach Level 10 of personal productivity",
+        ms_trust_builder: "Trust Builder",
+        ms_trust_builder_desc: "Raise self trust score above 50",
+        ms_discipline_elite: "Discipline Elite",
+        ms_discipline_elite_desc: "Reach Level 25 or achieve elite trust levels",
+        ms_legendary: "Legendary Achiever",
+        ms_legendary_desc: "Complete 100 tasks and reach level 50",
+        locked: "Locked",
+        unlocked_status: "Unlocked",
+        weekly_perf_card: "Weekly Performance Card",
+        weekly_perf_desc: "Auto-generated weekly activity stats",
+        monthly_perf_card: "Monthly Performance Review",
+        monthly_perf_desc: "Detailed performance metrics review",
+        weekly_progress_tab: "Weekly Progress",
+        tasks_done: "Tasks Done",
+        goals_done: "Goals Done",
+        streak_health: "Streak Health",
+        trust_growth: "Trust Growth",
+        xp_rank_level: "XP Rank Level",
+        trust_consistency: "Trust Consistency",
+        chal_summer_sprint: "Summer Sprint",
+        chal_summer_desc: "Complete 10 tasks to claim a massive boost.",
+        chal_30day: "30 Day Consistency",
+        chal_30day_desc: "Maintain a streak of 30 days.",
+        in_progress: "In Progress",
+        xp_reward_500: "+500 XP Reward",
+        xp_reward_1500: "+1500 XP Reward",
+        sent: "Sent",
+        ready: "Ready",
+        opened: "Opened",
+        no_messages_yet: "No messages yet. Write your first one above!",
+        ready_to_open: "Ready to Open!",
+        fs_promise: "🤝 Promise",
+        fs_prediction: "🔮 Prediction",
+        fs_reminder: "🔔 Reminder",
+        fs_motivational: "💪 Motivational",
+        no_achievements: "No achievements yet",
+        for_you_default_body: "Keep completing tasks to unlock personalized guidance",
+        profile_updated: "Profile updated",
+        profile_update_failed: "Failed to update profile",
+        profile_link_copied: "Profile link copied!",
+        insight_start_streak: "Start Your Streak",
+        insight_start_streak_body: "Complete a task today to ignite your streak. Consistency is the foundation of trust.",
+        levels_to_rank: "Levels to Rank Up",
+        reach_level: "Reach Level",
+        to_unlock: "to unlock the",
+        rank_push: "rank. Push for it!",
+        tasks_to_milestone: "Tasks to Milestone",
+        complete: "Complete",
+        more_tasks_milestone: "more tasks to reach the milestone of"
     },
     zh: {
         app_title: "托贝多内",
@@ -4011,7 +4605,73 @@ const translations = {
         chal_streak_title: "Reach a 3 day streak",
         chal_streak_desc: "Consistency is key",
         future_placeholder: "Write a letter to your future self",
-        future_dear: "Dear future me..."
+        future_dear: "Dear future me...",
+        empty_task_desc: "Create your first task to stay organized and productive.",
+        empty_goal_desc: "Create your first goal to track long-term progress.",
+        empty_habit_desc: "Build consistency with your first recurring habit.",
+        achieved_failed: "Achieved / Failed",
+        achieved: "Achieved",
+        failed_status: "Failed",
+        longest_streak: "Longest Streak",
+        highest_xp: "Highest XP Achieved",
+        max_tasks_day: "Max Tasks In A Day",
+        tasks_word: "Tasks",
+        goals_word: "Goals",
+        ms_first_step: "First Step",
+        ms_first_step_desc: "Complete your first task",
+        ms_goal_setter: "Goal Setter",
+        ms_goal_setter_desc: "Set your very first goal",
+        ms_lvl10: "Level 10 Achieved",
+        ms_lvl10_desc: "Reach Level 10 of personal productivity",
+        ms_trust_builder: "Trust Builder",
+        ms_trust_builder_desc: "Raise self trust score above 50",
+        ms_discipline_elite: "Discipline Elite",
+        ms_discipline_elite_desc: "Reach Level 25 or achieve elite trust levels",
+        ms_legendary: "Legendary Achiever",
+        ms_legendary_desc: "Complete 100 tasks and reach level 50",
+        locked: "Locked",
+        unlocked_status: "Unlocked",
+        weekly_perf_card: "Weekly Performance Card",
+        weekly_perf_desc: "Auto-generated weekly activity stats",
+        monthly_perf_card: "Monthly Performance Review",
+        monthly_perf_desc: "Detailed performance metrics review",
+        weekly_progress_tab: "Weekly Progress",
+        tasks_done: "Tasks Done",
+        goals_done: "Goals Done",
+        streak_health: "Streak Health",
+        trust_growth: "Trust Growth",
+        xp_rank_level: "XP Rank Level",
+        trust_consistency: "Trust Consistency",
+        chal_summer_sprint: "Summer Sprint",
+        chal_summer_desc: "Complete 10 tasks to claim a massive boost.",
+        chal_30day: "30 Day Consistency",
+        chal_30day_desc: "Maintain a streak of 30 days.",
+        in_progress: "In Progress",
+        xp_reward_500: "+500 XP Reward",
+        xp_reward_1500: "+1500 XP Reward",
+        sent: "Sent",
+        ready: "Ready",
+        opened: "Opened",
+        no_messages_yet: "No messages yet. Write your first one above!",
+        ready_to_open: "Ready to Open!",
+        fs_promise: "🤝 Promise",
+        fs_prediction: "🔮 Prediction",
+        fs_reminder: "🔔 Reminder",
+        fs_motivational: "💪 Motivational",
+        no_achievements: "No achievements yet",
+        for_you_default_body: "Keep completing tasks to unlock personalized guidance",
+        profile_updated: "Profile updated",
+        profile_update_failed: "Failed to update profile",
+        profile_link_copied: "Profile link copied!",
+        insight_start_streak: "Start Your Streak",
+        insight_start_streak_body: "Complete a task today to ignite your streak. Consistency is the foundation of trust.",
+        levels_to_rank: "Levels to Rank Up",
+        reach_level: "Reach Level",
+        to_unlock: "to unlock the",
+        rank_push: "rank. Push for it!",
+        tasks_to_milestone: "Tasks to Milestone",
+        complete: "Complete",
+        more_tasks_milestone: "more tasks to reach the milestone of"
     },
     ar: {
         app_title: "توبيدون",
@@ -4392,7 +5052,73 @@ const translations = {
         chal_streak_title: "Reach a 3 day streak",
         chal_streak_desc: "Consistency is key",
         future_placeholder: "Write a letter to your future self",
-        future_dear: "Dear future me..."
+        future_dear: "Dear future me...",
+        empty_task_desc: "Create your first task to stay organized and productive.",
+        empty_goal_desc: "Create your first goal to track long-term progress.",
+        empty_habit_desc: "Build consistency with your first recurring habit.",
+        achieved_failed: "Achieved / Failed",
+        achieved: "Achieved",
+        failed_status: "Failed",
+        longest_streak: "Longest Streak",
+        highest_xp: "Highest XP Achieved",
+        max_tasks_day: "Max Tasks In A Day",
+        tasks_word: "Tasks",
+        goals_word: "Goals",
+        ms_first_step: "First Step",
+        ms_first_step_desc: "Complete your first task",
+        ms_goal_setter: "Goal Setter",
+        ms_goal_setter_desc: "Set your very first goal",
+        ms_lvl10: "Level 10 Achieved",
+        ms_lvl10_desc: "Reach Level 10 of personal productivity",
+        ms_trust_builder: "Trust Builder",
+        ms_trust_builder_desc: "Raise self trust score above 50",
+        ms_discipline_elite: "Discipline Elite",
+        ms_discipline_elite_desc: "Reach Level 25 or achieve elite trust levels",
+        ms_legendary: "Legendary Achiever",
+        ms_legendary_desc: "Complete 100 tasks and reach level 50",
+        locked: "Locked",
+        unlocked_status: "Unlocked",
+        weekly_perf_card: "Weekly Performance Card",
+        weekly_perf_desc: "Auto-generated weekly activity stats",
+        monthly_perf_card: "Monthly Performance Review",
+        monthly_perf_desc: "Detailed performance metrics review",
+        weekly_progress_tab: "Weekly Progress",
+        tasks_done: "Tasks Done",
+        goals_done: "Goals Done",
+        streak_health: "Streak Health",
+        trust_growth: "Trust Growth",
+        xp_rank_level: "XP Rank Level",
+        trust_consistency: "Trust Consistency",
+        chal_summer_sprint: "Summer Sprint",
+        chal_summer_desc: "Complete 10 tasks to claim a massive boost.",
+        chal_30day: "30 Day Consistency",
+        chal_30day_desc: "Maintain a streak of 30 days.",
+        in_progress: "In Progress",
+        xp_reward_500: "+500 XP Reward",
+        xp_reward_1500: "+1500 XP Reward",
+        sent: "Sent",
+        ready: "Ready",
+        opened: "Opened",
+        no_messages_yet: "No messages yet. Write your first one above!",
+        ready_to_open: "Ready to Open!",
+        fs_promise: "🤝 Promise",
+        fs_prediction: "🔮 Prediction",
+        fs_reminder: "🔔 Reminder",
+        fs_motivational: "💪 Motivational",
+        no_achievements: "No achievements yet",
+        for_you_default_body: "Keep completing tasks to unlock personalized guidance",
+        profile_updated: "Profile updated",
+        profile_update_failed: "Failed to update profile",
+        profile_link_copied: "Profile link copied!",
+        insight_start_streak: "Start Your Streak",
+        insight_start_streak_body: "Complete a task today to ignite your streak. Consistency is the foundation of trust.",
+        levels_to_rank: "Levels to Rank Up",
+        reach_level: "Reach Level",
+        to_unlock: "to unlock the",
+        rank_push: "rank. Push for it!",
+        tasks_to_milestone: "Tasks to Milestone",
+        complete: "Complete",
+        more_tasks_milestone: "more tasks to reach the milestone of"
     }
 };
 
@@ -6676,8 +7402,8 @@ function renderHabits(habits) {
             <div class="empty-state">
                 <span class="empty-state-icon"><i class="fas fa-brain"></i></span>
                 <h3 class="empty-state-title">${t('no_habits_yet')}</h3>
-                <p class="empty-state-text">Build consistency with your first recurring habit.</p>
-                <button onclick="toggleHabitForm()" class="btn primary"><i class="fas fa-plus-circle"></i> CREATE HABIT</button>
+                <p class="empty-state-text">${t('empty_habit_desc')}</p>
+                <button onclick="toggleHabitForm()" class="btn primary"><i class="fas fa-plus-circle"></i> ${t('create_habit')}</button>
             </div>
         `;
         return;
@@ -6901,8 +7627,8 @@ function renderTasks(tasks) {
             <div class="empty-state">
                 <span class="empty-state-icon"><i class="fas fa-list-check"></i></span>
                 <h3 class="empty-state-title">${t('no_tasks_yet')}</h3>
-                <p class="empty-state-text">Create your first task to stay organized and productive.</p>
-                <button onclick="toggleCurrentForm()" class="btn primary"><i class="fas fa-plus-circle"></i> CREATE TASK</button>
+                <p class="empty-state-text">${t('empty_task_desc')}</p>
+                <button onclick="toggleCurrentForm()" class="btn primary"><i class="fas fa-plus-circle"></i> ${t('create_task')}</button>
             </div>
         `;
         return;
@@ -7204,8 +7930,8 @@ function renderGoals(goals) {
             <div class="empty-state">
                 <span class="empty-state-icon"><i class="fas fa-bullseye"></i></span>
                 <h3 class="empty-state-title">${t('no_goals_yet')}</h3>
-                <p class="empty-state-text">Create your first goal to track long-term progress.</p>
-                <button onclick="toggleGoalForm()" class="btn primary"><i class="fas fa-plus-circle"></i> CREATE GOAL</button>
+                <p class="empty-state-text">${t('empty_goal_desc')}</p>
+                <button onclick="toggleGoalForm()" class="btn primary"><i class="fas fa-plus-circle"></i> ${t('create_goal')}</button>
             </div>
         `;
         return;
@@ -7625,7 +8351,7 @@ function renderGoals(goals) {
             <div class="empty-state">
                 <span class="empty-state-icon">🎯</span>
                 <h3 class="empty-state-title">${t('no_goals_yet')}</h3>
-                <p class="empty-state-text">Create your first goal to track long-term progress.</p>
+                <p class="empty-state-text">${t('empty_goal_desc')}</p>
                 <button onclick="toggleGoalForm()" class="btn primary">Create Goal</button>
             </div>
         `;
@@ -7801,7 +8527,7 @@ function renderIdentity(identity) {
                 ${b.label}
             </span>
         `).join('')
-        : `<span class="identity-badge" style="opacity:0.5"><span>🔒</span> No achievements yet</span>`;
+        : `<span class="identity-badge" style="opacity:0.5"><span>🔒</span> ${t('no_achievements')}</span>`;
 
     // Render full achievements section
     renderAchievements(identity.badges);
@@ -8246,9 +8972,9 @@ function setupEventListeners() {
                 const name = document.getElementById('profile-name-input')?.value || '';
                 const username = document.getElementById('profile-username-input')?.value || '';
                 await updateProfile(name, username);
-                showToast('Profile updated', 'success');
+                showToast(t('profile_updated'), 'success');
             } catch (err) {
-                showToast(err.message || 'Failed to update profile', 'error');
+                showToast(err.message || t('profile_update_failed'), 'error');
             } finally {
                 showLoading(false);
             }
@@ -8870,7 +9596,7 @@ async function nativeShare() {
 function copyProfileLink() {
     const linkInput = document.getElementById('profile-link');
     navigator.clipboard.writeText(linkInput.value).then(() => {
-        showToast('Profile link copied!', 'success');
+        showToast(t('profile_link_copied'), 'success');
     }).catch(() => {
         showToast('Failed to copy link', 'error');
     });
@@ -9112,10 +9838,10 @@ async function renderPersonalRecords(identity) {
 
     const renderList = (hTrust, mTasksDay) => {
         const records = [
-            { label: 'Longest Streak', val: `${currentStreak} Days`, icon: '🔥' },
+            { label: t('longest_streak'), val: `${currentStreak} ${t('days')}`, icon: '🔥' },
             { label: t('self_trust_score'), val: hTrust.toFixed(1), icon: '🛡️' },
-            { label: 'Highest XP Achieved', val: identity.total_xp.toLocaleString(), icon: '⭐' },
-            { label: 'Max Tasks In A Day', val: `${Math.max(mTasksDay, totalTasksCount > 0 ? 1 : 0)} Tasks`, icon: '📋' },
+            { label: t('highest_xp'), val: identity.total_xp.toLocaleString(), icon: '⭐' },
+            { label: t('max_tasks_day'), val: `${Math.max(mTasksDay, totalTasksCount > 0 ? 1 : 0)} ${t('tasks_word')}`, icon: '📋' },
             { label: t('total_tasks'), val: `${totalTasksCount} Tasks`, icon: '✅' },
             { label: t('total_goals'), val: `${totalGoalsCount} Goals`, icon: '🎯' }
         ];
@@ -9164,19 +9890,19 @@ async function renderMilestoneTimeline(identity) {
 
     // Check progress of milestones
     const milestones = [
-        { title: '👣 First Step', desc: 'Complete your first task', condition: identity.completed_tasks >= 1 },
-        { title: '📌 Goal Setter', desc: 'Set your very first goal', condition: identity.completed_goals >= 1 },
+        { title: '👣 ' + t('ms_first_step'), desc: t('ms_first_step_desc'), condition: identity.completed_tasks >= 1 },
+        { title: '📌 ' + t('ms_goal_setter'), desc: t('ms_goal_setter_desc'), condition: identity.completed_goals >= 1 },
         { title: '⚡ Level 10 Achieved', desc: t('rec_lvl10_desc'), condition: identity.level >= 10 },
-        { title: '🛡️ Trust Builder', desc: 'Raise self trust score above 50', condition: identity.trust_score >= 50.0 },
-        { title: '⚔️ Discipline Elite', desc: 'Reach Level 25 or achieve elite trust levels', condition: identity.level >= 25 || identity.trust_score >= 75.0 },
-        { title: '👑 Legendary Achiever', desc: 'Complete 100 tasks and reach level 50', condition: identity.completed_tasks >= 100 && identity.level >= 50 }
+        { title: '🛡️ ' + t('ms_trust_builder'), desc: t('ms_trust_builder_desc'), condition: identity.trust_score >= 50.0 },
+        { title: '⚔️ ' + t('ms_discipline_elite'), desc: t('ms_discipline_elite_desc'), condition: identity.level >= 25 || identity.trust_score >= 75.0 },
+        { title: '👑 ' + t('ms_legendary'), desc: t('ms_legendary_desc'), condition: identity.completed_tasks >= 100 && identity.level >= 50 }
     ];
 
     list.innerHTML = milestones.map(m => `
         <div class="timeline-node ${m.condition ? 'unlocked' : ''}">
             <div class="timeline-title">${m.title}</div>
             <div class="timeline-desc">${m.desc}</div>
-            <div class="timeline-date">${m.condition ? 'Unlocked ✓' : 'Locked'}</div>
+            <div class="timeline-date">${m.condition ? 'Unlocked ✓' : t('locked')}</div>
         </div>
     `).join('');
 }
@@ -9198,31 +9924,31 @@ function renderPerformanceReports(identity) {
 
     if (currentPerformanceReportTab === 'weekly') {
         container.innerHTML = `
-            <h4 style="margin:0 0 0.5rem 0; font-size:0.9rem;">Weekly Performance Card</h4>
-            <p style="font-size:0.75rem; color:var(--text-secondary); margin:0 0 1rem 0;">Auto-generated weekly activity stats</p>
+            <h4 style="margin:0 0 0.5rem 0; font-size:0.9rem;">${t('weekly_perf_card')}</h4>
+            <p style="font-size:0.75rem; color:var(--text-secondary); margin:0 0 1rem 0;">${t('weekly_perf_desc')}</p>
             <div class="report-grid">
                 <div class="report-stat-box">
                     <div class="report-stat-val">${identity.completed_tasks}</div>
-                    <div class="report-stat-lbl">Tasks Done</div>
+                    <div class="report-stat-lbl">${t('tasks_done')}</div>
                 </div>
                 <div class="report-stat-box">
                     <div class="report-stat-val">${identity.completed_goals}</div>
-                    <div class="report-stat-lbl">Goals Done</div>
+                    <div class="report-stat-lbl">${t('goals_done')}</div>
                 </div>
                 <div class="report-stat-box">
                     <div class="report-stat-val">${identity.streak}</div>
-                    <div class="report-stat-lbl">Streak Health</div>
+                    <div class="report-stat-lbl">${t('streak_health')}</div>
                 </div>
                 <div class="report-stat-box">
                     <div class="report-stat-val">+${(identity.trust_score * 0.15).toFixed(1)}</div>
-                    <div class="report-stat-lbl">Trust Growth</div>
+                    <div class="report-stat-lbl">${t('trust_growth')}</div>
                 </div>
             </div>
         `;
     } else {
         container.innerHTML = `
-            <h4 style="margin:0 0 0.5rem 0; font-size:0.9rem;">Monthly Performance Review</h4>
-            <p style="font-size:0.75rem; color:var(--text-secondary); margin:0 0 1rem 0;">Detailed performance metrics review</p>
+            <h4 style="margin:0 0 0.5rem 0; font-size:0.9rem;">${t('monthly_perf_card')}</h4>
+            <p style="font-size:0.75rem; color:var(--text-secondary); margin:0 0 1rem 0;">${t('monthly_perf_desc')}</p>
             <div class="report-grid">
                 <div class="report-stat-box">
                     <div class="report-stat-val">${identity.completed_tasks}</div>
@@ -9234,11 +9960,11 @@ function renderPerformanceReports(identity) {
                 </div>
                 <div class="report-stat-box">
                     <div class="report-stat-val">${identity.level}</div>
-                    <div class="report-stat-lbl">XP Rank Level</div>
+                    <div class="report-stat-lbl">${t('xp_rank_level')}</div>
                 </div>
                 <div class="report-stat-box">
                     <div class="report-stat-val">${identity.trust_score.toFixed(1)}%</div>
-                    <div class="report-stat-lbl">Trust Consistency</div>
+                    <div class="report-stat-lbl">${t('trust_consistency')}</div>
                 </div>
             </div>
         `;
@@ -9259,16 +9985,16 @@ async function renderSeasonalChallenges() {
     const challenges = [
         {
             id: 'summer_sprint',
-            title: '🏃 Summer Sprint',
-            desc: 'Complete 10 tasks to claim a massive boost.',
+            title: '🏃 ' + t('chal_summer_sprint'),
+            desc: t('chal_summer_desc'),
             target: 10,
             current: Math.min(identity.completed_tasks, 10),
             xp: 500
         },
         {
             id: 'consistency_30',
-            title: '🔥 30 Day Consistency',
-            desc: 'Maintain a streak of 30 days.',
+            title: '🔥 ' + t('chal_30day'),
+            desc: t('chal_30day_desc'),
             target: 30,
             current: Math.min(identity.streak, 30),
             xp: 1500
@@ -9326,7 +10052,7 @@ async function claimChallengeReward(challengeId, xpAmount) {
 
 // Level Up Celebration overlay trigger
 function triggerLevelUpCelebration(newLevel) {
-    showToast(`🎉 LEVEL UP! You have achieved Level ${newLevel}!`, 'success');
+    showToast(`🎉 ${t('level_up')} ${newLevel}!`, 'success');
     
     // Create simple full screen confetti animation overlay
     const overlay = document.createElement('div');
@@ -9488,15 +10214,15 @@ async function loadFutureSelf() {
         const sentEl = document.getElementById('fs-stat-sent');
         const readyEl = document.getElementById('fs-stat-ready');
         const openedEl = document.getElementById('fs-stat-opened');
-        if (sentEl) sentEl.textContent = `${total} Sent`;
-        if (readyEl) readyEl.textContent = `${ready} Ready`;
-        if (openedEl) openedEl.textContent = `${opened} Opened`;
+        if (sentEl) sentEl.textContent = `${total} ${t('sent')}`;
+        if (readyEl) readyEl.textContent = `${ready} ${t('ready')}`;
+        if (openedEl) openedEl.textContent = `${opened} ${t('opened')}`;
 
         if (messages.length === 0) {
             archive.innerHTML = `
                 <div style="text-align:center;padding:1.5rem;color:var(--text-secondary);">
                     <div style="font-size:2.5rem;margin-bottom:0.5rem;">✉️</div>
-                    <p style="font-size:0.85rem;">No messages yet. Write your first one above!</p>
+                    <p style="font-size:0.85rem;">${t('no_messages_yet')}</p>
                 </div>
             `;
             return;
@@ -9559,7 +10285,7 @@ function generateSmartInsightCards(identity, history = []) {
 
     // Streak insights
     if (streak === 0) {
-        cards.push({ icon: 'fas fa-fire', title: 'Start Your Streak', body: 'Complete a task today to ignite your streak. Consistency is the foundation of trust.' });
+        cards.push({ icon: 'fas fa-fire', title: t('insight_start_streak'), body: t('insight_start_streak_body') });
     } else if (streak >= 3 && streak < 7) {
         cards.push({ icon: 'fas fa-fire', title: `${streak}-Day Streak 🔥`, body: `Only ${7 - streak} more days to reach a 1-week streak. You're building momentum!` });
     } else if (streak >= 7) {
@@ -9587,14 +10313,14 @@ function generateSmartInsightCards(identity, history = []) {
     const nextThreshold = nextRankThresholds.find(t => t > level);
     if (nextThreshold) {
         const diff = nextThreshold - level;
-        cards.push({ icon: 'fas fa-star', title: `${diff} Levels to Rank Up`, body: `Reach Level ${nextThreshold} to unlock the "${getRankName(nextThreshold)}" rank. Push for it!` });
+        cards.push({ icon: 'fas fa-star', title: `${diff} ${t('levels_to_rank')}`, body: `${t('reach_level')} ${nextThreshold} ${t('to_unlock')} "${getRankName(nextThreshold)}" ${t('rank_push')}` });
     }
 
     // Task milestone
     const taskMilestones = [10, 25, 50, 100, 250, 500];
     const nextTask = taskMilestones.find(t => t > tasks);
     if (nextTask) {
-        cards.push({ icon: 'fas fa-tasks', title: `${nextTask - tasks} Tasks to Milestone`, body: `Complete ${nextTask - tasks} more tasks to reach the ${nextTask}-task milestone!` });
+        cards.push({ icon: 'fas fa-tasks', title: `${nextTask - tasks} ${t('tasks_to_milestone')}`, body: `${t('complete')} ${nextTask - tasks} ${t('more_tasks_milestone')} ${nextTask}!` });
     }
 
     return cards;
