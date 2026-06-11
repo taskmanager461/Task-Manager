@@ -7136,7 +7136,7 @@ async function loadInsights() {
 
 function renderInsights(history) {
     // 1. Pattern Detection Logic
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayNames = [t('sun'), t('mon'), t('tue'), t('wed'), t('thu'), t('fri'), t('sat')];
     const dayStats = dayNames.map(name => ({ name, count: 0, completed: 0 }));
     const categoryStats = {};
 
@@ -7152,7 +7152,11 @@ function renderInsights(history) {
 
     const bestDayIdx = dayStats.reduce((best, curr, idx) => curr.completed > dayStats[best].completed ? idx : best, 0);
     
-    document.getElementById('insight-best-day').textContent = dayNames[bestDayIdx];
+    if (dayStats[bestDayIdx].completed > 0) {
+        document.getElementById('insight-best-day').textContent = dayNames[bestDayIdx];
+    } else {
+        document.getElementById('insight-best-day').textContent = t('not_enough_data');
+    }
     document.getElementById('insight-best-hour').textContent = '09:00 - 11:00'; // Intelligent placeholder
     document.getElementById('insight-failure-pattern').textContent = t('failure_pattern') + ' "Health"'; // Example
 
@@ -7826,7 +7830,7 @@ async function loadMeInsights() {
     const history = await apiFetch('/score/history?days=30');
     
     // Best Day
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayNames = [t('sun'), t('mon'), t('tue'), t('wed'), t('thu'), t('fri'), t('sat')];
     const dayStats = Array(7).fill(0).map((_, i) => ({ name: dayNames[i], completed: 0 }));
     let tasks30d = 0;
     history.forEach(entry => {
@@ -7836,7 +7840,9 @@ async function loadMeInsights() {
     });
     const bestIdx = dayStats.reduce((best, cur, i) => cur.completed > dayStats[best].completed ? i : best, 0);
     const bestDayEl = document.getElementById('me-insight-best-day');
-    if (bestDayEl) bestDayEl.textContent = dayStats[bestIdx].name;
+    if (bestDayEl) {
+        bestDayEl.textContent = dayStats[bestIdx].completed > 0 ? dayStats[bestIdx].name : t('not_enough_data');
+    }
 
     // Tasks 30d
     const tasks30dEl = document.getElementById('me-tasks-30d');
