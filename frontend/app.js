@@ -175,6 +175,10 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "Streak",
         completed_tasks: "Completed Tasks",
+        completed_tasks_total: "Total Completed",
+        completed_tasks_today: "Completed Today",
+        completed_tasks_this_week: "This Week",
+        completed_tasks_this_month: "This Month",
         goals_achieved: "Achieved",
         trust_low: "Low",
         trust_average: "Average",
@@ -735,6 +739,10 @@ const translations = {
         xp_lbl: "XP",
         streak_lbl: "Ράβδωση",
         completed_tasks: "Ολοκληρωμένες Εργασίες",
+        completed_tasks_total: "Ολοκληρωμένες (Σύνολο)",
+        completed_tasks_today: "Ολοκληρωμένες Σήμερα",
+        completed_tasks_this_week: "Αυτή την Εβδομάδα",
+        completed_tasks_this_month: "Αυτόν το Μήνα",
         goals_achieved: "Επιτεύχθηκε",
         trust_low: "Χαμηλός",
         trust_average: "Μέσος",
@@ -7765,7 +7773,7 @@ async function loadReports() {
             }
         }
 
-        await Promise.all([loadWeeklySummary(), loadTodayHabits()]);
+        await loadTodayHabits();
 
     } catch (err) {
         console.error('Reports load failed', err);
@@ -8147,52 +8155,7 @@ async function loadMissedTasks() {
     }
 }
 
-async function loadWeeklySummary() {
-    try {
-        const container = document.getElementById('weekly-summary');
-        const content = document.getElementById('weekly-summary-content');
-        
-        if (container && content) {
-            const cachedHtml = localStorage.getItem('tm_weekly_summary_html');
-            if (cachedHtml) {
-                container.style.display = 'block';
-                content.innerHTML = cachedHtml;
-            }
-        }
 
-        const data = await apiFetch('/score/weekly-summary');
-        
-        container.style.display = 'block';
-        
-        const html = `
-            <div class="weekly-summary-stats">
-                <div class="weekly-summary-stat">
-                    <span class="label">${t('total_tasks')}</span>
-                    <span class="value">${data.current_week.total_tasks}</span>
-                </div>
-                <div class="weekly-summary-stat">
-                    <span class="label">${t('completed')}</span>
-                    <span class="value">${data.current_week.completed_tasks}</span>
-                </div>
-                <div class="weekly-summary-stat">
-                    <span class="label">${t('success_rate') || "Success Rate"}</span>
-                    <span class="value">${data.current_week.success_rate}%</span>
-                </div>
-                <div class="weekly-summary-stat">
-                    <span class="label">${t('streak')}</span>
-                    <span class="value">${data.current_week.streak}</span>
-                </div>
-            </div>
-            <div class="weekly-summary-change ${data.success_change >= 0 ? 'positive' : 'negative'}">
-                ${data.success_change >= 0 ? '↑' : '↓'} ${Math.abs(data.success_change)}% ${data.success_change >= 0 ? 'improvement' : 'drop'} from last week
-            </div>
-        `;
-        content.innerHTML = html;
-        localStorage.setItem('tm_weekly_summary_html', html);
-    } catch (err) {
-        console.error('Weekly summary load failed', err);
-    }
-}
 
 // --- Insights Logic ---
 async function loadInsights() {
@@ -9576,7 +9539,7 @@ function renderIdentity(identity) {
     const xpFillEl = document.getElementById('identity-xp-fill');
     const xpTextEl = document.getElementById('identity-xp-text');
     const trustEl = document.getElementById('identity-trust-value');
-    if (!levelEl || !statsEl || !badgesEl || !xpFillEl || !xpTextEl || !trustEl) return;
+    if (!levelEl || !statsEl || !badgesEl || !xpFillEl || !xpTextEl) return;
 
     // Level pill (with star icon)
     levelEl.innerHTML = `<i class="fas fa-star"></i> ${t('level')} ${identity.level}`;
@@ -9586,27 +9549,35 @@ function renderIdentity(identity) {
     xpTextEl.innerHTML = `${t('xp_lbl')} ${identity.xp_into_current_level}/${identity.xp_for_next_level} &nbsp; ${t('total_xp')} ${identity.total_xp}`;
 
     // Trust score
-    trustEl.textContent = `${(identity.trust_score || 0).toFixed(1)}`;
+    if (trustEl) {
+        trustEl.textContent = `${(identity.trust_score || 0).toFixed(1)}`;
+    }
 
-    // Stat cards with icons + dot grid
+    // Stat cards with icons + dot grid: refocused on completed tasks sub-metrics
     const statConfigs = [
         {
-            label: t('completed_tasks'),
-            value: identity.completed_tasks,
+            label: t('completed_tasks_total') || t('completed_tasks') || 'Total Completed',
+            value: identity.completed_tasks || 0,
             icon: 'fa-list-check',
             colorClass: 'stat-green'
         },
         {
-            label: t('goals_achieved'),
-            value: identity.completed_goals,
-            icon: 'fa-bullseye',
+            label: t('completed_tasks_today') || 'Completed Today',
+            value: identity.completed_tasks_today || 0,
+            icon: 'fa-calendar-day',
             colorClass: 'stat-blue'
         },
         {
-            label: t('streak_lbl'),
-            value: identity.streak,
-            icon: 'fa-fire',
+            label: t('completed_tasks_this_week') || 'Completed This Week',
+            value: identity.completed_tasks_this_week || 0,
+            icon: 'fa-calendar-week',
             colorClass: 'stat-orange'
+        },
+        {
+            label: t('completed_tasks_this_month') || 'Completed This Month',
+            value: identity.completed_tasks_this_month || 0,
+            icon: 'fa-calendar-alt',
+            colorClass: 'stat-purple'
         }
     ];
 

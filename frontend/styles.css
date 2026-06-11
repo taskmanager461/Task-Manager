@@ -2473,7 +2473,7 @@ canvas {
 /* --- Stat Cards --- */
 .identity-stats {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 0.6rem;
     margin-bottom: 0.85rem;
 }
@@ -2540,6 +2540,18 @@ body.light-mode .identity-stat-item.stat-orange {
     border: 1.5px solid rgba(251, 146, 60, 0.95);
     background: linear-gradient(135deg, rgba(251, 146, 60, 0.15), rgba(251, 146, 60, 0.04));
     box-shadow: 0 4px 12px rgba(251, 146, 60, 0.18);
+}
+
+.identity-stat-item.stat-purple {
+    border: 1.5px solid rgba(167, 139, 250, 0.85);
+    background: linear-gradient(135deg, rgba(167, 139, 250, 0.08), rgba(167, 139, 250, 0.01));
+    box-shadow: 0 0 16px rgba(167, 139, 250, 0.25);
+}
+
+body.light-mode .identity-stat-item.stat-purple {
+    border: 1.5px solid rgba(167, 139, 250, 0.95);
+    background: linear-gradient(135deg, rgba(167, 139, 250, 0.15), rgba(167, 139, 250, 0.04));
+    box-shadow: 0 4px 12px rgba(167, 139, 250, 0.18);
 }
 
 .stat-icon-wrap {

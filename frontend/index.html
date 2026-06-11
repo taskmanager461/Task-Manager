@@ -235,10 +235,6 @@
                     <div id="today-habits-list" class="habit-list"></div>
                 </div>
 
-                <div id="weekly-summary" class="card" style="margin-top: 1.5rem; display: none;">
-                    <h3 data-i18n="weekly_summary">Weekly Summary</h3>
-                    <div id="weekly-summary-content"></div>
-                </div>
             </section>
 
             <!-- Me View -->
@@ -327,10 +323,6 @@
                         <!-- Injected by app.js -->
                     </div>
 
-                    <div class="identity-trust-score-row" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02); padding:0.75rem 1rem; border-radius:12px; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.05);">
-                        <span style="font-size:0.9rem; font-weight:600; color:var(--text-secondary);" data-i18n="self_trust_score">Self Trust Score</span>
-                        <span id="identity-trust-value" style="font-size:1.4rem; font-weight:900; color:#fbbf24;">0.0</span>
-                    </div>
 
                     <div id="identity-badges" class="identity-badges">
                         <!-- Badges summary list -->
@@ -486,29 +478,6 @@
                     </div>
                 </div>
 
-                <!-- Mastery Progress Card -->
-                <div class="card mastery-progress-card" style="margin-bottom: 1.5rem;">
-                    <div class="identity-header">
-                        <div class="identity-title-group">
-                            <div class="identity-avatar-icon" style="background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%); border: 2.2px solid rgba(255, 107, 107, 0.45); box-shadow: 0 4px 14px rgba(255, 107, 107, 0.35);">
-                                <i class="fas fa-chart-line" style="color: #ffffff !important; font-size: 1.1rem;"></i>
-                            </div>
-                            <div>
-                                <h3 data-i18n="mastery_progress">Mastery Progress</h3>
-                                <p id="mastery-rank-label" style="font-size:0.72rem; color:var(--text-secondary); margin:0;" data-i18n="calculating">Calculating...</p>
-                            </div>
-                        </div>
-                        <span id="mastery-percent-badge" class="identity-level-pill" style="font-size:1rem; padding:0.4rem 0.9rem;">0%</span>
-                    </div>
-                    <div style="margin-top:1.25rem;">
-                        <div class="progress-bar identity-progress-bar" style="height:10px; border-radius:8px;">
-                            <div id="mastery-progress-fill" class="identity-xp-fill" style="width:0%; background: linear-gradient(90deg, #f59e0b, #ef4444, #7c3aed); border-radius:8px;"></div>
-                        </div>
-                        <div id="mastery-breakdown" class="mastery-breakdown" style="margin-top:1rem; display:grid; grid-template-columns:repeat(3, 1fr); gap:0.5rem;">
-                            <!-- Breakdown items injected by JS -->
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Rank & XP Card -->
                 <div class="card rank-xp-card" style="margin-bottom: 1.5rem;">
@@ -536,25 +505,6 @@
                     </div>
                 </div>
 
-                <!-- Trust Progress Card -->
-                <div class="card trust-progress-card" style="margin-bottom: 1.5rem;">
-                    <div class="identity-header">
-                        <div class="identity-title-group">
-                            <div class="identity-avatar-icon" style="background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%); border: 2.2px solid rgba(0, 198, 255, 0.45); box-shadow: 0 4px 14px rgba(0, 114, 255, 0.35);">
-                                <i class="fas fa-shield-halved" style="color: #ffffff !important; font-size: 1.1rem;"></i>
-                            </div>
-                            <h3 data-i18n="self_trust_score">Self Trust Score</h3>
-                        </div>
-                        <span id="progress-trust-tier" class="priority-badge priority-medium" data-i18n="trust_average">Average</span>
-                    </div>
-                    <div class="trust-progress-details" style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
-                        <span id="progress-trust-value" style="font-size: 2.2rem; font-weight: 900; color: #fbbf24;">0.0</span>
-                        <svg class="trust-trend-line" viewBox="0 0 64 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 80px; height: 35px;">
-                            <polyline points="2,24 14,18 24,14 34,16 46,8 62,3" stroke="#fbbf24" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <div style="margin-top: 1rem; font-size: 0.72rem; color: var(--text-secondary);" data-i18n="trust_desc">Trust builds slowly through discipline and consistency. Penalty protection is active at higher streak levels.</div>
-                </div>
 
                 <!-- Achievements System (Grid, Filters, Search) -->
                 <div class="card achievements-section" style="margin-bottom: 1.5rem;">
