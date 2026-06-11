@@ -199,6 +199,9 @@ class IdentityProfileResponse(BaseModel):
     completed_goals: int
     streak: int
     badges: list[BadgeResponse]
+    completed_tasks_today: int = 0
+    completed_tasks_this_week: int = 0
+    completed_tasks_this_month: int = 0
 
 
 class DailyScoreResponse(BaseModel):

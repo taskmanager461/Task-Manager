@@ -799,6 +799,12 @@ def get_identity_profile(db: Session, user: User) -> dict:
     # Retrieve complete comprehensive list of new achievements
     badges = build_badges_complete(db, user)
 
+    # Compute additional task completion statistics
+    today_val = date.today()
+    completed_tasks_today = db.query(Task).filter(Task.user_id == user.id, Task.status == "completed", Task.date == today_val).count()
+    completed_tasks_this_week = db.query(Task).filter(Task.user_id == user.id, Task.status == "completed", Task.date >= today_val - timedelta(days=6)).count()
+    completed_tasks_this_month = db.query(Task).filter(Task.user_id == user.id, Task.status == "completed", Task.date >= today_val - timedelta(days=29)).count()
+
     db.commit()
     return {
         "level": current_level,
@@ -813,5 +819,8 @@ def get_identity_profile(db: Session, user: User) -> dict:
         "completed_goals": completed_goals,
         "streak": user.streak,
         "badges": badges,
+        "completed_tasks_today": completed_tasks_today,
+        "completed_tasks_this_week": completed_tasks_this_week,
+        "completed_tasks_this_month": completed_tasks_this_month,
     }
 
