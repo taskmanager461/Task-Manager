@@ -94,12 +94,12 @@ def public_share_card(username: str, db: Session = Depends(get_db)):
   <meta property="og:type" content="profile">
   <meta property="og:title" content="{display_name}'s Tobedone Progress 🎯">
   <meta property="og:description" content="Level {level or '?'} · {fmt(streak)} day streak · {fmt(goals_achieved)} goals achieved. Check out their progress on Tobedone!">
-  <meta property="og:image" content="/assets/og-preview.png">
+  <meta property="og:image" content="/assets/og-preview.png?v=2">
   <!-- Twitter -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="{display_name}'s Tobedone Progress 🎯">
   <meta name="twitter:description" content="Level {level or '?'} · {fmt(streak)} day streak · {fmt(goals_achieved)} goals achieved.">
-  <meta name="twitter:image" content="/assets/og-preview.png">
+  <meta name="twitter:image" content="/assets/og-preview.png?v=2">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
