@@ -10616,7 +10616,7 @@ async function openShareModal() {
         document.getElementById('share-streak').textContent = shareData.streak;
         document.getElementById('share-completed-tasks').textContent = shareData.completedTasks;
         document.getElementById('share-goals-achieved').textContent = shareData.goalsAchieved;
-        document.getElementById('profile-link').value = `${window.location.origin}/user/${currentUser.username}`;
+        document.getElementById('profile-link').value = `${window.location.origin}/share/${currentUser.username}`;
         
     } catch (err) {
         console.error('Failed to load share data:', err);
@@ -10667,12 +10667,14 @@ async function downloadShareCard() {
 }
 
 function copyShareText() {
-    const text = `Check out my progress on Tobedone! 🎯
-Level: ${shareData.level}
-XP: ${shareData.xp}
-${t('streak_lbl')}: ${shareData.streak} ${t('days')}
-Completed Tasks: ${shareData.completedTasks}
-Goals Achieved: ${shareData.goalsAchieved}`;
+    const shareUrl = `${window.location.origin}/share/${currentUser.username}`;
+    const text = `🎯 ${currentUser.name || currentUser.username} on Tobedone\n` +
+        `⚡ ${t('level')}: ${shareData.level}\n` +
+        `✨ XP: ${shareData.xp}\n` +
+        `🔥 ${t('streak')}: ${shareData.streak} ${t('days')}\n` +
+        `✅ ${t('completed_tasks')}: ${shareData.completedTasks}\n` +
+        `🏆 ${t('goals_achieved')}: ${shareData.goalsAchieved}\n` +
+        `👉 ${shareUrl}`;
     
     navigator.clipboard.writeText(text).then(() => {
         showToast(t('text_copied'), 'success');
@@ -10682,12 +10684,13 @@ Goals Achieved: ${shareData.goalsAchieved}`;
 }
 
 async function nativeShare() {
+    const shareUrl = `${window.location.origin}/share/${currentUser.username}`;
     if (navigator.share) {
         try {
             await navigator.share({
-                title: 'My Tobedone Progress',
-                text: `Check out my progress on Tobedone! Level ${shareData.level}, ${shareData.streak} day streak!`,
-                url: document.getElementById('profile-link').value
+                title: `${currentUser.name || currentUser.username}'s Tobedone Progress 🎯`,
+                text: `⚡ Level ${shareData.level} · 🔥 ${shareData.streak} day streak · 🏆 ${shareData.goalsAchieved} goals achieved!`,
+                url: shareUrl
             });
             showToast(t('shared_successfully'), 'success');
         } catch (err) {
